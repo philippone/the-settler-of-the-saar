@@ -6,8 +6,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>de.unisaarland.cs.st</groupId>
-	<artifactId>saarsiedler-groupXX</artifactId>
-	<name>SaarSiedler implementation of group XX</name>
+	<artifactId>saarsiedler-group16</artifactId>
+	<name>SaarSiedler implementation of group 16</name>
 	<description></description>
 
 	<version>1.0-SNAPSHOT</version>
@@ -24,7 +24,7 @@
 			<id>max</id>
 			<name>Max Muster</name>
 			<email>max@muster.de</email>
-			<organization>Sopra Gruppe XX</organization>
+			<organization>Sopra Gruppe 16</organization>
 			<timezone>2</timezone>
 			<roles>
 				<role>Developer</role>
@@ -33,8 +33,8 @@
 	</developers>
 
 	<scm>
-		<connection>scm:git:ssh://sopra.cs.uni-saarland.de/gruppeXX</connection>
-		<developerConnection>scm:git:ssh://sopra.cs.uni-saarland.de/gruppeXX</developerConnection>
+		<connection>scm:git:ssh://sopra.cs.uni-saarland.de/gruppe16</connection>
+		<developerConnection>scm:git:ssh://sopra.cs.uni-saarland.de/gruppe16</developerConnection>
 	</scm>
 
 	<organization>
@@ -133,7 +133,7 @@
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
-					<finalName>saarsiedler-groupXX</finalName>
+					<finalName>saarsiedler-group16</finalName>
 					<appendAssemblyId>false</appendAssemblyId>
 					<attach>false</attach>
 					<archive>
