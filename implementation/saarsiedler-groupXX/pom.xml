@@ -20,39 +20,17 @@
 	</properties>
 
 	<developers>
-		<!--developer>
-			<id>hammacher</id>
-			<name>Clemens Hammacher</name>
-			<email>hammacher@cs.uni-saarland.de</email>
-			<url>http://www.st.cs.uni-saarland.de/~hammacher/</url>
-			<organization>Software Engineering Group at Saarland University</organization>
-			<organizationUrl>http://www.st.cs.uni-saarland.de/</organizationUrl>
+		<developer>
+			<id>max</id>
+			<name>Max Muster</name>
+			<email>max@muster.de</email>
+			<organization>Sopra Gruppe XX</organization>
 			<timezone>2</timezone>
 			<roles>
 				<role>Developer</role>
 			</roles>
 		</developer>
-		<developer>
-			<id>streit</id>
-			<name>Kevin Streit</name>
-			<email>streit@cs.uni-saarland.de</email>
-			<url>http://www.st.cs.uni-saarland.de/~streit/</url>
-			<organization>Software Engineering Group at Saarland University</organization>
-			<organizationUrl>http://www.st.cs.uni-saarland.de/</organizationUrl>
-			<timezone>2</timezone>
-			<roles>
-				<role>Developer</role>
-			</roles>
-		</developer-->
 	</developers>
-
-	<!--licenses>
-		<license>
-			<name>Eclipse Public License (EPL)</name>
-			<url>http://www.opensource.org/licenses/eclipse-1.0.txt</url>
-			<distribution>manual</distribution>
-		</license>
-	</licenses-->
 
 	<scm>
 		<connection>scm:git:ssh://sopra.cs.uni-saarland.de/gruppeXX</connection>

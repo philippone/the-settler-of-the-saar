@@ -2,8 +2,7 @@
 <project name="SaarSiedler">
 
     <poweredBy>
-        <logo name="Built by: Maven" href="http://maven.apache.org/"
-                img="images/maven-feather.png"/>
+        <logo name="Built by: Maven" href="http://maven.apache.org/" img="images/maven-feather.png"/>
     </poweredBy>
 
     <publishDate position="left" format="yyyy-MM-dd HH:mm:ss z"/>
@@ -25,12 +24,7 @@
 
         <menu ref="modules" />
 
-        <menu name="Quickstart">
-            <item name="Howto" href="howto.html"/>
-            <item name="Tips" href="tips.html"/>
-            <item name="FAQ" href="faq.html"/>
-            <item name="APT at a glance" href="apt-at-a-glance.html"/>
-        </menu>
+        <menu name="Quickstart" />
 
         <menu ref="reports" />
     </body>
