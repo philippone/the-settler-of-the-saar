@@ -10,10 +10,9 @@ import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 
 
 public class TestUtil {
-	Model model;
-	public void setUp() throws UnknownHostException, IOException{
-		Connection c = Connection.establish("bla", false);
-		model= new Model(WorldRepresentation.getDefault(), new MatchInformation() 
+	
+	public static Model getStandardModel() {
+		Model model = new Model(WorldRepresentation.getDefault(), new MatchInformation() 
 		{
 			
 			@Override
