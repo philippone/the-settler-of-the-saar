@@ -67,7 +67,7 @@ public class TestUtil {
 			}
 		};
 		Model model = new Model(worldrep, matchinfo);
-		model.matchStart(new long[] {0,1,2}, new byte[] {1,2,3,4,5});
+		model.matchStart(new long[] {0,1,2}, new byte[] {8,6});
 		model.setTableOrder(new long[] {2,1,0});
 		return model;
 	}
