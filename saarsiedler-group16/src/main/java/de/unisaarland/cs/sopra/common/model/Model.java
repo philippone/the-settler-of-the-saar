@@ -13,7 +13,7 @@ import de.unisaarland.cs.st.saarsiedler.comm.results.AttackResult;
 public class Model implements ModelReader, ModelWriter{
 
 	private Board board;
-	private Player[] players;
+	private List<Player> players;
 	private Map<Long,Player> playerMap;
 	private int round;
 	private List<ModelObserver> modelObserver;
@@ -115,6 +115,19 @@ public class Model implements ModelReader, ModelWriter{
 	public List<ModelObserver> getModelObservers() {
 		return this.modelObserver;
 	}
+	
+	public List<Player> getTableOrder() {
+		return this.players;
+	}
+	
+	public Path getPath(Location location) {
+		return board.getPath(location);
+	}
+	
+	public Intersection getIntersection(Location location) {
+		return board.getIntersection(location);
+	}
+
 	
 	/* (non-Javadoc)
 	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getInitBuilding(de.unisaarland.cs.sopra.common.model.BuildingType)
