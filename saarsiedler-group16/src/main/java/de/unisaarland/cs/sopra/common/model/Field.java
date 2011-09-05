@@ -15,7 +15,7 @@ public class Field {
 		throw new UnsupportedOperationException();
 	}
 	
-	public boolean getRobber() {
+	public boolean hasRobber() {
 		return this.containsRobber;
 	}
 	
