@@ -10,7 +10,7 @@ import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 
 public class TestUtil {
 	
-	public static Model getStandardModel(final int playerCount) throws IOException {
+	public static Model getStandardModel() throws IOException {
 		
 		Model model = new Model(WorldRepresentation.getDefault(), new MatchInformation() 
 		{
