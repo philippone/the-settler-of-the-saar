@@ -1,6 +1,7 @@
 package help;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.st.saarsiedler.comm.Connection;
@@ -11,8 +12,18 @@ import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 public class TestUtil {
 	
 	public static Model getStandardModel() throws IOException {
-		
-		Model model = new Model(WorldRepresentation.getDefault(), new MatchInformation() 
+		WorldRepresentation worldrep = new WorldRepresentation(3, 4, 9, 2, 5, 4, 
+				new byte[] {0,0,0,
+							0,1,0,
+							0,5,0,
+							0,0,0},
+				new byte[] {1,4,
+							2,5},
+				new byte[] {0,1,(1 << 4) & 0, 
+							2,2,(4 << 4) & 1
+								});
+				
+		MatchInformation matchinfo = new MatchInformation() 
 		{
 			
 			@Override
@@ -37,7 +48,7 @@ public class TestUtil {
 			
 			@Override
 			public int getNumPlayers() {
-				return playerCount;
+				return 2;
 			}
 			
 			@Override
@@ -54,18 +65,15 @@ public class TestUtil {
 			public long[] getCurrentObservers() {
 				return new long[] {};
 			}
-		});
+		};
+		Model model = new Model(worldrep, matchinfo);
 		model.matchStart(new long[] {0,1,2}, new byte[] {1,2,3,4,5});
 		model.setTableOrder(new long[] {2,1,0});
 		return model;
 	}
 	
-	public static Model getTestModel() {
-		return null;
-	}
-	
-	public static Connection getTestConnection() {
-		return null;
+	public static Connection getTestConnection() throws UnknownHostException, IOException {
+		return Connection.establish("testserver", false);
 	}
 
 }
