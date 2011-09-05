@@ -24,5 +24,53 @@ public class ControllerTest {
 	public void testAttack() {
 		
 	}
+	
+	public void testBuiltCatapult() {
+		
+	}
+	
+	public void testBuildRoad() {
+		
+	}
+	
+	public void testBuildSettlement() {
+		
+	}
+	
+	public void testChangeName() {
+		
+	}
+	
+	public void testClaimLongestRoad() {
+		
+	}
+	
+	public void testClaimVicotry() {
+		
+	}
+	
+	public void testEndTurn() {
+		
+	}
+	
+	public void testLeaveMatch() {
+		
+	}
+	
+	public void testMoveCatapult() {
+		
+	}
+	
+	public void testMoveRobber() {
+		
+	}
+	
+	public void testRespondTrade() {
+		
+	}
+	
+	public void testReturnResources() {
+		
+	}
 
 }
