@@ -108,6 +108,14 @@ public class Model implements ModelReader, ModelWriter{
 		throw new UnsupportedOperationException();
 	}
 	
+	
+	/**
+	 * @return
+	 */
+	public List<ModelObserver> getModelObservers() {
+		return this.modelObserver;
+	}
+	
 	/* (non-Javadoc)
 	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getInitBuilding(de.unisaarland.cs.sopra.common.model.BuildingType)
 	 */
