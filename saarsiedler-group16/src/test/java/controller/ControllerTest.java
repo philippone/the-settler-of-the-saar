@@ -21,8 +21,9 @@ public class ControllerTest {
 		modelWriter = TestUtil.getTestModel();
 	}
 	
+	
 	public void testAttack() {
-		
+		fail("haha");
 	}
 	
 	public void testBuiltCatapult() {
