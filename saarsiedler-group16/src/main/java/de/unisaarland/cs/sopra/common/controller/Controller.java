@@ -10,7 +10,7 @@ public class Controller {
 	private Connection connection;
 	private ModelWriter modelWriter;
 	
-	Controller(Connection connection, ModelWriter modelWriter) {
+	public Controller(Connection connection, ModelWriter modelWriter) {
 		this.connection = connection;
 		this.modelWriter = modelWriter;
 	}

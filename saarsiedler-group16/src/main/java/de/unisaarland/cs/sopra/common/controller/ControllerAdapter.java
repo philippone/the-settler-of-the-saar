@@ -9,7 +9,7 @@ public class ControllerAdapter {
 	private Model model;
 	private Controller controller;
 	
-	ControllerAdapter(Controller controller, Model model) {
+	public ControllerAdapter(Controller controller, Model model) {
 		this.controller = controller;
 		this.model = model;
 	}
