@@ -11,7 +11,7 @@ public class Field {
 		throw new UnsupportedOperationException();
 	}
 	
-	public Resource getResource() {
+	public Resource getResource(int gewuerfelteZahl) {
 		throw new UnsupportedOperationException();
 	}
 	
