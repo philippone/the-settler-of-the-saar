@@ -35,6 +35,10 @@ public class Path {
 		throw new UnsupportedOperationException();
 	}
 	
+	public HarborType getHarborType(){
+		throw new UnsupportedOperationException();
+	}
+	
 	public void createStreet(Player owner) {
 		throw new UnsupportedOperationException();
 	}
