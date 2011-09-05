@@ -6,7 +6,10 @@ import help.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.unisaarland.cs.sopra.common.ModelObserver;
 import de.unisaarland.cs.sopra.common.model.Model;
+import de.unisaarland.cs.sopra.common.view.View;
+
 
 public class ModelTest {
 	
@@ -19,7 +22,9 @@ public class ModelTest {
 	
 	@Test
 	public void testAddObserver() {
-		
+		ModelObserver view = TestUtil.getTestView();
+		model.addModelObserver(view);
+		assertTrue("ModelObserver-Liste ist leer", model.getModelObservers().size() == 1);
 	}
 	
 	
