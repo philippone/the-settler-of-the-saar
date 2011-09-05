@@ -69,7 +69,4 @@ public class FieldTest {
 		f8.setNumber(12);
 		assertEquals(12, f8.getNumber());
 	}
-	public void testGain(){
-		
-	}
 }

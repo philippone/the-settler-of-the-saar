@@ -28,9 +28,6 @@ public class Catapult {
 		return owner;
 	}
 	
-	public boolean hasOwner() {
-		return this.owner != null;
-	}
 	
 	
 	

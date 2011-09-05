@@ -1,7 +1,62 @@
 package model;
 
+import static org.junit.Assert.*;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.Resource;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
+
 public class PlayerTest {
-	
+	Player p1;
+	Player p2;
+	@Before
+	public void setUp(){
+		p1 = new Player();
+		p2 = new Player();
+	}
+	@Test
+	public void testModify(){
+		p1.modifyResources(new ResourcePackage(1, 2, 3, 4, 5));
+		assertEquals(1, p1.getResources().getResource(Resource.LUMBER));
+		assertEquals(2, p1.getResources().getResource(Resource.BRICK));
+		assertEquals(3, p1.getResources().getResource(Resource.WOOL));
+		assertEquals(4, p1.getResources().getResource(Resource.GRAIN));
+		assertEquals(5, p1.getResources().getResource(Resource.ORE));
+		
+		p2.modifyResources(new ResourcePackage(1,1,1,1,1));		//vl nutzloser Test, macht aber nix
+		p2.modifyResources(new ResourcePackage(-2,-2,-2,-2,-2));
+		assertFalse(0> p1.getResources().getResource(Resource.LUMBER));
+		assertFalse(0> p1.getResources().getResource(Resource.BRICK));
+		assertFalse(0> p1.getResources().getResource(Resource.WOOL));
+		assertFalse(0> p1.getResources().getResource(Resource.GRAIN));
+		assertFalse(0> p1.getResources().getResource(Resource.ORE));
+		
+	}
+	@Test void testSuffient(){
+		assertFalse(p1.checkResourcesSufficient(new ResourcePackage(-1, 0, 0, 0, 0)));
+		assertFalse(p1.checkResourcesSufficient(new ResourcePackage(0, -1, 0, 0, 0)));
+		assertFalse(p1.checkResourcesSufficient(new ResourcePackage(0, 0, -1, 0, 0)));
+		assertFalse(p1.checkResourcesSufficient(new ResourcePackage(0, 0, 0, -1, 0)));
+		assertFalse(p1.checkResourcesSufficient(new ResourcePackage(0, 0, 0, 0, -1)));
+		
+		p1.modifyResources(new ResourcePackage(1,1,1,1,1));
+		assertTrue(p1.checkResourcesSufficient(new ResourcePackage(-1, 0, 0, 0, 0)));
+		assertTrue(p1.checkResourcesSufficient(new ResourcePackage(0, -1, 0, 0, 0)));
+		assertTrue(p1.checkResourcesSufficient(new ResourcePackage(0, 0, -1, 0, 0)));
+		assertTrue(p1.checkResourcesSufficient(new ResourcePackage(0, 0, 0, -1, 0)));
+		assertTrue(p1.checkResourcesSufficient(new ResourcePackage(0, 0, 0, 0, -1)));
+		
+		p2.modifyResources(new ResourcePackage(0,1,2,3,4));
+		assertFalse(p1.checkResourcesSufficient(new ResourcePackage(-1, 0, 0, 0, 0)));
+		assertFalse(p1.checkResourcesSufficient(new ResourcePackage(0, -2, 0, 0, 0)));
+		assertFalse(p1.checkResourcesSufficient(new ResourcePackage(0, 0, -3, 0, 0)));
+		assertFalse(p1.checkResourcesSufficient(new ResourcePackage(0, 0, 0, -4, 0)));
+		assertFalse(p1.checkResourcesSufficient(new ResourcePackage(0, 0, 0, 0, -5)));
+
+	}
 	
 
 }
