@@ -31,7 +31,7 @@ public class ModelTest {
 	
 	@Test
 	public void testRemoveObserver() {
-		
+		//Philipp riecht extrem streng nach katzenpipi
 	}
 	
 	@Test
