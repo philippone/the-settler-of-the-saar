@@ -11,7 +11,7 @@ public class Field {
 		throw new UnsupportedOperationException();
 	}
 	
-	public Resource getsResource() {
+	public Resource getResource() {
 		throw new UnsupportedOperationException();
 	}
 	
