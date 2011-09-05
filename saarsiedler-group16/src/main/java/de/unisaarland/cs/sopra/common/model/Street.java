@@ -18,10 +18,5 @@ public class Street {
 		return owner;
 	}
 	
-	public boolean hasOwner() {
-		return this.owner != null;
-	}
-	
-	
 	
 }
