@@ -79,12 +79,8 @@ public class ResourcePackage {
 	 * @return True if one of the Resources in the ResourcePackage has a negative Count
 	 */
 	public boolean hasNegativeResources() {
-		if (resources.get(LUMBER) < 0) return true;
-		if (resources.get(BRICK) < 0) return true;
-		if (resources.get(WOOL) < 0) return true;
-		if (resources.get(GRAIN) < 0) return true;
-		if (resources.get(ORE) < 0) return true;
-		return false;
+		return (resources.get(LUMBER) < 0 && resources.get(GRAIN) < 0 && resources.get(BRICK) < 0 
+				&& resources.get(ORE) < 0 && resources.get(WOOL) < 0);
 	}
 	
 }

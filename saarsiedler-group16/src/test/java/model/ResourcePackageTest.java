@@ -34,6 +34,7 @@ public class ResourcePackageTest {
 		assertEquals("Expected 5 as Result", respack.getResource(ORE),15);
 	}
 	
+	@Test
 	public void testGet() {
 		assertEquals("Expected 1 as Result", respack.getResource(LUMBER),1);
 		assertEquals("Expected 2 as Result", respack.getResource(BRICK),2);
