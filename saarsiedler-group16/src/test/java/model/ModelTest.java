@@ -25,7 +25,7 @@ public class ModelTest {
 		ModelObserver view = TestUtil.getTestView();
 		model.addModelObserver(view);
 		assertTrue("ModelObserver-Liste ist leer", model.getModelObservers().size() == 1);
-		
+		 
 	}
 	
 	
