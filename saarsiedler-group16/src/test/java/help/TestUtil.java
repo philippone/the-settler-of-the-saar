@@ -1,7 +1,6 @@
 package help;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
 
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.st.saarsiedler.comm.Connection;
@@ -11,59 +10,54 @@ import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 
 public class TestUtil {
 	
-	public static Model getStandardModel() {
+	public static Model getStandardModel(final int playerCount) throws IOException {
+		
 		Model model = new Model(WorldRepresentation.getDefault(), new MatchInformation() 
 		{
 			
 			@Override
 			public boolean isStarted() {
-				// TODO Auto-generated method stub
-				return false;
+				return true;
 			}
 			
 			@Override
 			public long getWorldId() {
-				// TODO Auto-generated method stub
-				return 0;
+				throw new IllegalStateException();
 			}
 			
 			@Override
 			public String getTitle() {
-				// TODO Auto-generated method stub
-				return null;
+				return "Test-Spiel";
 			}
 			
 			@Override
 			public boolean[] getReadyPlayers() {
-				// TODO Auto-generated method stub
-				return null;
+				throw new IllegalStateException();
 			}
 			
 			@Override
 			public int getNumPlayers() {
-				// TODO Auto-generated method stub
-				return 2;
+				return playerCount;
 			}
 			
 			@Override
 			public long getId() {
-				// TODO Auto-generated method stub
 				return 0;
 			}
 			
 			@Override
 			public long[] getCurrentPlayers() {
-				// TODO Auto-generated method stub
-				return null;
+				return new long[] {0,1,2};
 			}
 			
 			@Override
 			public long[] getCurrentObservers() {
-				// TODO Auto-generated method stub
-				return null;
+				return new long[] {};
 			}
 		});
-		model.matchStart(players, number)
+		model.matchStart(new long[] {0,1,2}, new byte[] {1,2,3,4,5});
+		model.setTableOrder(new long[] {2,1,0});
+		return model;
 	}
 	
 	public static Model getTestModel() {
