@@ -118,4 +118,37 @@ public class BoardTest {
 		
 
 	}
+	
+	public void testGetFieldsFromField1(){
+		Point pp=new Point(1,1);
+		Field f=b.getField(pp);
+		Set<Field> ff=b.getFieldsFromField(f);
+		
+		Set<Field> fff=new TreeSet<Field>();
+		fff.add(b.getField(new Point(0,0)));
+		fff.add(b.getField(new Point(1,0)));
+		fff.add(b.getField(new Point(0,1)));
+		fff.add(b.getField(new Point(2,1)));
+		fff.add(b.getField(new Point(0,2)));
+		fff.add(b.getField(new Point(1,2)));
+		 
+		assertTrue(ff.containsAll(fff));
+		assertTrue(fff.containsAll(ff));
+
+	}
+	
+	public void testGetFieldsFromField2(){
+		//same but on the border, only 3 neighbor fields
+		Point pp=new Point(0,0);
+		Field f=b.getField(pp);
+		Set<Field> ff=b.getFieldsFromField(f);
+		
+		Set<Field> fff=new TreeSet<Field>();
+		fff.add(b.getField(new Point(1,0)));
+		fff.add(b.getField(new Point(0,1)));
+		fff.add(b.getField(new Point(1,1)));
+		
+		assertTrue(ff.containsAll(fff));
+		assertTrue(fff.containsAll(ff));
+	}
 }
