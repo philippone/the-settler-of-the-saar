@@ -78,4 +78,8 @@ public class Board {
 		throw new UnsupportedOperationException();
 	}
 	
+	public void setHarbor(Location location, HarborType harborType){
+		throw new UnsupportedOperationException();
+	}
+	
 }
