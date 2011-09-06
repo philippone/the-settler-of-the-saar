@@ -72,7 +72,10 @@ public class TestUtil {
 			}
 		};
 		Model model = new Model(worldrep, matchinfo);
-		model.matchStart(new long[] {0,1,2}, new byte[] {8,6});
+		model.matchStart(new long[] {0,1,2}, new byte[] {2,3,4,5,
+														 6,8,9,10,
+														 11,12,11,10,
+														 9,8,6,5});
 		model.setTableOrder(new long[] {2,1,0});
 		return model;
 	}
@@ -134,10 +137,7 @@ public class TestUtil {
 			}
 		};
 		Model model = new Model(worldrep, matchinfo);
-		model.matchStart(new long[] {0,1,2}, new byte[] {2,3,4,5,
-														 6,8,9,10,
-														 11,12,11,10,
-														 9,8,6,5});
+		model.matchStart(new long[] {0,1,2}, new byte[] {8,6});
 		model.setTableOrder(new long[] {2,1,0});
 		return model;
 	}
