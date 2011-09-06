@@ -14,12 +14,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.unisaarland.cs.sopra.common.ModelObserver;
+import de.unisaarland.cs.sopra.common.controller.Controller;
+import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
+import de.unisaarland.cs.st.saarsiedler.comm.Connection;
 
 
 public class ModelTest {
@@ -75,8 +79,15 @@ public class ModelTest {
 	
 	@Test
 	public void testCalculateLongestRoad() {
-		Player owner = model.getTableOrder().get(0);
+		 //neue Runde (die erste)
+		 model.newRound(8);
+		 // owner = currentPlayer
+		 Player owner = model.getTableOrder().get(0);
 		 Player gegner = model.getTableOrder().get(1);
+		 // verteile viele Resourcen
+		 owner.modifyResources(new ResourcePackage(10000,10000,10000,10000,10000));
+		 gegner.modifyResources(new ResourcePackage(10000,10000,10000,10000,10000));
+		 // erwartete Liste von longestRoads
 		 List< List<Path> > expectedLongestRoad = new ArrayList<List<Path>>();
 		 List<Path> longRoad0 = new LinkedList<Path>();
 		 List<Path> longRoad1 = new LinkedList<Path>();
@@ -175,7 +186,7 @@ public class ModelTest {
 		 boolean calculateExpectedLongestRoad = expectedLongestRoad.equals(currentLongestRoad) || currentLongestRoad.equals(reverseLongestRoads);
 		 assertEquals("laengste Strassen falsch berechnet (hoffentlich richitger Test)", calculateExpectedLongestRoad, true);
 		 // claim longest Road:Road1
-		 model.longestRaodClaimed(Model.getLocationList(longRoad0));
+		 //model.longestRaodClaimed(Model.getLocationList(longRoad0));
 	}
 	
 	@Test
@@ -193,22 +204,47 @@ public class ModelTest {
 		long[] reihenfolge = new long[2];
 		while (fieldIterator.hasNext()) {
 			Field f = fieldIterator.next();
-			if (f.getNumber() != null) {
+			if (f.getNumber() != 0) {
 				reihenfolge[i++] = f.getNumber();
 			}
 		}
-		assertTrue("Feldnummern nicht richitg gesetzt", status);
+		// ist die Reihenfolge der Felder richitg
+		assertEquals("Feldnummern nicht richitg gesetzt", reihenfolge, fieldnumbers);
 	}
 	
 	@Test
 	public void updateLongestRoad() {
+		// in Runde 1 gehen
+		model.newRound(8);
+		// current Player genug Resourcen geben
+		Player currentPlayer = model.getCurrentPlayer();
+		currentPlayer.modifyResources(new ResourcePackage(10000,10000,10000,10000,10000));
+		// eigenes Haus
+		model.buildSettlement(new Location(1,0,1), BuildingType.Village);
 		// longest Road bauen
-		
+		model.buildStreet(new Location(1,0,1));
+		model.buildStreet(new Location(1,0,2));
+		model.buildStreet(new Location(2,0,5));
+		model.buildStreet(new Location(2,0,3));
+		model.buildStreet(new Location(2,0,2));
 		//longest Road claim
+		List<List<Path>> longestRoad = model.calculateLongestRoads(currentPlayer);
+		model.longestRaodClaimed(Model.getLocationList(longestRoad.get(0)));
 		
-		//Village auf longestClaimedRoad bauen
-		model.buildSettlement(new Location(), BuildingType.Village);
+		// neue Runde (Gegner an der Reihe)
+		model.newRound(6);
+		// Gegner: Village auf longestClaimedRoad bauen
+		model.buildSettlement(new Location(2,0,4), BuildingType.Village);
 		// updateLongestRoad aufrufen
+		model.updateLongestRoad(model.getIntersection(new Location(2,0,4)));
+		// erwartete Liste
+		List<Path> expectedLongestRoad = new LinkedList<Path>();
+		expectedLongestRoad.add(model.getPath(new Location(1,0,1)));
+		expectedLongestRoad.add(model.getPath(new Location(1,0,2)));
+		expectedLongestRoad.add(model.getPath(new Location(2,0,5)));
+		
+		assertTrue("updateLongestRoad fehlgeschlagen", model.getLongestClaimedRoad().size() == 3);
+		assertEquals("nicht die richige LongestRoad geupdatet", model.getLongestClaimedRoad(), expectedLongestRoad);
 	}
 	
 	@Test
