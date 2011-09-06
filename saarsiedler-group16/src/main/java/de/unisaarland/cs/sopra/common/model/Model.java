@@ -553,4 +553,10 @@ public class Model implements ModelReader, ModelWriter{
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public Field getField(Point p) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

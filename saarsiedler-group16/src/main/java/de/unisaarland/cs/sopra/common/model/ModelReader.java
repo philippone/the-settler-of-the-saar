@@ -47,6 +47,7 @@ public interface ModelReader {
 	public Set<Path> getPathsFromIntersection(Intersection intersection);
 	public Set<Path> getPathsFromPath(Path path);
 	public Path getPath(Location loc);
+	public Field getField(Point p);
 	public Intersection getIntersection(Location location);
 	
 }
