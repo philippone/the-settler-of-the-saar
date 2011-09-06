@@ -27,12 +27,11 @@ import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public class ModelReaderTest {
 	
-	private Model model, modelBig;
+	private Model model;
 	
 	@Before
 	public void setUp() throws IOException {
 		model = TestUtil.getStandardModel1();
-		modelBig = TestUtil.getStandardModel2();
 	}		
 	
 	@Test
@@ -116,6 +115,8 @@ public class ModelReaderTest {
 		f2.add(model.getField(new Point(1,2)));
 		assertTrue(f1.containsAll(f2));
 		assertTrue(f2.containsAll(f1));
+		
+		// noch mehr Faelle; es koennen auch nur 3,4,5 Felder herum liegen
 	}
 	
 	@Test
@@ -127,6 +128,8 @@ public class ModelReaderTest {
 		f2.add(model.getField(new Point(1,1)));
 		assertTrue(f1.containsAll(f2));
 		assertTrue(f2.containsAll(f1));
+		
+		// noch mehr Faelle
 	}
 	
 	@Test
@@ -136,7 +139,9 @@ public class ModelReaderTest {
 		f2.add(model.getField(new Point(0,0)));
 		f2.add(model.getField(new Point(1,1)));
 		assertTrue(f1.containsAll(f2));
-		assertTrue(f2.containsAll(f1));
+		assertTrue(f2.containsAll(f1));	// darf glaube ich nicht sein, koennte schon wahr sein, obwohl es nicht ausreicht
+		
+		// Fall mit nur einem Field
 	}
 	
 	@Test
@@ -150,7 +155,7 @@ public class ModelReaderTest {
 		i2.add(model.getIntersection(new Location(0,0,4)));
 		i2.add(model.getIntersection(new Location(0,0,5)));
 		assertTrue(i1.containsAll(i2));
-		assertTrue(i2.containsAll(i1));
+		assertTrue(i2.containsAll(i1));	// darf glaube ich nicht sein
 	}
 	
 	@Test
@@ -197,6 +202,8 @@ public class ModelReaderTest {
 		p2.add(model.getPath(new Location(1,0,3)));
 		assertTrue(p1.containsAll(p2));
 		assertTrue(p2.containsAll(p1));
+		
+		// weitere Faelle
 	}
 	
 	@Test
@@ -209,19 +216,24 @@ public class ModelReaderTest {
 		p2.add(model.getPath(new Location(1,1,4)));
 		assertTrue(p1.containsAll(p2));
 		assertTrue(p2.containsAll(p1));
+		
+		// Randfaelle, nur 2 weitere Pfade
 	}
 	
 	@Test
 	public void testGetPath() {
+		//testet glaube ich nicht getPath sondern eher die ob die welt richitg erstellt wurde
 		assertTrue(model.getPath(new Location(0,0,2)).equals(model.getPath(new Location(1,1,5))));
 	}
 	
 	@Test
 	public void testGetField() {
+		// muss noch gemacht werden
 	}
 	
 	@Test
 	public void testGetIntersection() {
+		// nicht sicher
 		assertTrue(model.getIntersection(new Location(0,0,2))==model.getIntersection(new Location(1,0,4)));
 		assertTrue(model.getIntersection(new Location(0,0,2))==model.getIntersection(new Location(1,1,0)));
 	}
