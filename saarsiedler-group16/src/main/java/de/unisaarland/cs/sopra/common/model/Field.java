@@ -4,7 +4,7 @@ public class Field {
 
 	private Point point;
 	private boolean containsRobber;
-	private int number;
+	private long number;
 	private FieldType fieldType;
 	
 	public Field(FieldType fieldType, Point point) {
@@ -31,7 +31,7 @@ public class Field {
 		return this.number;
 	}
 	
-	public void setNumber(int number) {
+	public void setNumber(long number) {
 		this.number = number;
 	}
 	

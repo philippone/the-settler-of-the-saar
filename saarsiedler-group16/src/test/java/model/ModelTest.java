@@ -28,7 +28,7 @@ public class ModelTest {
 	
 	@Before
 	public void setUp() throws IOException {
-		model = TestUtil.getStandardModel();
+		model = TestUtil.getStandardModel2();
 	}
 	
 	@Test
@@ -53,17 +53,15 @@ public class ModelTest {
 	
 	@Test
 	public void testRemoveObserver() throws IOException {
-		// erster Observer wieder loeschen
+		// erster Observer einfuegen und dann loeschen
 		Player p1 = model.getTableOrder().get(0);
 		ModelObserver view = TestUtil.getTestView(p1);
+		model.addModelObserver(view);
+		
 		model.removeModelObserver(view);
 		assertNotNull("Model == null", model);
 		assertNotNull("View == null", view);
 		assertTrue("ModelObserver-Liste ist leider nicht leer, sollte es aber sein", model.getModelObservers().size()==0);
-		// zweiter Observer wieder loeschen
-		Player p2 = model.getTableOrder().get(1);
-		ModelObserver view2 = TestUtil.getTestView(p2);
-		model.removeModelObserver(view2);
 		// Liste leer, trotzdem entfernen
 		try {
 			model.removeModelObserver(view);
@@ -192,17 +190,25 @@ public class ModelTest {
 		// an neue Welt anpassen!!!!
 		long[] fieldnumbers = new long[] {8,6}; 
 		int i = 0;
-		boolean status = false;
+		long[] reihenfolge = new long[2];
 		while (fieldIterator.hasNext()) {
-			status = fieldIterator.next().getNumber() == fieldnumbers[i++];
+			Field f = fieldIterator.next();
+			if (f.getNumber() != null) {
+				reihenfolge[i++] = f.getNumber();
+			}
 		}
 		assertTrue("Feldnummern nicht richitg gesetzt", status);
 	}
 	
 	@Test
 	public void updateLongestRoad() {
+		// longest Road bauen
+		
+		//longest Road claim
+		
 		//Village auf longestClaimedRoad bauen
 		model.buildSettlement(new Location(), BuildingType.Village);
+		// updateLongestRoad aufrufen
 	}
 	
 	@Test
