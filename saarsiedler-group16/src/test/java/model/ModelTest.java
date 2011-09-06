@@ -16,10 +16,12 @@ import org.junit.Test;
 import de.unisaarland.cs.sopra.common.ModelObserver;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
+import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.Point;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 import de.unisaarland.cs.st.saarsiedler.comm.results.AttackResult;
 
@@ -188,13 +190,13 @@ public class ModelTest {
 	}
 	
 	@Test
-	public void setTableOrder() {
+	public void testSetTableOrder() {
 		long[] expectedTableOrder = new long[] {2,1,0};
 		assertEquals("TableOrder nicht richitg gesetzt", expectedTableOrder, model.getTableOrder());
 	}
 	
 	@Test
-	public void setFieldNumbers() {
+	public void testSetFieldNumbers() {
 		Iterator<Field> fieldIterator = model.getFieldIterator();
 		// an neue Welt anpassen!!!!
 		long[] fieldnumbers = new long[] {8,6}; 
@@ -211,7 +213,7 @@ public class ModelTest {
 	}
 	
 	@Test
-	public void updateLongestRoad() {
+	public void testUpdateLongestRoad() {
 		// in Runde 1 gehen
 		model.newRound(8);
 		// current Player genug Resourcen geben
@@ -246,18 +248,43 @@ public class ModelTest {
 	}
 	
 	@Test
-	public void getLocationField() {
-		
+	public void testGetLocationField() {
+		Field f = model.getField(new Point(1,1));
+		Point p = Model.getLocation(f);
+		assertEquals("Felder sind ungleich",f.getLocation(), p);
+		// Feld ausserhalb des Spielfeldes
+		try {
+			Field f2 = model.getField(new Point(5,5));
+			fail("Point ausserhalb des Spielfeldes, sollte IllegalArgumentException werfen");
+		} catch(IllegalArgumentException e) {
+			// Test sollte durchlaufen
+		}
 	}
 	
 	@Test
-	public void getLocationIntersection() {
-		
+	public void testGetLocationIntersection() {
+		Intersection i = model.getIntersection(new Location(1,1,1));
+		Location l = Model.getLocation(i);
+		assertEquals("Intersections sind ungleich", i.getLocation(), l);
+		try {
+			Intersection i2 = model.getIntersection(new Location(5,5,5));
+			fail("Intersection ausserhalb des Spielfeldes, sollte IllegalArumentException werfen");
+		} catch(IllegalArgumentException e) {
+			//Test sollte durchlaufen
+		}
 	}
 	
 	@Test
-	public void getLocationPath() {
-		
+	public void testGetLocationPath() {
+		Path p = model.getPath(new Location(1,1,1));
+		Location l = Model.getLocation(p);
+		assertEquals("Intersections sind ungleich", p.getLocation(), l);
+		try {
+			Path p2 = model.getPath(new Location(5,5,5));
+			fail("Intersection ausserhalb des Spielfeldes, sollte IllegalArumentException werfen");
+		} catch(IllegalArgumentException e) {
+			//Test sollte durchlaufen
+		}
 	}
 	
 	@Test
@@ -276,14 +303,14 @@ public class ModelTest {
 	
 	
 	@Test
-	public void newRound(){
+	public void testNewRound(){
 		assertEquals(0 ,model.getRound()); //TODO unsicher vl doch runde 1
 		model.newRound(12);
 		assertEquals(1, model.getRound());
 		assertNotSame(0, model.getRound());
 	}
 	@Test
-	public void attackSettlement(){
+	public void testAttackSettlement(){
 		//gibt den akt. Playern alle Resourcen um Komplikationen mit build zu vermeiden.
 		model.getTableOrder().get(0).modifyResources(new ResourcePackage(333,333,333,333,333)); 
 		model.getTableOrder().get(1).modifyResources(new ResourcePackage(333,333,333,333,333)); 
@@ -329,7 +356,6 @@ public class ModelTest {
 		assertEquals("Town should be downgraded",BuildingType.Village, model.getIntersection(new Location(1,1,0)).getBuildingType());
 		assertTrue(model.getPath(new Location(0, 0, 0)).hasCatapultOwner());
 		assertTrue(model.getPath(new Location(1, 1, 0)).hasCatapultOwner());
-		
 	}
 	
 
