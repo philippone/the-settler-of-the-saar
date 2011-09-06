@@ -1,13 +1,11 @@
 package model;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import help.TestUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -52,7 +50,7 @@ public class ModelTest {
 	
 	
 	@Test
-	public void testRemoveObserver() {
+	public void testRemoveObserver() throws IOException {
 		// erster Observer wieder loeschen
 		Player p1 = model.getTableOrder().get(0);
 		ModelObserver view = TestUtil.getTestView(p1);
@@ -62,16 +60,15 @@ public class ModelTest {
 		assertTrue("ModelObserver-Liste ist leider nicht leer, sollte es aber sein", model.getModelObservers().size()==0);
 		// zweiter Observer wieder loeschen
 		Player p2 = model.getTableOrder().get(1);
-		ModelObserver view2 = TestUtil.getTestView(p1);
+		ModelObserver view2 = TestUtil.getTestView(p2);
 		model.removeModelObserver(view2);
 		// Liste leer, trotzdem entfernen
 		try {
 			model.removeModelObserver(view);
 			fail("sollte eine Ausnahme werfen, da Liste bereits Leer ist");
-		} catch(Exception ex) {
-			\\ Test sollte hier entlang laufen
+		} catch(Exception e) {
+			//Test sollte durchlaufen
 		}
-		
 	}
 	
 	@Test
@@ -173,7 +170,15 @@ public class ModelTest {
 		 assertEquals("Street1 0 != 9", longRoad1.size(),9);
 		 assertEquals("Street2 0 != 9", longRoad2.size(),9);
 		 assertEquals("Street3 0 != 9", longRoad3.size(),9);
-		 assertEquals("laengste Strassen falsch berechnet (hoffentlich richitger Test)", expectedLongestRoad, currentLongestRoad);
+		 
+		 // Liste reversieren
+		 List<List<Path>> reverseLongestRoads = expectedLongestRoad;
+		 for(List<Path> l : reverseLongestRoads) {
+			 Collections.reverse(l);
+		 }
+		 // testet ob die normale oder reverseierte Liste == der ausgerechneten ist
+		 boolean calculateExpectedLongestRoad = expectedLongestRoad.equals(currentLongestRoad) || currentLongestRoad.equals(reverseLongestRoads);
+		 assertEquals("laengste Strassen falsch berechnet (hoffentlich richitger Test)", calculateExpectedLongestRoad, true);
 	}
 	
 	@Test
