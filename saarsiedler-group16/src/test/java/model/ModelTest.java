@@ -21,6 +21,7 @@ import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
+import de.unisaarland.cs.st.saarsiedler.comm.results.AttackResult;
 
 
 public class ModelTest {
@@ -261,14 +262,75 @@ public class ModelTest {
 	
 	@Test
 	public void testGetCurrentPlayer() {
+		// naechste Runde
+		model.newRound(8);
 		Player expectedPlayer = model.getTableOrder().get(0);
 		Player currentPlayer = model.getCurrentPlayer();
 		assertEquals("nicht der aktuelle Player", expectedPlayer, currentPlayer);
 		// naechste Runde
+		model.newRound(6);
+		Player expectedPlayer1 = model.getTableOrder().get(1);
+		Player currentPlayer1 = model.getCurrentPlayer();
+		assertEquals("nicht der aktuelle Player", expectedPlayer1, currentPlayer1);
 	}
 	
-	/// ab hier Valentin ;)
 	
+	@Test
+	public void newRound(){
+		assertEquals(0 ,model.getRound()); //TODO unsicher vl doch runde 1
+		model.newRound(12);
+		assertEquals(1, model.getRound());
+		assertNotSame(0, model.getRound());
+	}
+	@Test
+	public void attackSettlement(){
+		//gibt den akt. Playern alle Resourcen um Komplikationen mit build zu vermeiden.
+		model.getTableOrder().get(0).modifyResources(new ResourcePackage(333,333,333,333,333)); 
+		model.getTableOrder().get(1).modifyResources(new ResourcePackage(333,333,333,333,333)); 
+		//Angriffsziele bauen
+		model.buildSettlement(new Location(0,0,0) , BuildingType.Village);
+		model.buildSettlement(new Location(1,1,0) , BuildingType.Town);
+		
+		model.newRound(12);
+		//Bauende Villages und Catapulte bauen
+		model.buildSettlement(new Location(0,0,1) , BuildingType.Village);
+		model.buildSettlement(new Location(1,1,1) , BuildingType.Village);
+		model.buildCatapult(new Location(0,0,0), true);
+		model.buildCatapult(new Location(1,1,0), true);
+		
+		assertEquals(BuildingType.Village, model.getIntersection(new Location(0,0,0)).getBuildingType());
+		assertEquals(BuildingType.Town, model.getIntersection(new Location(1,1,0)).getBuildingType());
+		//eine DRAW-Attacke
+		model.attackSettlement(new Location(0,0,0), new Location(0,0,0), AttackResult.DRAW);
+		model.attackSettlement(new Location(1,1,0), new Location(1,1,0), AttackResult.DRAW);
+
+		assertEquals(BuildingType.Village, model.getIntersection(new Location(0,0,0)).getBuildingType());
+		assertEquals(BuildingType.Town, model.getIntersection(new Location(1,1,0)).getBuildingType());
+		assertTrue(model.getPath(new Location(0, 0, 0)).hasCatapultOwner());
+		assertTrue(model.getPath(new Location(1, 1, 0)).hasCatapultOwner());
+		//eine Defeat-Attacke
+		model.attackSettlement(new Location(0,0,0), new Location(0,0,0), AttackResult.DEFEAT);
+		model.attackSettlement(new Location(1,1,0), new Location(1,1,0), AttackResult.DEFEAT);
+		
+		assertEquals(BuildingType.Village, model.getIntersection(new Location(0,0,0)).getBuildingType());
+		assertEquals(BuildingType.Town, model.getIntersection(new Location(1,1,0)).getBuildingType());
+		assertFalse(model.getPath(new Location(0, 0, 0)).hasCatapultOwner());
+		assertFalse(model.getPath(new Location(1, 1, 0)).hasCatapultOwner());
+		
+		//neubau der Catapulte
+		model.buildCatapult(new Location(0,0,0), true);
+		model.buildCatapult(new Location(1,1,0), true);
+		//eine Success-Attacke
+		model.attackSettlement(new Location(0,0,0), new Location(0,0,0), AttackResult.SUCCESS);
+		model.attackSettlement(new Location(1,1,0), new Location(1,1,0), AttackResult.SUCCESS);
+		
+		assertFalse(model.getIntersection(new Location(0,0,0)).hasOwner());
+		assertEquals("BuildingType should be null", null, model.getIntersection(new Location(1,1,0)).getBuildingType());
+		assertEquals("Town should be downgraded",BuildingType.Village, model.getIntersection(new Location(1,1,0)).getBuildingType());
+		assertTrue(model.getPath(new Location(0, 0, 0)).hasCatapultOwner());
+		assertTrue(model.getPath(new Location(1, 1, 0)).hasCatapultOwner());
+		
+	}
 	
 
 }

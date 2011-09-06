@@ -43,7 +43,7 @@ public interface ModelWriter {
 	/**
 	 * @param road
 	 */
-	public void longestRaodClaimed(List<Location> road);
+	public void longestRoadClaimed(List<Location> road);
 	
 	
 	/**
