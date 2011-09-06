@@ -5,6 +5,7 @@ import java.net.UnknownHostException;
 
 import de.unisaarland.cs.sopra.common.ModelObserver;
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
+import de.unisaarland.cs.sopra.common.model.Board;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Player;
@@ -88,4 +89,18 @@ public class TestUtil {
 		return view;
 	}
 
+	public static Board getTestBoard() {
+			WorldRepresentation worldrep = new WorldRepresentation(3, 4, 9, 2, 5, 4, 
+					new byte[] {0,0,0,
+								0,1,0,
+								0,5,0,
+								0,0,0},
+					new byte[] {1,4,
+								2,5},
+					new byte[] {0,1,(1 << 4) & 0, 
+								2,2,(4 << 4) & 1
+									});
+			return new Board(worldrep);
+	}
+	
 }
