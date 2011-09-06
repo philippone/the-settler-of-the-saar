@@ -73,6 +73,14 @@ public class Model implements ModelReader, ModelWriter{
 	}
 	
 	/**
+	 * @param pathlist
+	 * @return
+	 */
+	public static List<Location> getLocationList(List<Path> pathlist) {
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
 	 * @return current Player
 	 */
 	public Player getCurrentPlayer() {
