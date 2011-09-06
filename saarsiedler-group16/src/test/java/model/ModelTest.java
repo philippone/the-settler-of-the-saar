@@ -279,7 +279,7 @@ public class ModelTest {
 	public void newRound(){
 		assertEquals(0 ,model.getRound()); //TODO unsicher vl doch runde 1
 		model.newRound(12);
-		assertEquals(2, model.getRound());
+		assertEquals(1, model.getRound());
 		assertNotSame(0, model.getRound());
 	}
 	@Test
