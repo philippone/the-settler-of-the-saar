@@ -50,14 +50,6 @@ public class ModelReaderTest2 {
 		
 	}
 	
-	@Test
-	public void testAffordableSettlements(BuildingType buildingType){
-		
-	}
-	
-	@Test
-	public void testAffordableStreets(){
-		
-	}
+
 	
 }

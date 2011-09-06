@@ -42,23 +42,13 @@ public class ModelReaderTest3 {
 	}
 	
 	@Test
-	public void testAttackableSettlements(Player player, BuildingType buildingType) {
+	public void testAffordableSettlements(BuildingType buildingType){
 		
 	}
 	
 	@Test
-	public void testAttackableCatapults(Player player) {
+	public void testAffordableStreets(){
 		
 	}
 	
-	@Test
-	public void testGetStreets(Player player) {
-		
-	}
-	
-	@Test
-	public void testGetSettlements(Player player, BuildingType buildingType) {
-		
-	}
-
 }
