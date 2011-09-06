@@ -106,62 +106,124 @@ public class ModelReaderTest {
 	
 	@Test
 	public void testGetFieldsFromField() {
-		
+		Set<Field> f1=model.getFieldsFromField(model.getField(new Point(1,1)));
+		Set<Field> f2=new TreeSet<Field>();
+		f2.add(model.getField(new Point(0,0)));
+		f2.add(model.getField(new Point(1,0)));
+		f2.add(model.getField(new Point(0,1)));
+		f2.add(model.getField(new Point(2,1)));
+		f2.add(model.getField(new Point(0,2)));
+		f2.add(model.getField(new Point(1,2)));
+		assertTrue(f1.containsAll(f2));
+		assertTrue(f2.containsAll(f1));
 	}
 	
 	@Test
 	public void testGetFieldsFromIntersection() {
-		
+		Set<Field> f1=model.getFieldsFromIntersection(model.getIntersection(new Location(0,0,2)));
+		Set<Field> f2=new TreeSet<Field>();
+		f2.add(model.getField(new Point(0,0)));
+		f2.add(model.getField(new Point(1,0)));
+		f2.add(model.getField(new Point(1,1)));
+		assertTrue(f1.containsAll(f2));
+		assertTrue(f2.containsAll(f1));
 	}
 	
 	@Test
 	public void testGetFieldsFromPath() {
-		
+		Set<Field> f1=model.getFieldsFromPath(model.getPath(new Location(0,0,2)));
+		Set<Field> f2=new TreeSet<Field>();
+		f2.add(model.getField(new Point(0,0)));
+		f2.add(model.getField(new Point(1,1)));
+		assertTrue(f1.containsAll(f2));
+		assertTrue(f2.containsAll(f1));
 	}
 	
 	@Test
 	public void testGetIntersectionsFromField() {
-		
+		Set<Intersection> i1=model.getIntersectionsFromField(model.getField(new Point(1,1)));
+		Set<Intersection> i2=new TreeSet<Intersection>();
+		i2.add(model.getIntersection(new Location(0,0,0)));
+		i2.add(model.getIntersection(new Location(0,0,1)));
+		i2.add(model.getIntersection(new Location(0,0,2)));
+		i2.add(model.getIntersection(new Location(0,0,3)));
+		i2.add(model.getIntersection(new Location(0,0,4)));
+		i2.add(model.getIntersection(new Location(0,0,5)));
+		assertTrue(i1.containsAll(i2));
+		assertTrue(i2.containsAll(i1));
 	}
 	
 	@Test
 	public void testGetIntersectionsFromIntersection() {
-		
+		Set<Intersection> i1=model.getIntersectionsFromIntersection(model.getIntersection(new Location(0,0,2)));
+		Set<Intersection> i2=new TreeSet<Intersection>();
+		i2.add(model.getIntersection(new Location(0,0,1)));
+		i2.add(model.getIntersection(new Location(0,0,3)));
+		i2.add(model.getIntersection(new Location(1,0,3)));
+		assertTrue(i1.containsAll(i2));
+		assertTrue(i2.containsAll(i1));
 	}
 	
 	@Test
 	public void testGetIntersectionsFromPath() {
-		
+		Set<Intersection> i1=model.getIntersectionsFromPath(model.getPath(new Location(0,0,2)));
+		Set<Intersection> i2=new TreeSet<Intersection>();
+		i2.add(model.getIntersection(new Location(0,0,2)));
+		i2.add(model.getIntersection(new Location(0,0,3)));
+		assertTrue(i1.containsAll(i2));
+		assertTrue(i2.containsAll(i1));
 	}
 	
 	@Test
 	public void testGetPathsFromField() {
-		
+		Set<Path> p1=model.getPathsFromField(model.getField(new Point(1,1)));
+		Set<Path> p2=new TreeSet<Path>();
+		p2.add(model.getPath(new Location(1,1,0)));
+		p2.add(model.getPath(new Location(1,1,1)));
+		p2.add(model.getPath(new Location(1,1,2)));
+		p2.add(model.getPath(new Location(1,1,3)));
+		p2.add(model.getPath(new Location(1,1,4)));
+		p2.add(model.getPath(new Location(1,1,5)));
+		assertTrue(p1.containsAll(p2));
+		assertTrue(p2.containsAll(p1));
 	}
 	
 	@Test
 	public void testGetPathsFromIntersection() {
-		
+		Set<Path> p1=model.getPathsFromIntersection(model.getIntersection(new Location(0,0,2)));
+		Set<Path> p2=new TreeSet<Path>();
+		p2.add(model.getPath(new Location(0,0,1)));
+		p2.add(model.getPath(new Location(0,0,3)));
+		p2.add(model.getPath(new Location(1,0,3)));
+		assertTrue(p1.containsAll(p2));
+		assertTrue(p2.containsAll(p1));
 	}
 	
 	@Test
 	public void testGetPathsFromPath() {
-		
+		Set<Path> p1=model.getPathsFromPath(model.getPath(new Location(0,0,2)));
+		Set<Path> p2=new TreeSet<Path>();
+		p2.add(model.getPath(new Location(0,0,1)));
+		p2.add(model.getPath(new Location(1,1,0)));
+		p2.add(model.getPath(new Location(0,1,0)));
+		p2.add(model.getPath(new Location(1,1,4)));
+		assertTrue(p1.containsAll(p2));
+		assertTrue(p2.containsAll(p1));
 	}
 	
 	@Test
 	public void testGetPath() {
-		
+		assertTrue(model.getPath(new Location(0,0,2)).equals(model.getPath(new Location(1,1,5))));
 	}
 	
 	@Test
 	public void testGetField() {
-		
 	}
 	
 	@Test
 	public void testGetIntersection() {
-		
+		assertTrue(model.getIntersection(new Location(0,0,2))==model.getIntersection(new Location(1,0,4)));
+		assertTrue(model.getIntersection(new Location(0,0,2))==model.getIntersection(new Location(1,1,0)));
 	}
 
 }
