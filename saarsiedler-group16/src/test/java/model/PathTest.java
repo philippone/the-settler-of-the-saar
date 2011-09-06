@@ -20,10 +20,9 @@ HarborType h;
 	
 public void testCatapult(){
 	Random r = new Random();
-	r.nextInt(10);
 	int x=r.nextInt(10);
 	int y=r.nextInt(10);
-	int o=r.nextInt(10);
+	int o=r.nextInt(5);
 	l=new Location(x,y,o);
 	pl=new Player();
 	p=new Path(l);
@@ -36,9 +35,10 @@ public void testCatapult(){
 }
 
 public void testStreet() {
-	int x=(int) Math.random()*10;
-	int y=(int) Math.random()*10;
-	int o=(int) Math.random()*10;
+	Random r = new Random();
+	int x=r.nextInt(10);
+	int y=r.nextInt(10);
+	int o=r.nextInt(5);
 	l=new Location(x,y,o);
 	pl=new Player();
 	p=new Path(l);
@@ -49,10 +49,11 @@ public void testStreet() {
 }
 
 public void testHarbortype(){
-	int x=(int) Math.random()*10;
-	int y=(int) Math.random()*10;
-	int o=(int) Math.random()*10;
-	l=new Location(x,y,o);
+	Random r = new Random();
+	int x=r.nextInt(10);
+	int y=r.nextInt(10);
+	int o=r.nextInt(5);
+	Location l=new Location(x,y,o);
 	p=new Path(l);
 	h=HarborType.GENERAL_HARBOR;
 	p.setHarborType(h);
@@ -60,9 +61,10 @@ public void testHarbortype(){
 }
 
 public void testLocation(){
-	int x=(int) Math.random()*10;
-	int y=(int) Math.random()*10;
-	int o=(int) Math.random()*10;
+	Random r = new Random();
+	int x=r.nextInt(10);
+	int y=r.nextInt(10);
+	int o=r.nextInt(5);
 	l=new Location(x,y,o);
 	p=new Path(l);
 	assertEquals(l,p.getLocation());
