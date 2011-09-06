@@ -252,6 +252,7 @@ public class ModelTest {
 	/**
 	 * Handelststrasse geanu in der Mitte geteilt
 	 */
+	@Test
 	public void testUpdateLongestRoad2() {
 		// in Runde 1 gehen
 		model.newRound(8);
