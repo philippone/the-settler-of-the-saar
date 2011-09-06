@@ -6,6 +6,7 @@ import help.TestUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import org.junit.Test;
 
 import de.unisaarland.cs.sopra.common.ModelObserver;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
+import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.Path;
@@ -71,12 +73,7 @@ public class ModelTest {
 		}
 	}
 	
-	@Test
-	public void testGetCurrentPlayer() {
-		Player expectedPlayer = model.getTableOrder().get(0);
-		Player currentPlayer = model.getCurrentPlayer();
-		assertEquals("nicht der aktuelle Player", expectedPlayer, currentPlayer);
-	}
+	
 	
 	@Test
 	public void testCalculateLongestRoad() {
@@ -179,21 +176,33 @@ public class ModelTest {
 		 // testet ob die normale oder reverseierte Liste == der ausgerechneten ist
 		 boolean calculateExpectedLongestRoad = expectedLongestRoad.equals(currentLongestRoad) || currentLongestRoad.equals(reverseLongestRoads);
 		 assertEquals("laengste Strassen falsch berechnet (hoffentlich richitger Test)", calculateExpectedLongestRoad, true);
+		 // claim longest Road:Road1
+		 model.longestRaodClaimed(Model.getLocationList(longRoad0));
 	}
 	
 	@Test
 	public void setTableOrder() {
-		
+		long[] expectedTableOrder = new long[] {2,1,0};
+		assertEquals("TableOrder nicht richitg gesetzt", expectedTableOrder, model.getTableOrder());
 	}
 	
 	@Test
 	public void setFieldNumbers() {
-		
+		Iterator<Field> fieldIterator = model.getFieldIterator();
+		// an neue Welt anpassen!!!!
+		long[] fieldnumbers = new long[] {8,6}; 
+		int i = 0;
+		boolean status = false;
+		while (fieldIterator.hasNext()) {
+			status = fieldIterator.next().getNumber() == fieldnumbers[i++];
+		}
+		assertTrue("Feldnummern nicht richitg gesetzt", status);
 	}
 	
 	@Test
 	public void updateLongestRoad() {
-		
+		//Village auf longestClaimedRoad bauen
+		model.buildSettlement(new Location(), BuildingType.Village);
 	}
 	
 	@Test
@@ -211,9 +220,15 @@ public class ModelTest {
 		
 	}
 	
+	@Test
+	public void testGetCurrentPlayer() {
+		Player expectedPlayer = model.getTableOrder().get(0);
+		Player currentPlayer = model.getCurrentPlayer();
+		assertEquals("nicht der aktuelle Player", expectedPlayer, currentPlayer);
+		// naechste Runde
+	}
 	
-	
-	
+	/// ab hier Valentin ;)
 	
 	
 
