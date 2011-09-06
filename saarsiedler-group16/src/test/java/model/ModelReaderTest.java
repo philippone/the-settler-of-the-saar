@@ -20,6 +20,7 @@ import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Point;
+import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 
@@ -90,7 +91,17 @@ public class ModelReaderTest {
 	
 	@Test
 	public void testGetFieldResource() {
+		// Field without resource (water)
+		Field f = model.getField(new Point(0,0));
+		Resource currentR = model.getFieldResource(f);
+		Resource expectedR = null;
+		assertEquals("not the equals resources", currentR, expectedR);
 		
+		// Field with resource (forest)
+		f = model.getField(new Point(1,1));
+		currentR = model.getFieldResource(f);
+		expectedR = Resource.LUMBER;
+		assertEquals("not the equals resources", currentR, expectedR);
 	}
 	
 	@Test
