@@ -27,7 +27,7 @@ public class Field {
 		return this.fieldType;
 	}
 	
-	public int getNumber() {
+	public long getNumber() {
 		return this.number;
 	}
 	
