@@ -247,6 +247,47 @@ public class ModelTest {
 		assertEquals("nicht die richige LongestRoad geupdatet", model.getLongestClaimedRoad(), expectedLongestRoad);
 	}
 	
+	
+	
+	/**
+	 * Handelststrasse geanu in der Mitte geteilt
+	 */
+	@Test
+	public void testUpdateLongestRoad2() {
+		// in Runde 1 gehen
+		model.newRound(8);
+		// current Player genug Resourcen geben
+		Player currentPlayer = model.getCurrentPlayer();
+		currentPlayer.modifyResources(new ResourcePackage(10000,10000,10000,10000,10000));
+		// eigenes Haus
+		model.buildSettlement(new Location(1,0,1), BuildingType.Village);
+		// longest Road bauen (strasse 6 lang)
+		model.buildStreet(new Location(1,0,1));
+		model.buildStreet(new Location(1,0,2));
+		model.buildStreet(new Location(2,0,5));
+		model.buildStreet(new Location(2,0,3));
+		model.buildStreet(new Location(2,0,2));
+		model.buildStreet(new Location(2,0,1));
+		//longest Road claim
+		List<List<Path>> longestRoad = model.calculateLongestRoads(currentPlayer);
+		model.longestRoadClaimed(Model.getLocationList(longestRoad.get(0)));
+		
+		// neue Runde (Gegner an der Reihe)
+		model.newRound(6);
+		// Gegner: Village auf longestClaimedRoad bauen
+		model.buildSettlement(new Location(2,0,4), BuildingType.Village);
+		// updateLongestRoad aufrufen
+		model.updateLongestRoad(model.getIntersection(new Location(2,0,4)));
+		// erwartete Liste
+		List<Path> expectedLongestRoad = new LinkedList<Path>();
+		expectedLongestRoad.add(model.getPath(new Location(1,0,1)));
+		expectedLongestRoad.add(model.getPath(new Location(1,0,2)));
+		expectedLongestRoad.add(model.getPath(new Location(2,0,5)));
+		
+		assertTrue("updateLongestRoad fehlgeschlagen", model.getLongestClaimedRoad().size() == 3);
+		assertEquals("nicht die richige LongestRoad geupdatet", model.getLongestClaimedRoad(), expectedLongestRoad);
+	}
+	
 	@Test
 	public void testGetLocationField() {
 		Field f = model.getField(new Point(1,1));
