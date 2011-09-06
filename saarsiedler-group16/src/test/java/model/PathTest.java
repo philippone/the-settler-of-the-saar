@@ -1,6 +1,9 @@
 package model;
 
 import static org.junit.Assert.*;
+
+import java.util.Random;
+
 import org.junit.Test;
 
 import de.unisaarland.cs.sopra.common.model.Location;
@@ -16,9 +19,11 @@ Player pl;
 HarborType h;
 	
 public void testCatapult(){
-	int x=(int) Math.random()*10;
-	int y=(int) Math.random()*10;
-	int o=(int) Math.random()*10;
+	Random r = new Random();
+	r.nextInt(10);
+	int x=r.nextInt(10);
+	int y=r.nextInt(10);
+	int o=r.nextInt(10);
 	l=new Location(x,y,o);
 	pl=new Player();
 	p=new Path(l);
