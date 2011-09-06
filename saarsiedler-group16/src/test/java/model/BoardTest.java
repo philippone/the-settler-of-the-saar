@@ -114,6 +114,7 @@ public class BoardTest {
 		pathSet2.add(path7);
 		
 		assertTrue (pathSet.containsAll(pathSet2));
+		assertTrue (pathSet2.containsAll(pathSet));
 		
 		
 
@@ -208,6 +209,19 @@ public class BoardTest {
 		
 		assertTrue(f1.containsAll(f2));
 		assertTrue(f2.containsAll(f1));
+
+	}
+	
+	public void testGetIntersectionFromIntersection(){
+		Set<Intersection> i1=b.getIntersectionsFromIntersection(b.getIntersection(new Location(0,0,2)));
+		
+		Set<Intersection> i2=new TreeSet<Intersection>();
+		i2.add(b.getIntersection(new Location(0,0,1)));
+		i2.add(b.getIntersection(new Location(1,0,3)));
+		i2.add(b.getIntersection(new Location(1,1,5)));
+		
+		assertTrue(i1.containsAll(i2));
+		assertTrue(i2.containsAll(i1));
 
 	}
 }
