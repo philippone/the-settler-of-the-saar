@@ -229,7 +229,7 @@ public class ModelTest {
 		model.buildStreet(new Location(2,0,2));
 		//longest Road claim
 		List<List<Path>> longestRoad = model.calculateLongestRoads(currentPlayer);
-		model.longestRaodClaimed(Model.getLocationList(longestRoad.get(0)));
+		model.longestRoadClaimed(Model.getLocationList(longestRoad.get(0)));
 		
 		// neue Runde (Gegner an der Reihe)
 		model.newRound(6);
@@ -333,16 +333,16 @@ public class ModelTest {
 
 		assertEquals(BuildingType.Village, model.getIntersection(new Location(0,0,0)).getBuildingType());
 		assertEquals(BuildingType.Town, model.getIntersection(new Location(1,1,0)).getBuildingType());
-		assertTrue(model.getPath(new Location(0, 0, 0)).hasCatapultOwner());
-		assertTrue(model.getPath(new Location(1, 1, 0)).hasCatapultOwner());
+		assertTrue(model.getPath(new Location(0, 0, 0)).hasCatapult());
+		assertTrue(model.getPath(new Location(1, 1, 0)).hasCatapult());
 		//eine Defeat-Attacke
 		model.attackSettlement(new Location(0,0,0), new Location(0,0,0), AttackResult.DEFEAT);
 		model.attackSettlement(new Location(1,1,0), new Location(1,1,0), AttackResult.DEFEAT);
 		
 		assertEquals(BuildingType.Village, model.getIntersection(new Location(0,0,0)).getBuildingType());
 		assertEquals(BuildingType.Town, model.getIntersection(new Location(1,1,0)).getBuildingType());
-		assertFalse(model.getPath(new Location(0, 0, 0)).hasCatapultOwner());
-		assertFalse(model.getPath(new Location(1, 1, 0)).hasCatapultOwner());
+		assertFalse(model.getPath(new Location(0, 0, 0)).hasCatapult());
+		assertFalse(model.getPath(new Location(1, 1, 0)).hasCatapult());
 		
 		//neubau der Catapulte
 		model.buildCatapult(new Location(0,0,0), true);
@@ -354,8 +354,8 @@ public class ModelTest {
 		assertFalse(model.getIntersection(new Location(0,0,0)).hasOwner());
 		assertEquals("BuildingType should be null", null, model.getIntersection(new Location(1,1,0)).getBuildingType());
 		assertEquals("Town should be downgraded",BuildingType.Village, model.getIntersection(new Location(1,1,0)).getBuildingType());
-		assertTrue(model.getPath(new Location(0, 0, 0)).hasCatapultOwner());
-		assertTrue(model.getPath(new Location(1, 1, 0)).hasCatapultOwner());
+		assertTrue(model.getPath(new Location(0, 0, 0)).hasCatapult());
+		assertTrue(model.getPath(new Location(1, 1, 0)).hasCatapult());
 	}
 	
 
