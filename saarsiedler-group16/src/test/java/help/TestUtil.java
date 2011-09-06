@@ -156,7 +156,7 @@ public class TestUtil {
 	public static Board getTestBoard() {
 			WorldRepresentation worldrep = new WorldRepresentation(3, 4, 9, 2, 5, 4, 
 					new byte[] {0,0,0,
-								0,1,0,
+								0,1,6,
 								0,5,0,
 								0,0,0},
 					new byte[] {1,4,
