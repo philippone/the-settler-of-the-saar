@@ -10,6 +10,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
+import org.junit.Test;
 
 import de.unisaarland.cs.sopra.common.model.Board;
 import de.unisaarland.cs.sopra.common.model.Field;
@@ -77,13 +78,13 @@ public class BoardTest {
 			path2 = new Path(l4);
 
 	}
-
+	@Test
 	public void testGetField() {
 		assertEquals(f1, b.getField(p1));
 		assertFalse(b.getField(p1).equals(b.getField(p2)));
 
 	}
-
+	@Test
 	public void testGetIntersection() {
 		assertEquals(i1, b.getIntersection(l1));
 		assertFalse(b.getIntersection(l1).equals(b.getIntersection(l3)));
@@ -91,13 +92,13 @@ public class BoardTest {
 		assertEquals(b.getIntersection(new Location(1, 1, 0)), b.getIntersection(new Location(1, 0, 4)));
 	}
 	
-
+	@Test
 	public void testGetPath() {
 		assertEquals(path1, b.getPath(l2));
 		assertFalse(b.getPath(l2).equals(b.getPath(l4)));
 		assertEquals(b.getPath(new Location(0, 2, 2)), b.getPath(new Location(1, 3, 5)));
 	}
-
+	@Test
 	public void testGetPathsFromPaths() {
 		//initialize path3;
 		l5 = new Location(1, 1, 2);
@@ -125,7 +126,7 @@ public class BoardTest {
 		
 
 	}
-	
+	@Test
 	public void testGetPathsFromPathsRand1(){
 		//create both Sets
 		pathSet13 = b.getPathsFromPath(new Path(new Location(0, 1, 3)));
@@ -138,7 +139,7 @@ public class BoardTest {
 		assertTrue (pathSet13.containsAll(pathSet14));
 		
 	}
-	
+	@Test
 	public void testGetPathsFromPathsRand2(){
 		//create both Sets
 		pathSet15 = b.getPathsFromPath(new Path(new Location(2, 0, 0)));
@@ -151,6 +152,7 @@ public class BoardTest {
 		
 	}
 	
+	@Test
 	public void testGetPathsFromIntersection() {
 		
 		//create an intersection
@@ -171,6 +173,7 @@ public class BoardTest {
 		assertTrue(pathSet4.containsAll(pathSet3));
 	}
 	
+	@Test
 	public void testGetPathsFromIntersectionRand(){
 		//create both Sets
 		pathSet11 = b.getPathsFromIntersection(new Intersection(new Location(1, 0, 1)));
@@ -182,7 +185,7 @@ public class BoardTest {
 		assertTrue(pathSet12.containsAll(pathSet11));
 	}
 	
-	
+	@Test
 	 public void testGetPathsFromField(){
 		 f3 = new Field(FieldType.WATER,new Point(0,0));
 		 
@@ -200,6 +203,7 @@ public class BoardTest {
 			assertTrue(pathSet6.containsAll(pathSet5));
 	 }
 	 
+	@Test
 	 public void testgetPathsFromIntersectionRand1(){
 		 //create both Sets
 		 pathSet7 = b.getPathsFromIntersection(new Intersection(new Location(0, 0, 0)));
@@ -211,6 +215,7 @@ public class BoardTest {
 			assertTrue(pathSet8.containsAll(pathSet7));
 	 }
 	 
+	@Test
 	 public void testgetPathsFromIntersectionRand2(){
 		 //create both Sets
 		 pathSet9 = b.getPathsFromIntersection(new Intersection(new Location(2, 3, 3)));
@@ -222,7 +227,7 @@ public class BoardTest {
 			assertTrue(pathSet10.containsAll(pathSet9));
 	 }
 	
-	
+	@Test
 	public void testGetFieldsFromField1(){
 		Point pp=new Point(1,1);
 		Field f=b.getField(pp);
@@ -241,6 +246,7 @@ public class BoardTest {
 
 	}
 	
+	@Test
 	public void testGetFieldsFromField2(){
 		//same but on the border, only 3 neighbor fields
 		Point pp=new Point(0,0);
@@ -256,6 +262,7 @@ public class BoardTest {
 		assertTrue(fff.containsAll(ff));
 	}
 	
+	@Test
 	public void testGetFieldsFromIntersection(){
 		Location l=new Location(0,0,2);
 		Set<Field> f1=b.getFieldsFromIntersection(b.getIntersection(l));
@@ -268,6 +275,7 @@ public class BoardTest {
 		assertTrue(f2.containsAll(f1));
 	}
 	
+	@Test
 	public void testGetFieldsFromPath(){
 		Location l=new Location(0,0,2);
 		Set<Field> f1=b.getFieldsFromPath(b.getPath(l));
@@ -279,6 +287,7 @@ public class BoardTest {
 		assertTrue(f2.containsAll(f1));
 	}
 	
+	@Test
 	public void testGetIntersectionsFromField(){
 		Set<Intersection> f1=b.getIntersectionsFromField(b.getField(new Point(1,1)));
 		
@@ -295,6 +304,7 @@ public class BoardTest {
 
 	}
 	
+	@Test
 	public void testGetIntersectionsFromIntersection(){
 		Set<Intersection> i1=b.getIntersectionsFromIntersection(b.getIntersection(new Location(0,0,2)));
 		
@@ -308,6 +318,7 @@ public class BoardTest {
 
 	}
 	
+	@Test
 	public void testGetIntersectionsFromPath(){
 		Set<Intersection> i1=b.getIntersectionsFromPath(b.getPath(new Location(0,0,2)));
 		
@@ -319,7 +330,8 @@ public class BoardTest {
 		assertTrue(i2.containsAll(i1));
 
 	}
-
+	
+	@Test	
  public void testSetHarbors(){
 	 
 	//TO DO Implement this method
