@@ -196,7 +196,7 @@ public class BoardTest {
 		assertTrue(f2.containsAll(f1));
 	}
 	
-	public void testGetIntersectionFromField(){
+	public void testGetIntersectionsFromField(){
 		Set<Intersection> f1=b.getIntersectionsFromField(b.getField(new Point(1,1)));
 		
 		Set<Intersection> f2=new TreeSet<Intersection>();
@@ -212,13 +212,25 @@ public class BoardTest {
 
 	}
 	
-	public void testGetIntersectionFromIntersection(){
+	public void testGetIntersectionsFromIntersection(){
 		Set<Intersection> i1=b.getIntersectionsFromIntersection(b.getIntersection(new Location(0,0,2)));
 		
 		Set<Intersection> i2=new TreeSet<Intersection>();
 		i2.add(b.getIntersection(new Location(0,0,1)));
 		i2.add(b.getIntersection(new Location(1,0,3)));
 		i2.add(b.getIntersection(new Location(1,1,5)));
+		
+		assertTrue(i1.containsAll(i2));
+		assertTrue(i2.containsAll(i1));
+
+	}
+	
+	public void testGetIntersectionsFromPath(){
+		Set<Intersection> i1=b.getIntersectionsFromPath(b.getPath(new Location(0,0,2)));
+		
+		Set<Intersection> i2=new TreeSet<Intersection>();
+		i2.add(b.getIntersection(new Location(0,0,2)));
+		i2.add(b.getIntersection(new Location(0,0,3)));
 		
 		assertTrue(i1.containsAll(i2));
 		assertTrue(i2.containsAll(i1));
