@@ -163,4 +163,15 @@ public class BoardTest {
 		assertTrue(f1.containsAll(f2));
 		assertTrue(f2.containsAll(f1));
 	}
+	
+	public void testGetFieldsFromPath(){
+		Location l=new Location(0,0,2);
+		Set<Field> f1=b.getFieldsFromPath(b.getPath(l));
+		Set<Field> f2=new TreeSet<Field>();
+		f2.add(b.getField(new Point(0,0)));
+		f2.add(b.getField(new Point(1,1)));
+		
+		assertTrue(f1.containsAll(f2));
+		assertTrue(f2.containsAll(f1));
+	}
 }
