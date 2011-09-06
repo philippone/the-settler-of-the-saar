@@ -32,8 +32,10 @@ public class ModelTest {
 	}
 	
 	@Test
-	public void testAddObserver() {
-		ModelObserver view = TestUtil.getTestView();
+	public void testAddObserver() throws IOException {
+		Player p1 = model.getTableOrder().get(0);
+		ModelObserver view = TestUtil.getTestView(p1);
+		// erster Observer hinzufuegen
 		model.addModelObserver(view);
 		assertNotNull("Model == null", model);
 		assertNotNull("View == null", view);
@@ -41,7 +43,9 @@ public class ModelTest {
 		// gleicher Observer wieder adden
 		model.addModelObserver(view);
 		assertTrue("ModelObserver-Liste hat zwei gleiche Elemente", model.getModelObservers().size() == 1);
-		ModelObserver view2 = TestUtil.getTestView();
+		// zweiter Observer adden
+		Player p2 = model.getTableOrder().get(1);
+		ModelObserver view2 = TestUtil.getTestView(p2);
 		model.addModelObserver(view2);
 		assertTrue("es wurde kein 2. Observer hinzugefuegt",model.getModelObservers().size()==2);
 	}
@@ -49,16 +53,22 @@ public class ModelTest {
 	
 	@Test
 	public void testRemoveObserver() {
-		ModelObserver view = TestUtil.getTestView();
+		// erster Observer wieder loeschen
+		Player p1 = model.getTableOrder().get(0);
+		ModelObserver view = TestUtil.getTestView(p1);
 		model.removeModelObserver(view);
 		assertNotNull("Model == null", model);
 		assertNotNull("View == null", view);
 		assertTrue("ModelObserver-Liste ist leider nicht leer, sollte es aber sein", model.getModelObservers().size()==0);
+		// zweiter Observer wieder loeschen
+		Player p2 = model.getTableOrder().get(1);
+		ModelObserver view2 = TestUtil.getTestView(p1);
+		model.removeModelObserver(view2);
 		// Liste leer, trotzdem entfernen
 		try {
 			model.removeModelObserver(view);
-			fail("sollte eine Ausnahme werfen");
-		} catch(Exception e) {
+			fail("sollte eine Ausnahme werfen, da Liste bereits Leer ist");
+		} catch(Exception ex) {
 			\\ Test sollte hier entlang laufen
 		}
 		

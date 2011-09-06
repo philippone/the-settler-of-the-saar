@@ -3,7 +3,12 @@ package help;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
+import de.unisaarland.cs.sopra.common.ModelObserver;
+import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.Model;
+import de.unisaarland.cs.sopra.common.model.ModelReader;
+import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.view.AI;
 import de.unisaarland.cs.st.saarsiedler.comm.Connection;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
@@ -74,6 +79,13 @@ public class TestUtil {
 	
 	public static Connection getTestConnection() throws UnknownHostException, IOException {
 		return Connection.establish("testserver", false);
+	}
+	
+	public static ModelObserver getTestView(Player player) throws IOException {
+		ModelReader modelReader = null;
+		ControllerAdapter controllerAdapter = null;
+		ModelObserver view = new AI(player, modelReader, controllerAdapter);
+		return view;
 	}
 
 }
