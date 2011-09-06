@@ -28,6 +28,7 @@ public class BoardTest {
 	Path path1, path2, path3, path4, path5, path6, path7, path8, path9, path10, path11;
 	Set<Path> pathSet, pathSet2, pathSet3, pathSet4, pathSet5;
 	Set<Path> pathSet6, pathSet7, pathSet8, pathSet9, pathSet10, pathSet11, pathSet12;
+	Set<Path> pathSet13, pathSet14, pathSet15, pathSet16;
 
 	@Before
 	public void setUp() {
@@ -117,12 +118,37 @@ public class BoardTest {
 		pathSet2.add(path5);
 		pathSet2.add(path6);
 		pathSet2.add(path7);
-		
+		//test if both sets have identical content
 		assertTrue (pathSet.containsAll(pathSet2));
 		assertTrue (pathSet2.containsAll(pathSet));
 		
 		
 
+	}
+	
+	public void testGetPathsFromPathsRand1(){
+		//create both Sets
+		pathSet13 = b.getPathsFromPath(new Path(new Location(0, 1, 3)));
+		pathSet14 = new TreeSet<Path>();
+		pathSet14.add(new Path(new Location(0, 1, 4)));
+		pathSet14.add(new Path(new Location(0, 1, 2)));
+		pathSet14.add(new Path(new Location(0, 2, 4)));
+		//test if both sets have identical content
+		assertTrue (pathSet14.containsAll(pathSet13));
+		assertTrue (pathSet13.containsAll(pathSet14));
+		
+	}
+	
+	public void testGetPathsFromPathsRand2(){
+		//create both Sets
+		pathSet15 = b.getPathsFromPath(new Path(new Location(2, 0, 0)));
+		pathSet16 = new TreeSet<Path>();
+		pathSet16.add(new Path(new Location(2, 0, 1)));
+		pathSet16.add(new Path(new Location(2, 0, 5)));
+		//test if both sets have identical content
+		assertTrue (pathSet15.containsAll(pathSet16));
+		assertTrue (pathSet16.containsAll(pathSet15));
+		
 	}
 	
 	public void testGetPathsFromIntersection() {
@@ -293,4 +319,10 @@ public class BoardTest {
 		assertTrue(i2.containsAll(i1));
 
 	}
+
+ public void testSetHarbors(){
+	 
+	//TO DO Implement this method
+ }
+
 }
