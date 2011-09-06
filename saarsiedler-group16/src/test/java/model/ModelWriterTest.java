@@ -17,7 +17,7 @@ import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
-public class ModelTest2 {	
+public class ModelWriterTest {	
 	
 	private Model model;
 	
@@ -60,7 +60,11 @@ public class ModelTest2 {
 		assertTrue("No Town around!", hasTown);
 	}	
 	
-	
+	@Test
+	public void buildSettlementTest() {
+		
+	}
+		
 	@Test
 	public void buildCatapultTestNegative() {
 		
@@ -71,45 +75,6 @@ public class ModelTest2 {
 		
 	}
 	
-	@Test
-	public void buildSettlementTest() {
-		
-	}
-	
-	@Test
-	public void longestRaodClaimedTest() {
-		
-	}
-	
-	@Test
-	public void matchStartTest() {
-		
-	}
-	
-	@Test
-	public void catapultMovedTestPositive() {
-		
-	}
-	
-	@Test
-	public void catapultMovedTestNegative() {
-		
-	}
-	
-	@Test
-	public void playerLeftTest() {
-		
-	}
-	
-	@Test
-	public void robberMovedTestSelf() {
-		
-	}
-
-	@Test
-	public void robberMovedTestOther() {
-	
-	}
 		
 	@Test
 	public void tradeOfferTest() {
