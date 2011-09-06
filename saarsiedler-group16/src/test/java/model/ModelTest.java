@@ -1,10 +1,12 @@
 package model;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import help.TestUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,7 +27,7 @@ public class ModelTest {
 	private Model model;
 	
 	@Before
-	public void setUp() {
+	public void setUp() throws IOException {
 		model = TestUtil.getStandardModel();
 	}
 	
@@ -35,18 +37,31 @@ public class ModelTest {
 		model.addModelObserver(view);
 		assertNotNull("Model == null", model);
 		assertNotNull("View == null", view);
-		assertTrue("ModelObserver-Liste ist leer", model.getModelObservers().size() == 1); 
+		assertTrue("ModelObserver-Liste ist leer (sollte es aber nicht)", model.getModelObservers().size() == 1);
+		// gleicher Observer wieder adden
+		model.addModelObserver(view);
+		assertTrue("ModelObserver-Liste hat zwei gleiche Elemente", model.getModelObservers().size() == 1);
+		ModelObserver view2 = TestUtil.getTestView();
+		model.addModelObserver(view2);
+		assertTrue("es wurde kein 2. Observer hinzugefuegt",model.getModelObservers().size()==2);
 	}
 	
 	
 	@Test
 	public void testRemoveObserver() {
 		ModelObserver view = TestUtil.getTestView();
-		model.addModelObserver(view);
 		model.removeModelObserver(view);
 		assertNotNull("Model == null", model);
 		assertNotNull("View == null", view);
 		assertTrue("ModelObserver-Liste ist leider nicht leer, sollte es aber sein", model.getModelObservers().size()==0);
+		// Liste leer, trotzdem entfernen
+		try {
+			model.removeModelObserver(view);
+			fail("sollte eine Ausnahme werfen");
+		} catch(Exception e) {
+			\\ Test sollte hier entlang laufen
+		}
+		
 	}
 	
 	@Test
