@@ -24,9 +24,9 @@ public class BoardTest {
 	Field f1, f2;
 	Board b;
 	Location l1, l2, l3, l4, l5, l6, l7, l8, l9;
-	Intersection i1, i2;
-	Path path1, path2, path3, path4, path5, path6, path7, path8;
-	Set<Path> pathSet, pathSet2;
+	Intersection i1, i2, i3;
+	Path path1, path2, path3, path4, path5, path6, path7, path8, path9, path10, path11;
+	Set<Path> pathSet, pathSet2, pathSet3, pathSet4;
 
 	@Before
 	public void setUp() {
@@ -117,6 +117,26 @@ public class BoardTest {
 		
 		
 
+	}
+	
+	public void testGetPathsFromIntersection() {
+		
+		//create an intersection
+		i3 = new Intersection(new Location (0, 0, 2));
+		
+		//create the neighbours of the intersection
+		path9 = new Path(new Location(1, 1, 1));
+		path10 = new Path(new Location(1, 1, 2));
+		path11 = new Path(new Location(1, 2, 0));
+		//create both Sets
+		pathSet3 = b.getPathsFromIntersection(i3);
+		pathSet4 = new TreeSet<Path>();
+		pathSet4.add(path9);
+		pathSet4.add(path10);
+		pathSet4.add(path11);
+		//test if the content of both sets is the same
+		assertTrue(pathSet3.containsAll(pathSet4));
+		assertTrue(pathSet4.containsAll(pathSet3));
 	}
 	
 	public void testGetFieldsFromField1(){
