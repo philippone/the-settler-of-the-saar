@@ -501,7 +501,7 @@ public class Model implements ModelReader, ModelWriter{
 	 * @see de.unisaarland.cs.sopra.common.model.ModelWriter#longestRaodClaimed(java.util.List)
 	 */
 	@Override
-	public void longestRoadClaimed(List<Location> road) {
+	public void longestRoadClaimed(List<Location> road) throws IllegalStateException{
 		throw new UnsupportedOperationException();
 	}
 

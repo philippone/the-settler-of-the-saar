@@ -73,7 +73,7 @@ public class TestUtil {
 		};
 		Model model = new Model(worldrep, matchinfo);
 		model.matchStart(new long[] {0,1,2}, new byte[] {2,3,4,5,
-														 0,8,9,10,
+														 6,8,9,10,
 														 11,12,11,10,
 														 9,8,6,5});
 		model.setTableOrder(new long[] {2,1,0});
@@ -83,7 +83,7 @@ public class TestUtil {
 	public static Model getStandardModel1() throws IOException {
 		WorldRepresentation worldrep = new WorldRepresentation(3, 4, 2, 9, 5, 4, 
 				new byte[] {0,0,0,
-							0,1,0,
+							0,1,6,
 							0,5,0,
 							0,0,0},
 				new byte[] {1,4,
