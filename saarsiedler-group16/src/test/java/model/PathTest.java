@@ -17,7 +17,9 @@ Location l;
 Path p;
 Player pl;
 HarborType h;
-	
+
+
+@Test	
 public void testCatapult(){
 	Random r = new Random();
 	int x=r.nextInt(10);
@@ -34,6 +36,7 @@ public void testCatapult(){
 	assertFalse(p.hasCatapult());
 }
 
+@Test
 public void testStreet() {
 	Random r = new Random();
 	int x=r.nextInt(10);
@@ -48,6 +51,7 @@ public void testStreet() {
 	assertEquals(pl,p.getStreetOwner());
 }
 
+@Test
 public void testHarbortype(){
 	Random r = new Random();
 	int x=r.nextInt(10);
@@ -60,6 +64,7 @@ public void testHarbortype(){
 	assertEquals(h,p.getHarborType());
 }
 
+@Test
 public void testLocation(){
 	Random r = new Random();
 	int x=r.nextInt(10);
