@@ -26,12 +26,12 @@ public void testCatapult(){
 	l=new Location(x,y,o);
 	pl=new Player();
 	p=new Path(l);
-	assertFalse(p.hasCatapultOwner());
+	assertFalse(p.hasCatapult());
 	p.createCatapult(pl);
-	assertTrue(p.hasCatapultOwner());
+	assertTrue(p.hasCatapult());
 	assertEquals(pl,p.getCatapultOwner());
 	p.removeCatapult();
-	assertFalse(p.hasCatapultOwner());
+	assertFalse(p.hasCatapult());
 }
 
 public void testStreet() {
@@ -42,9 +42,9 @@ public void testStreet() {
 	l=new Location(x,y,o);
 	pl=new Player();
 	p=new Path(l);
-	assertFalse(p.hasStreetOwner());
+	assertFalse(p.hasStreet());
 	p.createStreet(pl);
-	assertTrue(p.hasStreetOwner());
+	assertTrue(p.hasStreet());
 	assertEquals(pl,p.getStreetOwner());
 }
 
