@@ -42,4 +42,20 @@ public class BuildingTest {
 		assertEquals(BuildingType.Village.getPrice(), b.getPrice());
 		assertEquals(BuildingType.Town.getPrice(), b2.getPrice());
 	}
+	@Test 
+	public void testEquals(){
+		assertEquals(b,b);
+		assertNotSame(b, b2);
+		
+		Building bWithSameAttributes= new Building(p1, BuildingType.Village);
+		assertNotSame("Du darfst die equals() nicht Ueberschreiben", b, bWithSameAttributes); //Buildings nie gleich, nur Identitaet!
+	}
+	@Test 
+	public void testHashCode(){
+		assertEquals(b.hashCode(),b.hashCode());
+		assertNotSame(b.hashCode(), b2.hashCode());
+		
+		Building bWithSameAttributes= new Building(p1, BuildingType.Village);
+		assertNotSame("Du darfst die hashCode() nicht Ueberschreiben",b.hashCode(), bWithSameAttributes.hashCode()); //Buildings nie gleich, nur Identitaet!
+	}
 }

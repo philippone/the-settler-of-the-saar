@@ -19,9 +19,10 @@ public class FieldTest {
 	Field f6;
 	Field f7;
 	Field f8;
+	Point p;
 	@Before
 	public void setUp(){
-		Point p = new Point (0, 0);
+		p = new Point (0, 0);
 		f1= new Field(FieldType.DESSERT, p);
 		f2= new Field(FieldType.FIELD, p);
 		f3= new Field(FieldType.FOREST, p);
@@ -30,15 +31,24 @@ public class FieldTest {
 		f6= new Field(FieldType.PASTURE, p);
 		f7= new Field(FieldType.WATER, p);
 		
-		f8= new Field(FieldType.DESSERT, p);
+		f8= new Field(FieldType.FIELD, p);
 		
-		f1.setNumber(3);
+		try {
+			f1.setNumber(3); // exception fangen IAE, da Dessert/Water keine number haben darf!
+			fail();
+		}catch(IllegalArgumentException e){}
+		try {
+			f7.setNumber(3); // exception fangen IAE, da Dessert/Water keine number haben darf!
+			fail();
+		}catch(IllegalArgumentException e){}
+		
 		f2.setNumber(3);
 		f3.setNumber(3);
 		f4.setNumber(3);
 		f5.setNumber(3);
 		f6.setNumber(3);
-		f7.setNumber(3);
+		
+		
 	}
 	@Test
 	public void testResource(){
@@ -56,17 +66,56 @@ public class FieldTest {
 		assertNotSame(Resource.BRICK, f4.getResource(2));
 		assertNotSame(Resource.ORE, f5.getResource(2));
 		assertNotSame(Resource.WOOL, f6.getResource(2));
+	
+		
+		f2.setRobber(true);
+		f3.setRobber(true);
+		f4.setRobber(true);
+		f5.setRobber(true);
+		f6.setRobber(true);
+		
+		assertEquals(null, f2.getResource(3));
+		assertEquals(null, f3.getResource(3));
+		assertEquals(null, f4.getResource(3));
+		assertEquals(null, f5.getResource(3));
+		assertEquals(null, f6.getResource(3));
 	}
 	@Test
 	public void testRobber(){
 		assertFalse(f1.hasRobber());
 		f1.setRobber(true);
 		assertTrue(f1.hasRobber());
+		f1.setRobber(false);
+		assertFalse(f1.hasRobber());
 	}
 	@Test
 	public void testNumber(){
 		assertEquals(null, f8.getNumber());
 		f8.setNumber(12);
 		assertEquals(12, f8.getNumber());
+	}
+	
+	@Test
+	public void testEquals(){ 	
+		assertNotSame(f2, f1);
+		assertEquals(f1, f1);
+		
+		Field f1WithSameAttributes= new Field(FieldType.DESSERT, p);	//felder sind gleich wenn alle Attribute gleich sind(festgelegt von Valentin )
+		assertEquals(f1, f1WithSameAttributes);
+		
+		f1WithSameAttributes.setRobber(true);
+		assertNotSame(f1, f1WithSameAttributes);
+	}
+	@Test
+	public void testHashCode(){ 	
+		assertNotSame(f2.hashCode(), f1.hashCode());
+		assertEquals(f1.hashCode(), f1.hashCode());
+
+		
+		Field f1WithSameAttributes= new Field(FieldType.DESSERT, p);	//felder sind gleich wenn alle Attribute gleich sind(festgelegt von Valentin )
+		assertEquals(f1.hashCode(), f1WithSameAttributes.hashCode());
+		
+		f1WithSameAttributes.setRobber(true);
+		assertNotSame(f1.hashCode(), f1WithSameAttributes.hashCode());
 	}
 }

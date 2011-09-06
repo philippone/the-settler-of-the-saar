@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.unisaarland.cs.sopra.common.model.Building;
+import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
@@ -27,15 +29,20 @@ public class PlayerTest {
 		assertEquals(5, p1.getResources().getResource(Resource.ORE));
 		
 		p2.modifyResources(new ResourcePackage(1,1,1,1,1));		//vl nutzloser Test, macht aber nix
-		p2.modifyResources(new ResourcePackage(-2,-2,-2,-2,-2));
-		assertFalse(0> p1.getResources().getResource(Resource.LUMBER));
-		assertFalse(0> p1.getResources().getResource(Resource.BRICK));
-		assertFalse(0> p1.getResources().getResource(Resource.WOOL));
-		assertFalse(0> p1.getResources().getResource(Resource.GRAIN));
-		assertFalse(0> p1.getResources().getResource(Resource.ORE));
+		try{
+			p2.modifyResources(new ResourcePackage(-2,-2,-2,-2,-2));
+			fail("Sollte IllegalArgumentException werfen, da Player kein negatives Guthaben haben darf!");
+		}catch(IllegalArgumentException e){}
+		
+		assertFalse("Player kein negatives Guthaben", 0> p1.getResources().getResource(Resource.LUMBER));
+		assertFalse("Player kein negatives Guthaben",0> p1.getResources().getResource(Resource.BRICK));
+		assertFalse("Player kein negatives Guthaben",0> p1.getResources().getResource(Resource.WOOL));
+		assertFalse("Player kein negatives Guthaben",0> p1.getResources().getResource(Resource.GRAIN));
+		assertFalse("Player kein negatives Guthaben",0> p1.getResources().getResource(Resource.ORE));
 		
 	}
-	@Test void testSuffient(){
+	@Test 
+	public void testSuffient(){
 		assertFalse(p1.checkResourcesSufficient(new ResourcePackage(-1, 0, 0, 0, 0)));
 		assertFalse(p1.checkResourcesSufficient(new ResourcePackage(0, -1, 0, 0, 0)));
 		assertFalse(p1.checkResourcesSufficient(new ResourcePackage(0, 0, -1, 0, 0)));
@@ -55,8 +62,27 @@ public class PlayerTest {
 		assertFalse(p1.checkResourcesSufficient(new ResourcePackage(0, 0, -3, 0, 0)));
 		assertFalse(p1.checkResourcesSufficient(new ResourcePackage(0, 0, 0, -4, 0)));
 		assertFalse(p1.checkResourcesSufficient(new ResourcePackage(0, 0, 0, 0, -5)));
-
+		
+		try{
+			p2.checkResourcesSufficient(new ResourcePackage( 666 ,-1,-1,-1,-1));
+			fail("Sollte IllegalArgumentException werfen, da Suffient nur Kosten(negative Packages) annehmen darf!");
+		}catch(IllegalArgumentException e){}
+	}
+	@Test 
+	public void testEquals(){
+		assertEquals(p1,p1);
+		assertNotSame(p1, p2);
+		
+//		Player p1WithSameAttributes= new Player();
+//		assertNotSame("Du darfst die equals() nicht Ueberschreiben", p1, p1WithSameAttributes); //Buildings nie gleich, nur Identitaet!
+	}
+	@Test 
+	public void testHashCode(){
+		assertEquals(p1.hashCode(),p1.hashCode());
+		assertNotSame(p1.hashCode(), p2.hashCode());
+		
+//		Player p1WithSameAttributes= new Player();
+//		assertNotSame("Du darfst die hashCode() nicht Ueberschreiben",p1.hashCode(), bWithSameAttributes.hashCode()); //Buildings nie gleich, nur Identitaet!
 	}
 	
-
 }
