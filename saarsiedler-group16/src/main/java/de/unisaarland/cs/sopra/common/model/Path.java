@@ -19,11 +19,11 @@ public class Path {
 		throw new UnsupportedOperationException();
 	}
 	
-	public boolean hasCatapultOwner() {
+	public boolean hasCatapult() {
 		throw new UnsupportedOperationException();
 	}
 	
-	public boolean hasStreetOwner() {
+	public boolean hasStreet() {
 		throw new UnsupportedOperationException();
 	}
 	
