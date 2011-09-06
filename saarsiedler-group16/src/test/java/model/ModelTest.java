@@ -261,10 +261,16 @@ public class ModelTest {
 	
 	@Test
 	public void testGetCurrentPlayer() {
+		// naechste Runde
+		model.newRound(8);
 		Player expectedPlayer = model.getTableOrder().get(0);
 		Player currentPlayer = model.getCurrentPlayer();
 		assertEquals("nicht der aktuelle Player", expectedPlayer, currentPlayer);
 		// naechste Runde
+		model.newRound(6);
+		Player expectedPlayer1 = model.getTableOrder().get(1);
+		Player currentPlayer1 = model.getCurrentPlayer();
+		assertEquals("nicht der aktuelle Player", expectedPlayer1, currentPlayer1);
 	}
 	
 	/// ab hier Valentin ;)
