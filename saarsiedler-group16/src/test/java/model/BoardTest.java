@@ -174,4 +174,20 @@ public class BoardTest {
 		assertTrue(f1.containsAll(f2));
 		assertTrue(f2.containsAll(f1));
 	}
+	
+	public void testGetIntersectionFromField(){
+		Set<Intersection> f1=b.getIntersectionsFromField(b.getField(new Point(1,1)));
+		
+		Set<Intersection> f2=new TreeSet<Intersection>();
+		f2.add(b.getIntersection(new Location(0,0,2)));
+		f2.add(b.getIntersection(new Location(1,0,3)));
+		f2.add(b.getIntersection(new Location(2,1,4)));
+		f2.add(b.getIntersection(new Location(1,2,5)));
+		f2.add(b.getIntersection(new Location(0,2,0)));
+		f2.add(b.getIntersection(new Location(0,1,1)));
+		
+		assertTrue(f1.containsAll(f2));
+		assertTrue(f2.containsAll(f1));
+
+	}
 }
