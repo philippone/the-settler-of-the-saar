@@ -45,22 +45,12 @@ public class ModelTest2 {
 		
 	}
 	
-//	@Test
-//	public void testHeight(){
-//		assertEquals(4, model.getHeight());
-//	}
-	
-	
-//	@Test
-//	public void testWidth(){
-//		assertEquals(4, model.getWidth());
-//	}
-//		
-//	@Test
-//	public void testInitVillages(){
-//		assertEquals(2, model.getInitVillages());
-//	}
-//
+		
+	@Test
+	public void testInitVillages(){
+		assertEquals(2, model.getInitVillages());
+	}
+
 	
 	@Test
 	public void testMaxVictoryPoints(){
@@ -75,7 +65,7 @@ public class ModelTest2 {
 	@Test
 	public void testMaxVillages(){
 		 int currentMV = model.getMaxBuilding(BuildingType.Village);
-		 int expectedMV =  5;
+		 int expectedMV =  9;
 		 assertEquals("MaxVillages did not match those given in the WorldRepresentation ",
 				 currentMV, expectedMV);
 		
@@ -84,21 +74,21 @@ public class ModelTest2 {
 	@Test
 	public void testMaxTowns(){
 		 int currentMT= model.getMaxBuilding(BuildingType.Town);
-		 int expectedMT =  4;
+		 int expectedMT =  5;
 		 assertEquals("MaxTowns did not match those given in the WorldRepresentation ",
 				 currentMT, expectedMT);
 		
 	}
 	
-//	public void testMaxCatapults(){
-//		 int currentMC= model.getMaxCatapults();
-//		 
-//		 int expectedMC = ;
-//		 assertEquals("MaxCatapults did not match those given in the WorldRepresentation ",
-//				 currentMC, expectedMC);
-//		
-//	}
-//	
+	public void testMaxCatapults(){
+		 int currentMC= model.getMaxCatapult();
+		 
+		 int expectedMC = 4;
+		 assertEquals("MaxCatapults did not match those given in the WorldRepresentation ",
+				 currentMC, expectedMC);
+		
+	}
+	
 //	@Test
 //	public void testNumberPlayers(){
 //		int currentNP = model.getNumPlayers();

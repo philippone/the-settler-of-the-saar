@@ -15,6 +15,7 @@ import org.junit.Test;
 import de.unisaarland.cs.sopra.common.model.Board;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.FieldType;
+import de.unisaarland.cs.sopra.common.model.HarborType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.Path;
@@ -331,10 +332,18 @@ public class BoardTest {
 
 	}
 	
+
+	
 	@Test	
  public void testSetHarbors(){
-	 
-	//TO DO Implement this method
+		Field f1 = new Field(FieldType.WATER , new Point(0 , 1));
+		Field f2 = new Field(FieldType.FIELD, new Point(1, 1));
+		Path p = new Path(new Location(0, 1, 1)); 
+		Path p2 = new Path(new Location(1,1,4));
+	b.setHarbor(new Location(0, 1, 1), HarborType.GRAIN_HARBOR); 
+	assertEquals(HarborType.GRAIN_HARBOR, p.getHarborType());
+	assertEquals(p2.getHarborType(), p.getHarborType() );
+
  }
 
 }
