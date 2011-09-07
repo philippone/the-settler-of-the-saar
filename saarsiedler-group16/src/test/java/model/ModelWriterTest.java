@@ -258,8 +258,60 @@ public class ModelWriterTest {
 	
 	
 	@Test
-	public void buildStreetTest() {
+	public void respondTradeTestPositive() {
+		Player p = model.getCurrentPlayer();
+		p.modifyResources(new ResourcePackage(3, 4, 0, 2, 1));
+		model.tradeOffer(-1, -1, 1, 0, 0);
+		Player p1 = model.getMe();
+
+		Player p2 = model.getTableOrder().get(0);
+		Player p3 = model.getTableOrder().get(1);
+		Player p4 = model.getTableOrder().get(2);
+
+		if (p2 != p1) {
+			Set<Long> keySet = model.getPlayerMap().keySet();
+			for (Long l : keySet) {
+				Player player = model.getPlayerMap().get(l);
+				if (player.equals(p2))
+					model.respondTrade(l);
+			}
+
+		} else if (p3 != p1) {
+			Set<Long> keySet = model.getPlayerMap().keySet();
+			for (Long l : keySet) {
+				Player player = model.getPlayerMap().get(l);
+				if (player.equals(p3))
+					model.respondTrade(l);
+			}
+		} else if (p4 != p1) {
+			Set<Long> keySet = model.getPlayerMap().keySet();
+			for (Long l : keySet) {
+				Player player = model.getPlayerMap().get(l);
+				if (player.equals(p2))
+					model.respondTrade(l);
+			}
+		}
+		assertEquals(new ResourcePackage(3, 4, 0, 2, 1), model.getCurrentPlayer().getResources());
+	}
+	
+	public void respondTradePositive1(){
+		Player p = model.getCurrentPlayer();
+		p.modifyResources(new ResourcePackage(5, 6, 7, 3, 0));
+		model.tradeOffer(-4, 0, 0, 0, 1);
+		model.respondTrade(-2);
+		assertEquals(new ResourcePackage(1, 6, 7, 3, 1), p.getResources());
 		
 	}
 	
+	@Test
+	public void respondTradeTestNegative() {
+		Player p = model.getCurrentPlayer();
+		p.modifyResources(new ResourcePackage(2, 5, 6, 0, 1));
+		model.tradeOffer(0, 0, -1, 0, 1);
+		model.respondTrade(-1);
+		assertEquals(new ResourcePackage(2, 5, 6, 0, 1), p.getResources());
+	}
+	
+}
+
 }

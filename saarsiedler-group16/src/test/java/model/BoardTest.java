@@ -22,32 +22,31 @@ import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Point;
 
 public class BoardTest {
-	Point p1, p2;
-	Field f1, f2, f3;
-	Board b;
-	Location l1, l2, l3, l4;
-	Intersection i1, i2, i3;
-	Path path1, path2, path3, path4, path5, path6, path7, path8, path9, path10, path11;
-	Set<Path> pathSet, pathSet2, pathSet3, pathSet4, pathSet5;
-	Set<Path> pathSet6, pathSet7, pathSet8, pathSet9, pathSet10, pathSet11, pathSet12;
-	Set<Path> pathSet13, pathSet14, pathSet15, pathSet16;
+   private	 Field f1, f3;
+   private	Board b;
+   private	Intersection  i3;
+   private	Path  path3, path4, path5, path6, path7, path9, path10, path11;
+   private	Set<Path> pathSet, pathSet2, pathSet3, pathSet4, pathSet5;
+   private	Set<Path> pathSet6, pathSet7, pathSet8, pathSet11, pathSet12;
+   private	Set<Path> pathSet13, pathSet14, pathSet15, pathSet16;
 
 	@Before
 	public void setUp() {
 		Random r1 = new Random();
 		r1.nextInt(10);
 
-		// Create one field of type FOREST
-		Field f2 = new Field(FieldType.FOREST, new Point(1, 1));
-		// Create second field of type WATER
-		Field f1 = new Field(FieldType.WATER, new Point(1, 0));
-		// Create TestBoard
 		b = TestUtil.getTestBoard();
 
 			
 	}
 	@Test
 	public void testGetField() {
+
+		// Create one field of type FOREST
+		Field f2 = new Field(FieldType.FOREST, new Point(1, 1));
+		// Create second field of type WATER
+		Field f1 = new Field(FieldType.WATER, new Point(1, 0));
+		// Create TestBoard
 		assertEquals(f1, b.getField(new Point(1,0)));
 		assertFalse(b.getField(new Point(1,0)).equals(b.getField(new Point(1,1))));
 
@@ -191,13 +190,13 @@ public class BoardTest {
 	@Test
 	 public void testgetPathsFromIntersectionRand2(){
 		 //create both Sets
-		 pathSet9 = b.getPathsFromIntersection(new Intersection(new Location(3, 2, 3)));
-		 pathSet10 =  new TreeSet<Path>();
-		 pathSet10.add(new Path(new Location(3, 2, 2)));
-		 pathSet10.add(new Path(new Location(3, 2, 3)));
+		 Set<Path> cSet = b.getPathsFromIntersection(new Intersection(new Location(3, 2, 3)));
+		 Set<Path> eSet =  new TreeSet<Path>();
+		 eSet.add(new Path(new Location(3, 2, 2)));
+		 eSet.add(new Path(new Location(3, 2, 3)));
 		//test if both sets have identical content
-			assertTrue(pathSet9.containsAll(pathSet10));
-			assertTrue(pathSet10.containsAll(pathSet9));
+			assertTrue(eSet.containsAll(cSet));
+			assertTrue(cSet.containsAll(eSet));
 	 }
 	
 	@Test
@@ -236,6 +235,55 @@ public class BoardTest {
 	}
 	
 	@Test
+	public void testGetFieldsFromField3(){
+		// this time 2 neighbors
+		Field f4 = b.getField(new Point(3,0));
+		//create both Sets
+		Set<Field> expectedSet = new TreeSet<Field>();
+		expectedSet.add(b.getField(new Point(2,0)));
+		expectedSet.add(b.getField(new Point(3,1)));
+		Set<Field> currentSet = b.getFieldsFromField(f4);
+		//test if both sets have identical content
+		assertTrue(currentSet.containsAll(expectedSet));
+		assertTrue(expectedSet.containsAll(currentSet));
+		
+	}
+	
+	@Test
+	public void TestGetFieldsFromField4(){
+		//this time 4 neighbors
+		Field f5 = b.getField(new Point(3,1));
+		//create both Sets
+		Set<Field> eSet = new TreeSet<Field>();
+		eSet.add(b.getField(new Point(3,2)));
+		eSet.add(b.getField(new Point(3,0)));
+		eSet.add(b.getField(new Point(2,1)));
+		eSet.add(b.getField(new Point(2,0)));
+		Set<Field> cSet = b.getFieldsFromField(f5);
+		//test if both sets have identical content
+		assertTrue(eSet.containsAll(cSet));
+		assertTrue(cSet.containsAll(eSet));
+	}
+	
+	@Test
+	public void TestGetFieldsFromField5(){
+		//this time 5 neighbors
+		Field f6 = b.getField(new Point(1,2));
+		//create both Sets
+		Set<Field> eSet = new TreeSet<Field>();
+		eSet.add(b.getField(new Point(1,2)));
+		eSet.add(b.getField(new Point(2,2)));
+		eSet.add(b.getField(new Point(3,2)));
+		eSet.add(b.getField(new Point(3,1)));
+		eSet.add(b.getField(new Point(2,0)));
+		Set<Field> cSet =b.getFieldsFromField(f6);
+		//test if both sets have identical content
+		assertTrue(eSet.containsAll(cSet));
+		assertTrue(cSet.containsAll(eSet));
+		
+	}
+	
+	@Test
 	public void testGetFieldsFromIntersection(){
 		Location l=new Location(0,0,2);
 		Set<Field> f1=b.getFieldsFromIntersection(b.getIntersection(l));
@@ -249,6 +297,20 @@ public class BoardTest {
 	}
 	
 	@Test
+	public void testGetFieldsFromIntersection2(){
+		//create both Sets 
+		Set<Field> curSet = b.getFieldsFromIntersection(b.getIntersection(new Location(0, 0, 3)));
+		Set<Field> expSet = new TreeSet<Field>();
+		expSet.add(b.getField(new Point(0,0)));
+		expSet.add(b.getField(new Point(1,0)));
+		expSet.add(b.getField(new Point(1,1)));
+
+		//test if both sets have identical content
+		assertTrue(expSet.containsAll(curSet));
+		assertTrue(curSet.containsAll(expSet));
+	}
+	
+	@Test
 	public void testGetFieldsFromPath(){
 		Location l=new Location(0,0,2);
 		Set<Field> f1=b.getFieldsFromPath(b.getPath(l));
@@ -258,6 +320,17 @@ public class BoardTest {
 		
 		assertTrue(f1.containsAll(f2));
 		assertTrue(f2.containsAll(f1));
+	}
+	
+	public void testGetFieldsFromPath2(){
+		//one neighbor field
+		Field fi = b.getField(new Point(3, 2));
+		Set<Field> cSet = b.getFieldsFromPath(new Path(new Location(3, 2, 3)));
+		Set<Field> eSet = new TreeSet<Field>();
+		eSet.add(fi);
+		
+		assertTrue(cSet.containsAll(eSet));
+		assertTrue(eSet.containsAll(cSet));
 	}
 	
 	@Test

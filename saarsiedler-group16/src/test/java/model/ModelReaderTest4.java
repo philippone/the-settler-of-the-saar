@@ -146,11 +146,11 @@ public class ModelReaderTest4 {
 	
 	@Test
 	public void testCanPlaceRobber() throws IOException {
-		Set<Field> canSet = model1.canPlaceRobber();
-		assertFalse("Raeuber kann nicht auf kustenfernes Wasserfeld gesetzt werden!", canSet.contains(model1.getField(new Point(3, 0))));
-		assertTrue("Feld "+model1.getField(new Point(0, 0))+"kann Rauber aufnehmen!" , canSet.contains(model1.getField(new Point(0, 0))));
-		assertTrue("Feld "+model1.getField(new Point(0, 1))+"kann Rauber aufnehmen!" , canSet.contains(model1.getField(new Point(0, 1))));
-		assertTrue("Feld "+model1.getField(new Point(0, 2))+"kann Rauber aufnehmen!" , canSet.contains(model1.getField(new Point(0, 2))));		
+		Set<Field> canSet = new TreeSet<Field>();
+		canSet.add(model1.getField(new Point(3, 0)));
+		model1.getField(new Point(0, 0)));
+		model1.getField(new Point(0, 1)));
+		model1.getField(new Point(0, 2))));		
 		assertTrue("Feld "+model1.getField(new Point(1, 0))+"kann Rauber aufnehmen!" , canSet.contains(model1.getField(new Point(1, 0))));
 		assertTrue("Feld "+model1.getField(new Point(1, 1))+"kann Rauber aufnehmen!" , canSet.contains(model1.getField(new Point(1, 1))));
 		assertTrue("Feld "+model1.getField(new Point(1, 2))+"kann Rauber aufnehmen!" , canSet.contains(model1.getField(new Point(1, 2))));

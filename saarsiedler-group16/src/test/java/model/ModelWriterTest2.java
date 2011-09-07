@@ -16,6 +16,7 @@ import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Point;
+import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public class ModelWriterTest2 {
@@ -230,12 +231,17 @@ public class ModelWriterTest2 {
 	
 	@Test
 	public void robberMovedTestSelf() {
-		
+		Point p1 = new Point(1,2);
+		Point p2 = new Point(1,1);
+		model.robberMoved(p1, p2, 0, Resource.LUMBER);
 	}
 
 	@Test
 	public void robberMovedTestOther() {
-	
+		Point p1 = new Point(1,2);
+		Point p2 = new Point(2,1);
+		model.robberMoved(p1, p2, 1, null);
+		
 	}
 	
 	@Test
@@ -243,8 +249,8 @@ public class ModelWriterTest2 {
 		TestModelObserver modelObserver = new TestModelObserver();
 		model.addModelObserver(modelObserver);
 		try {
-			model.returnResources(1, 1, 1, 1, 1);
-			fail("Wrong count of Resources returned");
+			model.returnResources(49, 50, 50, 50, 50);
+			fail("Wrong count of Resources returned, expected 250 but was only 249");
 		}
 		catch (Exception e) {
 			//Expect this
