@@ -17,6 +17,8 @@ import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
+import de.unisaarland.cs.st.saarsiedler.comm.Connection;
+import de.unisaarland.cs.st.saarsiedler.comm.results.AttackResult;
 
 public class ModelWriterTest {	
 	
@@ -112,45 +114,29 @@ public class ModelWriterTest {
 	}
 	
 	@Test
-	// Tests wheter the currentPlayer has enough resources to attack a catapult.
-	public void buildCatapult3_attackCatapultTest() {
+	// Tests wheter the currentPlayer has enough resources to attack a settlement.
+	public void buildCatapult3_attackSettlementTest() {
 		initalize();
 		model.newRound(2);
 		Path newCatPath = model.getPath(new Location(2, 1, 4));
 		newCatPath.createCatapult(model.getCurrentPlayer());
-		model.attackSettlement(new Location(2, 1, 4), new Location(2, 1, 3), );
-		
-		
-	}
-	
-	@Test
-	// Tests wheter the currentPlayer has enough resources to attack a settlement.
-	public void buildCatapult3_attackSettlementTest() {
-		throw new UnsupportedOperationException();
+		try {
+			model.attackSettlement(new Location(2, 1, 4), new Location(2, 1, 3), AttackResult.SUCCESS);
+			fail("You shouldn't have enough money to attack the settlement!");
+		}
+		catch (IllegalStateException e) { /* everything is fine */ }
 	}
 
 	
 	@Test
-	/**
-	 * Town nicht in runde 0
-	 */
+	// Tests wheter it 
 	public void buildSettlementTest() {
-		
-	}
-		
-	@Test
-	public void buildCatapultTestNegative() {
+		mode
 		
 	}
 
 	@Test
 	public void buildStreetTest() {
-		
-	}
-	
-		
-	@Test
-	public void tradeOfferTest() {
 		
 	}
 		
