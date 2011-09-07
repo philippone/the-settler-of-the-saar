@@ -87,8 +87,13 @@ public class ModelReaderTest2 {
 				b=b | (i.getOwner()==pl);
 				// check if player owns a building on this intersection
 			}
+			Set<Path> sp1=model.getPathsFromPath(p);
+			for(Path p1: sp1){ // check for each neighbor path
+				b=b | (p1.getStreetOwner()==pl);
+				/// check if player owns a street on this path
+			}
 			assertTrue(b);
-			//check player has a building on a neighbor intersection of this path
+			//check player has a building on a neighbor intersection or a street on a neighbor path
 			assertFalse(p.hasStreet());
 			// check this path is free from street
 		}
