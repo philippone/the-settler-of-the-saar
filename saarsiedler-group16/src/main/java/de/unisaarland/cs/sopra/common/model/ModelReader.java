@@ -51,5 +51,10 @@ public interface ModelReader {
 	public Path getPath(Location loc);
 	public Field getField(Point p);
 	public Intersection getIntersection(Location location);
+
+	/**
+	 * @return
+	 */
+	public Player getMe();
 	
 }

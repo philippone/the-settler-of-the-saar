@@ -6,9 +6,14 @@ import java.net.UnknownHostException;
 import de.unisaarland.cs.sopra.common.ModelObserver;
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.Board;
+import de.unisaarland.cs.sopra.common.model.BuildingType;
+import de.unisaarland.cs.sopra.common.model.Field;
+import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
+import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 import de.unisaarland.cs.sopra.common.view.AI;
 import de.unisaarland.cs.st.saarsiedler.comm.Connection;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
@@ -18,7 +23,7 @@ import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 public class TestUtil {
 	
 	public static Model getStandardModel2() throws IOException {
-		WorldRepresentation worldrep = new WorldRepresentation(4, 4, 1, 4, 4, 4, 
+		WorldRepresentation worldrep = new WorldRepresentation(4, 4, 2, 9, 5, 4,  
 				new byte[] {1,2,3,4,
 							5,1,2,3,
 							4,5,1,2,
@@ -80,7 +85,7 @@ public class TestUtil {
 	}
 	
 	public static Model getStandardModel1() throws IOException {
-		WorldRepresentation worldrep = new WorldRepresentation(3, 4, 2, 9, 5, 4, 
+		WorldRepresentation worldrep = new WorldRepresentation(3, 4, 1, 5, 5, 4,
 				new byte[] {0,0,0,
 							0,1,6,
 							0,5,0,
@@ -164,5 +169,7 @@ public class TestUtil {
 									});
 			return new Board(worldrep);
 	}
-	
+
 }
+
+

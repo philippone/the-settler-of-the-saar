@@ -1,6 +1,7 @@
 package model;
 
 import static org.junit.Assert.*;
+import help.TestModelObserver;
 import help.TestUtil;
 
 import java.io.IOException;
@@ -10,9 +11,13 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.unisaarland.cs.sopra.common.ModelObserver;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
+import de.unisaarland.cs.sopra.common.model.Field;
+import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.Model;
+import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Point;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
@@ -243,7 +248,20 @@ public class ModelWriterTest2 {
 
 	}
 	
+	@Test
+	public void newRoundTest() {
+		TestModelObserver modelObserver = new TestModelObserver();
+		model.addModelObserver(modelObserver);
+		model.newRound(2);
+		modelObserver.eventNewRoundCalled
+	}
+	
+	
 	//Bei new round einen dummy observer erstellen und schauen ob der auch benachrichtigt wird bei 7!
 	
-	//katapult darf nicht durch fremde settlements gehen aber durch eigene 
+	//katapult darf nicht durch fremde settlements gehen aber durch eigene
+	
+	//nicht genug geld für move
+
+
 }
