@@ -50,6 +50,7 @@ public class ModelReaderTest2 {
 	public void testBuildableVillageIntersections() {
 		Player pl=model.getCurrentPlayer();
 		Set<Intersection> si=model.buildableVillageIntersections(pl);
+		if (!(si.isEmpty())){
 		for (Intersection i : si){ //check for all intersections
 			Set<Path> sp=model.getPathsFromIntersection(i);
 			boolean b=false;
@@ -70,16 +71,21 @@ public class ModelReaderTest2 {
 			assertFalse(i.hasOwner());
 			// check there is no building here
 		}
+		}
+		else assertTrue(si.isEmpty());
 	}
 	
 	@Test
 	public void testBuildableTownIntersections() {
 		Player pl=model.getCurrentPlayer();
 		Set<Intersection> si=model.buildableTownIntersections(pl);
+		if (!(si.isEmpty())){
 		for (Intersection i : si){ //check for all intersections
 			assertTrue((i.getOwner()==pl && i.getBuildingType()==BuildingType.Village));
 			// check player owns a village here
 		}
+		}
+		else assertTrue(si.isEmpty());
 	}
 	
 	
@@ -88,6 +94,7 @@ public class ModelReaderTest2 {
 	public void testBuildableStreetPaths() {
 		Player pl=model.getCurrentPlayer();
 		Set<Path> sp=model.buildableStreetPaths(pl);
+		if (!(sp.isEmpty())){
 		for(Path p : sp){ //check for all paths
 			boolean b=false;
 			Set<Path> sp1=model.getPathsFromPath(p);
@@ -100,12 +107,15 @@ public class ModelReaderTest2 {
 			assertFalse(p.hasStreet());
 			// check this path is free from street
 		}
+		}
+		else assertTrue(sp.isEmpty());
 	}
 	
 	@Test
 	public void testBuildableCatapultPaths() {
 		Player pl=model.getCurrentPlayer();
 		Set<Path> sp=model.buildableCatapultPaths(pl);
+		if (!(sp.isEmpty())){
 		for(Path p : sp){ // check for all paths
 			Set<Intersection> si=model.getIntersectionsFromPath(p);
 			boolean b=false;
@@ -116,6 +126,8 @@ public class ModelReaderTest2 {
 			assertTrue(b);
 			//check player has a Town on a neighbor Intersection of this  path
 		}
+		}
+		else assertTrue(sp.isEmpty());
 	}
 	
 
