@@ -300,6 +300,12 @@ public class ModelTest {
 		} catch(IllegalArgumentException e) {
 			// Test sollte durchlaufen
 		}
+		try {
+			Field f2 = model.getField(new Point(-1,-1));
+			fail("Point ausserhalb des Spielfeldes, sollte IllegalArgumentException werfen");
+		} catch(IllegalArgumentException e) {
+			// Test sollte durchlaufen
+		}
 	}
 	
 	@Test
@@ -313,6 +319,12 @@ public class ModelTest {
 		} catch(IllegalArgumentException e) {
 			//Test sollte durchlaufen
 		}
+		try {
+			Intersection i2 = model.getIntersection(new Location(-5,-5,-5));
+			fail("Intersection ausserhalb des Spielfeldes, sollte IllegalArumentException werfen");
+		} catch(IllegalArgumentException e) {
+			//Test sollte durchlaufen
+		}
 	}
 	
 	@Test
@@ -322,6 +334,12 @@ public class ModelTest {
 		assertEquals("Intersections sind ungleich", p.getLocation(), l);
 		try {
 			Path p2 = model.getPath(new Location(5,5,5));
+			fail("Intersection ausserhalb des Spielfeldes, sollte IllegalArumentException werfen");
+		} catch(IllegalArgumentException e) {
+			//Test sollte durchlaufen
+		}
+		try {
+			Path p2 = model.getPath(new Location(-5,-5,-5));
 			fail("Intersection ausserhalb des Spielfeldes, sollte IllegalArumentException werfen");
 		} catch(IllegalArgumentException e) {
 			//Test sollte durchlaufen
@@ -364,6 +382,8 @@ public class ModelTest {
 		//Bauende Villages und Catapulte bauen
 		model.buildSettlement(new Location(0,0,1) , BuildingType.Village);
 		model.buildSettlement(new Location(1,1,1) , BuildingType.Village);
+		model.buildSettlement(new Location(0,0,1) , BuildingType.Town);
+		model.buildSettlement(new Location(1,1,1) , BuildingType.Town);
 		model.buildCatapult(new Location(0,0,0), true);
 		model.buildCatapult(new Location(1,1,0), true);
 		
