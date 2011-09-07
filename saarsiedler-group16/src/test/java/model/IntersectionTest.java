@@ -3,6 +3,7 @@ package model;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
+import org.junit.Test;
 
 import de.unisaarland.cs.sopra.common.model.Building;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
@@ -32,12 +33,15 @@ public class IntersectionTest {
 		i1.createBuilding(BuildingType.Village, p1);
 		i2.createBuilding(BuildingType.Town, p2);
 	}
+	
+	@Test
 	public void testLocation(){
 		assertEquals(l1, i1.getLocation());
 		assertEquals(false, i1.equals(i2));
 		
 	}
 	
+	@Test
 	public void testOwner(){
 		assertEquals(p1, i1.getOwner());
 	    p3 = new Player();
@@ -45,11 +49,13 @@ public class IntersectionTest {
 		assertEquals(p3, i1.getOwner());
 	}
 	
+	@Test
 	public void testBuildingType(){
 		assertEquals(BuildingType.Village, i1.getBuildingType());
 		assertEquals(BuildingType.Town, i2.getBuildingType());
 	}
 	
+	@Test
 	public void testGain(){
 		r1 = p1.getResources();
 		i1.generateGain(Resource.LUMBER);
@@ -63,6 +69,7 @@ public class IntersectionTest {
 		assertEquals(r3, p2.getResources());
 	}
 	
+	@Test
 	public void testRemoveBuilding(){
 		i1.removeBuilding();
 		assertEquals(false, i1.hasOwner());

@@ -12,12 +12,14 @@ public class StreetTest {
 	Player pl;
 	Street s;
 	
+	@Test
 	public void testOwner(){
 		pl=new Player();
 		s=new Street(pl);
 		assertEquals(pl, s.getOwner());
 	}
 	
+	@Test
 	public void testPrice(){
 		ResourcePackage price = new ResourcePackage(-1,-1,0,0,0);
 		assertEquals(price, Street.getPrice());
