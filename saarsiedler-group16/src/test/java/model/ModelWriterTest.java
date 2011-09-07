@@ -35,7 +35,7 @@ public class ModelWriterTest {
 				model.buildStreet(new Location(1, 1, 0));
 				model.buildSettlement(new Location(2, 1, 3), BuildingType.Village);
 				model.buildStreet(new Location(2, 1, 3));
-				model.newRound(8);
+				model.newRound(12);
 	}
 	
 	@Test
@@ -99,11 +99,20 @@ public class ModelWriterTest {
 		} catch (IllegalStateException e) { /* everything is fine */ }
 	}
 	
+	@Test
+	// Tests wheter an exception is thrown when the fightoutcome is false, but there is no catapult that
+	// could have destroyed the attacking catapult
+	public void catapulCatapult4_buildCatapultExceptionTest() {
+		initalize();
+		model.buildCatapult(new Location(1, 1, 0), false);
+		
+	}
 	
 	@Test
 	// Tests wheter the currentPlayer has enough resources to attack a catapult.
 	public void buildCatapult3_attackCatapultTest() {
-		throw new UnsupportedOperationException();
+		initalize();
+		
 	}
 	
 	@Test
