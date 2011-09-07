@@ -37,11 +37,11 @@ public class ModelReaderTest {
 	@Test
 	public void testGetHarborTypes() {
 		model.newRound(8); // in Runde 1
-		// noch kein Settlement an einem der zwei Harbors
+		// noch kein Settlement an einem den zwei Harbors
 		Player currentPlayer = model.getCurrentPlayer();
 		Set<HarborType> currentSet = model.getHarborTypes(currentPlayer);
 		assertTrue("es gibt eig. keine HarborTypes", currentSet.size() == 0);
-		// Village am LumberHarbor (Spezialhafen)
+		// Village at LumberHarbor (Spezialhafen)
 		currentPlayer.modifyResources(new ResourcePackage(10000,10000,10000,10000,10000));
 		model.buildSettlement(new Location(2,1,0), BuildingType.Village);
 		Set<HarborType> expectedSet = new TreeSet<HarborType>();
@@ -49,6 +49,26 @@ public class ModelReaderTest {
 		currentSet = model.getHarborTypes(currentPlayer);
 		assertTrue("es gibt einen HarborTypes", currentSet.size() == 1);
 		assertEquals("nicht den richtigen Harbor hinzugefuegt", currentSet, expectedSet);
+	}
+	
+	/**
+	 * Harbor with buccaneer (Seeraeuber)
+	 */
+	@Test
+	public void testGetHarborTypes1() {
+		model.newRound(8); // in Runde 1
+		// noch kein Settlement an einem den zwei Harbors
+		Player currentPlayer = model.getCurrentPlayer();
+		Set<HarborType> currentSet = model.getHarborTypes(currentPlayer);
+		assertTrue("es gibt eig. keine HarborTypes", currentSet.size() == 0);
+		// Village at LumberHarbor (Spezialhafen)
+		currentPlayer.modifyResources(new ResourcePackage(10000,10000,10000,10000,10000));
+		model.buildSettlement(new Location(2,1,0), BuildingType.Village);
+		// buccaneer at LumberHarbor
+		Field robberField = model.getField(new Point(2,1));
+		Field neighborWaterField = model.getField(new Point(2,1));
+		
+		
 	}
 	
 	@Test

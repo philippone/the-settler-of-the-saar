@@ -205,7 +205,11 @@ public class ModelTest {
 		while (fieldIterator.hasNext()) {
 			Field f = fieldIterator.next();
 			if (f.getNumber() != 0) {
-				reihenfolge[i++] = f.getNumber();
+				try {
+					reihenfolge[i++] = f.getNumber();
+				} catch (Exception e) {
+					fail("zu viele Nummern eingefuegt (>2)");
+				}
 			}
 		}
 		// ist die Reihenfolge der Felder richitg
@@ -290,9 +294,10 @@ public class ModelTest {
 	
 	@Test
 	public void testGetLocationField() {
+		Point expectedPoint = new Point(1,1);
 		Field f = model.getField(new Point(1,1));
 		Point p = Model.getLocation(f);
-		assertEquals("Felder sind ungleich",f.getLocation(), p);
+		assertEquals("Felder sind ungleich",expectedPoint, p);
 		// Feld ausserhalb des Spielfeldes
 		try {
 			Field f2 = model.getField(new Point(5,5));
@@ -310,9 +315,11 @@ public class ModelTest {
 	
 	@Test
 	public void testGetLocationIntersection() {
+		Location expectedLocation = new Location(1,1,1);
 		Intersection i = model.getIntersection(new Location(1,1,1));
 		Location l = Model.getLocation(i);
-		assertEquals("Intersections sind ungleich", i.getLocation(), l);
+		assertEquals("Intersections sind ungleich", expectedLocation, l);
+		// Location ausserhalb des Spielfeldes
 		try {
 			Intersection i2 = model.getIntersection(new Location(5,5,5));
 			fail("Intersection ausserhalb des Spielfeldes, sollte IllegalArumentException werfen");
@@ -329,9 +336,10 @@ public class ModelTest {
 	
 	@Test
 	public void testGetLocationPath() {
+		Location expectedLocation = new Location(1,1,1);
 		Path p = model.getPath(new Location(1,1,1));
 		Location l = Model.getLocation(p);
-		assertEquals("Intersections sind ungleich", p.getLocation(), l);
+		assertEquals("Intersections sind ungleich", expectedLocation, l);
 		try {
 			Path p2 = model.getPath(new Location(5,5,5));
 			fail("Intersection ausserhalb des Spielfeldes, sollte IllegalArumentException werfen");
@@ -363,62 +371,174 @@ public class ModelTest {
 	
 	@Test
 	public void testNewRound(){
-		assertEquals(0 ,model.getRound()); //TODO unsicher vl doch runde 1
+		assertEquals(0 ,model.getRound());
 		model.newRound(12);
 		assertEquals(1, model.getRound());
 		assertNotSame(0, model.getRound());
 	}
+	
+	
+	
+	/**
+	 * Angriff gegen gegnerische Village und Town - erfolgreich (beide male)
+	 */
 	@Test
 	public void testAttackSettlement(){
 		//gibt den akt. Playern alle Resourcen um Komplikationen mit build zu vermeiden.
-		model.getTableOrder().get(0).modifyResources(new ResourcePackage(333,333,333,333,333)); 
-		model.getTableOrder().get(1).modifyResources(new ResourcePackage(333,333,333,333,333)); 
-		//Angriffsziele bauen
+		model.getTableOrder().get(0).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 
+		model.getTableOrder().get(1).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 
+		//Angriffsziele bauen (Initialisierungsphase)
+		// 1.Player
 		model.buildSettlement(new Location(0,0,0) , BuildingType.Village);
-		model.buildSettlement(new Location(1,1,0) , BuildingType.Village);
-		model.buildSettlement(new Location(1,1,0) , BuildingType.Town);
-		
-		model.newRound(12);
-		//Bauende Villages und Catapulte bauen
+		model.buildStreet(new Location(0,0,0));
+		// 2. Player
 		model.buildSettlement(new Location(0,0,1) , BuildingType.Village);
-		model.buildSettlement(new Location(1,1,1) , BuildingType.Village);
-		model.buildSettlement(new Location(0,0,1) , BuildingType.Town);
-		model.buildSettlement(new Location(1,1,1) , BuildingType.Town);
-		model.buildCatapult(new Location(0,0,0), true);
-		model.buildCatapult(new Location(1,1,0), true);
+		model.buildStreet(new Location(1,0,0));
+		// 3. Player
+		model.buildSettlement(new Location(3,3,0) , BuildingType.Village);
+		model.buildStreet(new Location(3,3,0));
+		// wieder 3
+		model.buildSettlement(new Location(3,3,3), BuildingType.Village);
+		model.buildStreet(new Location(3,3,2));
+		// 2. Player
+		model.buildSettlement(new Location(1,0,4), BuildingType.Village);
+		model.buildStreet(new Location(1,0,4));
+		// 1. Player
+		model.buildSettlement(new Location(1,1,0) , BuildingType.Village);
+		model.buildStreet(new Location(1,1,0));
 		
-		assertEquals(BuildingType.Village, model.getIntersection(new Location(0,0,0)).getBuildingType());
-		assertEquals(BuildingType.Town, model.getIntersection(new Location(1,1,0)).getBuildingType());
-		//eine DRAW-Attacke
-		model.attackSettlement(new Location(0,0,0), new Location(0,0,0), AttackResult.DRAW);
-		model.attackSettlement(new Location(1,1,0), new Location(1,1,0), AttackResult.DRAW);
-
-		assertEquals(BuildingType.Village, model.getIntersection(new Location(0,0,0)).getBuildingType());
-		assertEquals(BuildingType.Town, model.getIntersection(new Location(1,1,0)).getBuildingType());
-		assertTrue(model.getPath(new Location(0, 0, 0)).hasCatapult());
-		assertTrue(model.getPath(new Location(1, 1, 0)).hasCatapult());
-		//eine Defeat-Attacke
-		model.attackSettlement(new Location(0,0,0), new Location(0,0,0), AttackResult.DEFEAT);
-		model.attackSettlement(new Location(1,1,0), new Location(1,1,0), AttackResult.DEFEAT);
+		//neue Runde (1.Player)
+		model.newRound(12);
+		// Upgrade 1 Village
+		model.buildSettlement(new Location(1,1,0), BuildingType.Town);
 		
-		assertEquals(BuildingType.Village, model.getIntersection(new Location(0,0,0)).getBuildingType());
-		assertEquals(BuildingType.Town, model.getIntersection(new Location(1,1,0)).getBuildingType());
-		assertFalse(model.getPath(new Location(0, 0, 0)).hasCatapult());
-		assertFalse(model.getPath(new Location(1, 1, 0)).hasCatapult());
+		//neue Runde (2. Player)
+		model.newRound(3);
+		model.buildSettlement(new Location(1,0,0), BuildingType.Town);
+		model.buildCatapult(new Location(0,0,4), true);
+		model.catapultMoved(new Location(0,0,4), new Location(0,0,5), true);
+		model.attackSettlement(new Location(0,0,5), new Location(0,0,0), AttackResult.SUCCESS);
+		assertTrue("Village nicht in den Besitz des Angreifenden uebergegangen", model.getIntersection(new Location(0,0,0)).getOwner().equals(model.getCurrentPlayer()));
+		assertTrue("das angreifende Katapult ist weg", model.getPath(new Location(0,0,5)).getCatapultOwner().equals(model.getCurrentPlayer()));
 		
-		//neubau der Catapulte
-		model.buildCatapult(new Location(0,0,0), true);
-		model.buildCatapult(new Location(1,1,0), true);
-		//eine Success-Attacke
-		model.attackSettlement(new Location(0,0,0), new Location(0,0,0), AttackResult.SUCCESS);
-		model.attackSettlement(new Location(1,1,0), new Location(1,1,0), AttackResult.SUCCESS);
-		
-		assertFalse(model.getIntersection(new Location(0,0,0)).hasOwner());
-		assertEquals("BuildingType should be null", null, model.getIntersection(new Location(1,1,0)).getBuildingType());
-		assertEquals("Town should be downgraded",BuildingType.Village, model.getIntersection(new Location(1,1,0)).getBuildingType());
-		assertTrue(model.getPath(new Location(0, 0, 0)).hasCatapult());
-		assertTrue(model.getPath(new Location(1, 1, 0)).hasCatapult());
+		model.catapultMoved(new Location(0,0,5), new Location(0,0,0), true);
+		model.catapultMoved(new Location(0,0,0),new Location(0,0,1), true);
+		model.attackSettlement(new Location(0,0,1), new Location(0,0,2), AttackResult.SUCCESS);
+		assertTrue("Town wurde nciht richitg gedowngradet", model.getIntersection(new Location(0,0,2)).getBuildingType().equals(BuildingType.Village));
+		assertFalse("Village gehoert dem falschen Spieler", model.getIntersection(new Location(0,0,2)).getOwner().equals(model.getCurrentPlayer()));	
+		assertTrue("das angreifende Katapult ist weg", model.getPath(new Location(0,0,1)).getCatapultOwner().equals(model.getCurrentPlayer()));
 	}
+	
+	
+	/**
+	 * Angriff gegen gegnerische Village und Town - unentschieden (beide male)
+	 */
+	@Test
+	public void testAttackSettlement2(){
+		// Gegner
+		Player gegner = model.getTableOrder().get(0);
+		
+		//gibt den akt. Playern alle Resourcen um Komplikationen mit build zu vermeiden.
+		model.getTableOrder().get(0).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 
+		model.getTableOrder().get(1).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 
+		//Angriffsziele bauen (Initialisierungsphase)
+		// 1.Player
+		model.buildSettlement(new Location(0,0,0) , BuildingType.Village);
+		model.buildStreet(new Location(0,0,0));
+		// 2. Player
+		model.buildSettlement(new Location(0,0,1) , BuildingType.Village);
+		model.buildStreet(new Location(1,0,0));
+		// 3. Player
+		model.buildSettlement(new Location(3,3,0) , BuildingType.Village);
+		model.buildStreet(new Location(3,3,0));
+		// wieder 3
+		model.buildSettlement(new Location(3,3,3), BuildingType.Village);
+		model.buildStreet(new Location(3,3,2));
+		// 2. Player
+		model.buildSettlement(new Location(1,0,4), BuildingType.Village);
+		model.buildStreet(new Location(1,0,4));
+		// 1. Player
+		model.buildSettlement(new Location(1,1,0) , BuildingType.Village);
+		model.buildStreet(new Location(1,1,0));
+		
+		//neue Runde (1.Player)
+		model.newRound(12);
+		// Upgrade 1 Village
+		model.buildSettlement(new Location(1,1,0), BuildingType.Town);
+		
+		//neue Runde (2. Player)
+		model.newRound(3);
+		model.buildSettlement(new Location(1,0,0), BuildingType.Town);
+		model.buildCatapult(new Location(0,0,4), true);
+		model.catapultMoved(new Location(0,0,4), new Location(0,0,5), true);
+		model.attackSettlement(new Location(0,0,5), new Location(0,0,0), AttackResult.DRAW);
+		assertFalse("es hat sich etwas veraendert", model.getIntersection(new Location(0,0,0)).getOwner().equals(model.getCurrentPlayer()));
+		assertTrue("der Gegner ist nicht mehr im Besitz seiner Village", model.getIntersection(new Location(0,0,0)).getOwner().equals(gegner));
+		assertTrue("das angreifende Katapult ist weg", model.getPath(new Location(0,0,5)).getCatapultOwner().equals(model.getCurrentPlayer()));
+		
+		model.catapultMoved(new Location(0,0,5), new Location(0,0,0), true);
+		model.catapultMoved(new Location(0,0,0),new Location(0,0,1), true);
+		model.attackSettlement(new Location(0,0,1), new Location(0,0,2), AttackResult.DRAW);
+		assertTrue("Zustand hat sich geaendert", model.getIntersection(new Location(0,0,2)).getBuildingType().equals(BuildingType.Town));
+		assertTrue("Village gehoert dem falschen Spieler (Zustand hat sich geandert)", model.getIntersection(new Location(0,0,2)).getOwner().equals(gegner));
+		assertTrue("das angreifende Katapult ist weg", model.getPath(new Location(0,0,1)).getCatapultOwner().equals(model.getCurrentPlayer()));
+	}
+	
+	
+	/**
+	 * Angriff gegen gegnerische Village und Town - verloren (beide male)
+	 */
+	@Test
+	public void testAttackSettlement2(){
+		// Gegner
+		Player gegner = model.getTableOrder().get(0);
+		
+		//gibt den akt. Playern alle Resourcen um Komplikationen mit build zu vermeiden.
+		model.getTableOrder().get(0).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 
+		model.getTableOrder().get(1).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 
+		//Angriffsziele bauen (Initialisierungsphase)
+		// 1.Player
+		model.buildSettlement(new Location(0,0,0) , BuildingType.Village);
+		model.buildStreet(new Location(0,0,0));
+		// 2. Player
+		model.buildSettlement(new Location(0,0,1) , BuildingType.Village);
+		model.buildStreet(new Location(1,0,0));
+		// 3. Player
+		model.buildSettlement(new Location(3,3,0) , BuildingType.Village);
+		model.buildStreet(new Location(3,3,0));
+		// wieder 3
+		model.buildSettlement(new Location(3,3,3), BuildingType.Village);
+		model.buildStreet(new Location(3,3,2));
+		// 2. Player
+		model.buildSettlement(new Location(1,0,4), BuildingType.Village);
+		model.buildStreet(new Location(1,0,4));
+		// 1. Player
+		model.buildSettlement(new Location(1,1,0) , BuildingType.Village);
+		model.buildStreet(new Location(1,1,0));
+		
+		//neue Runde (1.Player)
+		model.newRound(12);
+		// Upgrade 1 Village
+		model.buildSettlement(new Location(1,1,0), BuildingType.Town);
+		
+		//neue Runde (2. Player)
+		model.newRound(3);
+		model.buildSettlement(new Location(1,0,0), BuildingType.Town);
+		model.buildCatapult(new Location(0,0,4), true);
+		model.catapultMoved(new Location(0,0,4), new Location(0,0,5), true);
+		model.attackSettlement(new Location(0,0,5), new Location(0,0,0), AttackResult.DRAW);
+		assertFalse("es hat sich etwas veraendert", model.getIntersection(new Location(0,0,0)).getOwner().equals(model.getCurrentPlayer()));
+		assertTrue("der Gegner ist nicht mehr im Besitz seiner Village", model.getIntersection(new Location(0,0,0)).getOwner().equals(gegner));
+		assertTrue("das angreifende Katapult ist weg", model.getPath(new Location(0,0,5)).getCatapultOwner().equals(model.getCurrentPlayer()));
+		
+		model.catapultMoved(new Location(0,0,5), new Location(0,0,0), true);
+		model.catapultMoved(new Location(0,0,0),new Location(0,0,1), true);
+		model.attackSettlement(new Location(0,0,1), new Location(0,0,2), AttackResult.DRAW);
+		assertTrue("Zustand hat sich geaendert", model.getIntersection(new Location(0,0,2)).getBuildingType().equals(BuildingType.Town));
+		assertTrue("Village gehoert dem falschen Spieler (Zustand hat sich geandert)", model.getIntersection(new Location(0,0,2)).getOwner().equals(gegner));
+		assertTrue("das angreifende Katapult ist weg", model.getPath(new Location(0,0,1)).getCatapultOwner().equals(model.getCurrentPlayer()));
+	}
+	
 	
 
 }
