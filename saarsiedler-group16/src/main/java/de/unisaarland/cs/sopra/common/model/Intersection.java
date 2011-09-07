@@ -6,39 +6,49 @@ public class Intersection {
 	private Building building;
 	
 	public Intersection(Location location) {
-		throw new UnsupportedOperationException();
+		if (location == null) throw new IllegalArgumentException();
+		this.location = location;
 	}
 	
 	public void createBuilding(BuildingType buildingType, Player owner) {
-		throw new UnsupportedOperationException();
+		if (buildingType == null) throw new IllegalArgumentException();
+		if (owner == null) throw new IllegalArgumentException();
+		this.building = new Building(owner, buildingType);
 	}
 	
 	public void removeBuilding() {
-		throw new UnsupportedOperationException();
+		this.building = null;
 	}
 	
 	public Player getOwner() {
-		throw new UnsupportedOperationException();
+		if (building == null) throw new IllegalStateException();
+		return this.building.getOwner();
 	}
 	
-	public void setOwner(Player player) {
-		throw new UnsupportedOperationException();
+	public void setOwner(Player owner) {
+		if (building == null) throw new IllegalStateException();
+		this.building.setOwner(owner);
 	}
 	
 	public boolean hasOwner() {
-		throw new UnsupportedOperationException();
+		return this.building != null;
 	}
 	
 	public BuildingType getBuildingType() {
-		throw new UnsupportedOperationException();
+		if (building == null) throw new IllegalStateException();
+		return this.building.getBuildingType();
 	}
 	
 	public void generateGain(Resource resource) {
-		throw new UnsupportedOperationException();
+		if (building != null) {
+			ResourcePackage res = new ResourcePackage();
+			res.modifyResource(resource, building.getGain());
+			building.getOwner().modifyResources(res);
+		}
 	}
 	
 	public Location getLocation() {
-		throw new UnsupportedOperationException();
+		return this.location;
 	}
 	
 }

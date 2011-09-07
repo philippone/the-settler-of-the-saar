@@ -36,12 +36,28 @@ public class ResourcePackage {
 	}
 
 	/**
+	 * Creates an empty ResourcePackage
+	 */
+	public ResourcePackage() {
+		resources.put(LUMBER, 0);
+		resources.put(BRICK, 0);
+		resources.put(WOOL, 0);
+		resources.put(GRAIN, 0);
+		resources.put(ORE, 0);
+	}
+
+	/**
 	 * @param resource determines the kind of Resource
 	 * @return The count of the given Resource in this ResourcePackage
 	 */
 	public int getResource(Resource resource) {
 		if (resource == null) throw new IllegalArgumentException();
 		return resources.get(resource);
+	}
+	
+	public void modifyResource(Resource resource, int modifyCount) {
+		if (resource == null) throw new IllegalArgumentException();
+		resources.put(resource, resources.get(resource)+modifyCount);
 	}
 	
 	/**
@@ -83,11 +99,37 @@ public class ResourcePackage {
 	}
 	
 	/**
+	 * @return The absolute count of negative resources in this resourcepackage
+	 */
+	public int getNegativeResourcesCount() {
+		int tmp = 0;
+		if (this.getResource(LUMBER) < 0) tmp -= this.getResource(LUMBER);
+		if (this.getResource(BRICK) < 0) tmp -= this.getResource(BRICK);
+		if (this.getResource(WOOL) < 0) tmp -= this.getResource(WOOL);
+		if (this.getResource(GRAIN) < 0) tmp -= this.getResource(GRAIN);
+		if (this.getResource(ORE) < 0) tmp -= this.getResource(ORE);
+		return tmp;
+	}
+	
+	/**
 	 * @return True if one of the Resources in the ResourcePackage has a positive Count
 	 */
 	public boolean hasPositiveResources() {
 		return (resources.get(LUMBER) > 0 || resources.get(GRAIN) > 0 || resources.get(BRICK) > 0 
 				|| resources.get(ORE) > 0 || resources.get(WOOL) > 0);
+	}
+	
+	/**
+	 * @return The absolute count of positive resources in this resourcepackage
+	 */
+	public int getPositiveResourcesCount() {
+		int tmp = 0;
+		if (this.getResource(LUMBER) > 0) tmp += this.getResource(LUMBER);
+		if (this.getResource(BRICK) > 0) tmp += this.getResource(BRICK);
+		if (this.getResource(WOOL) > 0) tmp += this.getResource(WOOL);
+		if (this.getResource(GRAIN) > 0) tmp += this.getResource(GRAIN);
+		if (this.getResource(ORE) > 0) tmp += this.getResource(ORE);
+		return tmp;
 	}
 	
 	/* (non-Javadoc)
