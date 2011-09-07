@@ -116,7 +116,6 @@ public class Model implements ModelReader, ModelWriter{
 		throw new UnsupportedOperationException();
 	}
 	
-	
 	/**
 	 * @return
 	 */
@@ -124,25 +123,25 @@ public class Model implements ModelReader, ModelWriter{
 		return this.modelObserver;
 	}
 	
+	/**
+	 * @return
+	 */
 	public List<Player> getTableOrder() {
 		return this.players;
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getPath(de.unisaarland.cs.sopra.common.model.Location)
+	 */
 	public Path getPath(Location location) {
 		return board.getPath(location);
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getIntersection(de.unisaarland.cs.sopra.common.model.Location)
+	 */
 	public Intersection getIntersection(Location location) {
 		return board.getIntersection(location);
-	}
-
-	
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getInitBuilding(de.unisaarland.cs.sopra.common.model.BuildingType)
-	 */
-	@Override
-	public int getInitBuilding(BuildingType buildingType) {
-		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
@@ -553,10 +552,28 @@ public class Model implements ModelReader, ModelWriter{
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getField(de.unisaarland.cs.sopra.common.model.Point)
+	 */
 	@Override
 	public Field getField(Point p) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getMaxCatapult()
+	 */
+	@Override
+	public int getMaxCatapult() {
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getInitVillages()
+	 */
+	@Override
+	public int getInitVillages() {
+		throw new UnsupportedOperationException();
 	}
 
 }
