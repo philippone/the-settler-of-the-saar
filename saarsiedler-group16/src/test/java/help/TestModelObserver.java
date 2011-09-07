@@ -5,12 +5,12 @@ import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.Path;
-import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public class TestModelObserver implements ModelObserver {
 
-	public Player eventNewRoundCalled;
+	public boolean eventNewRoundCalled;
+	public boolean eventNewRoundItsMyTurn;
 	public boolean eventRobberCalled;
 	public ResourcePackage eventTradeCalled;
 	public Path updatePathCalled;
@@ -21,7 +21,6 @@ public class TestModelObserver implements ModelObserver {
 	public boolean updateCatapultCountCalled;
 	public BuildingType updateSettlementCountCalled;
 	public boolean updateTradePossibilities;
-	
 	
 		@Override
 		public void updatePath(Path path) {
@@ -69,8 +68,9 @@ public class TestModelObserver implements ModelObserver {
 		}
 
 		@Override
-		public void eventNewRound(Player player) {
-			this.eventNewRoundCalled = player;
+		public void eventNewRound(boolean itsMyTurn) {
+			this.eventNewRoundCalled = true;
+			this.eventNewRoundItsMyTurn = itsMyTurn;
 		}
 
 		@Override

@@ -11,13 +11,9 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.unisaarland.cs.sopra.common.ModelObserver;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
-import de.unisaarland.cs.sopra.common.model.Field;
-import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.Model;
-import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Point;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
@@ -208,7 +204,6 @@ public class ModelWriterTest2 {
 	public void catapultMovedTestPositive3() {
 		Location l1 = new Location(1,1,0);
 		Location l2 = new Location(1,1,1);
-		Player p1 = model.getTableOrder().get(0);
 		Player p2 = model.getTableOrder().get(1);
 		model.buildSettlement(l1, BuildingType.Town);
 		model.buildCatapult(l1, true);
@@ -245,7 +240,28 @@ public class ModelWriterTest2 {
 	
 	@Test
 	public void returnResources() {
-
+		TestModelObserver modelObserver = new TestModelObserver();
+		model.addModelObserver(modelObserver);
+		try {
+			model.returnResources(1, 1, 1, 1, 1);
+			fail("Wrong count of Resources returned");
+		}
+		catch (Exception e) {
+			//Expect this
+		}
+	}
+	
+	@Test
+	public void returnResources2() {
+		TestModelObserver modelObserver = new TestModelObserver();
+		model.addModelObserver(modelObserver);
+		try {
+			model.returnResources(1, 1, 1, 1, 1);
+			fail("Wrong count of Resources returned");
+		}
+		catch (Exception e) {
+			//Expect this
+		}
 	}
 	
 	@Test
@@ -253,15 +269,23 @@ public class ModelWriterTest2 {
 		TestModelObserver modelObserver = new TestModelObserver();
 		model.addModelObserver(modelObserver);
 		model.newRound(2);
-		modelObserver.eventNewRoundCalled
+		assertTrue("The modelobserver method eventNewRound should be called", modelObserver.eventNewRoundCalled != null) ;
 	}
 	
+	@Test
+	public void newRoundTest2() {
+		TestModelObserver modelObserver = new TestModelObserver();
+		model.addModelObserver(modelObserver);
+		model.newRound(7);
+		assertTrue("The modelobserver method eventRobber should be called", modelObserver.eventRobberCalled) ;
+	}
 	
-	//Bei new round einen dummy observer erstellen und schauen ob der auch benachrichtigt wird bei 7!
-	
-	//katapult darf nicht durch fremde settlements gehen aber durch eigene
-	
-	//nicht genug geld für move
-
+	@Test
+	public void newRoundTest3() {
+		TestModelObserver modelObserver = new TestModelObserver();
+		model.addModelObserver(modelObserver);
+		model.newRound(8);
+		assertTrue("The modelobserver method updateResources should be called", modelObserver.updateResourcesCalled) ;
+	}
 
 }
