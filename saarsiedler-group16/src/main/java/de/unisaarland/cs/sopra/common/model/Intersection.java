@@ -51,4 +51,17 @@ public class Intersection {
 		return this.location;
 	}
 	
+	@Override
+	public boolean equals(Object o) {
+		if(o instanceof Intersection) {
+			return ((Intersection)o).location.equals(this.location);
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return location.hashCode();
+	}
+	
 }
