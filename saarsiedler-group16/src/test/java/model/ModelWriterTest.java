@@ -38,6 +38,7 @@ public class ModelWriterTest {
 				model.buildSettlement(new Location(2, 1, 3), BuildingType.Village);
 				model.buildStreet(new Location(2, 1, 3));
 				model.newRound(12);
+				model.getPlayerMap().get(id)
 	}
 	
 	@Test
@@ -126,13 +127,35 @@ public class ModelWriterTest {
 		}
 		catch (IllegalStateException e) { /* everything is fine */ }
 	}
-
 	
 	@Test
-	// Tests wheter it 
+	// Tests wheter it is possible to build more then the maximum number of catapults
+	public void buildCatapult4_maxTest() {
+		initalize();
+		Player currentPlayer = model.getCurrentPlayer();
+		Path path1 = model.getPath(new Location(1, 1, 0));
+		path1.createCatapult(currentPlayer);
+		Path path2 = model.getPath(new Location(1, 1, 1));
+		path2.createCatapult(currentPlayer);
+		Path path3 = model.getPath(new Location(1, 1, 2));
+		path3.createCatapult(currentPlayer);
+		Path path4 = model.getPath(new Location(1, 1, 3));
+		path4.createCatapult(currentPlayer);
+		try {
+			model.buildCatapult(new Location(1, 1, 5), true);
+		}
+		catch (IllegalStateException e) { /* everything is fine */ }
+	}
+	
+	
+	@Test
+	// Tests wheter it is possible to build a town in the initial phase
 	public void buildSettlementTest() {
-		mode
-		
+		try {
+			model.buildSettlement(new Location, BuildingType.Town);
+			fail("You shouldn't be able to build a town in the inital phase!");
+		}
+		catch (IllegalStateException e) { /* everything is fine */ }
 	}
 
 	@Test
