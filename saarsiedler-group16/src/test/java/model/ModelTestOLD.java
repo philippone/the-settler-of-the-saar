@@ -1,6 +1,8 @@
 package model;
 
 import static org.junit.Assert.*;
+
+
 import help.TestUtil;
 
 import java.io.IOException;
@@ -32,7 +34,7 @@ public class ModelTest {
 	
 	@Before
 	public void setUp() throws IOException {
-		model = TestUtil.getStandardModel2();
+		model = TestUtil.getStandardModel2(); 
 	}
 	
 	@Test
@@ -205,7 +207,11 @@ public class ModelTest {
 		while (fieldIterator.hasNext()) {
 			Field f = fieldIterator.next();
 			if (f.getNumber() != 0) {
-				reihenfolge[i++] = f.getNumber();
+				try {
+					reihenfolge[i++] = f.getNumber();
+				} catch (Exception e) {
+					fail("zu viele Nummern eingefuegt (>2)");
+				}
 			}
 		}
 		// ist die Reihenfolge der Felder richitg
@@ -290,9 +296,10 @@ public class ModelTest {
 	
 	@Test
 	public void testGetLocationField() {
+		Point expectedPoint = new Point(1,1);
 		Field f = model.getField(new Point(1,1));
 		Point p = Model.getLocation(f);
-		assertEquals("Felder sind ungleich",f.getLocation(), p);
+		assertEquals("Felder sind ungleich",expectedPoint, p);
 		// Feld ausserhalb des Spielfeldes
 		try {
 			Field f2 = model.getField(new Point(5,5));
@@ -310,9 +317,11 @@ public class ModelTest {
 	
 	@Test
 	public void testGetLocationIntersection() {
+		Location expectedLocation = new Location(1,1,1);
 		Intersection i = model.getIntersection(new Location(1,1,1));
 		Location l = Model.getLocation(i);
-		assertEquals("Intersections sind ungleich", i.getLocation(), l);
+		assertEquals("Intersections sind ungleich", expectedLocation, l);
+		// Location ausserhalb des Spielfeldes
 		try {
 			Intersection i2 = model.getIntersection(new Location(5,5,5));
 			fail("Intersection ausserhalb des Spielfeldes, sollte IllegalArumentException werfen");
@@ -329,9 +338,10 @@ public class ModelTest {
 	
 	@Test
 	public void testGetLocationPath() {
+		Location expectedLocation = new Location(1,1,1);
 		Path p = model.getPath(new Location(1,1,1));
 		Location l = Model.getLocation(p);
-		assertEquals("Intersections sind ungleich", p.getLocation(), l);
+		assertEquals("Intersections sind ungleich", expectedLocation, l);
 		try {
 			Path p2 = model.getPath(new Location(5,5,5));
 			fail("Intersection ausserhalb des Spielfeldes, sollte IllegalArumentException werfen");
@@ -363,20 +373,22 @@ public class ModelTest {
 	
 	@Test
 	public void testNewRound(){
-		assertEquals(0 ,model.getRound()); //TODO unsicher vl doch runde 1
+		assertEquals(0 ,model.getRound());
 		model.newRound(12);
 		assertEquals(1, model.getRound());
 		assertNotSame(0, model.getRound());
-		
 	}
+	
+	
+	
 	/**
 	 * Angriff gegen gegnerische Village und Town - erfolgreich (beide male)
 	 */
 	@Test
-	public void testAttackSettlement() throws IOException{
+	public void testAttackSettlement(){
 		// Gegner
 		Player gegner = model.getTableOrder().get(0);
-
+		
 		//gibt den akt. Playern alle Resourcen um Komplikationen mit build zu vermeiden.
 		model.getTableOrder().get(0).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 
 		model.getTableOrder().get(1).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 
@@ -736,4 +748,5 @@ public class ModelTest {
 	}
 	
 	
+
 }
