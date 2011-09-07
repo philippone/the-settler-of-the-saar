@@ -369,7 +369,8 @@ public class ModelTest {
 		assertNotSame(0, model.getRound());
 	}
 	@Test
-	public void testAttackSettlement(){
+	public void testAttackSettlement() throws IOException{
+		model= TestUtil.getStandardModel2();
 		//gibt den akt. Playern alle Resourcen um Komplikationen mit build zu vermeiden.
 		model.getTableOrder().get(0).modifyResources(new ResourcePackage(333,333,333,333,333)); 
 		model.getTableOrder().get(1).modifyResources(new ResourcePackage(333,333,333,333,333)); 
