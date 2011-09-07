@@ -62,7 +62,7 @@ public class ModelReaderTest2 {
 			Set<Intersection> si1=model.getIntersectionsFromIntersection(i);
 			b=false;
 			for (Intersection i1 : si1){ // check for all neighbor intersections
-				b=b && (i1.hasOwner());
+				b=b | (i1.hasOwner());
 				// check if there is a player on this intersection
 			}
 			assertFalse(b);
