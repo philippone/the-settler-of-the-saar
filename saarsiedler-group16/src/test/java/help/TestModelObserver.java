@@ -10,7 +10,7 @@ import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 public class TestModelObserver implements ModelObserver {
 
 	public boolean eventNewRoundCalled;
-	private boolean eventNewRoundItsMyTurn;
+	public boolean eventNewRoundItsMyTurn;
 	public boolean eventRobberCalled;
 	public ResourcePackage eventTradeCalled;
 	public Path updatePathCalled;
