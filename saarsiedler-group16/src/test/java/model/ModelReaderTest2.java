@@ -59,6 +59,14 @@ public class ModelReaderTest2 {
 			}
 			assertTrue(b);
 			// check player has a street on a neighbor path leading to this intersection
+			Set<Intersection> si1=model.getIntersectionsFromIntersection(i);
+			b=false;
+			for (Intersection i1 : si1){ // check for all neighbor intersections
+				b=b && (i1.hasOwner());
+				// check if there is a player on this intersection
+			}
+			assertFalse(b);
+			// check there is no building on the neighbor intersections
 			assertFalse(i.hasOwner());
 			// check there is no building here
 		}
@@ -81,19 +89,14 @@ public class ModelReaderTest2 {
 		Player pl=model.getCurrentPlayer();
 		Set<Path> sp=model.buildableStreetPaths(pl);
 		for(Path p : sp){ //check for all paths
-			Set<Intersection> si=model.getIntersectionsFromPath(p);
 			boolean b=false;
-			for(Intersection i: si){ // check for all neighbor intersections
-				b=b | (i.getOwner()==pl);
-				// check if player owns a building on this intersection
-			}
 			Set<Path> sp1=model.getPathsFromPath(p);
 			for(Path p1: sp1){ // check for each neighbor path
 				b=b | (p1.getStreetOwner()==pl);
 				/// check if player owns a street on this path
 			}
 			assertTrue(b);
-			//check player has a building on a neighbor intersection or a street on a neighbor path
+			//check player has a street on a neighbor path
 			assertFalse(p.hasStreet());
 			// check this path is free from street
 		}
