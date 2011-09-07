@@ -385,7 +385,7 @@ public class ModelTest {
 		model.buildSettlement(new Location(0,0,0) , BuildingType.Village);
 		model.buildStreet(new Location(0,0,0));
 		// 2. Player
-		model.buildSettlement(new Location(0,0,1) , BuildingType.Village);
+		model.buildSettlement(new Location(0,0,4) , BuildingType.Village);
 		model.buildStreet(new Location(1,0,0));
 		// 3. Player
 		model.buildSettlement(new Location(3,3,0) , BuildingType.Village);
@@ -446,7 +446,7 @@ public class ModelTest {
 		model.buildSettlement(new Location(0,0,0) , BuildingType.Village);
 		model.buildStreet(new Location(0,0,0));
 		// 2. Player
-		model.buildSettlement(new Location(0,0,1) , BuildingType.Village);
+		model.buildSettlement(new Location(0,0,4) , BuildingType.Village);
 		model.buildStreet(new Location(1,0,0));
 		// 3. Player
 		model.buildSettlement(new Location(3,3,0) , BuildingType.Village);
@@ -509,6 +509,10 @@ public class ModelTest {
 			// Test lauft durch
 		}
 		assertTrue("Katapult nicht mehr da",model.getPath(new Location(0,0,5)).getCatapultOwner().equals(model.getCurrentPlayer()));
+		int expectedVP_gegner = 2;
+		int expectedVP_angreifer = 15;
+		assertEquals("VictoryPoints fehlerhaft beim Angreifer", expectedVP_angreifer, model.getCurrentVictoryPoints(model.getCurrentPlayer()));
+		assertEquals("VictoryPoints fehlerhaft beim Gegner", expectedVP_gegner, model.getCurrentVictoryPoints(gegner));
 		
 		// Town wird degradiert zur Village, bleibt im Besitz des Opfers
 		model.catapultMoved(new Location(0,0,5), new Location(0,0,0), true);
@@ -517,6 +521,10 @@ public class ModelTest {
 		assertTrue("Village nicht mehr im Besitz des Opfers", model.getIntersection(new Location(0,0,2)).getOwner().equals(gegner));
 		assertTrue("Katapult wurde zerstoert", model.getPath(new Location(0,0,2)).getCatapultOwner().equals(model.getCurrentPlayer()));
 		assertTrue("Village ist noch Town (BuildingType", model.getIntersection(new Location(0,0,2)).getBuildingType().equals(BuildingType.Village));
+		int expectedVP2_gegner = 1;
+		int expectedVP2_angreifer = 15;
+		assertEquals("VictoryPoints fehlerhaft beim Angreifer", expectedVP2_angreifer, model.getCurrentVictoryPoints(model.getCurrentPlayer()));
+		assertEquals("VictoryPoints fehlerhaft beim Gegner", expectedVP2_gegner, model.getCurrentVictoryPoints(gegner));
 	}
 	
 	
@@ -535,7 +543,7 @@ public class ModelTest {
 		model.buildSettlement(new Location(0,0,0) , BuildingType.Village);
 		model.buildStreet(new Location(0,0,0));
 		// 2. Player
-		model.buildSettlement(new Location(0,0,1) , BuildingType.Village);
+		model.buildSettlement(new Location(0,0,4) , BuildingType.Village);
 		model.buildStreet(new Location(1,0,0));
 		// 3. Player
 		model.buildSettlement(new Location(3,3,0) , BuildingType.Village);
@@ -609,6 +617,10 @@ public class ModelTest {
 			//Test laeuft durch
 		}
 		assertTrue("Katapult ist verschwunden",model.getPath(new Location(0,0,3)).getCatapultOwner().equals(model.getCurrentPlayer()));
+		int expectedVP_gegner = 5;
+		int expectedVP_angreifer = 15;
+		assertEquals("VictoryPoints fehlerhaft beim Angreifer", expectedVP_angreifer, model.getCurrentVictoryPoints(model.getCurrentPlayer()));
+		assertEquals("VictoryPoints fehlerhaft beim Gegner", expectedVP_gegner, model.getCurrentVictoryPoints(gegner));
 	}
 	
 	/**
@@ -627,7 +639,7 @@ public class ModelTest {
 		model.buildSettlement(new Location(0,0,0) , BuildingType.Village);
 		model.buildStreet(new Location(0,0,0));
 		// 2. Player
-		model.buildSettlement(new Location(0,0,1) , BuildingType.Village);
+		model.buildSettlement(new Location(0,0,4) , BuildingType.Village);
 		model.buildStreet(new Location(1,0,0));
 		// 3. Player
 		model.buildSettlement(new Location(3,3,0) , BuildingType.Village);
@@ -662,6 +674,11 @@ public class ModelTest {
 		} catch(Exception e) {
 			//Test laueft durch
 		}
+		int expectedVP_gegner = 3;
+		int expectedVP_angreifer = 3;
+		assertEquals("VictoryPoints fehlerhaft beim Angreifer", expectedVP_angreifer, model.getCurrentVictoryPoints(model.getCurrentPlayer()));
+		assertEquals("VictoryPoints fehlerhaft beim Gegner", expectedVP_gegner, model.getCurrentVictoryPoints(gegner));
+		
 		// es darf nichts passieren
 		model.catapultMoved(new Location(0,0,5), new Location(0,0,0), true);
 		model.catapultMoved(new Location(0,0,0),new Location(0,0,1), true);
@@ -674,6 +691,10 @@ public class ModelTest {
 		} catch(Exception e) {
 			//Test laueft durch
 		}
+		int expectedVP2_gegner = 3;
+		int expectedVP2_angreifer = 3;
+		assertEquals("VictoryPoints fehlerhaft beim Angreifer", expectedVP2_angreifer, model.getCurrentVictoryPoints(model.getCurrentPlayer()));
+		assertEquals("VictoryPoints fehlerhaft beim Gegner", expectedVP2_gegner, model.getCurrentVictoryPoints(gegner));
 	}
 	
 	
@@ -693,7 +714,7 @@ public class ModelTest {
 		model.buildSettlement(new Location(0,0,0) , BuildingType.Village);
 		model.buildStreet(new Location(0,0,0));
 		// 2. Player
-		model.buildSettlement(new Location(0,0,1) , BuildingType.Village);
+		model.buildSettlement(new Location(0,0,4) , BuildingType.Village);
 		model.buildStreet(new Location(1,0,0));
 		// 3. Player
 		model.buildSettlement(new Location(3,3,0) , BuildingType.Village);
@@ -723,6 +744,10 @@ public class ModelTest {
 		assertFalse("es hat sich etwas veraendert", model.getIntersection(new Location(0,0,0)).getOwner().equals(model.getCurrentPlayer()));
 		assertTrue("der Gegner ist nicht mehr im Besitz seiner Village", model.getIntersection(new Location(0,0,0)).getOwner().equals(gegner));
 		assertTrue("das angreifende Katapult ist weg", model.getPath(new Location(0,0,5)).getCatapultOwner().equals(model.getCurrentPlayer()));
+		int expectedVP_gegner = 3;
+		int expectedVP_angreifer = 3;
+		assertEquals("VictoryPoints fehlerhaft beim Angreifer", expectedVP_angreifer, model.getCurrentVictoryPoints(model.getCurrentPlayer()));
+		assertEquals("VictoryPoints fehlerhaft beim Gegner", expectedVP_gegner, model.getCurrentVictoryPoints(gegner));
 		
 		model.buildCatapult(new Location(0,0,3), true);
 		model.buildStreet(new Location(0,0,3));
@@ -733,7 +758,136 @@ public class ModelTest {
 		assertTrue("Zustand hat sich geaendert", model.getIntersection(new Location(0,0,2)).getBuildingType().equals(BuildingType.Town));
 		assertTrue("Village gehoert dem falschen Spieler (Zustand hat sich geandert)", model.getIntersection(new Location(0,0,2)).getOwner().equals(gegner));
 		assertTrue("das angreifende Katapult ist weg", model.getPath(new Location(0,0,1)).getCatapultOwner().equals(model.getCurrentPlayer()));
+		int expectedVP2_gegner = 3;
+		int expectedVP2_angreifer = 3;
+		assertEquals("VictoryPoints fehlerhaft beim Angreifer", expectedVP2_angreifer, model.getCurrentVictoryPoints(model.getCurrentPlayer()));
+		assertEquals("VictoryPoints fehlerhaft beim Gegner", expectedVP2_gegner, model.getCurrentVictoryPoints(gegner));
 	}
 	
+	
+	private void beforeOwnAttack() {
+		//gibt den akt. Playern alle Resourcen um Komplikationen mit build zu vermeiden.
+		model.getTableOrder().get(0).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 
+		model.getTableOrder().get(1).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 
+		//Angriffsziele bauen (Initialisierungsphase)
+		// 1.Player
+		model.buildSettlement(new Location(0,0,0) , BuildingType.Village);
+		model.buildStreet(new Location(0,0,0));
+		// 2. Player
+		model.buildSettlement(new Location(0,0,4) , BuildingType.Village);
+		model.buildStreet(new Location(1,0,0));
+		// 3. Player
+		model.buildSettlement(new Location(3,3,0) , BuildingType.Village);
+		model.buildStreet(new Location(3,3,0));
+		// wieder 3
+		model.buildSettlement(new Location(3,3,3), BuildingType.Village);
+		model.buildStreet(new Location(3,3,2));
+		// 2. Player
+		model.buildSettlement(new Location(1,0,4), BuildingType.Village);
+		model.buildStreet(new Location(1,0,4));
+		// 1. Player
+		model.buildSettlement(new Location(1,1,0) , BuildingType.Village);
+		model.buildStreet(new Location(1,1,0));
+				
+		//neue Runde (1.Player)
+		model.newRound(12);
+		//neue Runde (2. Player)
+		model.newRound(3);
+		model.buildSettlement(new Location(0,0,4), BuildingType.Town);
+		model.buildCatapult(new Location(1,0,5), true);
+				
+	}
+	
+	
+	/**
+	 * Angriff gegen eigene Village und Town - gewonnen (beide male) -> Angreifer bekommt eine Village mehr, eine Town weniger
+	 */
+	@Test
+	public void testAttackOwnSettlement5(){
+		// Initialisierungsrunde
+		beforeOwnAttack();
+		//Angriff auf eigene Town
+		model.attackSettlement(new Location(1,0,5), new Location(0,0,4), AttackResult.SUCCESS);
+		assertTrue("Town noch immer Town (wurde nicht zur Village degradiert)", model.getIntersection(new Location(0,0,4)).getBuildingType().equals(BuildingType.Village));
+		assertTrue("degradierte Village gehoert nciht mehr dem Angreifer",model.getIntersection(new Location(0,0,4)).getOwner().equals(model.getCurrentPlayer()));
+		assertTrue("katapult ist weg oder einem anderen Benutzer", model.getPath(new Location(1,0,5)).getCatapultOwner().equals(model.getCurrentPlayer()));
+		int expectedVP_angreifer = 2;
+		assertEquals("VictoryPoints fehlerhaft beim Angreifer", expectedVP_angreifer, model.getCurrentVictoryPoints(model.getCurrentPlayer()));
+		
+		// Angriff auf eigene Village
+		model.catapultMoved(new Location(1,0,5), new Location(1,0,4), true);
+		model.attackSettlement(new Location(1,0,4), new Location(1,0,4), AttackResult.SUCCESS);
+		assertTrue("Village wurde zerstoert", model.getIntersection(new Location(1,0,4)).hasOwner());
+		assertTrue("Village gehoert nicht mehr dem Angreifer", model.getIntersection(new Location(1,0,4)).getOwner().equals(model.getCurrentPlayer()));
+		assertTrue("Village ist nicht mehr vom Typ Village", model.getIntersection(new Location(1,0,4)).getBuildingType().equals(BuildingType.Village));
+		assertEquals("VictoryPoints fehlerhaft beim Angreifer", expectedVP_angreifer, model.getCurrentVictoryPoints(model.getCurrentPlayer()));
+		assertTrue("katapult ist weg oder einem anderen Benutzer", model.getPath(new Location(1,0,4)).getCatapultOwner().equals(model.getCurrentPlayer()));
+	}
+	
+	
+	/**
+	 * Angriff gegen eigene Village und Town - unentschieden (beide male) -> es passiert nichts
+	 */
+	@Test
+	public void testAttackOwnSettlement6(){
+		// Initialisierungsrunde
+		beforeOwnAttack();
+		
+		//Angriff auf eigene Town
+		model.attackSettlement(new Location(1,0,5), new Location(0,0,4), AttackResult.DRAW);
+		assertFalse("Town keine Town mehr (wurde degradiert)", model.getIntersection(new Location(0,0,4)).getBuildingType().equals(BuildingType.Village));
+		assertTrue("degradierte Village gehoert nciht mehr dem Angreifer",model.getIntersection(new Location(0,0,4)).getOwner().equals(model.getCurrentPlayer()));
+		assertTrue("katapult ist weg oder einem anderen Benutzer", model.getPath(new Location(1,0,5)).getCatapultOwner().equals(model.getCurrentPlayer()));
+		int expectedVP_angreifer = 3;
+		assertEquals("VictoryPoints fehlerhaft beim Angreifer", expectedVP_angreifer, model.getCurrentVictoryPoints(model.getCurrentPlayer()));
+		
+		// Angriff auf eigene Village
+		model.catapultMoved(new Location(1,0,5), new Location(1,0,4), true);
+		model.attackSettlement(new Location(1,0,4), new Location(1,0,4), AttackResult.DRAW);
+		assertTrue("Village wurde zerstoert", model.getIntersection(new Location(1,0,4)).hasOwner());
+		assertTrue("Village gehoert nicht mehr dem Angreifer", model.getIntersection(new Location(1,0,4)).getOwner().equals(model.getCurrentPlayer()));
+		assertTrue("Village ist nicht mehr vom Typ Village", model.getIntersection(new Location(1,0,4)).getBuildingType().equals(BuildingType.Village));
+		assertEquals("VictoryPoints fehlerhaft beim Angreifer", expectedVP_angreifer, model.getCurrentVictoryPoints(model.getCurrentPlayer()));
+		assertTrue("katapult ist weg oder einem anderen Benutzer", model.getPath(new Location(1,0,4)).getCatapultOwner().equals(model.getCurrentPlayer()));
+	}
+	
+	
+	/**
+	 * Angriff gegen eigene Village und Town - verloren (beide male) -> Angreifer verliert 2 Katapulte
+	 */
+	@Test
+	public void testAttackOwnSettlement7(){
+		// Initialisierungsrunde
+		beforeOwnAttack();
+		
+		// Angriff auf eigene Village
+		model.catapultMoved(new Location(1,0,5), new Location(1,0,4), true);
+		model.attackSettlement(new Location(1,0,4), new Location(1,0,4), AttackResult.DEFEAT);
+		assertTrue("Village wurde zerstoert", model.getIntersection(new Location(1,0,4)).hasOwner());
+		assertTrue("Village gehoert nicht mehr dem Opfer", model.getIntersection(new Location(1,0,4)).getOwner().equals(model.getCurrentPlayer()));
+		assertTrue("Village ist nicht mehr vom Typ Village", model.getIntersection(new Location(1,0,4)).getBuildingType().equals(BuildingType.Village));
+		int expectedVP_angreifer = 3;
+		assertEquals("VictoryPoints fehlerhaft beim Angreifer", expectedVP_angreifer, model.getCurrentVictoryPoints(model.getCurrentPlayer()));
+		try {
+			model.getPath(new Location(1,0,4)).getCatapultOwner();
+			fail("Katapult sollte zerstoert sein");
+		} catch(Exception e) {
+			// alles roger
+		}
+		
+		//Angriff auf eigene Town
+		model.buildCatapult(new Location(1,0,5), true);
+		model.attackSettlement(new Location(1,0,5), new Location(0,0,4), AttackResult.DEFEAT);
+		assertTrue("Town sollte noch immer eine Town sein (wurde vermutlich degradiert)", model.getIntersection(new Location(0,0,4)).getBuildingType().equals(BuildingType.Town));
+		assertTrue("Village gehoert nciht mehr dem Opfer",model.getIntersection(new Location(0,0,4)).getOwner().equals(model.getCurrentPlayer()));
+		assertEquals("VictoryPoints fehlerhaft beim Angreifer", expectedVP_angreifer, model.getCurrentVictoryPoints(model.getCurrentPlayer()));
+		try {
+			model.getPath(new Location(1,0,5)).getCatapultOwner();
+			fail("Katapult sollte zerstoert sein");
+		} catch(Exception e) {
+			// alles roger
+		}
+		
+	}
 	
 }
