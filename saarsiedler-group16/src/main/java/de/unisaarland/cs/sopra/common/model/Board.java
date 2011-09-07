@@ -3,6 +3,7 @@ package de.unisaarland.cs.sopra.common.model;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 
@@ -15,19 +16,26 @@ public class Board {
 	private int height;
 	
 	public Board(WorldRepresentation worldRepresentation) {
-		throw new UnsupportedOperationException();
+		this.height = worldRepresentation.getHeight();
+		this.width = worldRepresentation.getWidth();
+		this.field = new TreeMap<Point,Field>();
+		for (int i = 0; i < width*height; i++) {
+			Point p = new Point(i/width,i%width);
+			FieldType fieldType = FieldType.convert( worldRepresentation.getFieldType(i/width,i%width) );
+			this.field.put(p, new Field(fieldType, p));
+		}
 	}
 	
 	public Field getField(Point point) {
-		throw new UnsupportedOperationException();
+		return this.field.get(point);
 	}
 	
 	public Intersection getIntersection(Location location) {
-		throw new UnsupportedOperationException();
+		return this.intersection.get(location);
 	}
 	
 	public Path getPath(Location location) {
-		throw new UnsupportedOperationException();
+		return this.path.get(location);
 	}
 	
 	public Set<Field> getFieldsFromField(Field field) {
@@ -67,7 +75,27 @@ public class Board {
 	}
 	
 	public Iterator<Field> getFieldIterator() {
-		throw new UnsupportedOperationException();
+		return new Iterator<Field>() {
+
+			private int i = 0;
+			
+			@Override
+			public boolean hasNext() {
+				return i < (width)*(height)-1;
+			}
+
+			@Override
+			public Field next() {
+				Point p = new Point(i/width,i%width);
+				return field.get(p);
+			}
+
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException();
+			}
+			
+		};
 	}
 	
 	public Iterator<Path> getPathIterator() {

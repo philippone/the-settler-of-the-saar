@@ -23,15 +23,15 @@ public class FieldTest {
 	@Before
 	public void setUp(){
 		p = new Point (0, 0);
-		f1= new Field(FieldType.DESSERT, p);
-		f2= new Field(FieldType.FIELD, p);
+		f1= new Field(FieldType.DESERT, p);
+		f2= new Field(FieldType.FIELDS, p);
 		f3= new Field(FieldType.FOREST, p);
-		f4= new Field(FieldType.HILL, p);
+		f4= new Field(FieldType.HILLS, p);
 		f5= new Field(FieldType.MOUNTAINS, p);
 		f6= new Field(FieldType.PASTURE, p);
 		f7= new Field(FieldType.WATER, p);
 		
-		f8= new Field(FieldType.FIELD, p);
+		f8= new Field(FieldType.FIELDS, p);
 		
 		try {
 			f1.setNumber(3); // catch exception IAE, Dessert/Water should not have numbers
@@ -102,7 +102,7 @@ public class FieldTest {
 		
 		//Fields are equal to one another, 
 		//when all of their attributes are equal (by Valentin)
-		Field f1WithSameAttributes= new Field(FieldType.DESSERT, p);	
+		Field f1WithSameAttributes= new Field(FieldType.DESERT, p);	
 		assertEquals(f1, f1WithSameAttributes);
 		
 		f1WithSameAttributes.setRobber(true);
@@ -115,7 +115,7 @@ public class FieldTest {
 
 		//Fields are equal to one another,
 		//when all of their attributes are equal (by Valentin)
-		Field f1WithSameAttributes= new Field(FieldType.DESSERT, p);	
+		Field f1WithSameAttributes= new Field(FieldType.DESERT, p);	
 		assertEquals(f1.hashCode(), f1WithSameAttributes.hashCode());
 		
 		f1WithSameAttributes.setRobber(true);
