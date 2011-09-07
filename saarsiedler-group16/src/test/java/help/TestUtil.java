@@ -18,7 +18,7 @@ import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 public class TestUtil {
 	
 	public static Model getStandardModel2() throws IOException {
-		WorldRepresentation worldrep = new WorldRepresentation(4, 4, 2, 9, 5, 4, 
+		WorldRepresentation worldrep = new WorldRepresentation(4, 4, 2, 9, 5, 4,  
 				new byte[] {1,2,3,4,
 							5,1,2,3,
 							4,5,1,2,
@@ -53,7 +53,7 @@ public class TestUtil {
 			
 			@Override
 			public int getNumPlayers() {
-				return 3;
+				return 2;
 			}
 			
 			@Override
@@ -63,7 +63,7 @@ public class TestUtil {
 			
 			@Override
 			public long[] getCurrentPlayers() {
-				return new long[] {0,1,2};
+				return new long[] {0,1};
 			}
 			
 			@Override
@@ -72,16 +72,15 @@ public class TestUtil {
 			}
 		};
 		Model model = new Model(worldrep, matchinfo);
-		model.matchStart(new long[] {0,1,2}, new byte[] {2,3,4,5,
+		model.matchStart(new long[] {0,1}, new byte[] {2,3,4,5,
 														 6,8,9,10,
 														 11,12,11,10,
 														 9,8,6,5});
-		model.setTableOrder(new long[] {2,1,0});
 		return model;
 	}
 	
 	public static Model getStandardModel1() throws IOException {
-		WorldRepresentation worldrep = new WorldRepresentation(3, 4, 2, 9, 5, 4, 
+		WorldRepresentation worldrep = new WorldRepresentation(3, 4, 1, 5, 5, 4,
 				new byte[] {0,0,0,
 							0,1,6,
 							0,5,0,
@@ -89,8 +88,8 @@ public class TestUtil {
 				new byte[] {1,4,
 							2,5,
 							3,6},
-				new byte[] {0,1,(1 << 4) & 0, 
-							2,2,(4 << 4) & 1
+				new byte[] {0,1,(1 << 4) | 0, 
+							2,2,(4 << 4) | 1
 								});
 				
 		MatchInformation matchinfo = new MatchInformation() 
@@ -138,7 +137,6 @@ public class TestUtil {
 		};
 		Model model = new Model(worldrep, matchinfo);
 		model.matchStart(new long[] {0,1,2}, new byte[] {8,6});
-		model.setTableOrder(new long[] {2,1,0});
 		return model;
 	}
 	
@@ -161,10 +159,12 @@ public class TestUtil {
 								0,0,0},
 					new byte[] {1,4,
 								2,5},
-					new byte[] {0,1,(1 << 4) & 0, 
-								2,2,(4 << 4) & 1
+					new byte[] {0,1,(1 << 4) | 0, 
+								2,2,(4 << 4) | 1
 									});
 			return new Board(worldrep);
 	}
-	
+
 }
+
+

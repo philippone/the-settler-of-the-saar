@@ -2,6 +2,10 @@ package model;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+
+import help.TestUtil;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,6 +13,7 @@ import de.unisaarland.cs.sopra.common.model.Building;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.Location;
+import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
@@ -20,14 +25,18 @@ public class IntersectionTest {
 	Player p1, p2, p3;
 	Building b1,b2;
 	ResourcePackage r1,r2,r3,r4;
+	
 
 	@Before
-	public void setUp() {
-		p1 = new Player();
+	public void setUp() throws IOException {
+		Model model = TestUtil.getStandardModel2() ;
+		p1 = model.getTableOrder().get(0);
+		p2 = model.getTableOrder().get(1);
+		p3 = model.getTableOrder().get(2);
 		b1 = new Building(p1, BuildingType.Village);
 		b2 = new Building(p1, BuildingType.Town);
 		l1 = new Location(1, 2, 3);
-		l2 = new Location(10, 20, 2);
+		l2 = new Location(3, 0, 1);
 		i1 = new Intersection(l1);
 		i2 = new Intersection(l2);
 		i1.createBuilding(BuildingType.Village, p1);
@@ -44,9 +53,9 @@ public class IntersectionTest {
 	@Test
 	public void testOwner(){
 		assertEquals(p1, i1.getOwner());
-	    p3 = new Player();
 		i1.setOwner(p3);
 		assertEquals(p3, i1.getOwner());
+		assertEquals(false, p1.equals(i1.getOwner()));
 	}
 	
 	@Test
@@ -61,7 +70,7 @@ public class IntersectionTest {
 		i1.generateGain(Resource.LUMBER);
 		r2 = new ResourcePackage(1,0,0,0,0);
 		r1.add(r2);
-		assertEquals( r1,p1.getResources());
+		assertEquals(r1, p1.getResources());
 		r3 = p2.getResources();
 		i2.generateGain(Resource.ORE);
 		r4 = new ResourcePackage(0,0,0,0,2);

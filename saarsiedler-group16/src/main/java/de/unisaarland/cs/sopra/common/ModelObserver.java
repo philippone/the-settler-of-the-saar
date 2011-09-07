@@ -14,6 +14,6 @@ public interface ModelObserver {
 	public void updateTradePossibilities();
 	public void eventRobber();
 	public void eventTrade(ResourcePackage resourcePackage);
-	public void eventNewRound(Player player);
+	public void eventNewRound(boolean itsMyTurn);
 	
 }
