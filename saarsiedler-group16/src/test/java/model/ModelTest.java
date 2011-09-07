@@ -316,6 +316,7 @@ public class ModelTest {
 		model.getTableOrder().get(1).modifyResources(new ResourcePackage(333,333,333,333,333)); 
 		//Angriffsziele bauen
 		model.buildSettlement(new Location(0,0,0) , BuildingType.Village);
+		model.buildSettlement(new Location(1,1,0) , BuildingType.Village);
 		model.buildSettlement(new Location(1,1,0) , BuildingType.Town);
 		
 		model.newRound(12);
