@@ -46,7 +46,7 @@ public class ResourcePackageTest {
 }
 
 /*		
- * assertEquals("Expected 2 as Result", funktionDieZweiZurückGebenSollte() , 2);
+ * assertEquals("Expected 2 as Result", function should return 2() , 2);
  * assertTrue("Expected True as Result", true);
  * assertFalse("Expected True as Result", false);
  */

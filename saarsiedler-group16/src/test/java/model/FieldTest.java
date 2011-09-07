@@ -34,11 +34,11 @@ public class FieldTest {
 		f8= new Field(FieldType.FIELD, p);
 		
 		try {
-			f1.setNumber(3); // exception fangen IAE, da Dessert/Water keine number haben darf!
+			f1.setNumber(3); // catch exception IAE, Dessert/Water should not have numbers
 			fail();
 		}catch(IllegalArgumentException e){}
 		try {
-			f7.setNumber(3); // exception fangen IAE, da Dessert/Water keine number haben darf!
+			f7.setNumber(3); // catch exception IAE, Dessert/Water should not have numbers
 			fail();
 		}catch(IllegalArgumentException e){}
 		
@@ -100,7 +100,9 @@ public class FieldTest {
 		assertNotSame(f2, f1);
 		assertEquals(f1, f1);
 		
-		Field f1WithSameAttributes= new Field(FieldType.DESSERT, p);	//felder sind gleich wenn alle Attribute gleich sind(festgelegt von Valentin )
+		//Fields are equal to one another, 
+		//when all of their attributes are equal (by Valentin)
+		Field f1WithSameAttributes= new Field(FieldType.DESSERT, p);	
 		assertEquals(f1, f1WithSameAttributes);
 		
 		f1WithSameAttributes.setRobber(true);
@@ -111,8 +113,9 @@ public class FieldTest {
 		assertNotSame(f2.hashCode(), f1.hashCode());
 		assertEquals(f1.hashCode(), f1.hashCode());
 
-		
-		Field f1WithSameAttributes= new Field(FieldType.DESSERT, p);	//felder sind gleich wenn alle Attribute gleich sind(festgelegt von Valentin )
+		//Fields are equal to one another,
+		//when all of their attributes are equal (by Valentin)
+		Field f1WithSameAttributes= new Field(FieldType.DESSERT, p);	
 		assertEquals(f1.hashCode(), f1WithSameAttributes.hashCode());
 		
 		f1WithSameAttributes.setRobber(true);
