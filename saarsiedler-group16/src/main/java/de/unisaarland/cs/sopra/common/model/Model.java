@@ -23,6 +23,7 @@ public class Model implements ModelReader, ModelWriter{
 	private int initVillages;
 	private List<Path> longestClaimedRoad;
 	private int maxVictoryPoints;
+	private boolean reversedPlayersList;
 	
 	/**
 	 * @param worldRepresentation
