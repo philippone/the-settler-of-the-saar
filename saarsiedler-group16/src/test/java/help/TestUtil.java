@@ -18,7 +18,7 @@ import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 public class TestUtil {
 	
 	public static Model getStandardModel2() throws IOException {
-		WorldRepresentation worldrep = new WorldRepresentation(4, 4, 1, 9, 5, 4, 
+		WorldRepresentation worldrep = new WorldRepresentation(4, 4, 1, 4, 4, 4, 
 				new byte[] {1,2,3,4,
 							5,1,2,3,
 							4,5,1,2,

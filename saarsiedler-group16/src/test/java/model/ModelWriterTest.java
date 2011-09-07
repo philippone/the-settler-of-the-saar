@@ -128,10 +128,7 @@ public class ModelWriterTest {
 	public void buildCatapult3_attackSettlementTest() {
 		throw new UnsupportedOperationException();
 	}
-	
-	private void townAround() {
-		
-	}	
+
 	
 	@Test
 	/**
