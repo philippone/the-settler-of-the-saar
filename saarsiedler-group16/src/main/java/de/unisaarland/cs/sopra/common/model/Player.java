@@ -5,6 +5,10 @@ public class Player {
 	private ResourcePackage resources;
 	private int victoryPoints;
 	
+	public Player() {
+		this.resources = new ResourcePackage(0,0,0,0,0);
+	}
+	
 	public ResourcePackage getResources() {
 		return resources;
 	}
@@ -12,11 +16,13 @@ public class Player {
 	public void modifyResources(ResourcePackage resourcePackage) {
 		if (resourcePackage == null) throw new IllegalArgumentException();
 		resources.add(resourcePackage);
+		if (this.resources.hasNegativeResources()) throw new IllegalArgumentException();
 	}
 	
 	public boolean checkResourcesSufficient(ResourcePackage resourcePackage) {
 		if (resourcePackage == null) throw new IllegalArgumentException();
-		return resources.copy().add(resourcePackage).hasNegativeResources();
+		if (resourcePackage.hasPositiveResources()) throw new IllegalArgumentException();
+		return !resources.copy().add(resourcePackage).hasNegativeResources();
 	}
 
 	public void setVictoryPoints(int victoryPoints) {

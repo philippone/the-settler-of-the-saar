@@ -1,9 +1,11 @@
 package de.unisaarland.cs.sopra.common.model;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import de.unisaarland.cs.sopra.common.ModelObserver;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
@@ -24,14 +26,27 @@ public class Model implements ModelReader, ModelWriter{
 	private List<Path> longestClaimedRoad;
 	private int maxVictoryPoints;
 	private boolean reversedPlayersList;
+	private long meID;
 	private Player me;
 	
 	/**
 	 * @param worldRepresentation
 	 * @param matchInformation
 	 */
-	public Model(WorldRepresentation worldRepresentation, MatchInformation matchInformation) {
-		throw new UnsupportedOperationException();
+	public Model(WorldRepresentation worldRepresentation, MatchInformation matchInformation, long meID) {
+		this.board = new Board(worldRepresentation);
+		this.modelObserver = new LinkedList<ModelObserver>();
+		this.maxBuilding = new TreeMap<BuildingType,Integer>();
+		this.maxBuilding.put(BuildingType.Village, worldRepresentation.getMaxVillages());
+		this.maxBuilding.put(BuildingType.Town, worldRepresentation.getMaxTowns());
+		this.maxCatapult = worldRepresentation.getMaxCatapults();
+		this.initVillages = worldRepresentation.getInitVillages();
+		for(int i = 0; i < worldRepresentation.getNumPlayerConfigs(); i++) {
+			if(worldRepresentation.getNumPlayers(i) == matchInformation.getNumPlayers())
+				this.maxVictoryPoints = worldRepresentation.getVictoryPoints(i);
+		}
+		if(this.maxVictoryPoints == 0) throw new IllegalStateException();
+		this.meID = meID;
 	}
 	
 	/**
@@ -51,42 +66,43 @@ public class Model implements ModelReader, ModelWriter{
 	}
 	
 	/**
-	 * @param field
 	 * @return Point of field
 	 */
 	public static Point getLocation(Field field) {
-		throw new UnsupportedOperationException();
+		return field.getLocation();
 	}
 	
 	/**
-	 * @param path
 	 * @return Location of Path 
 	 */
 	public static Location getLocation(Path path) {
-		throw new UnsupportedOperationException();
+		return path.getLocation();
 	}
 	
 	/**
-	 * @param intersection
 	 * @return Location of Intersection
 	 */
 	public static Location getLocation(Intersection intersection) {
-		throw new UnsupportedOperationException();
+		return intersection.getLocation();
 	}
 	
 	/**
-	 * @param pathlist
-	 * @return
+	 * @return Locations of the Paths in the List
 	 */
 	public static List<Location> getLocationList(List<Path> pathlist) {
-		throw new UnsupportedOperationException();
+		if (pathlist == null) throw new IllegalArgumentException();
+		List<Location> tmp = new LinkedList<Location>();
+		for(Path act : pathlist) {
+			tmp.add(act.getLocation());
+		}
+		return tmp;
 	}
 	
 	/**
 	 * @return current Player
 	 */
 	public Player getCurrentPlayer() {
-		throw new UnsupportedOperationException();
+		return this.players.get( (this.round % this.players.size()) - 1 );
 	}
 	
 	/**
@@ -94,6 +110,7 @@ public class Model implements ModelReader, ModelWriter{
 	 * @return List<List<Path>>
 	 */
 	public List<List<Path>> calculateLongestRoads(Player player) {
+		if (player == null) throw new IllegalArgumentException();
 		throw new UnsupportedOperationException();
 	}
 	
@@ -101,48 +118,70 @@ public class Model implements ModelReader, ModelWriter{
 	 * @param playerIDs (set the "Table Order")
 	 */
 	public void setTableOrder(long[] playerIDs) {
-		throw new UnsupportedOperationException();
+		if (playerIDs == null) throw new IllegalArgumentException();
+		this.players = new LinkedList<Player>();
+		for(long act : playerIDs) {
+			Player player = new Player();
+			this.playerMap.put(act,player);
+			this.players.add(player);
+		}
+		this.me = this.playerMap.get(meID);
 	}
 	
 	/**
 	 * @param numbers: int[] (set the numbers on the fields)
 	 */
 	public void setFieldNumbers(int[] numbers) {
-		throw new UnsupportedOperationException();
+		if (numbers == null) throw new IllegalArgumentException();
+		Iterator<Field> iter = board.getFieldIterator();
+		int i = 0;
+		while(iter.hasNext()) {
+			iter.next().setNumber(numbers[i++]);
+		}
 	}
 	
 	/**
 	 * @param intersection (split the longestclaimedRoad at the Location of Intersection)
 	 */
 	public void updateLongestRoad(Intersection intersection) {
-		throw new UnsupportedOperationException();
+		if (intersection == null) throw new IllegalArgumentException();
+		List<Path> tmp = new LinkedList<Path>();
+		for(Path act : this.longestClaimedRoad) {
+			if(board.getIntersectionsFromPath(act).contains(intersection)) {
+				tmp.add(act);
+				this.longestClaimedRoad.removeAll(tmp);
+				this.longestClaimedRoad = tmp.size() < this.longestClaimedRoad.size() ? tmp : this.longestClaimedRoad;
+			}
+			tmp.add(act);
+		}
 	}
 	
 	/**
-	 * @return
+	 * @return The list of ModelObservers
 	 */
 	public List<ModelObserver> getModelObservers() {
 		return this.modelObserver;
 	}
 	
 	/**
-	 * @return
+	 * @return The List of Player sorted in TableOrder
 	 */
 	public List<Player> getTableOrder() {
 		return this.players;
 	}
 	
 	/**
-	 * @return
+	 * @return The Map containing the mapping of playerID -> Player
 	 */
 	public Map<Long,Player> getPlayerMap() {
-		throw new UnsupportedOperationException();
+		return this.playerMap;
 	}
 	
 	/* (non-Javadoc)
 	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getPath(de.unisaarland.cs.sopra.common.model.Location)
 	 */
 	public Path getPath(Location location) {
+		if (location == null) throw new IllegalArgumentException();
 		return board.getPath(location);
 	}
 	
@@ -150,6 +189,7 @@ public class Model implements ModelReader, ModelWriter{
 	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getIntersection(de.unisaarland.cs.sopra.common.model.Location)
 	 */
 	public Intersection getIntersection(Location location) {
+		if (location == null) throw new IllegalArgumentException();
 		return board.getIntersection(location);
 	}
 
@@ -158,7 +198,8 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public int getMaxBuilding(BuildingType buildingType) {
-		throw new UnsupportedOperationException();
+		if (buildingType == null) throw new IllegalArgumentException();
+		return this.getMaxBuilding(buildingType);
 	}
 
 	/* (non-Javadoc)
@@ -166,7 +207,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public int getRound() {
-		throw new UnsupportedOperationException();
+		return this.round;
 	}
 
 	/* (non-Javadoc)

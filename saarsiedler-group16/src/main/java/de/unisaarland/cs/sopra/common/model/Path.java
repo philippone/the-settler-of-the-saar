@@ -12,43 +12,61 @@ public class Path {
 	}
 	
 	public Player getCatapultOwner() {
-		throw new UnsupportedOperationException();
+		if (this.catapult == null) throw new IllegalStateException();
+		return this.catapult.getOwner();
 	}
 	
 	public Player getStreetOwner() {
-		throw new UnsupportedOperationException();
+		if (this.street == null) throw new IllegalStateException();
+		return this.street.getOwner();
 	}
 	
 	public boolean hasCatapult() {
-		throw new UnsupportedOperationException();
+		return this.catapult != null;
 	}
 	
 	public boolean hasStreet() {
-		throw new UnsupportedOperationException();
+		return this.street != null;
 	}
 	
 	public void removeCatapult() {
-		throw new UnsupportedOperationException();
+		this.catapult = null;
 	}
 	
 	public void setHarborType (HarborType harborType) {
-		throw new UnsupportedOperationException();
+		if (harborType == null) throw new IllegalStateException();
+		this.harborType = harborType;
 	}
 	
 	public HarborType getHarborType(){
-		throw new UnsupportedOperationException();
+		return this.harborType;
 	}
 	
 	public void createStreet(Player owner) {
-		throw new UnsupportedOperationException();
+		if (owner == null) throw new IllegalStateException();
+		this.street = new Street(owner);
 	}
 	
 	public void createCatapult(Player owner) {
-		throw new UnsupportedOperationException();
+		if (owner == null) throw new IllegalStateException();
+		this.catapult = new Catapult(owner);
 	}
 	
 	public Location getLocation() {
-		throw new UnsupportedOperationException();
+		return this.location;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(o instanceof Path) {
+			return ((Path)o).location.equals(this.location);
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return location.hashCode();
 	}
 	
 }

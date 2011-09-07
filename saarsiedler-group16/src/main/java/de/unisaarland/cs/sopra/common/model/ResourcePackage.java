@@ -78,9 +78,44 @@ public class ResourcePackage {
 	 * @return True if one of the Resources in the ResourcePackage has a negative Count
 	 */
 	public boolean hasNegativeResources() {
-		return (resources.get(LUMBER) < 0 && resources.get(GRAIN) < 0 && resources.get(BRICK) < 0 
-				&& resources.get(ORE) < 0 && resources.get(WOOL) < 0);
+		return (resources.get(LUMBER) < 0 || resources.get(GRAIN) < 0 || resources.get(BRICK) < 0 
+				|| resources.get(ORE) < 0 || resources.get(WOOL) < 0);
 	}
 	
-	//TODO: implement equals and hashcode
+	/**
+	 * @return True if one of the Resources in the ResourcePackage has a positive Count
+	 */
+	public boolean hasPositiveResources() {
+		return (resources.get(LUMBER) > 0 || resources.get(GRAIN) > 0 || resources.get(BRICK) > 0 
+				|| resources.get(ORE) > 0 || resources.get(WOOL) > 0);
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof ResourcePackage) {
+			if ( (((ResourcePackage)o).getResource(LUMBER) == this.getResource(LUMBER)) &&
+				 (((ResourcePackage)o).getResource(BRICK) == this.getResource(BRICK)) &&
+				 (((ResourcePackage)o).getResource(WOOL) == this.getResource(WOOL)) &&
+				 (((ResourcePackage)o).getResource(GRAIN) == this.getResource(GRAIN)) &&
+				 (((ResourcePackage)o).getResource(ORE) == this.getResource(ORE)) ) return true;
+			else return false;
+		}
+		return false;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return this.getResource(LUMBER) * 271 +
+			   this.getResource(BRICK) * 269 +
+			   this.getResource(WOOL) * 263 +
+			   this.getResource(GRAIN) * 257 +
+			   this.getResource(ORE) * 251;
+	}
+	
 }
