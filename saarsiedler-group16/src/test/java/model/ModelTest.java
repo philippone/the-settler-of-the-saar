@@ -890,4 +890,80 @@ public class ModelTest {
 		
 	}
 	
+	
+	
+	
+	/**
+	 * Angriff gegen eigene Village und Town - erfolgreich (beide male), aber habe selbst genug Villages
+	 */
+	@Test
+	public void testAttackOwnSettlement4(){
+		// Gegner
+		Player gegner = model.getTableOrder().get(0);
+		//gibt den akt. Playern alle Resourcen um Komplikationen mit build zu vermeiden.
+		model.getTableOrder().get(0).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 
+		model.getTableOrder().get(1).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 
+		//Angriffsziele bauen (Initialisierungsphase)
+		// 1.Player
+		model.buildSettlement(new Location(0,0,0) , BuildingType.Village);
+		model.buildStreet(new Location(0,0,0));
+		// 2. Player
+		model.buildSettlement(new Location(0,0,4) , BuildingType.Village);
+		model.buildStreet(new Location(1,0,0));
+		// 3. Player
+		model.buildSettlement(new Location(3,3,0) , BuildingType.Village);
+		model.buildStreet(new Location(3,3,0));
+		// wieder 3
+		model.buildSettlement(new Location(3,3,3), BuildingType.Village);
+		model.buildStreet(new Location(3,3,2));
+		// 2. Player
+		model.buildSettlement(new Location(1,0,4), BuildingType.Village);
+		model.buildStreet(new Location(1,0,4));
+		// 1. Player
+		model.buildSettlement(new Location(1,1,0) , BuildingType.Village);
+		model.buildStreet(new Location(1,1,0));
+		
+		//neue Runde (1.Player)
+		model.newRound(12);
+		// Upgrade 1 Village
+		model.buildSettlement(new Location(1,1,0), BuildingType.Town);
+		
+		//neue Runde (2. Player)
+		model.newRound(3);
+		model.buildSettlement(new Location(1,0,0), BuildingType.Town);
+		model.buildStreet(new Location(1,0,3));
+		model.buildStreet(new Location(2,0,4));
+		model.buildSettlement(new Location(2,0,4), BuildingType.Village);
+		model.buildStreet(new Location(3,0,5));
+		model.buildStreet(new Location(3,0,4));
+		model.buildSettlement(new Location(3,0,4), BuildingType.Village);
+		model.buildStreet(new Location(3,0,3));
+		model.buildStreet(new Location(3,0,2));
+		model.buildSettlement(new Location(3,0,2), BuildingType.Village);
+		model.buildStreet(new Location(3,0,0));
+		model.buildStreet(new Location(3,1,5));
+		model.buildSettlement(new Location(3,1,0), BuildingType.Village);
+		model.buildStreet(new Location(3,1,0));
+		model.buildStreet(new Location(3,1,1));
+		model.buildSettlement(new Location(3,1,2), BuildingType.Village);
+		model.buildStreet(new Location(3,2,5));
+		model.buildSettlement(new Location(3,2,0), BuildingType.Village);
+		model.buildStreet(new Location(2,1,1));
+		model.buildStreet(new Location(2,1,0));
+		model.buildSettlement(new Location(2,1,0), BuildingType.Village);
+		model.buildStreet(new Location(2,0,5));
+		model.buildSettlement(new Location(2,0,0), BuildingType.Village);
+		model.buildSettlement(new Location(2,0,0), BuildingType.Town);
+		model.buildSettlement(new Location(1,0,4), BuildingType.Town);
+		model.buildSettlement(new Location(3,0,4), BuildingType.Town);
+		model.buildSettlement(new Location(3,0,0), BuildingType.Town);
+		// Player 2 hat jetzt maxVillages und maxTowns
+		
+		// Angriff auf eine Village -> sollte sich nichts veraendern
+		
+		// Angriff auf eine Town -> sollte zerstoert werden
+
+		
+	}
+	
 }
