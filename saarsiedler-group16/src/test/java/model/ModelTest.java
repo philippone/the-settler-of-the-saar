@@ -434,7 +434,7 @@ public class ModelTest {
 	 * Angriff gegen gegnerische Village und Town - unentschieden (beide male)
 	 */
 	@Test
-	public void testAttackSettlement2(){
+	public void testAttackSettlement3(){
 		// Gegner
 		Player gegner = model.getTableOrder().get(0);
 		
@@ -471,17 +471,29 @@ public class ModelTest {
 		model.buildSettlement(new Location(1,0,0), BuildingType.Town);
 		model.buildCatapult(new Location(0,0,4), true);
 		model.catapultMoved(new Location(0,0,4), new Location(0,0,5), true);
-		model.attackSettlement(new Location(0,0,5), new Location(0,0,0), AttackResult.DRAW);
-		assertFalse("es hat sich etwas veraendert", model.getIntersection(new Location(0,0,0)).getOwner().equals(model.getCurrentPlayer()));
-		assertTrue("der Gegner ist nicht mehr im Besitz seiner Village", model.getIntersection(new Location(0,0,0)).getOwner().equals(gegner));
-		assertTrue("das angreifende Katapult ist weg", model.getPath(new Location(0,0,5)).getCatapultOwner().equals(model.getCurrentPlayer()));
+		model.attackSettlement(new Location(0,0,5), new Location(0,0,0), AttackResult.DEFEAT);
+		assertTrue("Gegener nicht merh im Besitz seiner Village", model.getIntersection(new Location(0,0,0)).getOwner().equals(gegner));
+		assertTrue("Village ist keine Village mehr", model.getIntersection(new Location(0,0,0)).getBuildingType().equals(BuildingType.Village));
+		try {
+			model.getPath(new Location(0, 0, 5)).getCatapultOwner();
+			fail("Katapult muesste zerstoert sein");
+		} catch(Exception e) {
+			//Test laueft durch
+		}
+		
+		
 		
 		model.catapultMoved(new Location(0,0,5), new Location(0,0,0), true);
 		model.catapultMoved(new Location(0,0,0),new Location(0,0,1), true);
-		model.attackSettlement(new Location(0,0,1), new Location(0,0,2), AttackResult.DRAW);
-		assertTrue("Zustand hat sich geaendert", model.getIntersection(new Location(0,0,2)).getBuildingType().equals(BuildingType.Town));
-		assertTrue("Village gehoert dem falschen Spieler (Zustand hat sich geandert)", model.getIntersection(new Location(0,0,2)).getOwner().equals(gegner));
-		assertTrue("das angreifende Katapult ist weg", model.getPath(new Location(0,0,1)).getCatapultOwner().equals(model.getCurrentPlayer()));
+		model.attackSettlement(new Location(0,0,1), new Location(0,0,2), AttackResult.DEFEAT);
+		assertTrue("Gegener nicht merh im Besitz seiner Village", model.getIntersection(new Location(0,0,2)).getOwner().equals(gegner));
+		assertTrue("Village ist keine Village mehr", model.getIntersection(new Location(0,0,2)).getBuildingType().equals(BuildingType.Village));
+		try {
+			model.getPath(new Location(0, 0, 1)).getCatapultOwner();
+			fail("Katapult muesste zerstoert sein");
+		} catch(Exception e) {
+			//Test laueft durch
+		}
 	}
 	
 	
