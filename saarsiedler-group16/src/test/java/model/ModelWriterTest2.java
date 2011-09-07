@@ -234,6 +234,8 @@ public class ModelWriterTest2 {
 		Point p1 = new Point(1,2);
 		Point p2 = new Point(1,1);
 		model.robberMoved(p1, p2, 0, Resource.LUMBER);
+		assertTrue("Robber shouldn't be on field 1,2", model.getField(p1).hasRobber());
+		assertTrue("Robber should be on field 1,1", model.getField(p2).hasRobber());
 	}
 
 	@Test
@@ -241,7 +243,8 @@ public class ModelWriterTest2 {
 		Point p1 = new Point(1,2);
 		Point p2 = new Point(2,1);
 		model.robberMoved(p1, p2, 1, null);
-		
+		assertTrue("Robber shouldn't be on field 1,2", model.getField(p1).hasRobber());
+		assertTrue("Robber should be on field 2,1", model.getField(p2).hasRobber());
 	}
 	
 	@Test
