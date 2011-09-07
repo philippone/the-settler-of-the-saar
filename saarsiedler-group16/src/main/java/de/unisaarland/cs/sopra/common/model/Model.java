@@ -26,13 +26,14 @@ public class Model implements ModelReader, ModelWriter{
 	private List<Path> longestClaimedRoad;
 	private int maxVictoryPoints;
 	private boolean reversedPlayersList;
+	private long meID;
 	private Player me;
 	
 	/**
 	 * @param worldRepresentation
 	 * @param matchInformation
 	 */
-	public Model(WorldRepresentation worldRepresentation, MatchInformation matchInformation, Player me) {
+	public Model(WorldRepresentation worldRepresentation, MatchInformation matchInformation, long meID) {
 		this.board = new Board(worldRepresentation);
 		this.modelObserver = new LinkedList<ModelObserver>();
 		this.maxBuilding = new TreeMap<BuildingType,Integer>();
@@ -45,7 +46,7 @@ public class Model implements ModelReader, ModelWriter{
 				this.maxVictoryPoints = worldRepresentation.getVictoryPoints(i);
 		}
 		if(this.maxVictoryPoints == 0) throw new IllegalStateException();
-		this.me = me;
+		this.meID = meID;
 	}
 	
 	/**
@@ -124,6 +125,7 @@ public class Model implements ModelReader, ModelWriter{
 			this.playerMap.put(act,player);
 			this.players.add(player);
 		}
+		this.me = this.playerMap.get(meID);
 	}
 	
 	/**
