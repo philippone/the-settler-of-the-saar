@@ -91,5 +91,12 @@ public interface ModelWriter {
 	 */
 	public void respondTrade(long playerID);
 	
-	
+	/**
+	 * @param lumber
+	 * @param brick
+	 * @param wool
+	 * @param grain
+	 * @param ore
+	 */
+	public void returnResources(int lumber, int brick, int wool, int grain, int ore);
 }

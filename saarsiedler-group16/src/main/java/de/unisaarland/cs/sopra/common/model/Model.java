@@ -592,4 +592,9 @@ public class Model implements ModelReader, ModelWriter{
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public void returnResources(int lumber, int brick, int wool, int grain, int ore) {
+		throw new UnsupportedOperationException();
+	}
+
 }
