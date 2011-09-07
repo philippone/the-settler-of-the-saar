@@ -10,7 +10,8 @@ public interface ModelReader {
 	public int getMaxBuilding(BuildingType buildingType);
 	public int getMaxCatapult();
 	public int getRound();
-	public Set<Intersection> buildableIntersections(Player player);
+	public Set<Intersection> buildableVillageIntersections(Player player);
+	public Set<Intersection> buildableTownIntersections(Player player);
 	public Set<Path> buildableStreetPaths(Player player);
 	public Set<Path> buildableCatapultPaths(Player player);
 	public int affordableSettlements(BuildingType buildingType);
