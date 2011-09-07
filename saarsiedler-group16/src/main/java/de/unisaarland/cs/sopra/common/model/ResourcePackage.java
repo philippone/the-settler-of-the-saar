@@ -82,5 +82,26 @@ public class ResourcePackage {
 				&& resources.get(ORE) < 0 && resources.get(WOOL) < 0);
 	}
 	
-	//TODO: implement equals and hashcode
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof ResourcePackage) {
+			if ( (((ResourcePackage)o).getResource(LUMBER) == this.getResource(LUMBER)) &&
+				 (((ResourcePackage)o).getResource(BRICK) == this.getResource(BRICK)) &&
+				 (((ResourcePackage)o).getResource(WOOL) == this.getResource(WOOL)) &&
+				 (((ResourcePackage)o).getResource(GRAIN) == this.getResource(GRAIN)) &&
+				 (((ResourcePackage)o).getResource(ORE) == this.getResource(ORE)) ) return true;
+			else return false;
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.getResource(LUMBER) * 271 +
+			   this.getResource(BRICK) * 269 +
+			   this.getResource(WOOL) * 263 +
+			   this.getResource(GRAIN) * 257 +
+			   this.getResource(ORE) * 251;
+	}
+	
 }

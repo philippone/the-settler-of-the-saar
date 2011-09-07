@@ -109,6 +109,7 @@ public class Model implements ModelReader, ModelWriter{
 	 * @return List<List<Path>>
 	 */
 	public List<List<Path>> calculateLongestRoads(Player player) {
+		if (player == null) throw new IllegalArgumentException();
 		throw new UnsupportedOperationException();
 	}
 	
@@ -116,48 +117,69 @@ public class Model implements ModelReader, ModelWriter{
 	 * @param playerIDs (set the "Table Order")
 	 */
 	public void setTableOrder(long[] playerIDs) {
+		if (playerIDs == null) throw new IllegalArgumentException();
 		this.players = new LinkedList<Player>();
+		for(long act : playerIDs) {
+			Player player = new Player();
+			this.playerMap.put(act,player);
+			this.players.add(player);
+		}
 	}
 	
 	/**
 	 * @param numbers: int[] (set the numbers on the fields)
 	 */
 	public void setFieldNumbers(int[] numbers) {
-		board.get
+		if (numbers == null) throw new IllegalArgumentException();
+		Iterator<Field> iter = board.getFieldIterator();
+		int i = 0;
+		while(iter.hasNext()) {
+			iter.next().setNumber(numbers[i++]);
+		}
 	}
 	
 	/**
 	 * @param intersection (split the longestclaimedRoad at the Location of Intersection)
 	 */
 	public void updateLongestRoad(Intersection intersection) {
-		throw new UnsupportedOperationException();
+		if (intersection == null) throw new IllegalArgumentException();
+		List<Path> tmp = new LinkedList<Path>();
+		for(Path act : this.longestClaimedRoad) {
+			if(board.getIntersectionsFromPath(act).contains(intersection)) {
+				tmp.add(act);
+				this.longestClaimedRoad.removeAll(tmp);
+				this.longestClaimedRoad = tmp.size() < this.longestClaimedRoad.size() ? tmp : this.longestClaimedRoad;
+			}
+			tmp.add(act);
+		}
 	}
 	
 	/**
-	 * @return
+	 * @return The list of ModelObservers
 	 */
 	public List<ModelObserver> getModelObservers() {
 		return this.modelObserver;
 	}
 	
 	/**
-	 * @return
+	 * @return The List of Player sorted in TableOrder
 	 */
 	public List<Player> getTableOrder() {
 		return this.players;
 	}
 	
 	/**
-	 * @return
+	 * @return The Map containing the mapping of playerID -> Player
 	 */
 	public Map<Long,Player> getPlayerMap() {
-		throw new UnsupportedOperationException();
+		return this.playerMap;
 	}
 	
 	/* (non-Javadoc)
 	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getPath(de.unisaarland.cs.sopra.common.model.Location)
 	 */
 	public Path getPath(Location location) {
+		if (location == null) throw new IllegalArgumentException();
 		return board.getPath(location);
 	}
 	
@@ -165,6 +187,7 @@ public class Model implements ModelReader, ModelWriter{
 	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getIntersection(de.unisaarland.cs.sopra.common.model.Location)
 	 */
 	public Intersection getIntersection(Location location) {
+		if (location == null) throw new IllegalArgumentException();
 		return board.getIntersection(location);
 	}
 
@@ -173,7 +196,8 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public int getMaxBuilding(BuildingType buildingType) {
-		throw new UnsupportedOperationException();
+		if (buildingType == null) throw new IllegalArgumentException();
+		return this.getMaxBuilding(buildingType);
 	}
 
 	/* (non-Javadoc)
@@ -181,7 +205,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public int getRound() {
-		throw new UnsupportedOperationException();
+		return this.round;
 	}
 
 	/* (non-Javadoc)
