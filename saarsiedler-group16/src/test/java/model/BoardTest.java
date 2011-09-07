@@ -36,69 +36,46 @@ public class BoardTest {
 	public void setUp() {
 		Random r1 = new Random();
 		r1.nextInt(10);
-			
-			//Create one field of type FOREST
-			int x = r1.nextInt(10);
-			int y = r1.nextInt(10);
-			p1 = new Point(x, y);
-			f1 = new Field(FieldType.FOREST, p1);
-		   
-			//Create second field of type FOREST
-			int x3 = r1.nextInt(10);
-			int y3 = r1.nextInt(10);
-			p2 = new Point(x3, y3);
-			f2 = new Field(FieldType.FOREST, p2);
-			// Create TestBoard
-			b = TestUtil.getTestBoard();
-		
-			Random r3 = new Random();
-			r3.nextInt(5);
-			//Create one intersection
-			int x1 = r1.nextInt(10);
-			int y1 = r1.nextInt(10);
-			int o1 = r3.nextInt(5);
-			l1 = new Location(x1, y1, o1);
-			i1 = new Intersection(l1);
-			//Create one path
-			int x4 = r1.nextInt(10);
-			int y4 = r1.nextInt(10);
-			int o4 = r3.nextInt(5);
-			l2 = new Location(x4, y4, o4);
-			path1 = new Path(l2);
-			//Create one intersection
-			int x5 = r1.nextInt(10);
-			int y5 = r1.nextInt(10);
-			int o5 = r3.nextInt(5);
-			l3 = new Location(x5, y5, o5);
-			i2 = new Intersection(l3);
-			// Create one path
-			int x6 = r1.nextInt(10);
-			int y6 = r1.nextInt(10);
-			int o6 = r3.nextInt(5);
-			l4 = new Location(x6, y6, o6);
-			path2 = new Path(l4);
 
+		// Create one field of type FOREST
+		Field f2 = new Field(FieldType.FOREST, new Point(1, 1));
+		// Create second field of type WATER
+		Field f1 = new Field(FieldType.WATER, new Point(1, 0));
+		// Create TestBoard
+		b = TestUtil.getTestBoard();
+
+			
 	}
 	@Test
 	public void testGetField() {
-		assertEquals(f1, b.getField(p1));
-		assertFalse(b.getField(p1).equals(b.getField(p2)));
+		assertEquals(f1, b.getField(new Point(1,0)));
+		assertFalse(b.getField(new Point(1,0)).equals(b.getField(new Point(1,1))));
 
 	}
 	@Test
 	public void testGetIntersection() {
-		assertEquals(i1, b.getIntersection(l1));
-		assertFalse(b.getIntersection(l1).equals(b.getIntersection(l3)));
-		assertEquals(b.getIntersection(new Location(0, 0, 2)), b.getIntersection(new Location(0, 1, 4)));
-		assertEquals(b.getIntersection(new Location(1, 1, 0)), b.getIntersection(new Location(0, 1, 4)));
+		assertEquals(new Intersection(new Location(1, 0, 3)), b.getIntersection(new Location(1, 0, 3)));
+		assertEquals(b.getIntersection(new Location(1, 0, 3)), b.getIntersection(new Location(2, 1, 4)));
+		assertEquals(b.getIntersection(new Location(1, 0, 3)), b.getIntersection(new Location(3, 1, 0)));
+	}
+	
+	@Test
+	public void testGetIntersectionRand(){
+		assertEquals(new Intersection(new Location(3, 2, 4)), b.getIntersection(new Location(3, 2, 4)));
 	}
 	
 	@Test
 	public void testGetPath() {
-		assertEquals(path1, b.getPath(l2));
-		assertFalse(b.getPath(l2).equals(b.getPath(l4)));
-		assertEquals(b.getPath(new Location(2, 0, 2)), b.getPath(new Location(3, 1, 5)));
+		assertEquals(new Path(new Location(1, 0, 4)), b.getPath(new Location(1, 0, 4)));
+		assertEquals(b.getPath(new Location(1, 0, 4)), b.getPath(new Location(0, 1, 2)));
 	}
+	
+	@Test
+	public void testGetPath2(){
+		assertEquals(new Path(new Location(0, 2, 5)), b.getPath(new Location(0, 2, 5)));
+		assertEquals(false, b.getPath(new Location(0, 2, 5)).equals(b.getPath(new Location(2, 0, 5))));
+	}
+	
 	@Test
 	public void testGetPathsFromPaths() {
 		//initialize path3;
@@ -332,14 +309,12 @@ public class BoardTest {
 	@Test	
 	public void testSetHarbors() {
 
-		// check if harbors are being properly initialized. The fields are for
-		// clarity
-		Field f1 = new Field(FieldType.WATER, new Point(1, 0));
-		Field f2 = new Field(FieldType.FIELD, new Point(1, 1));
+		// check if harbors are being properly initialized. 
+
 		Path p = new Path(new Location(1, 0, 1));
 		Path p2 = new Path(new Location(1, 1, 4));
-		b.setHarbor(new Location(1, 0, 1), HarborType.GRAIN_HARBOR);
-		assertEquals(HarborType.GRAIN_HARBOR, p.getHarborType());
+		b.setHarbor(new Location(1, 0, 1), HarborType.GENERAL_HARBOR);
+		assertEquals(HarborType.GENERAL_HARBOR, p.getHarborType());
 		assertEquals(p2.getHarborType(), p.getHarborType());
 
 	}
