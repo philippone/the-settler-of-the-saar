@@ -104,5 +104,25 @@ public class ModelReaderTest3 {
 		// check whether the players resourcePackage is intact
 		assertEquals(rp1, model.getCurrentPlayer().getResources());
 	}
+	
+	public void testAffordableTowns2() {
+		model.getCurrentPlayer().modifyResources(new ResourcePackage(0, 0, 0, 2, 3));
+		ResourcePackage rp = model.getCurrentPlayer().getResources();
+		
+		if (model.affordableSettlements(BuildingType.Town) < 0)
+			throw new IllegalArgumentException();
+		else
+			assertEquals(1, model.affordableSettlements(BuildingType.Town));
+	}
 
+	public void testAffordableTowns3() {
+		model.getCurrentPlayer().modifyResources(new ResourcePackage(1, 0, 0, 2, 2));
+		ResourcePackage rp = model.getCurrentPlayer().getResources();
+		
+		if (model.affordableSettlements(BuildingType.Town) < 0)
+			throw new IllegalArgumentException();
+		else
+			assertEquals(0, model.affordableSettlements(BuildingType.Town));
+	}
+	
 }
