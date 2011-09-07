@@ -6,8 +6,9 @@ import java.util.Set;
 
 public interface ModelReader {
 
-	public int getInitBuilding(BuildingType buildingType);
+	public int getInitVillages();
 	public int getMaxBuilding(BuildingType buildingType);
+	public int getMaxCatapult();
 	public int getRound();
 	public Set<Intersection> buildableIntersections(Player player);
 	public Set<Path> buildableStreetPaths(Player player);
