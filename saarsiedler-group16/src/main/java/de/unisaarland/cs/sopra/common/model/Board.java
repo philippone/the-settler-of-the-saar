@@ -1,5 +1,6 @@
 package de.unisaarland.cs.sopra.common.model;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -18,7 +19,7 @@ public class Board {
 	public Board(WorldRepresentation worldRepresentation) {
 		this.height = worldRepresentation.getHeight();
 		this.width = worldRepresentation.getWidth();
-		this.field = new TreeMap<Point,Field>();
+		this.field = new HashMap<Point,Field>();
 		for (int i = 0; i < width*height; i++) {
 			Point p = new Point(i/width,i%width);
 			FieldType fieldType = FieldType.convert( worldRepresentation.getFieldType(i/width,i%width) );

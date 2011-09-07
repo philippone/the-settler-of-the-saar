@@ -90,7 +90,7 @@ public class FieldTest {
 	}
 	@Test
 	public void testNumber(){
-		assertEquals(null, f8.getNumber());
+		assertEquals(0, f8.getNumber());
 		f8.setNumber(12);
 		assertEquals(12, f8.getNumber());
 	}
@@ -117,8 +117,5 @@ public class FieldTest {
 		//when all of their attributes are equal (by Valentin)
 		Field f1WithSameAttributes= new Field(FieldType.DESERT, p);	
 		assertEquals(f1.hashCode(), f1WithSameAttributes.hashCode());
-		
-		f1WithSameAttributes.setRobber(true);
-		assertNotSame(f1.hashCode(), f1WithSameAttributes.hashCode());
 	}
 }

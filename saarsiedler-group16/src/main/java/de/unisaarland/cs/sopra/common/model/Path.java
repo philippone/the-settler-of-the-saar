@@ -66,7 +66,7 @@ public class Path {
 	
 	@Override
 	public int hashCode() {
-		return location.hashCode() * 131 + street.hashCode() + catapult.hashCode() + harborType.hashCode();
+		return location.hashCode();
 	}
 	
 }
