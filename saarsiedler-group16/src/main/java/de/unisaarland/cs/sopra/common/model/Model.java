@@ -23,6 +23,7 @@ public class Model implements ModelReader, ModelWriter{
 	private int initVillages;
 	private List<Path> longestClaimedRoad;
 	private int maxVictoryPoints;
+	private boolean reversedPlayersList;
 	
 	/**
 	 * @param worldRepresentation
@@ -130,6 +131,13 @@ public class Model implements ModelReader, ModelWriter{
 		return this.players;
 	}
 	
+	/**
+	 * @return
+	 */
+	public Map<Long,Player> getPlayerMap() {
+		throw new UnsupportedOperationException();
+	}
+	
 	/* (non-Javadoc)
 	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getPath(de.unisaarland.cs.sopra.common.model.Location)
 	 */
@@ -157,14 +165,6 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public int getRound() {
-		throw new UnsupportedOperationException();
-	}
-
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#buildableIntersections(de.unisaarland.cs.sopra.common.model.Player)
-	 */
-	@Override
-	public Set<Intersection> buildableIntersections(Player player) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -573,6 +573,22 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public int getInitVillages() {
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#buildableVillageIntersections(de.unisaarland.cs.sopra.common.model.Player)
+	 */
+	@Override
+	public Set<Intersection> buildableVillageIntersections(Player player) {
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#buildableTownIntersections(de.unisaarland.cs.sopra.common.model.Player)
+	 */
+	@Override
+	public Set<Intersection> buildableTownIntersections(Player player) {
 		throw new UnsupportedOperationException();
 	}
 
