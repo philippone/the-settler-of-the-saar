@@ -41,6 +41,8 @@ public class ModelReaderTest2 {
 	
 	@Test
 	public void testGetRound() {
+		int roundNumber=model.getRound();
+		assertEquals(roundNumber,0);
 		
 	}
 	
@@ -67,14 +69,6 @@ public class ModelReaderTest2 {
 		Player pl=model.getCurrentPlayer();
 		Set<Intersection> si=model.buildableTownIntersections(pl);
 		for (Intersection i : si){ //check for all intersections
-			Set<Path> sp=model.getPathsFromIntersection(i);
-			boolean b=false;
-			for(Path p : sp){ // check for all neighbor PAths
-				b= b | (p.getStreetOwner()==pl);
-				// check if player owns a street on this path 
-			}
-			assertTrue(b);
-			// check player has a street on a neighbor path leading to this intersection
 			assertFalse((i.getOwner()==pl && i.getBuildingType()==BuildingType.Village));
 			// check player owns a village here
 		}
