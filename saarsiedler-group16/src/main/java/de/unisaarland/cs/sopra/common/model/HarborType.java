@@ -24,7 +24,9 @@ public enum HarborType {
 			case WOOL_HARBOR:
 				if (resourcePackage.getResource(Resource.WOOL) == -2 && resourcePackage.getPositiveResourcesCount() == 1) return true;
 				else return false;
+			default:
+				throw new IllegalStateException();
 		}
-		throw new IllegalStateException();
+		
 	}
 }
