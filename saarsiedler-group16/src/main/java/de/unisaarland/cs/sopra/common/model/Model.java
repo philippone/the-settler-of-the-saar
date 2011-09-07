@@ -1,9 +1,11 @@
 package de.unisaarland.cs.sopra.common.model;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import de.unisaarland.cs.sopra.common.ModelObserver;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
@@ -30,8 +32,20 @@ public class Model implements ModelReader, ModelWriter{
 	 * @param worldRepresentation
 	 * @param matchInformation
 	 */
-	public Model(WorldRepresentation worldRepresentation, MatchInformation matchInformation) {
-		throw new UnsupportedOperationException();
+	public Model(WorldRepresentation worldRepresentation, MatchInformation matchInformation, Player me) {
+		this.board = new Board(worldRepresentation);
+		this.modelObserver = new LinkedList<ModelObserver>();
+		this.maxBuilding = new TreeMap<BuildingType,Integer>();
+		this.maxBuilding.put(BuildingType.Village, worldRepresentation.getMaxVillages());
+		this.maxBuilding.put(BuildingType.Town, worldRepresentation.getMaxTowns());
+		this.maxCatapult = worldRepresentation.getMaxCatapults();
+		this.initVillages = worldRepresentation.getInitVillages();
+		for(int i = 0; i < worldRepresentation.getNumPlayerConfigs(); i++) {
+			if(worldRepresentation.getNumPlayers(i) == matchInformation.getNumPlayers())
+				this.maxVictoryPoints = worldRepresentation.getVictoryPoints(i);
+		}
+		if(this.maxVictoryPoints == 0) throw new IllegalStateException();
+		this.me = me;
 	}
 	
 	/**
@@ -51,42 +65,43 @@ public class Model implements ModelReader, ModelWriter{
 	}
 	
 	/**
-	 * @param field
 	 * @return Point of field
 	 */
 	public static Point getLocation(Field field) {
-		throw new UnsupportedOperationException();
+		return field.getLocation();
 	}
 	
 	/**
-	 * @param path
 	 * @return Location of Path 
 	 */
 	public static Location getLocation(Path path) {
-		throw new UnsupportedOperationException();
+		return path.getLocation();
 	}
 	
 	/**
-	 * @param intersection
 	 * @return Location of Intersection
 	 */
 	public static Location getLocation(Intersection intersection) {
-		throw new UnsupportedOperationException();
+		return intersection.getLocation();
 	}
 	
 	/**
-	 * @param pathlist
-	 * @return
+	 * @return Locations of the Paths in the List
 	 */
 	public static List<Location> getLocationList(List<Path> pathlist) {
-		throw new UnsupportedOperationException();
+		if (pathlist == null) throw new IllegalArgumentException();
+		List<Location> tmp = new LinkedList<Location>();
+		for(Path act : pathlist) {
+			tmp.add(act.getLocation());
+		}
+		return tmp;
 	}
 	
 	/**
 	 * @return current Player
 	 */
 	public Player getCurrentPlayer() {
-		throw new UnsupportedOperationException();
+		return this.players.get( (this.round % this.players.size()) - 1 );
 	}
 	
 	/**
@@ -101,14 +116,14 @@ public class Model implements ModelReader, ModelWriter{
 	 * @param playerIDs (set the "Table Order")
 	 */
 	public void setTableOrder(long[] playerIDs) {
-		throw new UnsupportedOperationException();
+		this.players = new LinkedList<Player>();
 	}
 	
 	/**
 	 * @param numbers: int[] (set the numbers on the fields)
 	 */
 	public void setFieldNumbers(int[] numbers) {
-		throw new UnsupportedOperationException();
+		board.get
 	}
 	
 	/**
