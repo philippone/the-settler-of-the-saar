@@ -44,7 +44,6 @@ public class ResourcePackage {
 		return resources.get(resource);
 	}
 	
-	
 	/**
 	 * @param resourcePackage The ResourcePackage to add
 	 * @return The ResourcePackage after the merge with the other resourcePackage
@@ -83,4 +82,5 @@ public class ResourcePackage {
 				&& resources.get(ORE) < 0 && resources.get(WOOL) < 0);
 	}
 	
+	//TODO: implement equals and hashcode
 }

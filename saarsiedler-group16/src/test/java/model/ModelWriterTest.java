@@ -17,7 +17,6 @@ import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
-import de.unisaarland.cs.st.saarsiedler.comm.Connection;
 import de.unisaarland.cs.st.saarsiedler.comm.results.AttackResult;
 
 public class ModelWriterTest {	
@@ -152,24 +151,114 @@ public class ModelWriterTest {
 	// Tests wheter it is possible to build a town in the initial phase
 	public void buildSettlementTest() {
 		try {
-			model.buildSettlement(new Location, BuildingType.Town);
+			model.buildSettlement(new Location(1, 1, 1), BuildingType.Town);
 			fail("You shouldn't be able to build a town in the inital phase!");
 		}
 		catch (IllegalStateException e) { /* everything is fine */ }
 	}
-
+	
 	@Test
-	public void buildStreetTest() {
-		
-	}
-		
-	@Test
-	public void respondTradeTestPositive() {
-		
+	// Test wheter we have got enough resources to build the specified Settlement
+	public void buildSettlement_costpositiveTest() {
+		initalize();
+		model.buildStreet(new Location(1, 1, 1));
+		try {
+			model.buildSettlement(new Location(1, 1, 2), BuildingType.Village);
+		} catch (IllegalStateException e) {
+			fail("You should have enough resources to build the village!");
+		}
 	}
 	
 	@Test
-	public void respondTradeTestNegative() {
+	// Tests wheter we have not got enough resources to build the specified Settlement
+	public void buildSettlement_costnegativeTest() {
+		initalize();
+		model.newRound(2);
+		model.getPath(new Location(2, 2, 3)).createStreet(model.getCurrentPlayer());
+		try {
+			model.buildSettlement(new Location(2, 2, 3), BuildingType.Village);
+			fail("You shouldn't have enough resources to build the village!");
+		} catch (IllegalStateException e) { /* everything is fine */ }
+	}
+	
+	
+	@Test
+	// Tests wheter we can build a building although there is a street missing.
+	public void buildSettlement_missingStreetTest(){
+		initalize();
+		try {
+			model.buildSettlement(new Location(2, 2, 0), BuildingType.Village);
+			fail("There is no steet that allows you to build a new Village!");
+		}
+		catch (IllegalStateException e) { /* everything is fine */ }
+	}
+	
+	@Test
+	// Tests wheter there is another base to close to the intersection on which you
+	// wish to place your new village
+	public void buildSettlement_toCloseTest() {
+		initalize();
+		Player currentPlayer = model.getCurrentPlayer();
+		model.getPath(new Location(1, 1, 1)).createStreet(currentPlayer);
+		model.getPath(new Location(2, 2, 0)).createStreet(currentPlayer);
+		model.getPath(new Location(2, 2, 1)).createStreet(currentPlayer);
+		try {
+			model.buildSettlement(new Location(2, 2, 2), BuildingType.Village);
+			fail("You shouldn't be able to build this village because the intersection is to close" +
+					"to a intersection that already has a settlement!");
+		}
+		catch (IllegalStateException e) { /* everything is fine */ }
+	}
+	
+	@Test
+	// Tests wheter there is already a settlement on the destination intersection
+	public void buildSettlement_alreadyBuiltTest() {
+		initalize();
+		Player currentPlayer = model.getCurrentPlayer();
+		model.getPath(new Location(1, 1, 1)).createStreet(currentPlayer);
+		model.getPath(new Location(2, 2, 0)).createStreet(currentPlayer);
+		model.getPath(new Location(2, 2, 1)).createStreet(currentPlayer);
+		model.getPath(new Location(2, 2, 2)).createStreet(currentPlayer);
+		try {
+			model.buildSettlement(new Location(2, 2, 3), BuildingType.Village);
+			fail("There is already a settlement on this intersection!");
+		}
+		catch (IllegalStateException e) { /* everything is fine */ }
+	}
+	
+	@Test
+	// Tests wheter you are able to upgrade your village to a town
+	public void buildSettlement_upgradePositiveTest(){
+		initalize();
+		model.getIntersection(new Location(1, 1, 3)).createBuilding(BuildingType.Village, model.getCurrentPlayer());
+		try {
+			model.buildSettlement(new Location(1, 1, 3), BuildingType.Town);
+			// everything is fine
+		}
+		catch (IllegalStateException e){
+			fail("You should be able to upgrade your town!");
+		}
+	}
+	
+	@Test
+	// Tests wheter you are able to upgrade your village to a town
+	public void buildSettlement_upgradeNegativeTest(){
+		initalize();
+		Player currentPlayer = model.getCurrentPlayer();
+		model.getPath(new Location(1, 1, 1)).createStreet(currentPlayer);
+		model.getPath(new Location())
+		try {
+			model.buildSettlement(new Location(1, 1, 3), BuildingType.Town);
+			// everything is fine
+		}
+		catch (IllegalStateException e){
+			fail("You should be able to upgrade your town!");
+		}
+	}
+	
+	
+	@Test
+	public void buildStreetTest() {
 		
 	}
 	

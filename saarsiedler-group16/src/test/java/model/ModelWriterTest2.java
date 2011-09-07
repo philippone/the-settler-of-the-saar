@@ -255,9 +255,17 @@ public class ModelWriterTest2 {
 	public void returnResources2() {
 		TestModelObserver modelObserver = new TestModelObserver();
 		model.addModelObserver(modelObserver);
+		model.returnResources(50, 50, 75, 25, 50);
+		//Expect this
+	}
+	
+	@Test
+	public void returnResources3() {
+		TestModelObserver modelObserver = new TestModelObserver();
+		model.addModelObserver(modelObserver);
 		try {
-			model.returnResources(1, 1, 1, 1, 1);
-			fail("Wrong count of Resources returned");
+			model.returnResources(250, 0, 0, 0, 0);
+			fail("returned more of one resource then available");
 		}
 		catch (Exception e) {
 			//Expect this
@@ -269,7 +277,7 @@ public class ModelWriterTest2 {
 		TestModelObserver modelObserver = new TestModelObserver();
 		model.addModelObserver(modelObserver);
 		model.newRound(2);
-		assertTrue("The modelobserver method eventNewRound should be called", modelObserver.eventNewRoundCalled != null) ;
+		assertTrue("The modelobserver method eventNewRound should be called", modelObserver.eventNewRoundCalled) ;
 	}
 	
 	@Test
@@ -286,6 +294,7 @@ public class ModelWriterTest2 {
 		model.addModelObserver(modelObserver);
 		model.newRound(8);
 		assertTrue("The modelobserver method updateResources should be called", modelObserver.updateResourcesCalled) ;
+		assertEquals("resources were not updated correctly", model.getTableOrder().get(0).getResources(), new ResourcePackage(102,100,100,100,100));
 	}
 
 }
