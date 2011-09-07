@@ -105,6 +105,7 @@ public class ModelReaderTest {
 	
 	@Test
 	public void testGetFieldsFromField() {
+		// Case 6 neighbor fields
 		Set<Field> f1=model.getFieldsFromField(model.getField(new Point(1,1)));
 		Set<Field> f2=new TreeSet<Field>();
 		f2.add(model.getField(new Point(0,0)));
@@ -116,6 +117,14 @@ public class ModelReaderTest {
 		assertTrue(f1.containsAll(f2));
 		assertTrue(f2.containsAll(f1));
 		
+		// Case 3 neighbor fields
+		f1=model.getFieldsFromField(model.getField(new Point(0,0)));
+		f2=new TreeSet<Field>();
+		f2.add(model.getField(new Point(1,1)));
+		f2.add(model.getField(new Point(1,0)));
+		f2.add(model.getField(new Point(0,1)));
+		assertTrue(f1.containsAll(f2));
+		assertTrue(f2.containsAll(f1));
 		// noch mehr Faelle; es koennen auch nur 3,4,5 Felder herum liegen
 	}
 	
