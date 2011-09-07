@@ -6,7 +6,7 @@ public class Location {
 	private final int y;
 	private final int orientation;
 	
-	public Location(int x, int y, int orientation) {
+	public Location(int y, int x, int orientation) {
 		this.x = x;
 		this.y = y;
 		this.orientation = orientation;
