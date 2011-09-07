@@ -6,7 +6,6 @@ import de.unisaarland.cs.sopra.common.model.*;
 
 public abstract class View implements ModelObserver{
 
-	protected Player me;
 	protected ModelReader modelReader;
 	protected ControllerAdapter controllerAdapter;
 	

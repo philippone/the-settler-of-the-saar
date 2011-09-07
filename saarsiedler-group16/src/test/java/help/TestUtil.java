@@ -93,8 +93,8 @@ public class TestUtil {
 				new byte[] {1,4,
 							2,5,
 							3,6},
-				new byte[] {0,1,(1 << 4) & 0, 
-							2,2,(4 << 4) & 1
+				new byte[] {0,1,(1 << 4) | 0, 
+							2,2,(4 << 4) | 1
 								});
 				
 		MatchInformation matchinfo = new MatchInformation() 
@@ -164,8 +164,8 @@ public class TestUtil {
 								0,0,0},
 					new byte[] {1,4,
 								2,5},
-					new byte[] {0,1,(1 << 4) & 0, 
-								2,2,(4 << 4) & 1
+					new byte[] {0,1,(1 << 4) | 0, 
+								2,2,(4 << 4) | 1
 									});
 			return new Board(worldrep);
 	}

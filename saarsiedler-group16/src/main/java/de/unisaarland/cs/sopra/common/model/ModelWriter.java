@@ -99,4 +99,10 @@ public interface ModelWriter {
 	 * @param ore
 	 */
 	public void returnResources(int lumber, int brick, int wool, int grain, int ore);
+
+	/**
+	 * @param player
+	 */
+	public void setMe(Player player);
+	
 }

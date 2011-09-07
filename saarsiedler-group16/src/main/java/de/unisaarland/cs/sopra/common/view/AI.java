@@ -71,7 +71,7 @@ public class AI extends View{
 	}
 
 	@Override
-	public void eventNewRound(Player player) {
+	public void eventNewRound(boolean itsMyTurn) {
 		throw new UnsupportedOperationException();
 	}
 
