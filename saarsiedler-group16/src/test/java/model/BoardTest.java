@@ -25,7 +25,7 @@ public class BoardTest {
 	Point p1, p2;
 	Field f1, f2, f3;
 	Board b;
-	Location l1, l2, l3, l4, l5, l6, l7, l8, l9;
+	Location l1, l2, l3, l4;
 	Intersection i1, i2, i3;
 	Path path1, path2, path3, path4, path5, path6, path7, path8, path9, path10, path11;
 	Set<Path> pathSet, pathSet2, pathSet3, pathSet4, pathSet5;
@@ -102,18 +102,13 @@ public class BoardTest {
 	@Test
 	public void testGetPathsFromPaths() {
 		//initialize path3;
-		l5 = new Location(1, 1, 2);
-		path3 = new Path(l5);
+		path3 = new Path(new Location(1, 1, 2));
 		// initialize the 4 neighbours from path3
-		l6 = new Location(1, 1, 1);
-		path4 = new Path(l6);
-		l7 = new Location(1, 1, 3);
-		path5 = new Path(l7);
-		l8 = new Location(1, 2, 0);
-		path6 = new Path(l8);
-		l9 = new Location(1, 2, 4);
-		path7 = new Path(l9);
-		
+		path4 = new Path(new Location(1, 1, 1));
+		path5 = new Path(new Location(1, 1, 3));
+		path6 = new Path(new Location(1, 2, 0));
+		path7 = new Path(new Location(1, 2, 4));
+		//create both sets
 		pathSet = b.getPathsFromPath(path3);
 		pathSet2 = new TreeSet<Path>();
 		pathSet2.add(path4);
@@ -187,35 +182,35 @@ public class BoardTest {
 	}
 	
 	@Test
-	 public void testGetPathsFromField(){
-		 f3 = new Field(FieldType.WATER,new Point(0,0));
-		 
-		 //create both Sets
-		 pathSet5 = b.getPathsFromField(f3);
-		 pathSet6 = new TreeSet<Path>();
-		 pathSet6.add(new Path(new Location(0, 0, 0)));
-		 pathSet6.add(new Path(new Location(0, 0, 1)));
-		 pathSet6.add(new Path(new Location(0, 0, 2)));
-		 pathSet6.add(new Path(new Location(0, 0, 3)));
-		 pathSet6.add(new Path(new Location(0, 0, 4)));
-		 pathSet6.add(new Path(new Location(0, 0, 5)));
-		 //test if both sets have identical content
-			assertTrue(pathSet5.containsAll(pathSet6));
-			assertTrue(pathSet6.containsAll(pathSet5));
-	 }
+	public void testGetPathsFromField() {
+		f3 = new Field(FieldType.WATER, new Point(0, 0));
+
+		// create both Sets
+		pathSet5 = b.getPathsFromField(f3);
+		pathSet6 = new TreeSet<Path>();
+		pathSet6.add(new Path(new Location(0, 0, 0)));
+		pathSet6.add(new Path(new Location(0, 0, 1)));
+		pathSet6.add(new Path(new Location(0, 0, 2)));
+		pathSet6.add(new Path(new Location(0, 0, 3)));
+		pathSet6.add(new Path(new Location(0, 0, 4)));
+		pathSet6.add(new Path(new Location(0, 0, 5)));
+		// test if both sets have identical content
+		assertTrue(pathSet5.containsAll(pathSet6));
+		assertTrue(pathSet6.containsAll(pathSet5));
+	}
 	 
 	@Test
-	 public void testgetPathsFromIntersectionRand1(){
-		 //create both Sets
-		 pathSet7 = b.getPathsFromIntersection(new Intersection(new Location(0, 0, 0)));
-		 pathSet8 =  new TreeSet<Path>();
-		 pathSet8.add(new Path(new Location(0, 0, 0)));
-		 pathSet8.add(new Path(new Location(0, 0, 5)));
-		//test if both sets have identical content
-			assertTrue(pathSet7.containsAll(pathSet8));
-			assertTrue(pathSet8.containsAll(pathSet7));
-	 }
-	 
+	public void testgetPathsFromIntersectionRand1() {
+		// create both Sets
+		pathSet7 = b.getPathsFromIntersection(new Intersection(new Location(0, 0, 0)));
+		pathSet8 = new TreeSet<Path>();
+		pathSet8.add(new Path(new Location(0, 0, 0)));
+		pathSet8.add(new Path(new Location(0, 0, 5)));
+		// test if both sets have identical content
+		assertTrue(pathSet7.containsAll(pathSet8));
+		assertTrue(pathSet8.containsAll(pathSet7));
+	}
+
 	@Test
 	 public void testgetPathsFromIntersectionRand2(){
 		 //create both Sets
@@ -335,15 +330,18 @@ public class BoardTest {
 
 	
 	@Test	
- public void testSetHarbors(){
-		Field f1 = new Field(FieldType.WATER , new Point(0 , 1));
-		Field f2 = new Field(FieldType.FIELD, new Point(1, 1));
-		Path p = new Path(new Location(0, 1, 1)); 
-		Path p2 = new Path(new Location(1,1,4));
-	b.setHarbor(new Location(0, 1, 1), HarborType.GRAIN_HARBOR); 
-	assertEquals(HarborType.GRAIN_HARBOR, p.getHarborType());
-	assertEquals(p2.getHarborType(), p.getHarborType() );
+	public void testSetHarbors() {
 
- }
+		// check if harbors are being properly initialized. The fields are for
+		// clarity
+		Field f1 = new Field(FieldType.WATER, new Point(0, 1));
+		Field f2 = new Field(FieldType.FIELD, new Point(1, 1));
+		Path p = new Path(new Location(0, 1, 1));
+		Path p2 = new Path(new Location(1, 1, 4));
+		b.setHarbor(new Location(0, 1, 1), HarborType.GRAIN_HARBOR);
+		assertEquals(HarborType.GRAIN_HARBOR, p.getHarborType());
+		assertEquals(p2.getHarborType(), p.getHarborType());
+
+	}
 
 }

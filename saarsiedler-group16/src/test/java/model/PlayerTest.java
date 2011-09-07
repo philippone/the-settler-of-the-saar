@@ -27,8 +27,8 @@ public class PlayerTest {
 		assertEquals(3, p1.getResources().getResource(Resource.WOOL));
 		assertEquals(4, p1.getResources().getResource(Resource.GRAIN));
 		assertEquals(5, p1.getResources().getResource(Resource.ORE));
-		
-		p2.modifyResources(new ResourcePackage(1,1,1,1,1));		//vl nutzloser Test, macht aber nix
+		//probably not worth testing, but nevertheless..
+		p2.modifyResources(new ResourcePackage(1,1,1,1,1));		
 		try{
 			p2.modifyResources(new ResourcePackage(-2,-2,-2,-2,-2));
 			fail("Sollte IllegalArgumentException werfen, da Player kein negatives Guthaben haben darf!");
