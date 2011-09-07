@@ -373,10 +373,10 @@ public class ModelTest {
 	 * Angriff gegen gegnerische Village und Town - erfolgreich (beide male)
 	 */
 	@Test
-	public void testAttackSettlement(){
+	public void testAttackSettlement() throws IOException{
 		// Gegner
 		Player gegner = model.getTableOrder().get(0);
-		
+
 		//gibt den akt. Playern alle Resourcen um Komplikationen mit build zu vermeiden.
 		model.getTableOrder().get(0).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 
 		model.getTableOrder().get(1).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 
