@@ -1,129 +1,111 @@
 package model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import help.TestUtil;
 
 import java.io.IOException;
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import de.unisaarland.cs.sopra.common.model.BuildingType;
-import de.unisaarland.cs.sopra.common.model.Intersection;
-import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.Model;
-import de.unisaarland.cs.sopra.common.model.ResourcePackage;
+import de.unisaarland.cs.sopra.common.model.Point;
+import de.unisaarland.cs.st.saarsiedler.comm.FieldType;
 
-public class ModelTest2 {	
-	
-	private Model model;
+public class ModelTest2 {
+	private Model model,model1;
 	
 	@Before
 	public void setUp() throws IOException {
-		model = TestUtil.getStandardModel1();
-		model.getTableOrder().get(0).modifyResources(new ResourcePackage(100,100,100,100,100));
-		model.newRound(4);
-	}
-	
-	@Test
-	public void buildCatapultTestPositive() {
-		Location path = new Location(1,1,2);
-		assertFalse(model.getPath(path).hasCatapult());
-		model.buildSettlement(new Location(1, 1, 2), BuildingType.Village);	
-		model.buildSettlement(new Location(1, 1, 2), BuildingType.Town);
-		townAround();
-		model.buildCatapult(path, true);
-		assertTrue(model.getPath(path).hasCatapult());
-	}
-	
-	@Test
-	public void buildCatapultTestPositive2() {
-		Location path = new Location(1,1,2);
-		townAround();
-		model.buildCatapult(path, true);
-		assertTrue(model.getPath(path).hasCatapult());
-		assertEquals( model.getPath(path).getCatapultOwner() , model.getTableOrder().get(0));
-		model.buildCatapult(path, true);
-		assertTrue(model.getPath(path).hasCatapult());
-	}
-	
-	private void townAround() {
-		Location path = new Location(1,1,2);
-		Set<Intersection> li = model.getIntersectionsFromPath(model.getPath(path));
-		boolean hasTown = false;
-		for (Intersection i : li) {
-			hasTown = hasTown?true:(i.getBuildingType() == BuildingType.Town);
-		}
-		assertTrue("No Town around!", hasTown);
-	}	
-	
-	
-	@Test
-	public void buildCatapultTestNegative() {
+		model = TestUtil.getStandardModel2();
+		model1 = TestUtil.getStandardModel1();
 		
 	}
 
+	
 	@Test
-	public void buildStreetTest() {
+	public void testgetFieldType(){
+		assertEquals(FieldType.Forest, model.getField(new Point(0, 0)));
+		assertEquals(FieldType.Hills, model.getField(new Point(1, 0)));
+		assertEquals(FieldType.Pasture, model.getField(new Point(2, 0)));
+		assertEquals(FieldType.Fields, model.getField(new Point(3, 0)));
+		assertEquals(FieldType.Mountains, model.getField(new Point(0, 1)));
+		assertEquals(FieldType.Forest, model.getField(new Point(1, 1)));
+		assertEquals(FieldType.Hills, model.getField(new Point(2, 1)));
+		assertEquals(FieldType.Pasture, model.getField(new Point(3, 1)));
+		assertEquals(FieldType.Fields, model.getField(new Point(0, 2)));
+		assertEquals(FieldType.Mountains, model.getField(new Point(1, 2)));
+		assertEquals(FieldType.Forest, model.getField(new Point(2, 2)));
+		assertEquals(FieldType.Hills, model.getField(new Point(3, 2)));
+		assertEquals(FieldType.Pasture, model.getField(new Point(0, 3)));
+		assertEquals(FieldType.Fields, model.getField(new Point(1, 3)));
+		assertEquals(FieldType.Mountains, model.getField(new Point(2, 3)));
+		assertEquals(FieldType.Forest, model.getField(new Point(3, 3)));
+		
+	}
+	
+//	@Test
+//	public void testHeight(){
+//		assertEquals(4, model.getHeight());
+//	}
+	
+	
+//	@Test
+//	public void testWidth(){
+//		assertEquals(4, model.getWidth());
+//	}
+//		
+//	@Test
+//	public void testInitVillages(){
+//		assertEquals(2, model.getInitVillages());
+//	}
+//
+	
+	@Test
+	public void testMaxVictoryPoints(){
+		 int currentVP = model.getMaxVictoryPoints();
+		 //maxVictoryPoints ??
+		 int expectedVP =  10;
+		 assertEquals("MaxVictory Points did not match those given in the WorldRepresentation ",
+				 currentVP, expectedVP);
 		
 	}
 	
 	@Test
-	public void buildSettlementTest() {
+	public void testMaxVillages(){
+		 int currentMV = model.getMaxBuilding(BuildingType.Village);
+		 int expectedMV =  5;
+		 assertEquals("MaxVillages did not match those given in the WorldRepresentation ",
+				 currentMV, expectedMV);
 		
 	}
 	
 	@Test
-	public void longestRaodClaimedTest() {
+	public void testMaxTowns(){
+		 int currentMT= model.getMaxBuilding(BuildingType.Town);
+		 int expectedMT =  4;
+		 assertEquals("MaxTowns did not match those given in the WorldRepresentation ",
+				 currentMT, expectedMT);
 		
 	}
 	
-	@Test
-	public void matchStartTest() {
-		
-	}
+//	public void testMaxCatapults(){
+//		 int currentMC= model.getMaxCatapults();
+//		 
+//		 int expectedMC = ;
+//		 assertEquals("MaxCatapults did not match those given in the WorldRepresentation ",
+//				 currentMC, expectedMC);
+//		
+//	}
+//	
+//	@Test
+//	public void testNumberPlayers(){
+//		int currentNP = model.getNumPlayers();
+//		int expectedNP = 3;
+//		assertEquals("The number of Players did not match the one given in the Match Information",
+//				currentNP, expectedNP);
+//	}
 	
-	@Test
-	public void catapultMovedTestPositive() {
-		
-	}
-	
-	@Test
-	public void catapultMovedTestNegative() {
-		
-	}
-	
-	@Test
-	public void playerLeftTest() {
-		
-	}
-	
-	@Test
-	public void robberMovedTestSelf() {
-		
-	}
 
-	@Test
-	public void robberMovedTestOther() {
-	
-	}
-		
-	@Test
-	public void tradeOfferTest() {
-		
-	}
-		
-	@Test
-	public void respondTradeTestPositive() {
-		
-	}
-	
-	@Test
-	public void respondTradeTestNegative() {
-		
-	}
-	
 }
