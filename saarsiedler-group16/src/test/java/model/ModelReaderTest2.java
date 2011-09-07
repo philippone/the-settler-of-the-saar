@@ -69,7 +69,7 @@ public class ModelReaderTest2 {
 		Player pl=model.getCurrentPlayer();
 		Set<Intersection> si=model.buildableTownIntersections(pl);
 		for (Intersection i : si){ //check for all intersections
-			assertFalse((i.getOwner()==pl && i.getBuildingType()==BuildingType.Village));
+			assertTrue((i.getOwner()==pl && i.getBuildingType()==BuildingType.Village));
 			// check player owns a village here
 		}
 	}
