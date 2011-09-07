@@ -427,8 +427,8 @@ public class ModelTest {
 		assertTrue("das angreifende Katapult ist weg", model.getPath(new Location(0,0,1)).getCatapultOwner().equals(model.getCurrentPlayer()));
 		int expectedVP2_gegner = 0;
 		int expectedVP2_angreifer = 5;
-		assertEquals("VictoryPoints fehlerhaft beim Angreifer", expectedVP_angreifer, model.getCurrentVictoryPoints(model.getCurrentPlayer()));
-		assertEquals("VictoryPoints fehlerhaft beim Gegner", expectedVP_gegner, model.getCurrentVictoryPoints(gegner));
+		assertEquals("VictoryPoints fehlerhaft beim Angreifer", expectedVP2_angreifer, model.getCurrentVictoryPoints(model.getCurrentPlayer()));
+		assertEquals("VictoryPoints fehlerhaft beim Gegner", expectedVP2_gegner, model.getCurrentVictoryPoints(gegner));
 	}
 	
 	/**
