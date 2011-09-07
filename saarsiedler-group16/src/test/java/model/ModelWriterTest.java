@@ -104,7 +104,10 @@ public class ModelWriterTest {
 	// could have destroyed the attacking catapult
 	public void catapulCatapult4_buildCatapultExceptionTest() {
 		initalize();
-		model.buildCatapult(new Location(1, 1, 0), false);
+		try {
+			model.buildCatapult(new Location(1, 1, 0), false);
+			fail("You lost against a not existing catapult!");
+		} catch (IllegalStateException e) { /* everything is fine */ }
 		
 	}
 	
@@ -112,6 +115,11 @@ public class ModelWriterTest {
 	// Tests wheter the currentPlayer has enough resources to attack a catapult.
 	public void buildCatapult3_attackCatapultTest() {
 		initalize();
+		model.newRound(2);
+		Path newCatPath = model.getPath(new Location(2, 1, 4));
+		newCatPath.createCatapult(model.getCurrentPlayer());
+		model.attackSettlement(new Location(2, 1, 4), new Location(2, 1, 3), );
+		
 		
 	}
 	
