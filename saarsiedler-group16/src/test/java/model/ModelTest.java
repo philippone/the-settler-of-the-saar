@@ -384,6 +384,8 @@ public class ModelTest {
 	 */
 	@Test
 	public void testAttackSettlement(){
+		// Gegner
+		Player gegner = model.getTableOrder().get(0);
 		//gibt den akt. Playern alle Resourcen um Komplikationen mit build zu vermeiden.
 		model.getTableOrder().get(0).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 
 		model.getTableOrder().get(1).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 
@@ -426,8 +428,98 @@ public class ModelTest {
 		model.attackSettlement(new Location(0,0,1), new Location(0,0,2), AttackResult.SUCCESS);
 		assertTrue("Town wurde nciht richitg gedowngradet", model.getIntersection(new Location(0,0,2)).getBuildingType().equals(BuildingType.Village));
 		assertFalse("Village gehoert dem falschen Spieler", model.getIntersection(new Location(0,0,2)).getOwner().equals(model.getCurrentPlayer()));	
+		assertTrue("Village gehoert nicht mehr dem Opfer", model.getIntersection(new Location(0,0,2)).getOwner().equals(gegner));
 		assertTrue("das angreifende Katapult ist weg", model.getPath(new Location(0,0,1)).getCatapultOwner().equals(model.getCurrentPlayer()));
 	}
+	
+	/**
+	 * Angriff gegen gegnerische Village und Town - erfolgreich (beide male), aber habe selbst genug davon
+	 */
+	@Test
+	public void testAttackSettlement2(){
+		// Gegner
+		Player gegner = model.getTableOrder().get(0);
+		//gibt den akt. Playern alle Resourcen um Komplikationen mit build zu vermeiden.
+		model.getTableOrder().get(0).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 
+		model.getTableOrder().get(1).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 
+		//Angriffsziele bauen (Initialisierungsphase)
+		// 1.Player
+		model.buildSettlement(new Location(0,0,0) , BuildingType.Village);
+		model.buildStreet(new Location(0,0,0));
+		// 2. Player
+		model.buildSettlement(new Location(0,0,1) , BuildingType.Village);
+		model.buildStreet(new Location(1,0,0));
+		// 3. Player
+		model.buildSettlement(new Location(3,3,0) , BuildingType.Village);
+		model.buildStreet(new Location(3,3,0));
+		// wieder 3
+		model.buildSettlement(new Location(3,3,3), BuildingType.Village);
+		model.buildStreet(new Location(3,3,2));
+		// 2. Player
+		model.buildSettlement(new Location(1,0,4), BuildingType.Village);
+		model.buildStreet(new Location(1,0,4));
+		// 1. Player
+		model.buildSettlement(new Location(1,1,0) , BuildingType.Village);
+		model.buildStreet(new Location(1,1,0));
+		
+		//neue Runde (1.Player)
+		model.newRound(12);
+		// Upgrade 1 Village
+		model.buildSettlement(new Location(1,1,0), BuildingType.Town);
+		
+		//neue Runde (2. Player)
+		model.newRound(3);
+		model.buildSettlement(new Location(1,0,0), BuildingType.Town);
+		model.buildStreet(new Location(1,0,3));
+		model.buildStreet(new Location(2,0,4));
+		model.buildSettlement(new Location(2,0,4), BuildingType.Village);
+		model.buildStreet(new Location(3,0,5));
+		model.buildStreet(new Location(3,0,4));
+		model.buildSettlement(new Location(3,0,4), BuildingType.Village);
+		model.buildStreet(new Location(3,0,3));
+		model.buildStreet(new Location(3,0,2));
+		model.buildSettlement(new Location(3,0,2), BuildingType.Village);
+		model.buildStreet(new Location(3,0,0));
+		model.buildStreet(new Location(3,1,5));
+		model.buildSettlement(new Location(3,1,0), BuildingType.Village);
+		model.buildStreet(new Location(3,1,0));
+		model.buildStreet(new Location(3,1,1));
+		model.buildSettlement(new Location(3,1,2), BuildingType.Village);
+		model.buildStreet(new Location(3,2,5));
+		model.buildSettlement(new Location(3,2,0), BuildingType.Village);
+		model.buildStreet(new Location(2,1,1));
+		model.buildStreet(new Location(2,1,0));
+		model.buildSettlement(new Location(2,1,0), BuildingType.Village);
+		model.buildStreet(new Location(2,0,5));
+		model.buildSettlement(new Location(2,0,0), BuildingType.Village);
+		model.buildSettlement(new Location(2,0,0), BuildingType.Town);
+		model.buildSettlement(new Location(1,0,4), BuildingType.Town);
+		model.buildSettlement(new Location(3,0,4), BuildingType.Town);
+		model.buildSettlement(new Location(3,0,0), BuildingType.Town);
+		// Player 2 hat jetzt maxVillages und maxTowns
+		
+		
+		model.buildCatapult(new Location(0,0,4), true);
+		model.catapultMoved(new Location(0,0,4), new Location(0,0,5), true);
+		model.attackSettlement(new Location(0,0,5), new Location(0,0,0), AttackResult.SUCCESS);
+		// village sollte zerstoert werden, da der Angreifer genug Villages hat
+		try {
+			model.getIntersection(new Location(0,0,0)).getOwner();
+			fail("Intersection darf kein Gebaeude mehr haben");
+		} catch (Exception e) {
+			// Test lauft durch
+		}
+		assertTrue("Katapult nicht mehr da",model.getPath(new Location(0,0,5)).getCatapultOwner().equals(model.getCurrentPlayer()));
+		
+		// Town wird degradiert zur Village, bleibt im Besitz des Opfers
+		model.catapultMoved(new Location(0,0,5), new Location(0,0,0), true);
+		model.catapultMoved(new Location(0,0,0),new Location(0,0,1), true);
+		model.attackSettlement(new Location(0,0,1), new Location(0,0,2), AttackResult.SUCCESS);
+		assertTrue("Village nicht mehr im Besitz des Opfers", model.getIntersection(new Location(0,0,2)).getOwner().equals(gegner));
+		assertTrue("Katapult wurde zerstoert", model.getPath(new Location(0,0,2)).getCatapultOwner().equals(model.getCurrentPlayer()));
+		assertTrue("Village ist noch Town (BuildingType", model.getIntersection(new Location(0,0,2)).getBuildingType().equals(BuildingType.Village));
+	}
+	
 	
 	
 	/**
@@ -471,6 +563,7 @@ public class ModelTest {
 		model.buildSettlement(new Location(1,0,0), BuildingType.Town);
 		model.buildCatapult(new Location(0,0,4), true);
 		model.catapultMoved(new Location(0,0,4), new Location(0,0,5), true);
+		// es darf nichts passieren
 		model.attackSettlement(new Location(0,0,5), new Location(0,0,0), AttackResult.DEFEAT);
 		assertTrue("Gegener nicht merh im Besitz seiner Village", model.getIntersection(new Location(0,0,0)).getOwner().equals(gegner));
 		assertTrue("Village ist keine Village mehr", model.getIntersection(new Location(0,0,0)).getBuildingType().equals(BuildingType.Village));
@@ -480,9 +573,7 @@ public class ModelTest {
 		} catch(Exception e) {
 			//Test laueft durch
 		}
-		
-		
-		
+		// es darf nichts passieren
 		model.catapultMoved(new Location(0,0,5), new Location(0,0,0), true);
 		model.catapultMoved(new Location(0,0,0),new Location(0,0,1), true);
 		model.attackSettlement(new Location(0,0,1), new Location(0,0,2), AttackResult.DEFEAT);
@@ -501,7 +592,7 @@ public class ModelTest {
 	 * Angriff gegen gegnerische Village und Town - verloren (beide male)
 	 */
 	@Test
-	public void testAttackSettlement2(){
+	public void testAttackSettlement4(){
 		// Gegner
 		Player gegner = model.getTableOrder().get(0);
 		
@@ -543,12 +634,17 @@ public class ModelTest {
 		assertTrue("der Gegner ist nicht mehr im Besitz seiner Village", model.getIntersection(new Location(0,0,0)).getOwner().equals(gegner));
 		assertTrue("das angreifende Katapult ist weg", model.getPath(new Location(0,0,5)).getCatapultOwner().equals(model.getCurrentPlayer()));
 		
-		model.catapultMoved(new Location(0,0,5), new Location(0,0,0), true);
-		model.catapultMoved(new Location(0,0,0),new Location(0,0,1), true);
-		model.attackSettlement(new Location(0,0,1), new Location(0,0,2), AttackResult.DRAW);
+		model.buildCatapult(new Location(0,0,3), true);
+		model.buildStreet(new Location(0,0,3));
+		model.buildStreet(new Location(0,0,2));
+		
+		model.catapultMoved(new Location(0,0,3), new Location(0,0,2), true);
+		model.attackSettlement(new Location(0,0,2), new Location(0,0,2), AttackResult.DRAW);
 		assertTrue("Zustand hat sich geaendert", model.getIntersection(new Location(0,0,2)).getBuildingType().equals(BuildingType.Town));
 		assertTrue("Village gehoert dem falschen Spieler (Zustand hat sich geandert)", model.getIntersection(new Location(0,0,2)).getOwner().equals(gegner));
 		assertTrue("das angreifende Katapult ist weg", model.getPath(new Location(0,0,1)).getCatapultOwner().equals(model.getCurrentPlayer()));
+		
+		
 	}
 	
 	
