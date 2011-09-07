@@ -22,8 +22,8 @@ public class ModelReaderTest3 {
 	@Before
 	public void setUp() throws IOException {
 		model = TestUtil.getStandardModel2();
-		model.getTableOrder().get(0).modifyResources(new ResourcePackage(3, 3, 2, 2, 4));
-		rp1 = model.getTableOrder().get(0).getResources();
+		model.getCurrentPlayer().modifyResources(new ResourcePackage(3, 3, 2, 2, 4));
+		rp1 = model.getCurrentPlayer().getResources();
 	}
 
 	@Test
@@ -34,7 +34,7 @@ public class ModelReaderTest3 {
 			assertEquals(2, model.affordableCatapultBuild());
 		
 		// check whether the players resourcePackage is intact
-		assertEquals(rp1, model.getTableOrder().get(0).getResources());
+		assertEquals(rp1, model.getCurrentPlayer().getResources());
 	}
 
 	@Test
@@ -45,7 +45,7 @@ public class ModelReaderTest3 {
 			assertEquals(2, model.affordableCatapultAttack());
 		
 		// check whether the players resourcePackage is intact
-		assertEquals(rp1, model.getTableOrder().get(0).getResources());
+		assertEquals(rp1, model.getCurrentPlayer().getResources());
 	}
 
 	@Test
@@ -57,7 +57,7 @@ public class ModelReaderTest3 {
 			assertEquals(4, model.affordableSettlementAttack());
 		
 		// check whether the players resourcePackage is intact
-		assertEquals(rp1, model.getTableOrder().get(0).getResources());
+		assertEquals(rp1, model.getCurrentPlayer().getResources());
 
 	}
 
@@ -69,7 +69,7 @@ public class ModelReaderTest3 {
 			assertEquals(2, model.affordablePathsAfterVillage(1));
 		
 		// check whether the players resourcePackage is intact
-		assertEquals(rp1, model.getTableOrder().get(0).getResources());
+		assertEquals(rp1, model.getCurrentPlayer().getResources());
 	}
 
 	@Test
@@ -80,7 +80,7 @@ public class ModelReaderTest3 {
 			assertEquals(2, model.affordableSettlements(BuildingType.Village));
 		
 		// check whether the players resourcePackage is intact
-		assertEquals(rp1, model.getTableOrder().get(0).getResources());
+		assertEquals(rp1, model.getCurrentPlayer().getResources());
 	}
 
 	@Test
@@ -91,7 +91,7 @@ public class ModelReaderTest3 {
 			assertEquals(1, model.affordableSettlements(BuildingType.Town));
 		
 		// check whether the players resourcePackage is intact
-		assertEquals(rp1, model.getTableOrder().get(0).getResources());
+		assertEquals(rp1, model.getCurrentPlayer().getResources());
 	}
 
 	@Test
@@ -102,7 +102,7 @@ public class ModelReaderTest3 {
 			assertEquals(3, model.affordableStreets());
 		
 		// check whether the players resourcePackage is intact
-		assertEquals(rp1, model.getTableOrder().get(0).getResources());
+		assertEquals(rp1, model.getCurrentPlayer().getResources());
 	}
 
 }
