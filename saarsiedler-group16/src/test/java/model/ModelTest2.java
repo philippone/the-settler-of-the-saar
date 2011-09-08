@@ -26,20 +26,20 @@ public class ModelTest2 {
 	@Test
 	public void testgetFieldType(){
 		assertEquals(FieldType.Forest, model.getField(new Point(0, 0)));
-		assertEquals(FieldType.Hills, model.getField(new Point(1, 0)));
-		assertEquals(FieldType.Pasture, model.getField(new Point(2, 0)));
-		assertEquals(FieldType.Fields, model.getField(new Point(3, 0)));
-		assertEquals(FieldType.Mountains, model.getField(new Point(0, 1)));
+		assertEquals(FieldType.Hills, model.getField(new Point(0, 1)));
+		assertEquals(FieldType.Pasture, model.getField(new Point(0, 2)));
+		assertEquals(FieldType.Fields, model.getField(new Point(0, 3)));
+		assertEquals(FieldType.Mountains, model.getField(new Point(1, 0)));
 		assertEquals(FieldType.Forest, model.getField(new Point(1, 1)));
-		assertEquals(FieldType.Hills, model.getField(new Point(2, 1)));
-		assertEquals(FieldType.Pasture, model.getField(new Point(3, 1)));
-		assertEquals(FieldType.Fields, model.getField(new Point(0, 2)));
-		assertEquals(FieldType.Mountains, model.getField(new Point(1, 2)));
+		assertEquals(FieldType.Hills, model.getField(new Point(1, 2)));
+		assertEquals(FieldType.Pasture, model.getField(new Point(1, 3)));
+		assertEquals(FieldType.Fields, model.getField(new Point(2, 0)));
+		assertEquals(FieldType.Mountains, model.getField(new Point(2, 1)));
 		assertEquals(FieldType.Forest, model.getField(new Point(2, 2)));
-		assertEquals(FieldType.Hills, model.getField(new Point(3, 2)));
-		assertEquals(FieldType.Pasture, model.getField(new Point(0, 3)));
-		assertEquals(FieldType.Fields, model.getField(new Point(1, 3)));
-		assertEquals(FieldType.Mountains, model.getField(new Point(2, 3)));
+		assertEquals(FieldType.Hills, model.getField(new Point(2, 3)));
+		assertEquals(FieldType.Pasture, model.getField(new Point(3, 0)));
+		assertEquals(FieldType.Fields, model.getField(new Point(3, 1)));
+		assertEquals(FieldType.Mountains, model.getField(new Point(3, 2)));
 		assertEquals(FieldType.Forest, model.getField(new Point(3, 3)));
 		
 	}
