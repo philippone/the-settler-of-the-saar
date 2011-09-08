@@ -559,7 +559,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Iterator<Field> getFieldIterator() {
-		throw new UnsupportedOperationException();
+		return board.getFieldIterator();
 	}
 
 	/* (non-Javadoc)
@@ -567,7 +567,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Iterator<Path> getPathIterator() {
-		throw new UnsupportedOperationException();
+		return board.getPathIterator();
 	}
 
 	/* (non-Javadoc)
@@ -575,7 +575,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Iterator<Intersection> getIntersectionIterator() {
-		throw new UnsupportedOperationException();
+		return board.getIntersectionIterator();
 	}
 
 	/* (non-Javadoc)
@@ -583,7 +583,19 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Intersection> getHarborIntersections() {
-		throw new UnsupportedOperationException();
+		Iterator<Path>ip=getPathIterator();
+		Set<Intersection>si=new TreeSet<Intersection>();
+		Path p;
+		while (ip.hasNext()){
+			p=ip.next();
+			if (p.getHarborType()!=null){
+				Set<Intersection> si1=getIntersectionsFromPath(p);
+				for(Intersection i:si1){
+					si.add(i);
+				}
+			}
+		}
+		return si;
 	}
 
 	/* (non-Javadoc)
@@ -591,7 +603,13 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public HarborType getHarborType(Intersection intersection) {
-		throw new UnsupportedOperationException();
+		Set<Path>sp=getPathsFromIntersection(intersection);
+		HarborType hb;
+		for (Path p:sp){
+			hb=p.getHarborType();
+			if (hb!=null) return hb;
+		}
+		return null;
 	}
 
 	/* (non-Javadoc)
@@ -599,7 +617,12 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<HarborType> getHarborTypes(Player player) {
-		throw new UnsupportedOperationException();
+		Set<Intersection>si=getHarborIntersections();
+		Set<HarborType>sht=new TreeSet<HarborType>();
+		for(Intersection i:si){
+			if (i.getOwner()==player) sht.add(getHarborType(i));
+		}
+		return sht;
 	}
 
 	/* (non-Javadoc)
@@ -607,7 +630,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public ResourcePackage getResources() {
-		throw new UnsupportedOperationException();
+		return me.getResources();
 	}
 
 	/* (non-Javadoc)
