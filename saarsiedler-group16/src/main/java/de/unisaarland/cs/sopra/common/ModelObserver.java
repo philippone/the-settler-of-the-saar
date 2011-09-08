@@ -12,6 +12,7 @@ public interface ModelObserver {
 	public void updateCatapultCount();
 	public void updateSettlementCount(BuildingType buildingType);
 	public void updateTradePossibilities();
+	public void eventPlayerLeft(long playerID);
 	public void eventRobber();
 	public void eventTrade(ResourcePackage resourcePackage);
 	public void eventNewRound(boolean itsMyTurn);

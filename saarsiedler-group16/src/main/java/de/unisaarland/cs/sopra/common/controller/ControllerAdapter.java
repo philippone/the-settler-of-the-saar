@@ -1,6 +1,10 @@
 package de.unisaarland.cs.sopra.common.controller;
 
+import static de.unisaarland.cs.sopra.common.model.Resource.*;
+
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import de.unisaarland.cs.sopra.common.model.*;
 
@@ -15,23 +19,38 @@ public class ControllerAdapter {
 	}
 	
 	public void attackSettlement(Path catapult, Intersection settlement) {
-		throw new UnsupportedOperationException();
+		Location l = Model.getLocation(catapult);
+		l.getX();
+		l.getY();
+		l.getOrientation();
+		Location i = Model.getLocation(settlement);
+		controller.attackSettlement(l, i);
+		
 	}
 	
 	public void buildCatapult(Path path) {
-		throw new UnsupportedOperationException();
+		Location l = Model.getLocation(path);
+		controller.buildCatapult(l);
 	}
 	
 	public void buildSettlement(Intersection intersection, BuildingType buildingType) {
-		throw new UnsupportedOperationException();
+		Location l = Model.getLocation(intersection);
+		controller.buildSettlement(l, buildingType);
+		
 	}
 	
 	public void buildStreet(Path path) {
-		throw new UnsupportedOperationException();
+		Location l = Model.getLocation(path);
+		controller.buildStreet(l);
 	}
 	
 	public void claimLongestRoad(List<Path> road) {
-		throw new UnsupportedOperationException();
+		List<Location> roadList = new LinkedList<Location>();
+		for (Path p : road){
+			 Location l = Model.getLocation(p);
+			 roadList.add(l);
+		}
+		controller.claimLongestRoad(roadList);
 	}
 	
 	public void claimVictory() {
@@ -47,15 +66,29 @@ public class ControllerAdapter {
 	}
 	
 	public void moveCatapult(Path sourcePath, Path destinationPath) {
-		throw new UnsupportedOperationException();
+		Location l = Model.getLocation(sourcePath);
+		Location l2 = Model.getLocation(destinationPath);
+		controller.moveCatapult(l, l2);
 	}
 	
 	public void moveRobber(Field sourceField, Field destinationField, Player victimPlayer) {
-		throw new UnsupportedOperationException();
+		Point p = Model.getLocation(sourceField);
+		Point p2 = Model.getLocation(destinationField);
+		Set<Long> keySet = model.getPlayerMap().keySet();
+		for (Long l : keySet) {
+			Player player = model.getPlayerMap().get(l);
+			if (player.equals(victimPlayer))
+				controller.moveRobber(p, p2, l);
+		}
 	}
 	
 	public void offerTrade(ResourcePackage resourcePackage) {
-		throw new UnsupportedOperationException();
+		int lumber = resourcePackage.getResource(LUMBER);
+		int brick =  resourcePackage.getResource(BRICK);
+		int wool =  resourcePackage.getResource(WOOL);
+		int grain =  resourcePackage.getResource(GRAIN);
+		int ore =   resourcePackage.getResource(ORE);
+		controller.offerTrade(lumber, brick, wool, grain, ore);
 	}
 	
 	public void respondTrade(boolean decision) {
@@ -63,7 +96,12 @@ public class ControllerAdapter {
 	}
 	
 	public void returnResources(ResourcePackage resourcePackage) {
-		throw new UnsupportedOperationException();
+		int lumber = resourcePackage.getResource(LUMBER);
+		int brick =  resourcePackage.getResource(BRICK);
+		int wool =  resourcePackage.getResource(WOOL);
+		int grain =  resourcePackage.getResource(GRAIN);
+		int ore =   resourcePackage.getResource(ORE);
+		controller.returnResources(lumber, brick, wool, grain, ore);
 	}
 	
 }
