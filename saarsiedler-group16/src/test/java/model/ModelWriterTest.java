@@ -291,9 +291,6 @@ public class ModelWriterTest {
 		}
 	}
 	
-	
-	
-	
 	@Test
 	public void respondTradeTestPositive() {
 		Player p = model.getCurrentPlayer();
