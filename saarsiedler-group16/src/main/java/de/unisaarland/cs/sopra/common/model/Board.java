@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 
@@ -34,6 +33,15 @@ public class Board {
 					Path p = new Path(loc);
 					if (path.get(loc) == null) {
 						path.put(loc, p);
+						switch(loc.getOrientation()) {
+							case 0:
+								if (loc.getX()%2==0 && loc.getY()-1 > 0 && loc.getX()+1 < width);
+							case 1:
+							case 2:
+							case 3:
+							case 4:
+							case 5:
+						}
 						
 					}
 				}
@@ -56,15 +64,19 @@ public class Board {
 	public Set<Field> getFieldsFromField(Field field) {
 		Point loc = field.getLocation();
 		Set<Field> tmp = new HashSet<Field>();
-		if (loc.getX()-1 > 0) tmp.add(this.getField(new Point(loc.getY(),loc.getX()-1)));
-		if (loc.getX()+1 < width) tmp.add(this.getField(new Point(loc.getY(),loc.getX()+1)));
-		if (loc.getY()-1 > 0) tmp.add(this.getField(new Point(loc.getY()-1,loc.getX())));
-		if (loc.getY()+1 < height) tmp.add(this.getField(new Point(loc.getY()+1,loc.getX())));
-		if (loc.getY()%2==1 && loc.getY()-1 > 0 && loc.getX()-1 > 0) tmp.add(this.getField(new Point(loc.getY()-1,loc.getX()-1)));
-		if (loc.getY()%2==0 && loc.getY()-1 > 0 && loc.getX()+1 > width) tmp.add(this.getField(new Point(loc.getY()-1,loc.getX()+1)));
-		if (loc.getY()%2==1 && loc.getY()+1 < height && loc.getX()-1 > 0) tmp.add(this.getField(new Point(loc.getY()+1,loc.getX()-1)));
-		if (loc.getY()%2==0 && loc.getY()+1 < height && loc.getX()+1 > width) tmp.add(this.getField(new Point(loc.getY()+1,loc.getX()+1)));
+		if (				   fieldInRange(loc,+0,-1)) tmp.add(this.getField(new Point(loc.getY(),loc.getX()-1)));
+		if (				   fieldInRange(loc,+0,+1)) tmp.add(this.getField(new Point(loc.getY(),loc.getX()+1)));
+		if (				   fieldInRange(loc,-1,+0)) tmp.add(this.getField(new Point(loc.getY()-1,loc.getX())));
+		if (				   fieldInRange(loc,+1,+0)) tmp.add(this.getField(new Point(loc.getY()+1,loc.getX())));
+		if (loc.getY()%2==1 && fieldInRange(loc,-1,-1)) tmp.add(this.getField(new Point(loc.getY()-1,loc.getX()-1)));
+		if (loc.getY()%2==0 && fieldInRange(loc,-1,+1)) tmp.add(this.getField(new Point(loc.getY()-1,loc.getX()+1)));
+		if (loc.getY()%2==1 && fieldInRange(loc,+1,-1)) tmp.add(this.getField(new Point(loc.getY()+1,loc.getX()-1)));
+		if (loc.getY()%2==0 && fieldInRange(loc,+1,+1)) tmp.add(this.getField(new Point(loc.getY()+1,loc.getX()+1)));
 		return tmp;
+	}
+	
+	private boolean fieldInRange(Point p, int yoffset, int xoffset) {
+		return (p.getY()+yoffset >= 0 && p.getY()+yoffset < height && p.getX()+xoffset >= 0 && p.getX()+xoffset < width);
 	}
 	
 	public Set<Field> getFieldsFromIntersection(Intersection intersection) {
@@ -96,7 +108,44 @@ public class Board {
 	}
 	
 	public Set<Path> getPathsFromPath(Path path) {
-		throw new UnsupportedOperationException();
+		int x = path.getLocation().getX();
+		int y = path.getLocation().getY();
+		int o = path.getLocation().getOrientation();
+		Set<Path> ps = new HashSet<Path>();
+		ps.add(getPath(new Location(y, x, (o+1)%6)));
+		ps.add(getPath(new Location(y, x, (o+5)%6)));
+		switch(o){
+		case 0:
+			if (y%2 == 1){
+				
+			}
+			else {
+				
+			}
+			break;
+		case 1:
+			if (fieldInRange())
+			ps.add(getPath(new Location(y, x+1, 5)));
+			ps.add(getPath(new Location(y, x+1, 3)));
+			break;
+		case 2:
+			ps.add(getPath(new Location(y, x+1, 5)));
+			ps.add(getPath(new Location(y, x+1, 3)));
+			break;
+		case 3:
+			ps.add(getPath(new Location(y, x+1, 5)));
+			ps.add(getPath(new Location(y, x+1, 3)));
+			break;
+		case 4:
+			ps.add(getPath(new Location(y, x-1, 0)));
+			ps.add(getPath(new Location(y, x-1, 2)));
+			break;
+		case 5:
+			ps.add(getPath(new Location(y, x+1, 5)));
+			ps.add(getPath(new Location(y, x+1, 3)));
+			break;
+		}
+		return ps;
 	}
 	
 	public Iterator<Field> getFieldIterator() {
@@ -136,5 +185,7 @@ public class Board {
 		if (harborType == null) throw new IllegalArgumentException();
 		this.getPath(location).setHarborType(harborType);
 	}
+	
+	private boolean 
 	
 }
