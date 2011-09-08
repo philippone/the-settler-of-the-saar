@@ -31,8 +31,11 @@ public class Board {
 			for (int x = 0; x < height; x++) {
 				for (int ori = 0; ori < 6; ori++) {
 					Location loc = new Location(y,x,ori);
-					if !(path.get(loc))
-						path.put(loc, new Path(loc));
+					Path p = new Path(loc);
+					if (path.get(loc) == null) {
+						path.put(loc, p);
+						
+					}
 				}
 			}
 		}
