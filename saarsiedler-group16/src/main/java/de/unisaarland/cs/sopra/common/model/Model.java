@@ -122,11 +122,14 @@ public class Model implements ModelReader, ModelWriter{
 			road.add(p);
 		}
 		// all roads contain only one path
+		List<List<Path>> suppressedRoadList=new ArrayList<List<Path>>();
 		for (List<Path> road : roadList){
-			if (continueRoad(road, roadList)) roadList.remove(road);
+			if (continueRoad(road, roadList)) suppressedRoadList.add(road);
 			// if the road has been continued, new longer road(s)'d have been put in roadlist
-			// we just remove this short one
+			// we'll just remove this short one
 		}
+		for (List<Path> suppressedRoad : suppressedRoadList) roadList.remove(suppressedRoad);
+		// now there's only the true roads
 		int maxsize=5;
 		for (List<Path> road : roadList){
 			maxsize=Math.max(maxsize, road.size());
@@ -134,7 +137,7 @@ public class Model implements ModelReader, ModelWriter{
 		}
 		for (List<Path> road : roadList){
 			if (road.size()<maxsize) roadList.remove(road);
-			// only the longest stay here
+			// only the longest road(s) stay here
 		}
 		return roadList;
 	}
