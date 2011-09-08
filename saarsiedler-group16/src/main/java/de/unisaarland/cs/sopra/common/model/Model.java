@@ -782,9 +782,44 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public void buildSettlement(Location location, BuildingType buildingType) {
-		throw new UnsupportedOperationException();
+		if (location==null) throw new IllegalArgumentException(location+" is null");
+		Intersection i=getIntersection(location);
+		if (isBuildable(i, buildingType) && (isAffordable(buildingType))){
+			ResourcePackage price=buildingType.getPrice();
+			if (me.checkResourcesSufficient(price)) throw new IllegalArgumentException("Nicht genug Ressourcen, um es zu bauen");
+			me.modifyResources(price);
+			i.createBuilding(buildingType, me);
+			for(ModelObserver ob: modelObserver){
+				ob.updateResources();
+				ob.updateSettlementCount(buildingType);
+				ob.updateVictoryPoints();
+				ob.updateIntersection(i);
+			}	
+		}
+		else throw new IllegalArgumentException("Das Gebaüde wurde nicht gebaut");
 	}
 
+	private boolean isBuildable(Intersection i, BuildingType buildingType){
+		Set<Intersection>si;
+		if (buildingType==BuildingType.Village){
+			si=buildableVillageIntersections(me);
+			if (si.contains(i)) return true;
+			throw new IllegalArgumentException("Kein Dorf darf hier gebaut werden");
+		}
+		else if (buildingType==BuildingType.Town){
+			si=buildableTownIntersections(me);
+			if (si.contains(i)) return true;
+			throw new IllegalArgumentException("Keine Stadt darf hier gebaut werden");
+		}
+		throw new IllegalArgumentException("Es fehlt den BuildingType");
+	}
+	
+	private boolean isAffordable(BuildingType buildingType){
+		int a=affordableSettlements(buildingType);
+		if (a>0) return true;
+		throw new IllegalArgumentException("Nicht genug Ressourcen, um es zu bauen");
+	}
+	
 	/* (non-Javadoc)
 	 * @see de.unisaarland.cs.sopra.common.model.ModelWriter#longestRaodClaimed(java.util.List)
 	 */
