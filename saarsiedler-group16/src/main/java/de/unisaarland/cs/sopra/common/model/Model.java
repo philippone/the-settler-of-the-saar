@@ -646,7 +646,29 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public void newRound(int number) {
-		throw new UnsupportedOperationException();
+		if(number==1 || number>12) throw new IllegalArgumentException();
+		
+		if(number == 7){
+			for(ModelObserver ob : modelObserver){
+				ob.eventRobber();
+			}
+		}
+		else{
+			for (Iterator<Field> itFields = getFieldIterator(); itFields.hasNext();) {
+				Field field =  itFields.next();
+				if(field.getNumber()==number){	// nur zur Optimierung, streng genommen nicht noetig
+					for(Intersection inter : getIntersectionsFromField(field)){
+						if(inter.hasOwner()){
+							inter.generateGain(field.getResource(number));
+						}
+					}
+				}
+			}
+		for(ModelObserver ob : modelObserver){
+			ob.updateResources();
+		}
+		}	
+		
 	}
 
 	/* (non-Javadoc)
@@ -654,7 +676,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public void attackSettlement(Location catapultPath, Location settlementIntersection, AttackResult result) {
-		throw new UnsupportedOperationException();
+		
 	}
 
 	/* (non-Javadoc)
