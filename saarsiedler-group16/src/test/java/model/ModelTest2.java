@@ -55,7 +55,7 @@ public class ModelTest2 {
 	public void testMaxVictoryPoints(){
 		 int currentVP = model.getMaxVictoryPoints();
 		 //maxVictoryPoints ??
-		 int expectedVP =  6;
+		 int expectedVP =  5;
 		 assertEquals("MaxVictory Points did not match those given in the WorldRepresentation ",
 				 currentVP, expectedVP);
 		
@@ -64,7 +64,7 @@ public class ModelTest2 {
 	@Test
 	public void testMaxVillages(){
 		 int currentMV = model.getMaxBuilding(BuildingType.Village);
-		 int expectedMV =  5;
+		 int expectedMV =  9;
 		 assertEquals("MaxVillages did not match those given in the WorldRepresentation ",
 				 currentMV, expectedMV);
 		
