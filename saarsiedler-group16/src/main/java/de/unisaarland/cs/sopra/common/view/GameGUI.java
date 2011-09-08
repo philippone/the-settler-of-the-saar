@@ -119,13 +119,13 @@ public class GameGUI extends View{
 		   GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		   // center square according to screen size
 		   GL11.glPushMatrix();
-		   GL11.glTranslatef(0.0f, -0.0f, -2000.0f); //-4000 ist z koord
+		   GL11.glTranslatef(0.0f, -0.0f, angle--); //-4000 ist z koord
 			// rotate square according to angle
 		   GL11.glRotatef(/*angle++*/0, 0, 0, 1.0f);
 		   GL11.glColor3f(1.0f, 1.0f, 1.0f);
 	
+		  // GL11.glTranslatef(-modelReader.getBoardWidth()*215/2, modelReader.getBoardHeight()*250/2, 0.0f);
 		   
-		   modelReader.
 		   Iterator<Field> iter = modelReader.getFieldIterator();
 		   while (iter.hasNext()) {
 			   Field f = iter.next();
