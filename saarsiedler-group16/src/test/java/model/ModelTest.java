@@ -363,7 +363,7 @@ public class ModelTest {
 	
 	@Test
 	public void testNewRound(){
-		assertEquals(0 ,model.getRound()); //TODO unsicher vl doch runde 1
+		assertEquals(0 ,model.getRound());
 		model.newRound(12);
 		assertEquals(1, model.getRound());
 		assertNotSame(0, model.getRound());
@@ -897,9 +897,7 @@ public class ModelTest {
 	 * Angriff gegen eigene Village und Town - erfolgreich (beide male), aber habe selbst genug Villages
 	 */
 	@Test
-	public void testAttackOwnSettlement4(){
-		// Gegner
-		Player gegner = model.getTableOrder().get(0);
+	public void testAttackOwnSettlement8(){
 		//gibt den akt. Playern alle Resourcen um Komplikationen mit build zu vermeiden.
 		model.getTableOrder().get(0).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 
 		model.getTableOrder().get(1).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 
@@ -959,9 +957,22 @@ public class ModelTest {
 		model.buildSettlement(new Location(3,0,0), BuildingType.Town);
 		// Player 2 hat jetzt maxVillages und maxTowns
 		
-		// Angriff auf eine Village -> sollte sich nichts veraendern
-		
+		model.buildCatapult(new Location(1,0,5), true);
 		// Angriff auf eine Town -> sollte zerstoert werden
+		model.attackSettlement(new Location(1,0,5), new Location(1,0,0), AttackResult.SUCCESS);
+		assertTrue(model.getIntersection(new Location(1,0,0)).hasOwner());
+		assertTrue(model.getIntersection(new Location(1,0,0)).getOwner().equals(model.getCurrentPlayer()));
+		assertTrue(model.getIntersection(new Location(1,0,0)).getBuildingType().equals(BuildingType.Town));
+		assertTrue(model.getPath(new Location(1,0,5)).hasCatapult());
+		assertTrue(model.getPath(new Location(1,0,5)).getCatapultOwner().equals(model.getCurrentPlayer()));
+		// Angriff auf eine Village -> sollte sich nichts veraendern
+		model.catapultMoved(new Location(1,0,5), new Location(1,0,4), true);
+		model.attackSettlement(new Location(1,0,4), new Location(1,0,4), AttackResult.SUCCESS);
+		assertTrue(model.getIntersection(new Location(1,0,4)).hasOwner());
+		assertTrue(model.getIntersection(new Location(1,0,4)).getOwner().equals(model.getCurrentPlayer()));
+		assertTrue(model.getIntersection(new Location(1,0,4)).getBuildingType().equals(BuildingType.Village));
+		assertTrue(model.getPath(new Location(1,0,4)).hasCatapult());
+		assertTrue(model.getPath(new Location(1,0,4)).getCatapultOwner().equals(model.getCurrentPlayer()));
 
 		
 	}
