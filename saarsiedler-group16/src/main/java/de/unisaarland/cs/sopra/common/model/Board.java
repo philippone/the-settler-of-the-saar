@@ -26,6 +26,16 @@ public class Board {
 			FieldType fieldType = FieldType.convert( worldRepresentation.getFieldType(i/width,i%width) );
 			this.field.put(p, new Field(fieldType, p));
 		}
+		this.path = new HashMap<Location,Path>();
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < height; x++) {
+				for (int ori = 0; ori < 6; ori++) {
+					Location loc = new Location(y,x,ori);
+					if !(path.get(loc))
+						path.put(loc, new Path(loc));
+				}
+			}
+		}
 	}
 	
 	public Field getField(Point point) {
