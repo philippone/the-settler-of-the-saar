@@ -385,7 +385,7 @@ public class BoardTest {
 
 		Path p = new Path(new Location(1, 0, 1));
 		Path p2 = new Path(new Location(1, 1, 4));
-		b.setHarbor(new Location(1, 0, 1), HarborType.GENERAL_HARBOR);
+		b.getPath(new Location(1, 0, 1)).setHarborType(HarborType.GENERAL_HARBOR);
 		assertEquals(HarborType.GENERAL_HARBOR, p.getHarborType());
 		assertEquals(p2.getHarborType(), p.getHarborType());
 

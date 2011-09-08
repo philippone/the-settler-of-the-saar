@@ -10,7 +10,7 @@ public abstract class View implements ModelObserver{
 	protected ControllerAdapter controllerAdapter;
 	
 	View(Player me, ModelReader modelReader, ControllerAdapter controllerAdapter) {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 	
 }

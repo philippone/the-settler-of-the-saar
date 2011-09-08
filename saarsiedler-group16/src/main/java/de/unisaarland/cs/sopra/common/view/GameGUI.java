@@ -1,11 +1,7 @@
 package de.unisaarland.cs.sopra.common.view;
 
-import java.io.IOException;
 import java.util.Map;
 
-import model.TestUtil;
-
-import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
