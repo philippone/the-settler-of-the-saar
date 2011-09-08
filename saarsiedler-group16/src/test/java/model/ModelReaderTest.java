@@ -1,7 +1,6 @@
 package model;
 
 import static org.junit.Assert.*;
-import help.TestUtil;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -95,19 +94,19 @@ public class ModelReaderTest {
 	public void testGetFieldNumber() {
 		// Field without number (water)
 		Field f = model.getField(new Point(0,0));
-		int currentNumber = model.getFieldNumber(f);
+		int currentNumber = f.getNumber();
 		int expectedNumber = -1; 	// -1 for fields without numbers
 		assertEquals("not the right number (field without number)", currentNumber, expectedNumber);
 		
 		// Field without number (desert)
 		f = model.getField(new Point(2,1));
-		currentNumber = model.getFieldNumber(f);
+		currentNumber = f.getNumber();
 		expectedNumber = -1;
 		assertEquals("not the right number (field without number)", currentNumber, expectedNumber);
 		
 		// Field with number (forest)
 		f = model.getField(new Point(1,1));
-		currentNumber = model.getFieldNumber(f);
+		currentNumber = f.getNumber();
 		expectedNumber = 8;
 		assertEquals("not the right number (field without number)", currentNumber, expectedNumber);
 	}

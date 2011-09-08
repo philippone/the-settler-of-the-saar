@@ -4,7 +4,7 @@ public class Field {
 
 	private Point point;
 	private boolean containsRobber;
-	private long number;
+	private int number;
 	private FieldType fieldType;
 	
 	public Field(FieldType fieldType, Point point) {
@@ -12,6 +12,7 @@ public class Field {
 		if (point == null) throw new IllegalArgumentException();
 		this.fieldType = fieldType;
 		this.point = point;
+		this.number = -1;
 	}
 	
 	public Resource getResource(int gewuerfelteZahl) {
@@ -34,12 +35,12 @@ public class Field {
 		return this.fieldType;
 	}
 	
-	public long getNumber() {
+	public int getNumber() {
 		return number;
 	}
 	
-	public void setNumber(long number) {
-		if (number == 7) throw new IllegalArgumentException();
+	public void setNumber(int number) {
+		if (number < 2 || number == 7 || number > 12) throw new IllegalArgumentException();
 		if (fieldType == FieldType.DESERT || fieldType == FieldType.WATER) throw new IllegalArgumentException();
 		this.number = number;
 	}

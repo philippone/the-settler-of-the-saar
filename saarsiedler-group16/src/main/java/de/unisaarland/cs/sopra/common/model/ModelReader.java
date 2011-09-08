@@ -178,11 +178,6 @@ public interface ModelReader {
 	 */
 	public ResourcePackage getResources();
 	
-	/**
-	 * @param field
-	 * @return
-	 */
-	public int getFieldNumber(Field field);
 	
 	/**
 	 * @param field
