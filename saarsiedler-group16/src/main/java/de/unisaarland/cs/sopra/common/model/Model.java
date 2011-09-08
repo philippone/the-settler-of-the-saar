@@ -798,7 +798,9 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Intersection> buildableVillageIntersections(Player player) {
-		throw new UnsupportedOperationException();
+		if (player == null)
+			throw new IllegalArgumentException(player + " is null");
+		getI
 	}
 
 	/* (non-Javadoc)
@@ -806,7 +808,9 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Intersection> buildableTownIntersections(Player player) {
-		throw new UnsupportedOperationException();
+		if (player == null)
+			throw new IllegalArgumentException(player + " is null");
+		
 	}
 
 	@Override
