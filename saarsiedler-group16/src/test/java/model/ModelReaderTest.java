@@ -99,7 +99,7 @@ public class ModelReaderTest {
 		assertEquals("not the right number (field without number)", currentNumber, expectedNumber);
 		
 		// Field without number (desert)
-		f = model.getField(new Point(2,1));
+		f = model.getField(new Point(1,2));
 		currentNumber = f.getNumber();
 		expectedNumber = -1;
 		assertEquals("not the right number (field without number)", currentNumber, expectedNumber);

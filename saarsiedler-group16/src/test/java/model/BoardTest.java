@@ -64,7 +64,7 @@ public class BoardTest {
 	@Test
 	public void testGetPath() {
 		assertEquals(new Path(new Location(1, 0, 4)), b.getPath(new Location(1, 0, 4)));
-		assertEquals(b.getPath(new Location(1, 0, 4)), b.getPath(new Location(0, 1, 2)));
+		assertEquals(b.getPath(new Location(1, 2, 5)), b.getPath(new Location(0, 1, 2)));
 	}
 	
 	@Test
