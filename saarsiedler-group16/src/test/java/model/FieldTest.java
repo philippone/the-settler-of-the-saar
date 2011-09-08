@@ -90,7 +90,7 @@ public class FieldTest {
 	}
 	@Test
 	public void testNumber(){
-		assertEquals(0, f8.getNumber());
+		assertEquals(-1, f8.getNumber());
 		f8.setNumber(12);
 		assertEquals(12, f8.getNumber());
 	}
