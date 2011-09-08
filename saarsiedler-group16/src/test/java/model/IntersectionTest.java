@@ -22,17 +22,15 @@ public class IntersectionTest {
 	Location l1;
 	Location l2;
 	Intersection i1,i2;
-	Player p1, p2, p3;
+	Player p1 = new Player();
+	Player p2 = new Player(); 
+	Player p3 = new Player();
 	Building b1,b2;
 	ResourcePackage r1,r2,r3,r4;
 	
 
 	@Before
 	public void setUp() throws IOException {
-		Model model = TestUtil.getStandardModel2() ;
-		p1 = model.getTableOrder().get(0);
-		p2 = model.getTableOrder().get(1);
-		p3 = model.getTableOrder().get(2);
 		b1 = new Building(p1, BuildingType.Village);
 		b2 = new Building(p1, BuildingType.Town);
 		l1 = new Location(1, 2, 3);
@@ -80,12 +78,12 @@ public class IntersectionTest {
 	
 	@Test
 	public void testRemoveBuilding(){
+		assertEquals(true, i1.hasOwner());
 		i1.removeBuilding();
 		assertEquals(false, i1.hasOwner());
-		assertEquals(null, i1.getOwner());
+		assertEquals(true, i2.hasOwner());
 		i2.removeBuilding();
 		assertEquals(false, i2.hasOwner());
-		assertEquals(null, i2.getOwner());
 		
 	}
 	
