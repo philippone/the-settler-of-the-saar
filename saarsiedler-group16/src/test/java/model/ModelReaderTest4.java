@@ -104,13 +104,8 @@ public class ModelReaderTest4 {
 	public void testGetLongestClaimedRoad() {
 		assertEquals(null, model2.getLongestClaimedRoad());
 		
-		// in Runde 1 gehen
-		model2.newRound(8);
-		// current Player genug Resourcen geben
 		Player currentPlayer = model2.getCurrentPlayer();
-		currentPlayer.modifyResources(new ResourcePackage(10000,10000,10000,10000,10000));
-		// eigenes Haus
-		model2.buildSettlement(new Location(1,0,1), BuildingType.Village);
+		model2.getIntersection(new Location(1,0,1)).createBuilding(BuildingType.Village, currentPlayer);
 		// longest Road bauen
 		model2.buildStreet(new Location(1,0,1));
 		model2.buildStreet(new Location(1,0,2));
@@ -148,17 +143,27 @@ public class ModelReaderTest4 {
 	public void testCanPlaceRobber() throws IOException {
 		Set<Field> canSet = new TreeSet<Field>();
 		canSet.add(model1.getField(new Point(3, 0)));
-		model1.getField(new Point(0, 0)));
-		model1.getField(new Point(0, 1)));
-		model1.getField(new Point(0, 2))));		
-		assertTrue("Feld "+model1.getField(new Point(1, 0))+"kann Rauber aufnehmen!" , canSet.contains(model1.getField(new Point(1, 0))));
-		assertTrue("Feld "+model1.getField(new Point(1, 1))+"kann Rauber aufnehmen!" , canSet.contains(model1.getField(new Point(1, 1))));
-		assertTrue("Feld "+model1.getField(new Point(1, 2))+"kann Rauber aufnehmen!" , canSet.contains(model1.getField(new Point(1, 2))));
-		assertTrue("Feld "+model1.getField(new Point(2, 0))+"kann Rauber aufnehmen!" , canSet.contains(model1.getField(new Point(2, 0))));
-		assertTrue("Feld "+model1.getField(new Point(2, 1))+"kann Rauber aufnehmen!" , canSet.contains(model1.getField(new Point(2, 1))));
-		assertTrue("Feld "+model1.getField(new Point(2, 2))+"kann Rauber aufnehmen!" , canSet.contains(model1.getField(new Point(2, 2))));
-		assertTrue("Feld "+model1.getField(new Point(3, 1))+"kann Rauber aufnehmen!" , canSet.contains(model1.getField(new Point(3, 1))));
-		assertTrue("Feld "+model1.getField(new Point(3, 2))+"kann Rauber aufnehmen!" , canSet.contains(model1.getField(new Point(3, 2))));
+		canSet.add(model1.getField(new Point(0, 0)));
+		canSet.add(model1.getField(new Point(0, 1)));
+		canSet.add(model1.getField(new Point(0, 2)));
+		canSet.add(model1.getField(new Point(1, 0)));
+		canSet.add(model1.getField(new Point(1, 1)));
+		canSet.add(model1.getField(new Point(1, 2)));
+		canSet.add(model1.getField(new Point(2, 0)));
+		canSet.add(model1.getField(new Point(2, 1)));
+		canSet.add(model1.getField(new Point(2, 2)));
+		canSet.add(model1.getField(new Point(3, 1)));
+		canSet.add(model1.getField(new Point(3, 2)));
+		
+		assertEquals(canSet, model1.canPlaceRobber());
+		
+		//ingore robber ?!
+		model1.getField(new Point(2, 2)).setRobber(true);
+		canSet.remove(model1.getField(new Point(2, 2)));
+		model1.getField(new Point(2, 1)).setRobber(true);
+		canSet.remove(model1.getField(new Point(2, 1)));
+		
+		assertEquals(canSet, model1.canPlaceRobber());
 		
 	}
 	
@@ -194,15 +199,15 @@ public class ModelReaderTest4 {
 		assertEquals(model1.getField(new Point(1, 2)), it.next());	
 	}
 	
-	@Test
-	public void testGetPathIterator() {
-		
-	}
+//	@Test
+//	public void testGetPathIterator() {
+//		
+//	}
 	
-	@Test
-	public void testGetIntersectionIterator() {
-		
-	}
+//	@Test
+//	public void testGetIntersectionIterator() {
+//		
+//	}
 	
 	@Test
 	public void testGetHarborIntersections() {
@@ -291,6 +296,12 @@ public class ModelReaderTest4 {
 		
 		assertEquals(null , model2.attackableCatapults(p2));
 		assertEquals(null , model2.attackableCatapults(p3));
+		
+		// durch eigene villages angreifen
+		model2.getIntersection(new Location(2,2,0)).createBuilding(BuildingType.Village, p0);
+		assertEquals(p0Attack, model2.attackableCatapults(p0));
+		// durch fremde villages angreifen
+		assertEquals(null , model2.attackableCatapults(p1));
 	}
 	
 	@Test
