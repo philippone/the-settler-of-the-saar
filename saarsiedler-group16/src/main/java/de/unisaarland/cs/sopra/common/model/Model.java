@@ -298,7 +298,7 @@ public class Model implements ModelReader, ModelWriter{
 	@Override
 	public int getMaxBuilding(BuildingType buildingType) {
 		if (buildingType == null) throw new IllegalArgumentException();
-		return this.getMaxBuilding(buildingType);
+		return this.maxBuilding.get(buildingType);
 	}
 
 	/* (non-Javadoc)
