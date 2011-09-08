@@ -1063,4 +1063,14 @@ public class Model implements ModelReader, ModelWriter{
 		return me;
 	}
 
+	@Override
+	public int getBoardWidth() {
+		return board.getWidth();
+	}
+
+	@Override
+	public int getBoardHeight() {
+		return board.getHeight();
+	}
+
 }

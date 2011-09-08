@@ -1,14 +1,22 @@
 package de.unisaarland.cs.sopra.common.view;
 
+import java.io.FileInputStream;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.glu.GLU;
+import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.TextureLoader;
 
 import de.unisaarland.cs.sopra.common.Setting;
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
+import de.unisaarland.cs.sopra.common.model.FieldType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
@@ -21,15 +29,130 @@ import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 public class GameGUI extends View{
 
 	private Map<Player,String> playerNames;
+	private int angle;
+	private Setting setting;
+	private Map<FieldType,Texture> textureMap;
 	
-	GameGUI(Player me, ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player,String> playerNames, Setting setting) throws Exception {
-		super(me, modelReader, controllerAdapter);
+	GameGUI(long meID, ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player,String> playerNames, Setting setting) throws Exception {
+		super(meID, modelReader, controllerAdapter);
+		this.modelReader = modelReader;
+		this.setting = setting;
+		this.playerNames = playerNames;
+		this.controllerAdapter = controllerAdapter;
+		
 		Display.setDisplayMode(new DisplayMode(setting.getWindowWidth(), setting.getWindowHeight()));
 		Display.setFullscreen(setting.isFullscreen());
+		Display.setTitle("Die Siedler von der Saar");
+		Display.setVSyncEnabled(true);
 		Display.create();
-		Thread.sleep(10000);
+		
+		textureMap = new HashMap<FieldType,Texture>();
+		textureMap.put(FieldType.MOUNTAINS, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Mountain.png")));
+		textureMap.put(FieldType.DESERT, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Mountain.png")));
+		textureMap.put(FieldType.FIELDS, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Mountain.png")));
+		textureMap.put(FieldType.FOREST, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Mountain.png")));
+		textureMap.put(FieldType.HILLS, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Mountain.png")));
+		textureMap.put(FieldType.PASTURE, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Mountain.png")));
+		textureMap.put(FieldType.WATER, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Mountain.png")));
+		
+		GL11.glDisable(GL11.GL_DEPTH_TEST); // Enables Depth Testing
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        GL11.glClearDepth(1.0f); // Depth Buffer Setup
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA,GL11.GL_ONE);
 	}
 	
+	public void renderLoop() {
+	    boolean finished = false;
+	    
+		while (!finished) {
+		      // Always call Window.update(), all the time - it does some behind the
+		      // scenes work, and also displays the rendered output
+		      Display.update();
+		 
+		      // Check for close requests
+		      if (Display.isCloseRequested()) {
+			  finished = true;
+		      } 
+		      else if (Display.isActive()) {
+		          render();
+		          Display.sync(60);
+		        } 
+		      // The window is not in the foreground, so we can allow other stuff to run and
+		      // infrequently update
+		      else {
+		        try {
+		          Thread.sleep(100);
+		        } catch (InterruptedException e) {}
+		      }
+		      if (Display.isVisible() || Display.isDirty()) {
+		          render();
+		      }
+		}
+		Display.destroy();
+	}
+	
+	private void renderField(int x, int y, FieldType fieldType) {
+	     textureMap.get(fieldType).bind();
+	     GL11.glBegin(GL11.GL_POLYGON);
+	      // GL11.glColor4f(1.0f,1.0f,1.0f,1.0f); transparenz
+	       GL11.glTexCoord2f(0,0);
+	       GL11.glVertex2i(-150+x, -150+y);
+	       GL11.glTexCoord2f(1,0);
+	       GL11.glVertex2i(150+x, -150+y);
+	       GL11.glTexCoord2f(1,1);
+	       GL11.glVertex2i(150+x, 150+y);
+	       GL11.glTexCoord2f(0,1);
+	       GL11.glVertex2i(-150+x, 150+y);
+	     GL11.glEnd();
+	}
+	
+	private void render() {
+
+		   GL11.glMatrixMode(GL11.GL_PROJECTION);
+		   GL11.glLoadIdentity();
+		   GLU.gluPerspective(45.0f, 1280.0f/1024.0f, 0.1f, 5000.0f); //-5000.f ist die maximale z tiefe
+		   GL11.glMatrixMode(GL11.GL_MODELVIEW);
+		   // clear the screen
+		   GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+		   // center square according to screen size
+		   GL11.glPushMatrix();
+		   GL11.glTranslatef(0.0f, -0.0f, -2000.0f); //-4000 ist z koord
+			// rotate square according to angle
+		   GL11.glRotatef(/*angle++*/0, 0, 0, 1.0f);
+		   GL11.glColor3f(1.0f, 1.0f, 1.0f);
+	
+		   
+		   modelReader.
+		   Iterator<Field> iter = modelReader.getFieldIterator();
+		   while (iter.hasNext()) {
+			   Field f = iter.next();
+			   switch(f.getLocation().getY()%2) {
+			   case 0: renderField(f.getLocation().getX()*250, f.getLocation().getY()*215, f.getFieldType()); break;
+			   case 1: renderField(f.getLocation().getX()*250+125, f.getLocation().getY()*215, f.getFieldType()); break;
+			   }
+
+		   }
+		       
+		     /* Hexagon Koords
+		      *   GL11.glVertex2i(40, 70);
+		      * GL11.glVertex2i(80, 0);
+		      * GL11.glVertex2i(40, -70);
+		      * GL11.glVertex2i(-40, -70);
+		      * GL11.glVertex2i(-80, 0);
+		      * GL11.glVertex2i(-40, 70);
+		      */
+
+		   GL11.glPopMatrix();
+	}
+	
+	 private static void cleanup() {
+		   // Close the window
+		   Display.destroy();
+		 }
+
 	public void drawTradeMenu() {
 		throw new UnsupportedOperationException();
 	}
@@ -166,9 +289,9 @@ public class GameGUI extends View{
 														 6,8,9,10,
 														 11,12,11,10,
 														 9,8,6,5});
-		Setting setting = new Setting(800, 600, false);
-		GameGUI gameGUI = new GameGUI(null, model, null, null, setting);
-	
+		Setting setting = new Setting(1280, 1024, false);
+		GameGUI gameGUI = new GameGUI(0, model, null, null, setting);
+		gameGUI.renderLoop();
 	}
 	
 }

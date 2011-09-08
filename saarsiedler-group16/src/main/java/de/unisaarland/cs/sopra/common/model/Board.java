@@ -200,5 +200,13 @@ public class Board {
 	private Intersection getIntersection(int x, int y) { return getIntersection(new Point(x, y)); }
 	
 	private Path getPath(int x, int y) { return getPath(new Point(x, y)); }
+
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getHeight() {
+		return height;
+	}
 	
 }
