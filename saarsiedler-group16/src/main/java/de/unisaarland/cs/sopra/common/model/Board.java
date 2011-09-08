@@ -1,6 +1,7 @@
 package de.unisaarland.cs.sopra.common.model;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +26,16 @@ public class Board {
 			FieldType fieldType = FieldType.convert( worldRepresentation.getFieldType(i/width,i%width) );
 			this.field.put(p, new Field(fieldType, p));
 		}
+		this.path = new HashMap<Location,Path>();
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < height; x++) {
+				for (int ori = 0; ori < 6; ori++) {
+					Location loc = new Location(y,x,ori);
+					if !(path.get(loc))
+						path.put(loc, new Path(loc));
+				}
+			}
+		}
 	}
 	
 	public Field getField(Point point) {
@@ -40,7 +51,17 @@ public class Board {
 	}
 	
 	public Set<Field> getFieldsFromField(Field field) {
-		throw new UnsupportedOperationException();
+		Point loc = field.getLocation();
+		Set<Field> tmp = new HashSet<Field>();
+		if (loc.getX()-1 > 0) tmp.add(this.getField(new Point(loc.getY(),loc.getX()-1)));
+		if (loc.getX()+1 < width) tmp.add(this.getField(new Point(loc.getY(),loc.getX()+1)));
+		if (loc.getY()-1 > 0) tmp.add(this.getField(new Point(loc.getY()-1,loc.getX())));
+		if (loc.getY()+1 < height) tmp.add(this.getField(new Point(loc.getY()+1,loc.getX())));
+		if (loc.getY()%2==1 && loc.getY()-1 > 0 && loc.getX()-1 > 0) tmp.add(this.getField(new Point(loc.getY()-1,loc.getX()-1)));
+		if (loc.getY()%2==0 && loc.getY()-1 > 0 && loc.getX()+1 > width) tmp.add(this.getField(new Point(loc.getY()-1,loc.getX()+1)));
+		if (loc.getY()%2==1 && loc.getY()+1 < height && loc.getX()-1 > 0) tmp.add(this.getField(new Point(loc.getY()+1,loc.getX()-1)));
+		if (loc.getY()%2==0 && loc.getY()+1 < height && loc.getX()+1 > width) tmp.add(this.getField(new Point(loc.getY()+1,loc.getX()+1)));
+		return tmp;
 	}
 	
 	public Set<Field> getFieldsFromIntersection(Intersection intersection) {
@@ -100,15 +121,17 @@ public class Board {
 	}
 	
 	public Iterator<Path> getPathIterator() {
-		throw new UnsupportedOperationException();
+		return path.values().iterator();
 	}
 	
 	public Iterator<Intersection> getIntersectionIterator() {
-		throw new UnsupportedOperationException();
+		return intersection.values().iterator();
 	}
 	
 	public void setHarbor(Location location, HarborType harborType){
-		throw new UnsupportedOperationException();
+		if (location == null) throw new IllegalArgumentException();
+		if (harborType == null) throw new IllegalArgumentException();
+		this.getPath(location).setHarborType(harborType);
 	}
 	
 }

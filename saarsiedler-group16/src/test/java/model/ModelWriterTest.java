@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import help.TestUtil;
 
 import java.io.IOException;
 import java.util.Set;
@@ -255,6 +254,44 @@ public class ModelWriterTest {
 			// everything is fine
 		}
 	}
+	
+	@Test
+	// Tests wheter you have enough resoruces to build a street.
+	public void buildStreet_resourcesTest(){
+		initialize();
+		model.newRound(2);
+		try {
+			model.buildStreet(new Location(2, 1, 4));
+			fail("You shouldn't have enough resources to build that street!");
+		}
+		catch (IllegalStateException e) { /* everything is fine */ }
+	}
+	
+	@Test
+	// Tests wheter there is a street that connects to it.
+	public void buildStreet_adjacentNegativeTest(){
+		initialize();
+		try {
+			model.buildStreet(new Location(2, 1, 4));
+			fail("There is no street that is adjacent to your road.");
+		}
+		catch (IllegalStateException e) { /* everything is fine */ }
+	}
+	
+	@Test
+	// Tests wheter there is a street that connects to it.
+	public void buildStreet_adjacentPositiveTest(){
+		initialize();
+		try {
+			model.buildStreet(new Location(1, 1, 1));
+			/* everything is fine */
+		}
+		catch (IllegalStateException e) {
+			fail("There is no street that is adjacent to your road.");
+		}
+	}
+	
+	
 	
 	
 	@Test

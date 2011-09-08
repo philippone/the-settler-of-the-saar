@@ -1,8 +1,6 @@
 package model;
 
 import static org.junit.Assert.*;
-import help.TestModelObserver;
-import help.TestUtil;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -174,8 +172,8 @@ public class ModelWriterTest2 {
 		assertEquals("Tableorder wasn't set correctly", model.getTableOrder(), playerList);
 		Point p1 = new Point(1,1);
 		Point p2 = new Point(2,1);
-		assertEquals("Fieldnumber wasn't set correctly", model.getFieldNumber(model.getField(p1)), 8);
-		assertEquals("Fieldnumber wasn't set correctly", model.getFieldNumber(model.getField(p2)), 6);
+		assertEquals("Fieldnumber wasn't set correctly", model.getField(p1).getNumber(), 8);
+		assertEquals("Fieldnumber wasn't set correctly", model.getField(p2).getNumber(), 6);
 	}
 	
 	@Test

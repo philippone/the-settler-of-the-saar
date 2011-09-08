@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import de.unisaarland.cs.sopra.common.ModelObserver;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
@@ -221,12 +222,16 @@ public class Model implements ModelReader, ModelWriter{
 	/**
 	 * @param numbers: int[] (set the numbers on the fields)
 	 */
-	public void setFieldNumbers(int[] numbers) {
+	public void setFieldNumbers(byte[] numbers) {
 		if (numbers == null) throw new IllegalArgumentException();
+		//TODO: ignore water and desert Fields
 		Iterator<Field> iter = board.getFieldIterator();
 		int i = 0;
 		while(iter.hasNext()) {
-			iter.next().setNumber(numbers[i++]);
+			Field f= iter.next();
+			if(f.getFieldType()!=FieldType.DESERT  &&	f.getFieldType()!=FieldType.WATER){
+				f.setNumber(numbers[i++]);
+			}
 		}
 	}
 	
@@ -300,20 +305,57 @@ public class Model implements ModelReader, ModelWriter{
 		return this.round;
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#buildableStreetPaths(de.unisaarland.cs.sopra.common.model.Player)
+	/**
+	 * @return return Set of Paths where you can build a Street, or null if non available
 	 */
 	@Override
 	public Set<Path> buildableStreetPaths(Player player) {
-		throw new UnsupportedOperationException();
+		if (player==null) throw new IllegalArgumentException(player+ "is null");
+		Iterator<Path> it = getPathIterator();
+		Set<Path> res = new TreeSet<Path>();
+		while(it.hasNext()){
+			Path p = it.next();
+			if(!p.hasStreet()){
+				Set<Path> nachbarn = getPathsFromPath(p);
+				for(Path n: nachbarn){
+					if(p.hasStreet()	&&	p.getStreetOwner()==player){	//doppelte abfrage zur sicherheit
+						res.add(p);
+					}
+				}
+			}
+		}
+		if(res.isEmpty())	return null;
+		
+		return res;
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#buildableCatapultPaths(de.unisaarland.cs.sopra.common.model.Player)
-	 */
+	/**
+	 * @return return Set of Paths where you can build a Catapult, or null if non available
+	 	 */
 	@Override
 	public Set<Path> buildableCatapultPaths(Player player) {
-		throw new UnsupportedOperationException();
+		if (player==null) throw new IllegalArgumentException(player+ "is null");
+		Iterator<Intersection> it = getIntersectionIterator();
+		Set<Path> res = new TreeSet<Path>();
+		while(it.hasNext()){
+			Intersection inter = it.next();
+			if(inter.getBuildingType().equals(BuildingType.Town)	&&	inter.getOwner()==player){
+				res.addAll(getPathsFromIntersection(inter));
+			}
+		}
+		if(res.isEmpty())	return null;
+		
+		return res;
+	}
+	private int affordableThings(ResourcePackage price){
+		ResourcePackage rp = getCurrentPlayer().getResources().copy();
+		int ret = -1;
+		while(!rp.hasNegativeResources()){
+			ret++;
+			rp.add(price);
+		}
+		
+		return ret;
 	}
 
 	/* (non-Javadoc)
@@ -321,7 +363,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public int affordableSettlements(BuildingType buildingType) {
-		throw new UnsupportedOperationException();
+		return affordableThings(buildingType.getPrice());
 	}
 
 	/* (non-Javadoc)
@@ -329,7 +371,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public int affordableStreets() {
-		throw new UnsupportedOperationException();
+		return affordableThings(Street.getPrice());
 	}
 
 	/* (non-Javadoc)
@@ -337,7 +379,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public int affordableCatapultBuild() {
-		throw new UnsupportedOperationException();
+		return affordableThings(Catapult.getBuildingprice());
 	}
 
 	/* (non-Javadoc)
@@ -345,7 +387,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public int affordableCatapultAttack() {
-		throw new UnsupportedOperationException();
+		return affordableThings(Catapult.getAttackcatapultprice());
 	}
 
 	/* (non-Javadoc)
@@ -353,15 +395,23 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public int affordableSettlementAttack() {
-		throw new UnsupportedOperationException();
+		return affordableThings(Catapult.getAttackbuildingprice());
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#affordablePathsAfterVillage(int)
+	/**
+	 * @return shows how many Streets are affordable ,when you buy a Village first
 	 */
 	@Override
 	public int affordablePathsAfterVillage(int villageCount) {
-		throw new UnsupportedOperationException();
+		ResourcePackage rp = getCurrentPlayer().getResources().copy();
+		rp.add(BuildingType.Village.getPrice());
+		if(rp.hasNegativeResources()) return 0;
+		int ret = -1;
+		while(!rp.hasNegativeResources()){
+			ret++;
+			rp.add(Street.getPrice());
+		}
+		return ret;
 	}
 
 	/* (non-Javadoc)
@@ -370,6 +420,7 @@ public class Model implements ModelReader, ModelWriter{
 	@Override
 	public Set<Intersection> attackableSettlements(Player player, BuildingType buildingType) {
 		throw new UnsupportedOperationException();
+		//TODO sollte jmd anders machen, da ichs getestet hab
 	}
 
 	/* (non-Javadoc)
@@ -378,6 +429,8 @@ public class Model implements ModelReader, ModelWriter{
 	@Override
 	public Set<Path> attackableCatapults(Player player) {
 		throw new UnsupportedOperationException();
+		//TODO sollte jmd anders machen, da ichs getestet hab
+		// gilt auch fuer folgende
 	}
 
 	/* (non-Javadoc)
@@ -501,19 +554,20 @@ public class Model implements ModelReader, ModelWriter{
 	}
 
 	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getFieldNumber(de.unisaarland.cs.sopra.common.model.Field)
-	 */
-	@Override
-	public int getFieldNumber(Field field) {
-		throw new UnsupportedOperationException();
-	}
-
-	/* (non-Javadoc)
 	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getFieldResource(de.unisaarland.cs.sopra.common.model.Field)
 	 */
 	@Override
 	public Resource getFieldResource(Field field) {
-		throw new UnsupportedOperationException();
+		Resource res=null;
+		switch(field.getFieldType()){
+			case FIELDS: 	res=Resource.GRAIN;	break;
+			case FOREST: 	res=Resource.LUMBER;break;
+			case MOUNTAINS: res=Resource.ORE;	break;
+			case HILLS:		res=Resource.BRICK;	break;
+			case PASTURE:	res=Resource.WOOL;	break;
+			default: break;
+		}
+		return res;
 	}
 
 	/* (non-Javadoc)
@@ -521,7 +575,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Field> getFieldsFromField(Field field) {
-		throw new UnsupportedOperationException();
+		return board.getFieldsFromField(field);
 	}
 
 	/* (non-Javadoc)
@@ -529,7 +583,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Field> getFieldsFromIntersection(Intersection intersection) {
-		throw new UnsupportedOperationException();
+		return board.getFieldsFromIntersection(intersection);
 	}
 
 	/* (non-Javadoc)
@@ -537,7 +591,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Field> getFieldsFromPath(Path path) {
-		throw new UnsupportedOperationException();
+		return board.getFieldsFromPath(path);
 	}
 
 	/* (non-Javadoc)
@@ -545,7 +599,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Intersection> getIntersectionsFromField(Field field) {
-		throw new UnsupportedOperationException();
+		return board.getIntersectionsFromField(field);
 	}
 
 	/* (non-Javadoc)
@@ -553,7 +607,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Intersection> getIntersectionsFromIntersection(Intersection intersection) {
-		throw new UnsupportedOperationException();
+		return board.getIntersectionsFromIntersection(intersection);
 	}
 
 	/* (non-Javadoc)
@@ -561,7 +615,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Intersection> getIntersectionsFromPath(Path path) {
-		throw new UnsupportedOperationException();
+		return board.getIntersectionsFromPath(path);
 	}
 
 	/* (non-Javadoc)
@@ -569,7 +623,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Path> getPathsFromField(Field field) {
-		throw new UnsupportedOperationException();
+		return board.getPathsFromField(field);
 	}
 
 	/* (non-Javadoc)
@@ -577,7 +631,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Path> getPathsFromIntersection(Intersection intersection) {
-		throw new UnsupportedOperationException();
+		return board.getPathsFromIntersection(intersection);
 	}
 
 	/* (non-Javadoc)
@@ -585,7 +639,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Path> getPathsFromPath(Path path) {
-		throw new UnsupportedOperationException();
+		return board.getPathsFromPath(path);
 	}
 
 	/* (non-Javadoc)
@@ -640,8 +694,11 @@ public class Model implements ModelReader, ModelWriter{
 	 * @see de.unisaarland.cs.sopra.common.model.ModelWriter#matchStart(long[], byte[])
 	 */
 	@Override
-	public void matchStart(long[] players, byte[] number) {
-		throw new UnsupportedOperationException();
+	public void matchStart(long[] players, byte[] numbers) {
+		if (players==null || numbers==null) throw new IllegalArgumentException(players +" oder "+ numbers+ " is null");
+		setTableOrder(players);
+		setFieldNumbers(numbers);
+		//TODO evtl noch mehr zu tun als das
 	}
 
 	/* (non-Javadoc)
@@ -649,7 +706,33 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public void catapultMoved(Location sourcePath, Location destinationPath, boolean fightOutCome) {
-		throw new UnsupportedOperationException();
+		if (sourcePath==null || destinationPath==null) throw new IllegalArgumentException("iwas is null");
+		Player owner = getPath(sourcePath).getCatapultOwner();
+		Path path_source = getPath(sourcePath);
+		Path path_dest = getPath(destinationPath);
+		Set<Intersection> iset1 = getIntersectionsFromPath(path_source);
+		Set<Intersection> iset2 = getIntersectionsFromPath(path_dest);
+		Intersection interBetweenPaths = null;
+		//finds the intersection between both paths
+		for (Intersection inter1 : iset1) {
+			for (Intersection inter2 : iset2) {
+				if(inter1 ==inter2) interBetweenPaths=inter1;
+			}
+		}
+		if(interBetweenPaths.hasOwner() && interBetweenPaths.getOwner()!=owner){
+			throw new IllegalStateException("Catapult kann nicht durch feindliche Siedlungen hindurch");
+		}
+		path_source.removeCatapult();
+		path_dest.createCatapult(owner);
+		
+		if(owner.checkResourcesSufficient(Catapult.getAttackcatapultprice())) throw new IllegalStateException("not enough money on the bankaccount!");
+		owner.modifyResources(Catapult.getAttackcatapultprice());
+		
+		for (ModelObserver ob : modelObserver) {
+			ob.updatePath(path_source);
+			ob.updatePath(path_dest);
+			ob.updateResources();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -657,7 +740,9 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public void playerLeft(long playerID) {
-		throw new UnsupportedOperationException();
+		for (ModelObserver ob : modelObserver) {
+			ob.eventPlayerLeft(playerID);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -689,7 +774,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Field getField(Point p) {
-		throw new UnsupportedOperationException();
+		return board.getField(p);
 	}
 
 	/* (non-Javadoc)
@@ -697,7 +782,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public int getMaxCatapult() {
-		throw new UnsupportedOperationException();
+		return maxCatapult;
 	}
 
 	/* (non-Javadoc)
@@ -705,7 +790,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public int getInitVillages() {
-		throw new UnsupportedOperationException();
+		return initVillages;
 	}
 
 	/* (non-Javadoc)
