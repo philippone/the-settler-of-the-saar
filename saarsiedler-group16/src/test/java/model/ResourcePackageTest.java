@@ -57,14 +57,13 @@ public class ResourcePackageTest {
 	}
 	
 	@Test
-	public void hasNegativeResourcesTest2() {
-		assertFalse("-1,0,0,0,0 is no negative resourcepackage",new ResourcePackage(0,0,0,0,0).hasNegativeResources());
+	public void negativeCountTest() {
+		assertEquals(new ResourcePackage(3,6,-7,3,-7).getNegativeResourcesCount(),14);
+	}
+	
+	@Test
+	public void positiveCountTest() {
+		assertEquals(new ResourcePackage(3,6,-7,3,-7).getPositiveResourcesCount(),12);
 	}
 	
 }
-
-/*		
- * assertEquals("Expected 2 as Result", function should return 2() , 2);
- * assertTrue("Expected True as Result", true);
- * assertFalse("Expected True as Result", false);
- */

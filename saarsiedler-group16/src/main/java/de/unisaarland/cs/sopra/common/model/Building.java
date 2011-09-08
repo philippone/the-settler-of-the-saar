@@ -6,31 +6,27 @@ public class Building {
 	private Player owner;
 	
 	public Building(Player owner, BuildingType buildingType) {
-		throw new UnsupportedOperationException();
+		if (owner == null) throw new IllegalArgumentException();
+		if (buildingType == null) throw new IllegalArgumentException();
+		this.owner = owner;
+		this.buildingType = buildingType;
 	}
 	
 	public int getGain() {
-		throw new UnsupportedOperationException();
+		return this.buildingType.getGain();
 	}
 	
 	public Player getOwner() {
-		throw new UnsupportedOperationException();
+		return this.owner;
 	}
 	
 	public void setOwner(Player owner) {
-		throw new UnsupportedOperationException();
-	}
-	
-	public boolean hasOwner() {
-		throw new UnsupportedOperationException();
+		if (owner == null) throw new IllegalArgumentException();
+		this.owner = owner;
 	}
 	
 	public BuildingType getBuildingType() {
-		throw new UnsupportedOperationException();
-	}
-	
-	public ResourcePackage getPrice() {
-		throw new UnsupportedOperationException();
+		return this.buildingType;
 	}
 	
 }

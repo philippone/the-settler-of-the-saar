@@ -89,7 +89,7 @@ public class BuildVillageTest{
 			}
 		};
 		
-		model = new Model(worldrep, matchinfo);
+		model = new Model(worldrep, matchinfo,0);
 		Connection connect = new Connection() {
 			
 			@Override

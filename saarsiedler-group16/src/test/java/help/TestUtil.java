@@ -71,7 +71,7 @@ public class TestUtil {
 				return new long[] {};
 			}
 		};
-		Model model = new Model(worldrep, matchinfo);
+		Model model = new Model(worldrep, matchinfo, 0);
 		model.matchStart(new long[] {0,1}, new byte[] {2,3,4,5,
 														 6,8,9,10,
 														 11,12,11,10,
@@ -135,7 +135,7 @@ public class TestUtil {
 				return new long[] {};
 			}
 		};
-		Model model = new Model(worldrep, matchinfo);
+		Model model = new Model(worldrep, matchinfo, 0);
 		model.matchStart(new long[] {0,1,2}, new byte[] {8,6});
 		return model;
 	}

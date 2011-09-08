@@ -37,11 +37,6 @@ public class BuildingTest {
 		assertEquals(1, b.getGain());
 		assertEquals(2, b2.getGain());
 	}
-	@Test
-	public void testPrice(){
-		assertEquals(BuildingType.Village.getPrice(), b.getPrice());
-		assertEquals(BuildingType.Town.getPrice(), b2.getPrice());
-	}
 	@Test 
 	public void testEquals(){
 		assertEquals(b,b);

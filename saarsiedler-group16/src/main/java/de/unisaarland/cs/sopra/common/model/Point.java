@@ -19,4 +19,19 @@ public class Point {
 		return y;
 	}
 	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Point) {
+			if ((((Point)o).getX() == this.x) && (((Point)o).getY() == this.y)) return true;
+			else return false;
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return x * 199 + y;
+	}
+	
+	
 }

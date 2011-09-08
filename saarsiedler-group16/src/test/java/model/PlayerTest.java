@@ -59,11 +59,11 @@ public class PlayerTest {
 		assertTrue(p1.checkResourcesSufficient(new ResourcePackage(0, 0, 0, 0, -1)));
 		
 		p2.modifyResources(new ResourcePackage(0,1,2,3,4));
-		assertFalse(p1.checkResourcesSufficient(new ResourcePackage(-1, 0, 0, 0, 0)));
-		assertFalse(p1.checkResourcesSufficient(new ResourcePackage(0, -2, 0, 0, 0)));
-		assertFalse(p1.checkResourcesSufficient(new ResourcePackage(0, 0, -3, 0, 0)));
-		assertFalse(p1.checkResourcesSufficient(new ResourcePackage(0, 0, 0, -4, 0)));
-		assertFalse(p1.checkResourcesSufficient(new ResourcePackage(0, 0, 0, 0, -5)));
+		assertFalse(p2.checkResourcesSufficient(new ResourcePackage(-1, 0, 0, 0, 0)));
+		assertFalse(p2.checkResourcesSufficient(new ResourcePackage(0, -2, 0, 0, 0)));
+		assertFalse(p2.checkResourcesSufficient(new ResourcePackage(0, 0, -3, 0, 0)));
+		assertFalse(p2.checkResourcesSufficient(new ResourcePackage(0, 0, 0, -4, 0)));
+		assertFalse(p2.checkResourcesSufficient(new ResourcePackage(0, 0, 0, 0, -5)));
 		
 		try{
 			p2.checkResourcesSufficient(new ResourcePackage( 666 ,-1,-1,-1,-1));

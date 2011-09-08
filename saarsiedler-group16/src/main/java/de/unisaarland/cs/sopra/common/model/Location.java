@@ -24,4 +24,18 @@ public class Location {
 		return orientation;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Location) {
+			if ((((Location)o).getX() == this.x) && (((Location)o).getY() == this.y) && (((Location)o).getOrientation() == this.orientation)) return true;
+			else return false;
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return x * 271 + y * 199 + orientation;
+	}
+	
 }
