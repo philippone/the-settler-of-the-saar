@@ -418,8 +418,17 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Intersection> attackableSettlements(Player player, BuildingType buildingType) {
-		throw new UnsupportedOperationException();
-		//TODO sollte jmd anders machen, da ichs getestet hab
+		Set<Intersection> attackableSettlements=new TreeSet<Intersection>();
+		Set<Path> sp=getCatapults(player);
+		for (Path p: sp){
+			Set<Intersection> si=getIntersectionsFromPath(p);
+			for (Intersection i: si){
+				if (i.hasOwner() && i.getOwner()!=player && i.getBuildingType()==buildingType) {
+					attackableSettlements.add(i);
+				}
+			}
+		}
+		return attackableSettlements;
 	}
 
 	/* (non-Javadoc)
@@ -427,9 +436,17 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Path> attackableCatapults(Player player) {
-		throw new UnsupportedOperationException();
-		//TODO sollte jmd anders machen, da ichs getestet hab
-		// gilt auch fuer folgende
+		Set<Path> attackableCatapults=new TreeSet<Path>();
+		Set<Path> sp=getCatapults(player);
+		for (Path p: sp){
+			Set<Path> sp1=getPathsFromPath(p);
+			for (Path p1: sp1){
+				if (p.hasCatapult() && p.getCatapultOwner()!=player) {
+					attackableCatapults.add(p1);
+				}
+			}
+		}
+		return attackableCatapults;
 	}
 
 	/* (non-Javadoc)
@@ -437,7 +454,14 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Path> getStreets(Player player) {
-		throw new UnsupportedOperationException();
+		Iterator<Path>ip=getPathIterator();
+		Set<Path>sp=new TreeSet<Path>();
+		Path p;
+		while (ip.hasNext()){
+			p=ip.next();
+			if (p.getStreetOwner()==player) sp.add(p);
+		}
+		return sp;
 	}
 
 	/* (non-Javadoc)
@@ -445,7 +469,14 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Intersection> getSettlements(Player player, BuildingType buildingType) {
-		throw new UnsupportedOperationException();
+		Iterator<Intersection>ii=getIntersectionIterator();
+		Set<Intersection>si=new TreeSet<Intersection>();
+		Intersection i;
+		while (ii.hasNext()){
+			i=ii.next();
+			if (i.getOwner()==player && i.getBuildingType()==buildingType) si.add(i);
+		}
+		return si;
 	}
 
 	/* (non-Javadoc)
@@ -453,7 +484,14 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Path> getCatapults(Player player) {
-		throw new UnsupportedOperationException();
+		Iterator<Path>ip=getPathIterator();
+		Set<Path>sp=new TreeSet<Path>();
+		Path p;
+		while (ip.hasNext()){
+			p=ip.next();
+			if (p.getCatapultOwner()==player) sp.add(p);
+		}
+		return sp;
 	}
 
 	/* (non-Javadoc)
@@ -461,7 +499,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public List<Path> getLongestClaimedRoad() {
-		throw new UnsupportedOperationException();
+		return longestClaimedRoad;
 	}
 
 	/* (non-Javadoc)
@@ -469,7 +507,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public int getMaxVictoryPoints() {
-		throw new UnsupportedOperationException();
+		return maxVictoryPoints;
 	}
 
 	/* (non-Javadoc)
@@ -477,7 +515,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public int getCurrentVictoryPoints(Player player) {
-		throw new UnsupportedOperationException();
+		return player.getVictoryPoints();
 	}
 
 	/* (non-Javadoc)
@@ -485,7 +523,20 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Field> canPlaceRobber() {
-		throw new UnsupportedOperationException();
+		Iterator<Field>itf=getFieldIterator();
+		Set<Field>sf=new TreeSet<Field>();
+		Field f;
+		while (itf.hasNext()){
+			f=itf.next();
+			if (f.getFieldType()==FieldType.WATER){
+				Set<Field>sf1=getFieldsFromField(f);
+				for (Field f1:sf1){
+					if(f1.getFieldType()!=FieldType.WATER) sf.add(f);
+				}
+			}
+			else sf.add(f);
+		}
+		return sf;
 	}
 
 	/* (non-Javadoc)
@@ -493,7 +544,14 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Field> getRobberFields() {
-		throw new UnsupportedOperationException();
+		Iterator<Field>itf=getFieldIterator();
+		Set<Field>sf=new TreeSet<Field>();
+		Field f;
+		while (itf.hasNext()){
+			f=itf.next();
+			if (f.hasRobber()) sf.add(f);
+		}
+		return sf;
 	}
 
 	/* (non-Javadoc)
