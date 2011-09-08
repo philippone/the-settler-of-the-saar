@@ -17,7 +17,7 @@ public class Field {
 	
 	public Resource getResource(int gewuerfelteZahl) {
 		if (gewuerfelteZahl < 2 || gewuerfelteZahl > 12) throw new IllegalArgumentException();
-		if (containsRobber || number == 0) return null;
+		if (containsRobber || number == -1) return null;
 		else {
 			return gewuerfelteZahl == number ? fieldType.getResource() : null;
 		}
