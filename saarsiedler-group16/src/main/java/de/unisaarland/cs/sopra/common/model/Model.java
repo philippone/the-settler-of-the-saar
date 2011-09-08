@@ -676,7 +676,54 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public void attackSettlement(Location catapultPath, Location settlementIntersection, AttackResult result) {
-		
+		if (catapultPath==null || settlementIntersection==null || result==null) throw new IllegalArgumentException("iwas is null");	
+		Path path_catapult = getPath(catapultPath);
+		Intersection inter_settlement = getIntersection(settlementIntersection);
+		if (!path_catapult.hasCatapult() || !inter_settlement.hasOwner()) throw new IllegalArgumentException("kein Catapult oder Siedlung vorhanden");
+		switch(result){
+		case DRAW:
+			path_catapult.getCatapultOwner().modifyResources(Catapult.getAttackbuildingprice());
+			for(ModelObserver ob : modelObserver){
+				ob.updateResources();
+			}
+			break;
+		case DEFEAT:
+			path_catapult.removeCatapult();
+			path_catapult.getCatapultOwner().modifyResources(Catapult.getAttackbuildingprice());
+			for(ModelObserver ob : modelObserver){
+				ob.updateResources();
+				ob.updateCatapultCount();
+				ob.updatePath(path_catapult);
+			}
+			break;
+		case SUCCESS:
+			Player owner = path_catapult.getCatapultOwner();
+			Player ownerBuilding = inter_settlement.getOwner();
+			if(inter_settlement.getBuildingType()==BuildingType.Village){
+				if(owner.getVictoryPoints()< getMaxVictoryPoints()){
+					inter_settlement.removeBuilding();
+					inter_settlement.createBuilding(BuildingType.Village, owner);
+				}else{
+					inter_settlement.removeBuilding();
+				}
+			}else{
+				if(ownerBuilding.getVictoryPoints()<getMaxVictoryPoints()){
+					inter_settlement.removeBuilding();
+					inter_settlement.createBuilding(BuildingType.Village, ownerBuilding);
+				}else{
+					inter_settlement.removeBuilding();
+					inter_settlement.createBuilding(BuildingType.Village, owner);
+				}
+			}
+			owner.modifyResources(Catapult.getAttackbuildingprice());
+			for(ModelObserver ob : modelObserver){
+				ob.updateResources();
+				ob.updateIntersection(inter_settlement);
+				ob.updateSettlementCount(BuildingType.Village);
+				ob.updateSettlementCount(BuildingType.Town);
+			}
+			break;
+		}
 	}
 
 	/* (non-Javadoc)
@@ -684,7 +731,29 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public void buildCatapult(Location destination, boolean fightOutCome) {
-		throw new UnsupportedOperationException();
+		if (destination==null) throw new IllegalArgumentException(destination+" is null");
+		Path dest = getPath(destination);
+		Set<Intersection> nachbarSet = getIntersectionsFromPath(dest); 
+		boolean nachbarTown = false;
+		for (Intersection intersection : nachbarSet) {
+			if(intersection.getBuildingType()==BuildingType.Town) nachbarTown=true;
+		}
+		if(!nachbarTown) throw new IllegalArgumentException("Keine Stadt in der Naehe(Location mies)");
+		if(fightOutCome){
+			if(dest.hasCatapult()){
+				dest.removeCatapult();
+			}
+			dest.createCatapult(getCurrentPlayer());
+		}else{
+			if(!dest.hasCatapult()) throw new IllegalStateException("Wird nicht gebaut, obwohl kein Gegner vorhanden ist");
+			if(!getCurrentPlayer().checkResourcesSufficient(Catapult.getBuildingprice())) throw new IllegalArgumentException("Player has no resources to built a Catapult");
+		}
+		getCurrentPlayer().modifyResources(Catapult.getBuildingprice());
+		for(ModelObserver ob : modelObserver){
+			ob.updateResources();
+			ob.updateCatapultCount();
+			ob.updatePath(dest);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -692,7 +761,17 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public void buildStreet(Location destination) {
-		throw new UnsupportedOperationException();
+		if (destination == null) throw new IllegalArgumentException(destination + " is null");
+		Path dest = getPath(destination);
+		if (!dest.hasStreet()) throw new IllegalArgumentException("Strasse bereits vorhanden");
+		Set<Path> nachbarn = buildableStreetPaths(me);
+		if(!nachbarn.contains(dest)) throw new IllegalStateException("Keine Nachbarstrassen");
+		me.checkResourcesSufficient(Street.getPrice());
+		me.modifyResources(Street.getPrice());
+		for(ModelObserver ob : modelObserver){
+			ob.updateResources();
+			ob.updatePath(dest);
+		}
 	}
 
 	/* (non-Javadoc)
