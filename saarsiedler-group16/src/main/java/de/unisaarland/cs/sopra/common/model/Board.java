@@ -10,22 +10,41 @@ import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 
 public class Board {
 
-	private Map<Point,Field> field;
-	private Map<Location,Path> path;
-	private Map<Location,Intersection> intersection;
+	private OurMap<Field> field;
+	private OurMap<Path> path;
+	private OurMap<Intersection> intersection;
 	private int width;
 	private int height;
+	
+	class OurMap<T> {
+		Map<Point, T> m;
+		
+		OurMap(){ m = new HashMap<Point, T>(); }
+		
+		T get(Point position){
+			return m.get(position);
+		}
+		
+		boolean put(Point position, T t){
+			boolean validPosition = position.getX() >= 0 && position.getX() < width
+					&& position.getY() >= 0 && position.getY() < height;
+			if (validPosition){ m.put(position, t); }
+			return validPosition;
+		}
+		
+		Iterator<T> iterator(){ return m.values().iterator(); }
+	}
 	
 	public Board(WorldRepresentation worldRepresentation) {
 		this.height = worldRepresentation.getHeight();
 		this.width = worldRepresentation.getWidth();
-		this.field = new HashMap<Point,Field>();
+		this.field = new OurMap<Field>();
 		for (int i = 0; i < width*height; i++) {
 			Point p = new Point(i/width,i%width);
 			FieldType fieldType = FieldType.convert( worldRepresentation.getFieldType(i/width,i%width) );
 			this.field.put(p, new Field(fieldType, p));
 		}
-		this.path = new HashMap<Location,Path>();
+		this.path = new OurMap<Path>();
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < height; x++) {
 				for (int ori = 0; ori < 6; ori++) {
@@ -53,30 +72,26 @@ public class Board {
 		return this.field.get(point);
 	}
 	
-	public Intersection getIntersection(Location location) {
+	public Intersection getIntersection(Point location) {
 		return this.intersection.get(location);
 	}
 	
-	public Path getPath(Location location) {
+	public Path getPath(Point location) {
 		return this.path.get(location);
 	}
 	
 	public Set<Field> getFieldsFromField(Field field) {
 		Point loc = field.getLocation();
-		Set<Field> tmp = new HashSet<Field>();
-		if (				   fieldInRange(loc,+0,-1)) tmp.add(this.getField(new Point(loc.getY(),loc.getX()-1)));
-		if (				   fieldInRange(loc,+0,+1)) tmp.add(this.getField(new Point(loc.getY(),loc.getX()+1)));
-		if (				   fieldInRange(loc,-1,+0)) tmp.add(this.getField(new Point(loc.getY()-1,loc.getX())));
-		if (				   fieldInRange(loc,+1,+0)) tmp.add(this.getField(new Point(loc.getY()+1,loc.getX())));
-		if (loc.getY()%2==1 && fieldInRange(loc,-1,-1)) tmp.add(this.getField(new Point(loc.getY()-1,loc.getX()-1)));
-		if (loc.getY()%2==0 && fieldInRange(loc,-1,+1)) tmp.add(this.getField(new Point(loc.getY()-1,loc.getX()+1)));
-		if (loc.getY()%2==1 && fieldInRange(loc,+1,-1)) tmp.add(this.getField(new Point(loc.getY()+1,loc.getX()-1)));
-		if (loc.getY()%2==0 && fieldInRange(loc,+1,+1)) tmp.add(this.getField(new Point(loc.getY()+1,loc.getX()+1)));
-		return tmp;
-	}
-	
-	private boolean fieldInRange(Point p, int yoffset, int xoffset) {
-		return (p.getY()+yoffset >= 0 && p.getY()+yoffset < height && p.getX()+xoffset >= 0 && p.getX()+xoffset < width);
+		Set<Field> s = new HashSet<Field>();
+		s.add(this.getField(new Point(loc.getY(),loc.getX()-1)));
+		s.add(this.getField(new Point(loc.getY(),loc.getX()+1)));
+		s.add(this.getField(new Point(loc.getY()-1,loc.getX())));
+		s.add(this.getField(new Point(loc.getY()+1,loc.getX())));
+		s.add(this.getField(new Point(loc.getY()-1,loc.getX()-1)));
+		s.add(this.getField(new Point(loc.getY()-1,loc.getX()+1)));
+		s.add(this.getField(new Point(loc.getY()+1,loc.getX()-1)));
+		s.add(this.getField(new Point(loc.getY()+1,loc.getX()+1)));
+		return s;
 	}
 	
 	public Set<Field> getFieldsFromIntersection(Intersection intersection) {
@@ -124,7 +139,6 @@ public class Board {
 			}
 			break;
 		case 1:
-			if (fieldInRange())
 			ps.add(getPath(new Location(y, x+1, 5)));
 			ps.add(getPath(new Location(y, x+1, 3)));
 			break;
@@ -155,7 +169,7 @@ public class Board {
 			
 			@Override
 			public boolean hasNext() {
-				return i < (width)*(height)-1;
+				return i < (width)*(height);
 			}
 
 			@Override
@@ -173,19 +187,17 @@ public class Board {
 	}
 	
 	public Iterator<Path> getPathIterator() {
-		return path.values().iterator();
+		return path.iterator();
 	}
 	
 	public Iterator<Intersection> getIntersectionIterator() {
-		return intersection.values().iterator();
+		return intersection.iterator();
 	}
 	
-	public void setHarbor(Location location, HarborType harborType){
-		if (location == null) throw new IllegalArgumentException();
-		if (harborType == null) throw new IllegalArgumentException();
-		this.getPath(location).setHarborType(harborType);
-	}
+	private Field getField(int x, int y) { return getField(new Point(x, y)); }
 	
-	private boolean 
+	private Intersection getIntersection(int x, int y) { return getIntersection(new Point(x, y)); }
+	
+	private Path getPath(int x, int y) { return getPath(new Point(x, y)); }
 	
 }
