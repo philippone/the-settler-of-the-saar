@@ -617,8 +617,11 @@ public class Model implements ModelReader, ModelWriter{
 	@Override
 	public void catapultMoved(Location sourcePath, Location destinationPath, boolean fightOutCome) {
 		if (sourcePath==null || destinationPath==null) throw new IllegalArgumentException("iwas is null");
-		Set<Intersection> iset1 = getIntersectionsFromPath(getPath(sourcePath));
-		Set<Intersection> iset2 = getIntersectionsFromPath(getPath(destinationPath));
+		Player owner = getPath(sourcePath).getCatapultOwner();
+		Path path_source = getPath(sourcePath);
+		Path path_dest = getPath(destinationPath);
+		Set<Intersection> iset1 = getIntersectionsFromPath(path_source);
+		Set<Intersection> iset2 = getIntersectionsFromPath(path_dest);
 		Intersection interBetweenPaths = null;
 		//finds the intersection between both paths
 		for (Intersection inter1 : iset1) {
@@ -626,8 +629,19 @@ public class Model implements ModelReader, ModelWriter{
 				if(inter1 ==inter2) interBetweenPaths=inter1;
 			}
 		}
-		if(interBetweenPaths.hasOwner() && interBetweenPaths.getOwner()!=getPath(sourcePath).getCatapultOwner()){
+		if(interBetweenPaths.hasOwner() && interBetweenPaths.getOwner()!=owner){
 			throw new IllegalStateException("Catapult kann nicht durch feindliche Siedlungen hindurch");
+		}
+		path_source.removeCatapult();
+		path_dest.createCatapult(owner);
+		
+		if(owner.checkResourcesSufficient(Catapult.getAttackcatapultprice())) throw new IllegalStateException("not enough money on the bankaccount!");
+		owner.modifyResources(Catapult.getAttackcatapultprice());
+		
+		for (ModelObserver ob : modelObserver) {
+			ob.updatePath(path_source);
+			ob.updatePath(path_dest);
+			ob.updateResources();
 		}
 	}
 
@@ -636,7 +650,9 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public void playerLeft(long playerID) {
-		throw new UnsupportedOperationException();
+		for (ModelObserver ob : modelObserver) {
+			ob.eventPlayerLeft(playerID);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -668,7 +684,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Field getField(Point p) {
-		throw new UnsupportedOperationException();
+		return board.getField(p);
 	}
 
 	/* (non-Javadoc)
@@ -676,7 +692,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public int getMaxCatapult() {
-		throw new UnsupportedOperationException();
+		return maxCatapult;
 	}
 
 	/* (non-Javadoc)
@@ -684,7 +700,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public int getInitVillages() {
-		throw new UnsupportedOperationException();
+		return initVillages;
 	}
 
 	/* (non-Javadoc)
