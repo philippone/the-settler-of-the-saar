@@ -122,11 +122,14 @@ public class Model implements ModelReader, ModelWriter{
 			road.add(p);
 		}
 		// all roads contain only one path
+		List<List<Path>> suppressedRoadList=new ArrayList<List<Path>>();
 		for (List<Path> road : roadList){
-			if (continueRoad(road, roadList)) roadList.remove(road);
+			if (continueRoad(road, roadList)) suppressedRoadList.add(road);
 			// if the road has been continued, new longer road(s)'d have been put in roadlist
-			// we just remove this short one
+			// we'll just remove the short one
 		}
+		for (List<Path> suppressedRoad : suppressedRoadList) roadList.remove(suppressedRoad);
+		// now there's only finished roads
 		int maxsize=5;
 		for (List<Path> road : roadList){
 			maxsize=Math.max(maxsize, road.size());
@@ -134,7 +137,7 @@ public class Model implements ModelReader, ModelWriter{
 		}
 		for (List<Path> road : roadList){
 			if (road.size()<maxsize) roadList.remove(road);
-			// only the longest stay here
+			// only the longest road(s) stay here
 		}
 		return roadList;
 	}
@@ -306,7 +309,7 @@ public class Model implements ModelReader, ModelWriter{
 	}
 
 	/**
-	 * @return return Set of Paths where you can build a Street, or null if non available
+	 * @return return Set of Paths where you can build a Street
 	 */
 	@Override
 	public Set<Path> buildableStreetPaths(Player player) {
@@ -324,13 +327,11 @@ public class Model implements ModelReader, ModelWriter{
 				}
 			}
 		}
-		if(res.isEmpty())	return null;
-		
 		return res;
 	}
 
 	/**
-	 * @return return Set of Paths where you can build a Catapult, or null if non available
+	 * @return return Set of Paths where you can build a Catapult
 	 	 */
 	@Override
 	public Set<Path> buildableCatapultPaths(Player player) {
@@ -343,8 +344,6 @@ public class Model implements ModelReader, ModelWriter{
 				res.addAll(getPathsFromIntersection(inter));
 			}
 		}
-		if(res.isEmpty())	return null;
-		
 		return res;
 	}
 	private int affordableThings(ResourcePackage price){
@@ -800,7 +799,19 @@ public class Model implements ModelReader, ModelWriter{
 	public Set<Intersection> buildableVillageIntersections(Player player) {
 		if (player == null)
 			throw new IllegalArgumentException(player + " is null");
-		getI
+		Set<Path> streetSet = getStreets(player);
+		Set<Intersection> ret = new TreeSet<Intersection>();
+		for (Path path : streetSet) {
+			Set<Intersection> pathInt = getIntersectionsFromPath(path);
+			for (Intersection intersection : pathInt) {
+				boolean buildable = true;
+				for (Intersection nachbar : getIntersectionsFromIntersection(intersection)) {
+					if(nachbar.hasOwner()) buildable=false;
+				}
+				if(buildable) ret.add(intersection);
+			}
+		}
+		return ret;
 	}
 
 	/* (non-Javadoc)
@@ -810,12 +821,18 @@ public class Model implements ModelReader, ModelWriter{
 	public Set<Intersection> buildableTownIntersections(Player player) {
 		if (player == null)
 			throw new IllegalArgumentException(player + " is null");
-		
+		return getSettlements(player, BuildingType.Village);
 	}
 
 	@Override
 	public void returnResources(int lumber, int brick, int wool, int grain, int ore) {
-		throw new UnsupportedOperationException();
+		ResourcePackage robberPackage = new ResourcePackage(lumber, brick, wool, grain, ore);
+		if(!me.checkResourcesSufficient(robberPackage)) throw new IllegalStateException("Spieler kann nicht mehr Resourcen abgeben als es hat");
+		me.modifyResources(robberPackage);
+		
+		for (ModelObserver ob : modelObserver) {
+			ob.updateResources();
+		}
 	}
 
 	@Override

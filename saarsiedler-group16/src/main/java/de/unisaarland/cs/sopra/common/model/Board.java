@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 
@@ -109,7 +108,44 @@ public class Board {
 	}
 	
 	public Set<Path> getPathsFromPath(Path path) {
-		throw new UnsupportedOperationException();
+		int x = path.getLocation().getX();
+		int y = path.getLocation().getY();
+		int o = path.getLocation().getOrientation();
+		Set<Path> ps = new HashSet<Path>();
+		ps.add(getPath(new Location(y, x, (o+1)%6)));
+		ps.add(getPath(new Location(y, x, (o+5)%6)));
+		switch(o){
+		case 0:
+			if (y%2 == 1){
+				
+			}
+			else {
+				
+			}
+			break;
+		case 1:
+			if (fieldInRange())
+			ps.add(getPath(new Location(y, x+1, 5)));
+			ps.add(getPath(new Location(y, x+1, 3)));
+			break;
+		case 2:
+			ps.add(getPath(new Location(y, x+1, 5)));
+			ps.add(getPath(new Location(y, x+1, 3)));
+			break;
+		case 3:
+			ps.add(getPath(new Location(y, x+1, 5)));
+			ps.add(getPath(new Location(y, x+1, 3)));
+			break;
+		case 4:
+			ps.add(getPath(new Location(y, x-1, 0)));
+			ps.add(getPath(new Location(y, x-1, 2)));
+			break;
+		case 5:
+			ps.add(getPath(new Location(y, x+1, 5)));
+			ps.add(getPath(new Location(y, x+1, 3)));
+			break;
+		}
+		return ps;
 	}
 	
 	public Iterator<Field> getFieldIterator() {
@@ -149,5 +185,7 @@ public class Board {
 		if (harborType == null) throw new IllegalArgumentException();
 		this.getPath(location).setHarborType(harborType);
 	}
+	
+	private boolean 
 	
 }

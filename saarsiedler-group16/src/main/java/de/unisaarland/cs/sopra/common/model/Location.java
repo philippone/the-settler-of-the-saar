@@ -1,14 +1,11 @@
 package de.unisaarland.cs.sopra.common.model;
 
-public class Location {
+public class Location extends Point {
 
-	private final int x;
-	private final int y;
-	private final int orientation;
+	protected final int orientation;
 	
 	public Location(int y, int x, int orientation) {
-		this.x = x;
-		this.y = y;
+		super(y, x);
 		this.orientation = orientation;
 	}
 	
