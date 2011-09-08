@@ -1,6 +1,7 @@
 package de.unisaarland.cs.sopra.common.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -214,6 +215,7 @@ public class Model implements ModelReader, ModelWriter{
 	public void setTableOrder(long[] playerIDs) {
 		if (playerIDs == null) throw new IllegalArgumentException();
 		this.players = new LinkedList<Player>();
+		this.playerMap = new HashMap<Long,Player>();
 		for(long act : playerIDs) {
 			Player player = new Player();
 			this.playerMap.put(act,player);
@@ -227,11 +229,10 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	public void setFieldNumbers(byte[] numbers) {
 		if (numbers == null) throw new IllegalArgumentException();
-		//TODO: ignore water and desert Fields
 		Iterator<Field> iter = board.getFieldIterator();
 		int i = 0;
 		while(iter.hasNext()) {
-			Field f= iter.next();
+			Field f = iter.next();
 			if(f.getFieldType()!=FieldType.DESERT  &&	f.getFieldType()!=FieldType.WATER){
 				f.setNumber(numbers[i++]);
 			}

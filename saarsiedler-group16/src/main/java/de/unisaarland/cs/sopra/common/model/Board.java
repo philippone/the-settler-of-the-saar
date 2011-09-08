@@ -169,12 +169,13 @@ public class Board {
 			
 			@Override
 			public boolean hasNext() {
-				return i < (width)*(height);
+				return i < (width)*(height)-1;
 			}
 
 			@Override
 			public Field next() {
 				Point p = new Point(i/width,i%width);
+				i++;
 				return field.get(p);
 			}
 
