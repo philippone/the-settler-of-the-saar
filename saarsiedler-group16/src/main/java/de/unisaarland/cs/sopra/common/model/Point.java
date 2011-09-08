@@ -2,8 +2,8 @@ package de.unisaarland.cs.sopra.common.model;
 
 public class Point {
 
-	private final int x;
-	private final int y;
+	protected final int x;
+	protected final int y;
 	
 	public Point(int y, int x) {
 		this.x = x;
