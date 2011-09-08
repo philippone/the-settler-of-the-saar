@@ -126,10 +126,10 @@ public class Model implements ModelReader, ModelWriter{
 		for (List<Path> road : roadList){
 			if (continueRoad(road, roadList)) suppressedRoadList.add(road);
 			// if the road has been continued, new longer road(s)'d have been put in roadlist
-			// we'll just remove this short one
+			// we'll just remove the short one
 		}
 		for (List<Path> suppressedRoad : suppressedRoadList) roadList.remove(suppressedRoad);
-		// now there's only the true roads
+		// now there's only finished roads
 		int maxsize=5;
 		for (List<Path> road : roadList){
 			maxsize=Math.max(maxsize, road.size());
