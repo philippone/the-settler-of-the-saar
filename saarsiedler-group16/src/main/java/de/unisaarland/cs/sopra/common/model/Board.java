@@ -10,7 +10,6 @@ import java.util.TreeMap;
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 
 public class Board {
-	safa
 
 	private Map<Point,Field> field;
 	private Map<Location,Path> path;
