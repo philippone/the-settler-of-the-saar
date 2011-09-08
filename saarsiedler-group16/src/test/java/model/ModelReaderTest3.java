@@ -21,40 +21,44 @@ public class ModelReaderTest3 {
 	@Before
 	public void setUp() throws IOException {
 		model = TestUtil.getStandardModel2();
-		model.getCurrentPlayer().modifyResources(new ResourcePackage(3, 3, 2, 2, 4));
-		rp1 = model.getCurrentPlayer().getResources();
+		model.getCurrentPlayer().modifyResources(
+				new ResourcePackage(3, 3, 2, 2, 4));
+
 	}
 
 	@Test
 	public void testAffordableCatapultBuild() {
 		if (model.affordableCatapultBuild() < 0) {
 			throw new IllegalArgumentException();
-		} else
+		} else {
+			rp1 = model.getCurrentPlayer().getResources().copy();
 			assertEquals(2, model.affordableCatapultBuild());
-		
-		// check whether the players resourcePackage is intact
-		assertEquals(rp1, model.getCurrentPlayer().getResources());
+
+			// check whether the players resourcePackage is intact
+			assertEquals(rp1, model.getCurrentPlayer().getResources());
+		}
 	}
 
 	@Test
 	public void testAffordableCatapultAttack() {
 		if (model.affordableCatapultAttack() < 0) {
 			throw new IllegalArgumentException();
-		} else
+		} else {
 			assertEquals(2, model.affordableCatapultAttack());
-		
-		// check whether the players resourcePackage is intact
-		assertEquals(rp1, model.getCurrentPlayer().getResources());
+			rp1 = model.getCurrentPlayer().getResources().copy();
+			// check whether the players resourcePackage is intact
+			assertEquals(rp1, model.getCurrentPlayer().getResources());
+		}
 	}
 
 	@Test
 	public void testAffordableSettlementAttack() {
 		if (model.affordableSettlementAttack() < 0) {
 			throw new IllegalArgumentException();
-		} else
+		}
 
-			assertEquals(4, model.affordableSettlementAttack());
-		
+		assertEquals(4, model.affordableSettlementAttack());
+
 		// check whether the players resourcePackage is intact
 		assertEquals(rp1, model.getCurrentPlayer().getResources());
 
@@ -64,10 +68,12 @@ public class ModelReaderTest3 {
 	public void testAffordablePathsAfterVillage() {
 		if (model.affordablePathsAfterVillage(1) < 0) {
 			throw new IllegalArgumentException();
-		} else
-			assertEquals(2, model.affordablePathsAfterVillage(1));
-		
+		}
+		rp1 = model.getCurrentPlayer().getResources().copy();
+		assertEquals(2, model.affordablePathsAfterVillage(1));
+
 		// check whether the players resourcePackage is intact
+
 		assertEquals(rp1, model.getCurrentPlayer().getResources());
 	}
 
@@ -75,9 +81,10 @@ public class ModelReaderTest3 {
 	public void testAffordableSettlementsVillage() {
 		if (model.affordableSettlements(BuildingType.Village) < 0) {
 			throw new IllegalArgumentException();
-		} else
-			assertEquals(2, model.affordableSettlements(BuildingType.Village));
-		
+		}
+		rp1 = model.getCurrentPlayer().getResources().copy();
+		assertEquals(2, model.affordableSettlements(BuildingType.Village));
+
 		// check whether the players resourcePackage is intact
 		assertEquals(rp1, model.getCurrentPlayer().getResources());
 	}
@@ -86,9 +93,10 @@ public class ModelReaderTest3 {
 	public void testAffordableSettlementsTowns() {
 		if (model.affordableSettlements(BuildingType.Town) < 0) {
 			throw new IllegalArgumentException();
-		} else
-			assertEquals(1, model.affordableSettlements(BuildingType.Town));
-		
+		}
+		rp1 = model.getCurrentPlayer().getResources().copy();
+		assertEquals(1, model.affordableSettlements(BuildingType.Town));
+
 		// check whether the players resourcePackage is intact
 		assertEquals(rp1, model.getCurrentPlayer().getResources());
 	}
@@ -99,29 +107,33 @@ public class ModelReaderTest3 {
 			throw new IllegalArgumentException();
 		} else
 			assertEquals(3, model.affordableStreets());
-		
+
 		// check whether the players resourcePackage is intact
 		assertEquals(rp1, model.getCurrentPlayer().getResources());
 	}
-	
+
+	@Test
 	public void testAffordableTowns2() {
-		model.getCurrentPlayer().modifyResources(new ResourcePackage(0, 0, 0, 2, 3));
+		model.getCurrentPlayer().modifyResources(
+				new ResourcePackage(0, 0, 0, 2, 3));
 		ResourcePackage rp = model.getCurrentPlayer().getResources();
-		
+
 		if (model.affordableSettlements(BuildingType.Town) < 0)
 			throw new IllegalArgumentException();
-		else
-			assertEquals(1, model.affordableSettlements(BuildingType.Town));
+
+		rp1 = model.getCurrentPlayer().getResources().copy();
+		assertEquals(1, model.affordableSettlements(BuildingType.Town));
 	}
 
 	public void testAffordableTowns3() {
-		model.getCurrentPlayer().modifyResources(new ResourcePackage(1, 0, 0, 2, 2));
+		model.getCurrentPlayer().modifyResources(
+				new ResourcePackage(1, 0, 0, 2, 2));
 		ResourcePackage rp = model.getCurrentPlayer().getResources();
-		
+
 		if (model.affordableSettlements(BuildingType.Town) < 0)
 			throw new IllegalArgumentException();
-		else
-			assertEquals(0, model.affordableSettlements(BuildingType.Town));
+		rp1 = model.getCurrentPlayer().getResources().copy();
+		assertEquals(0, model.affordableSettlements(BuildingType.Town));
 	}
-	
+
 }
