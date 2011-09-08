@@ -1,8 +1,6 @@
 package model;
 
 import static org.junit.Assert.*;
-import help.TestModelObserver;
-import help.TestUtil;
 
 import java.io.IOException;
 import java.util.LinkedList;

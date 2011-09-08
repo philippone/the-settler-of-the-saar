@@ -1,7 +1,6 @@
 package model;
 
 import static org.junit.Assert.*;
-import help.TestUtil;
 
 import java.io.IOException;
 import java.util.Iterator;
