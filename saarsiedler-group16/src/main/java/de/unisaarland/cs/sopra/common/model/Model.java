@@ -132,7 +132,7 @@ public class Model implements ModelReader, ModelWriter{
 	/**
 	 * @param numbers: int[] (set the numbers on the fields)
 	 */
-	public void setFieldNumbers(int[] numbers) {
+	public void setFieldNumbers(byte[] numbers) {
 		if (numbers == null) throw new IllegalArgumentException();
 		//TODO: ignore water and desert Fields
 		Iterator<Field> iter = board.getFieldIterator();
@@ -604,8 +604,11 @@ public class Model implements ModelReader, ModelWriter{
 	 * @see de.unisaarland.cs.sopra.common.model.ModelWriter#matchStart(long[], byte[])
 	 */
 	@Override
-	public void matchStart(long[] players, byte[] number) {
-		throw new UnsupportedOperationException();
+	public void matchStart(long[] players, byte[] numbers) {
+		if (players==null || numbers==null) throw new IllegalArgumentException(players +" oder "+ numbers+ " is null");
+		setTableOrder(players);
+		setFieldNumbers(numbers);
+		//TODO evtl noch mehr zu tun als das
 	}
 
 	/* (non-Javadoc)
@@ -613,7 +616,19 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public void catapultMoved(Location sourcePath, Location destinationPath, boolean fightOutCome) {
-		throw new UnsupportedOperationException();
+		if (sourcePath==null || destinationPath==null) throw new IllegalArgumentException("iwas is null");
+		Set<Intersection> iset1 = getIntersectionsFromPath(getPath(sourcePath));
+		Set<Intersection> iset2 = getIntersectionsFromPath(getPath(destinationPath));
+		Intersection interBetweenPaths = null;
+		//finds the intersection between both paths
+		for (Intersection inter1 : iset1) {
+			for (Intersection inter2 : iset2) {
+				if(inter1 ==inter2) interBetweenPaths=inter1;
+			}
+		}
+		if(interBetweenPaths.hasOwner() && interBetweenPaths.getOwner()!=getPath(sourcePath).getCatapultOwner()){
+			throw new IllegalStateException("Catapult kann nicht durch feindliche Siedlungen hindurch");
+		}
 	}
 
 	/* (non-Javadoc)
