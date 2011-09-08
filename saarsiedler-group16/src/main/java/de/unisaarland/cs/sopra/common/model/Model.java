@@ -1,6 +1,7 @@
 package de.unisaarland.cs.sopra.common.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -214,6 +215,7 @@ public class Model implements ModelReader, ModelWriter{
 	public void setTableOrder(long[] playerIDs) {
 		if (playerIDs == null) throw new IllegalArgumentException();
 		this.players = new LinkedList<Player>();
+		this.playerMap = new HashMap<Long,Player>();
 		for(long act : playerIDs) {
 			Player player = new Player();
 			this.playerMap.put(act,player);
@@ -227,11 +229,10 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	public void setFieldNumbers(byte[] numbers) {
 		if (numbers == null) throw new IllegalArgumentException();
-		//TODO: ignore water and desert Fields
 		Iterator<Field> iter = board.getFieldIterator();
 		int i = 0;
 		while(iter.hasNext()) {
-			Field f= iter.next();
+			Field f = iter.next();
 			if(f.getFieldType()!=FieldType.DESERT  &&	f.getFieldType()!=FieldType.WATER){
 				f.setNumber(numbers[i++]);
 			}
@@ -418,8 +419,17 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Intersection> attackableSettlements(Player player, BuildingType buildingType) {
-		throw new UnsupportedOperationException();
-		//TODO sollte jmd anders machen, da ichs getestet hab
+		Set<Intersection> attackableSettlements=new TreeSet<Intersection>();
+		Set<Path> sp=getCatapults(player);
+		for (Path p: sp){
+			Set<Intersection> si=getIntersectionsFromPath(p);
+			for (Intersection i: si){
+				if (i.hasOwner() && i.getOwner()!=player && i.getBuildingType()==buildingType) {
+					attackableSettlements.add(i);
+				}
+			}
+		}
+		return attackableSettlements;
 	}
 
 	/* (non-Javadoc)
@@ -427,9 +437,17 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Path> attackableCatapults(Player player) {
-		throw new UnsupportedOperationException();
-		//TODO sollte jmd anders machen, da ichs getestet hab
-		// gilt auch fuer folgende
+		Set<Path> attackableCatapults=new TreeSet<Path>();
+		Set<Path> sp=getCatapults(player);
+		for (Path p: sp){
+			Set<Path> sp1=getPathsFromPath(p);
+			for (Path p1: sp1){
+				if (p.hasCatapult() && p.getCatapultOwner()!=player) {
+					attackableCatapults.add(p1);
+				}
+			}
+		}
+		return attackableCatapults;
 	}
 
 	/* (non-Javadoc)
@@ -437,7 +455,14 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Path> getStreets(Player player) {
-		throw new UnsupportedOperationException();
+		Iterator<Path>ip=getPathIterator();
+		Set<Path>sp=new TreeSet<Path>();
+		Path p;
+		while (ip.hasNext()){
+			p=ip.next();
+			if (p.getStreetOwner()==player) sp.add(p);
+		}
+		return sp;
 	}
 
 	/* (non-Javadoc)
@@ -445,7 +470,14 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Intersection> getSettlements(Player player, BuildingType buildingType) {
-		throw new UnsupportedOperationException();
+		Iterator<Intersection>ii=getIntersectionIterator();
+		Set<Intersection>si=new TreeSet<Intersection>();
+		Intersection i;
+		while (ii.hasNext()){
+			i=ii.next();
+			if (i.getOwner()==player && i.getBuildingType()==buildingType) si.add(i);
+		}
+		return si;
 	}
 
 	/* (non-Javadoc)
@@ -453,7 +485,14 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Path> getCatapults(Player player) {
-		throw new UnsupportedOperationException();
+		Iterator<Path>ip=getPathIterator();
+		Set<Path>sp=new TreeSet<Path>();
+		Path p;
+		while (ip.hasNext()){
+			p=ip.next();
+			if (p.getCatapultOwner()==player) sp.add(p);
+		}
+		return sp;
 	}
 
 	/* (non-Javadoc)
@@ -461,7 +500,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public List<Path> getLongestClaimedRoad() {
-		throw new UnsupportedOperationException();
+		return longestClaimedRoad;
 	}
 
 	/* (non-Javadoc)
@@ -469,7 +508,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public int getMaxVictoryPoints() {
-		throw new UnsupportedOperationException();
+		return maxVictoryPoints;
 	}
 
 	/* (non-Javadoc)
@@ -477,7 +516,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public int getCurrentVictoryPoints(Player player) {
-		throw new UnsupportedOperationException();
+		return player.getVictoryPoints();
 	}
 
 	/* (non-Javadoc)
@@ -485,7 +524,20 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Field> canPlaceRobber() {
-		throw new UnsupportedOperationException();
+		Iterator<Field>itf=getFieldIterator();
+		Set<Field>sf=new TreeSet<Field>();
+		Field f;
+		while (itf.hasNext()){
+			f=itf.next();
+			if (f.getFieldType()==FieldType.WATER){
+				Set<Field>sf1=getFieldsFromField(f);
+				for (Field f1:sf1){
+					if(f1.getFieldType()!=FieldType.WATER) sf.add(f);
+				}
+			}
+			else sf.add(f);
+		}
+		return sf;
 	}
 
 	/* (non-Javadoc)
@@ -493,7 +545,14 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Field> getRobberFields() {
-		throw new UnsupportedOperationException();
+		Iterator<Field>itf=getFieldIterator();
+		Set<Field>sf=new TreeSet<Field>();
+		Field f;
+		while (itf.hasNext()){
+			f=itf.next();
+			if (f.hasRobber()) sf.add(f);
+		}
+		return sf;
 	}
 
 	/* (non-Javadoc)
@@ -501,7 +560,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Iterator<Field> getFieldIterator() {
-		throw new UnsupportedOperationException();
+		return board.getFieldIterator();
 	}
 
 	/* (non-Javadoc)
@@ -509,7 +568,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Iterator<Path> getPathIterator() {
-		throw new UnsupportedOperationException();
+		return board.getPathIterator();
 	}
 
 	/* (non-Javadoc)
@@ -517,7 +576,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Iterator<Intersection> getIntersectionIterator() {
-		throw new UnsupportedOperationException();
+		return board.getIntersectionIterator();
 	}
 
 	/* (non-Javadoc)
@@ -525,7 +584,19 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Intersection> getHarborIntersections() {
-		throw new UnsupportedOperationException();
+		Iterator<Path>ip=getPathIterator();
+		Set<Intersection>si=new TreeSet<Intersection>();
+		Path p;
+		while (ip.hasNext()){
+			p=ip.next();
+			if (p.getHarborType()!=null){
+				Set<Intersection> si1=getIntersectionsFromPath(p);
+				for(Intersection i:si1){
+					si.add(i);
+				}
+			}
+		}
+		return si;
 	}
 
 	/* (non-Javadoc)
@@ -533,7 +604,13 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public HarborType getHarborType(Intersection intersection) {
-		throw new UnsupportedOperationException();
+		Set<Path>sp=getPathsFromIntersection(intersection);
+		HarborType hb;
+		for (Path p:sp){
+			hb=p.getHarborType();
+			if (hb!=null) return hb;
+		}
+		return null;
 	}
 
 	/* (non-Javadoc)
@@ -541,7 +618,12 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<HarborType> getHarborTypes(Player player) {
-		throw new UnsupportedOperationException();
+		Set<Intersection>si=getHarborIntersections();
+		Set<HarborType>sht=new TreeSet<HarborType>();
+		for(Intersection i:si){
+			if (i.getOwner()==player) sht.add(getHarborType(i));
+		}
+		return sht;
 	}
 
 	/* (non-Javadoc)
@@ -549,7 +631,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public ResourcePackage getResources() {
-		throw new UnsupportedOperationException();
+		return me.getResources();
 	}
 
 	/* (non-Javadoc)
@@ -779,9 +861,44 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public void buildSettlement(Location location, BuildingType buildingType) {
-		throw new UnsupportedOperationException();
+		if (location==null) throw new IllegalArgumentException(location+" is null");
+		Intersection i=getIntersection(location);
+		if (isBuildable(i, buildingType) && (isAffordable(buildingType))){
+			ResourcePackage price=buildingType.getPrice();
+			if (me.checkResourcesSufficient(price)) throw new IllegalArgumentException("Nicht genug Ressourcen, um es zu bauen");
+			me.modifyResources(price);
+			i.createBuilding(buildingType, me);
+			for(ModelObserver ob: modelObserver){
+				ob.updateResources();
+				ob.updateSettlementCount(buildingType);
+				ob.updateVictoryPoints();
+				ob.updateIntersection(i);
+			}	
+		}
+		else throw new IllegalArgumentException("Das Gebaüde wurde nicht gebaut");
 	}
 
+	private boolean isBuildable(Intersection i, BuildingType buildingType){
+		Set<Intersection>si;
+		if (buildingType==BuildingType.Village){
+			si=buildableVillageIntersections(me);
+			if (si.contains(i)) return true;
+			throw new IllegalArgumentException("Kein Dorf darf hier gebaut werden");
+		}
+		else if (buildingType==BuildingType.Town){
+			si=buildableTownIntersections(me);
+			if (si.contains(i)) return true;
+			throw new IllegalArgumentException("Keine Stadt darf hier gebaut werden");
+		}
+		throw new IllegalArgumentException("Es fehlt den BuildingType");
+	}
+	
+	private boolean isAffordable(BuildingType buildingType){
+		int a=affordableSettlements(buildingType);
+		if (a>0) return true;
+		throw new IllegalArgumentException("Nicht genug Ressourcen, um es zu bauen");
+	}
+	
 	/* (non-Javadoc)
 	 * @see de.unisaarland.cs.sopra.common.model.ModelWriter#longestRaodClaimed(java.util.List)
 	 */

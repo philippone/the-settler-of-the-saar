@@ -79,5 +79,10 @@ public class AI extends View{
 	public void updateTradePossibilities() {
 		throw new UnsupportedOperationException();
 	}
+
+	@Override
+	public void eventPlayerLeft(long playerID) {
+		throw new UnsupportedOperationException();
+	}
 	
 }
