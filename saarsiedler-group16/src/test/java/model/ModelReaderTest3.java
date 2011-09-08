@@ -3,14 +3,14 @@ package model;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
-import java.util.Random;
+
 
 import org.junit.Before;
 import org.junit.Test;
 
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Model;
-import de.unisaarland.cs.sopra.common.model.Player;
+
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public class ModelReaderTest3 {
@@ -123,6 +123,8 @@ public class ModelReaderTest3 {
 
 		rp1 = model.getCurrentPlayer().getResources().copy();
 		assertEquals(1, model.affordableSettlements(BuildingType.Town));
+		// check whether the players resourcePackage is intact
+		assertEquals(rp, model.getCurrentPlayer().getResources());
 	}
 
 	public void testAffordableTowns3() {
@@ -132,8 +134,10 @@ public class ModelReaderTest3 {
 
 		if (model.affordableSettlements(BuildingType.Town) < 0)
 			throw new IllegalArgumentException();
-		rp1 = model.getCurrentPlayer().getResources().copy();
+		rp = model.getCurrentPlayer().getResources().copy();
 		assertEquals(0, model.affordableSettlements(BuildingType.Town));
+		// check whether the players resourcePackage is intact
+		assertEquals(rp, model.getCurrentPlayer().getResources());
 	}
 
 }

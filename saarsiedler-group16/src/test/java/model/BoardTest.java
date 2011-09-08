@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.junit.Before;
 import org.junit.Test;

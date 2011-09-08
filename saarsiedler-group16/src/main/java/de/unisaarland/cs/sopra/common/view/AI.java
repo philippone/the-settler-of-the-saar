@@ -13,8 +13,8 @@ public class AI extends View{
 
 
 
-	public AI(Player me, ModelReader modelReader, ControllerAdapter controllerAdapter) {
-		super(me, modelReader, controllerAdapter);
+	public AI(long meID, ModelReader modelReader, ControllerAdapter controllerAdapter) {
+		super(meID, modelReader, controllerAdapter);
 		
 		throw new UnsupportedOperationException();
 	}

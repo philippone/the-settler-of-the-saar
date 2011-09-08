@@ -262,4 +262,14 @@ public interface ModelReader {
 	 */
 	public Player getMe();
 	
+	/**
+	 * @return
+	 */
+	public int getBoardWidth();
+	
+	/**
+	 * @return
+	 */
+	public int getBoardHeight();
+	
 }

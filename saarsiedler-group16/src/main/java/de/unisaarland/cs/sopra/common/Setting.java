@@ -6,7 +6,7 @@ public class Setting {
 	private int windowWidth;
 	private boolean fullscreen;
 	
-	public Setting(int windowHeight, int windowWidth, boolean fullscreen) {
+	public Setting(int windowWidth, int windowHeight, boolean fullscreen) {
 		this.windowHeight = windowHeight;
 		this.windowWidth = windowWidth;
 		this.fullscreen = fullscreen;

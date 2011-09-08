@@ -9,7 +9,7 @@ public abstract class View implements ModelObserver{
 	protected ModelReader modelReader;
 	protected ControllerAdapter controllerAdapter;
 	
-	View(Player me, ModelReader modelReader, ControllerAdapter controllerAdapter) {
+	View(long meID, ModelReader modelReader, ControllerAdapter controllerAdapter) {
 		//TODO: implement it!
 	}
 	
