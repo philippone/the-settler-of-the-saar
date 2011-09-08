@@ -1,5 +1,6 @@
 package de.unisaarland.cs.sopra.common.model;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -111,7 +112,96 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	public List<List<Path>> calculateLongestRoads(Player player) {
 		if (player == null) throw new IllegalArgumentException();
-		throw new UnsupportedOperationException();
+		Set<Path> pathList=getStreets(player);
+		// all Paths that player owns
+		List<List<Path>> roadList=new ArrayList<List<Path>>();
+		// all roads known (none)
+		for (Path p : pathList) {
+			List<Path> road=new ArrayList<Path>();
+			road.add(p);
+		}
+		// all roads contain only one path
+		for (List<Path> road : roadList){
+			if (continueRoad(road, roadList)) roadList.remove(road);
+			// if the road has been continued, new longer road(s)'d have been put in roadlist
+			// we just remove this short one
+		}
+		int maxsize=5;
+		for (List<Path> road : roadList){
+			maxsize=Math.max(maxsize, road.size());
+			// what's the maximum size of the roads
+		}
+		for (List<Path> road : roadList){
+			if (road.size()<maxsize) roadList.remove(road);
+			// only the longest stay here
+		}
+		return roadList;
+	}
+	
+	private boolean continueRoad(List<Path> road, List<List<Path>> roadList){
+		boolean b=false;
+		for (Path p : road){
+			b=b | continueRoadFromPath(p,road,roadList);
+		}
+		return b;
+		// has the road been continued?
+	}
+	
+	private boolean continueRoadFromPath(Path p, List<Path> road, List<List<Path>> roadList){
+		Set<Intersection> si=getIntersectionsFromPath(p);
+		Player player= p.getStreetOwner();
+		boolean b=false;
+		for (Intersection i : si){
+			if (isExtremityOfRoad(i,road) && ((i.getOwner()==player) | !(i.hasOwner()))) b=b | continueRoadTroughIntersection(i,p,road,roadList);
+			// meaning we can continue a road through an intersection and the paths it leads to
+			// only when this intersection is already the extremity of the road
+			// and only when it is free or owned by the player itself
+		}
+		return b;
+	}
+	
+	private boolean continueRoadTroughIntersection(Intersection i,Path p, List<Path> road, List<List<Path>> roadList){
+		Player player = p.getStreetOwner();
+			Set<Path> sp=getPathsFromIntersection(i);
+			sp.remove(p);
+			// we don't want to go back
+			boolean b=false;
+			for (Path p1 : sp){
+				// we create a new road1 containing the road
+				// we try to add the new path
+				List<Path> road1=copy(road);
+				b=b | addPathToRoad(road1 , player, p1, roadList);
+			}
+			return b;
+	}
+	
+	private boolean isExtremityOfRoad(Intersection i,List<Path>road){
+		Set<Path> sp=getPathsFromIntersection(i);
+		int a=0;
+		for (Path p : sp){
+			if (road.contains(p)) a++;		
+		}
+		return (a==1);
+		// an intersection is the extremity of the road when it has only a neighbor path in the road
+	}
+	
+	private List<Path> copy(List<Path> road){
+		List<Path> road1=new ArrayList<Path>();
+		for (Path p:road) road1.add(p);
+		return road1;
+	}
+	
+	private boolean addPathToRoad( List<Path> road, Player player, Path p ,List<List<Path>> roadList){
+		if (p.getStreetOwner()==player && !(road.contains(p))) {
+		// 	meaning if this path is owned by player and not already in the road
+		// then we can continue the road while adding this path
+		// then we add that new road in the roadList
+		// the elder one'll be removed from the roadList since it has been continued
+			road.add(p);
+			roadList.add(road);
+			return true;
+		}
+		return false;
 	}
 	
 	/**
