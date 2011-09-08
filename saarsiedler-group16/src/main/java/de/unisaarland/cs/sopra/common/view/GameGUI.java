@@ -26,7 +26,7 @@ import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 
-public class GameGUI extends View{
+public class GameGUI extends View implements Runnable{
 
 	private Map<Player,String> playerNames;
 	private int angle;
@@ -62,36 +62,6 @@ public class GameGUI extends View{
         GL11.glClearDepth(1.0f); // Depth Buffer Setup
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA,GL11.GL_ONE);
-	}
-	
-	public void renderLoop() {
-	    boolean finished = false;
-	    
-		while (!finished) {
-		      // Always call Window.update(), all the time - it does some behind the
-		      // scenes work, and also displays the rendered output
-		      Display.update();
-		 
-		      // Check for close requests
-		      if (Display.isCloseRequested()) {
-			  finished = true;
-		      } 
-		      else if (Display.isActive()) {
-		          render();
-		          Display.sync(60);
-		        } 
-		      // The window is not in the foreground, so we can allow other stuff to run and
-		      // infrequently update
-		      else {
-		        try {
-		          Thread.sleep(100);
-		        } catch (InterruptedException e) {}
-		      }
-		      if (Display.isVisible() || Display.isDirty()) {
-		          render();
-		      }
-		}
-		Display.destroy();
 	}
 	
 	private void renderField(int x, int y, FieldType fieldType) {
@@ -135,23 +105,9 @@ public class GameGUI extends View{
 			   }
 
 		   }
-		       
-		     /* Hexagon Koords
-		      *   GL11.glVertex2i(40, 70);
-		      * GL11.glVertex2i(80, 0);
-		      * GL11.glVertex2i(40, -70);
-		      * GL11.glVertex2i(-40, -70);
-		      * GL11.glVertex2i(-80, 0);
-		      * GL11.glVertex2i(-40, 70);
-		      */
 
 		   GL11.glPopMatrix();
 	}
-	
-	 private static void cleanup() {
-		   // Close the window
-		   Display.destroy();
-		 }
 
 	public void drawTradeMenu() {
 		throw new UnsupportedOperationException();
@@ -291,7 +247,38 @@ public class GameGUI extends View{
 														 9,8,6,5});
 		Setting setting = new Setting(1280, 1024, false);
 		GameGUI gameGUI = new GameGUI(0, model, null, null, setting);
-		gameGUI.renderLoop();
+		new Thread(gameGUI).start();
+	}
+
+	@Override
+	public void run() {
+    boolean finished = false;
+	    
+		while (!finished) {
+		      // Always call Window.update(), all the time - it does some behind the
+		      // scenes work, and also displays the rendered output
+		      Display.update();
+		 
+		      // Check for close requests
+		      if (Display.isCloseRequested()) {
+			  finished = true;
+		      } 
+		      else if (Display.isActive()) {
+		          render();
+		          Display.sync(60);
+		        } 
+		      // The window is not in the foreground, so we can allow other stuff to run and
+		      // infrequently update
+		      else {
+		        try {
+		          Thread.sleep(100);
+		        } catch (InterruptedException e) {}
+		      }
+		      if (Display.isVisible() || Display.isDirty()) {
+		          render();
+		      }
+		}
+		Display.destroy();
 	}
 	
 }
