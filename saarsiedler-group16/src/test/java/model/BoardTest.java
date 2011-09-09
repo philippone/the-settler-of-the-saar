@@ -442,9 +442,9 @@ public class BoardTest {
 		//create both sets
 		Set<Intersection> i1=b.getIntersectionsFromIntersection(b.getIntersection(new Location(2, 1, 1)));
 		Set<Intersection> i2=new HashSet<Intersection>();
-		i2.add(b.getIntersection(new Location(2, 1 ,0)));
+		i2.add(b.getIntersection(new Location(1, 2 ,2)));
+		i2.add(b.getIntersection(new Location(2, 1, 0)));
 		i2.add(b.getIntersection(new Location(2, 1, 2)));
-		i2.add(b.getIntersection(new Location(2, 2, 0)));
 		// test if both sets have identical content
 		assertTrue(i1.containsAll(i2));
 		assertTrue(i2.containsAll(i1));
