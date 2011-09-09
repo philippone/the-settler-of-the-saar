@@ -242,5 +242,13 @@ public class Board {
 	private boolean isValid(int x, int y){
 		return x >= 0 && x < width && y >= 0 && y < height;
 	}
+
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getHeight() {
+		return height;
+	}
 	
 }

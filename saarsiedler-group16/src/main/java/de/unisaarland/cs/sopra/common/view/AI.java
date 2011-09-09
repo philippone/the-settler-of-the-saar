@@ -13,8 +13,8 @@ public class AI extends View{
 
 
 
-	public AI(Player me, ModelReader modelReader, ControllerAdapter controllerAdapter) {
-		super(me, modelReader, controllerAdapter);
+	public AI(long meID, ModelReader modelReader, ControllerAdapter controllerAdapter) {
+		super(meID, modelReader, controllerAdapter);
 		
 		throw new UnsupportedOperationException();
 	}
@@ -77,6 +77,11 @@ public class AI extends View{
 
 	@Override
 	public void updateTradePossibilities() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void eventPlayerLeft(long playerID) {
 		throw new UnsupportedOperationException();
 	}
 	

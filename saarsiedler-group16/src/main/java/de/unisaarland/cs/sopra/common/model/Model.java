@@ -1,6 +1,8 @@
 package de.unisaarland.cs.sopra.common.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -124,9 +126,11 @@ public class Model implements ModelReader, ModelWriter{
 		// all roads contain only one path
 		List<List<Path>> suppressedRoadList=new ArrayList<List<Path>>();
 		for (List<Path> road : roadList){
-			if (continueRoad(road, roadList)) suppressedRoadList.add(road);
-			// if the road has been continued, new longer road(s)'d have been put in roadlist
-			// we'll just remove the short one
+			if (continueRoad(road, roadList)) {
+				suppressedRoadList.add(road);
+				// if the road has been continued, new longer road(s)'d have been put in roadlist
+				// we'll just remove the short one
+				}
 		}
 		for (List<Path> suppressedRoad : suppressedRoadList) roadList.remove(suppressedRoad);
 		// now there's only finished roads
@@ -199,10 +203,11 @@ public class Model implements ModelReader, ModelWriter{
 		if (p.getStreetOwner()==player && !(road.contains(p))) {
 		// 	meaning if this path is owned by player and not already in the road
 		// then we can continue the road while adding this path
-		// then we add that new road in the roadList
+		// then we add that new road in the roadList if it wasn't already here
 		// the elder one'll be removed from the roadList since it has been continued
 			road.add(p);
-			roadList.add(road);
+			if (!(roadList.contains(road))) roadList.add(road);
+			// no doubloons
 			return true;
 		}
 		return false;
@@ -214,6 +219,7 @@ public class Model implements ModelReader, ModelWriter{
 	public void setTableOrder(long[] playerIDs) {
 		if (playerIDs == null) throw new IllegalArgumentException();
 		this.players = new LinkedList<Player>();
+		this.playerMap = new HashMap<Long,Player>();
 		for(long act : playerIDs) {
 			Player player = new Player();
 			this.playerMap.put(act,player);
@@ -227,11 +233,10 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	public void setFieldNumbers(byte[] numbers) {
 		if (numbers == null) throw new IllegalArgumentException();
-		//TODO: ignore water and desert Fields
 		Iterator<Field> iter = board.getFieldIterator();
 		int i = 0;
 		while(iter.hasNext()) {
-			Field f= iter.next();
+			Field f = iter.next();
 			if(f.getFieldType()!=FieldType.DESERT  &&	f.getFieldType()!=FieldType.WATER){
 				f.setNumber(numbers[i++]);
 			}
@@ -297,7 +302,7 @@ public class Model implements ModelReader, ModelWriter{
 	@Override
 	public int getMaxBuilding(BuildingType buildingType) {
 		if (buildingType == null) throw new IllegalArgumentException();
-		return this.getMaxBuilding(buildingType);
+		return this.maxBuilding.get(buildingType);
 	}
 
 	/* (non-Javadoc)
@@ -321,7 +326,7 @@ public class Model implements ModelReader, ModelWriter{
 			if(!p.hasStreet()){
 				Set<Path> nachbarn = getPathsFromPath(p);
 				for(Path n: nachbarn){
-					if(p.hasStreet()	&&	p.getStreetOwner()==player){	//doppelte abfrage zur sicherheit
+					if(n.hasStreet()	&&	n.getStreetOwner()==player){	//doppelte abfrage zur sicherheit
 						res.add(p);
 					}
 				}
@@ -559,7 +564,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Iterator<Field> getFieldIterator() {
-		throw new UnsupportedOperationException();
+		return board.getFieldIterator();
 	}
 
 	/* (non-Javadoc)
@@ -567,7 +572,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Iterator<Path> getPathIterator() {
-		throw new UnsupportedOperationException();
+		return board.getPathIterator();
 	}
 
 	/* (non-Javadoc)
@@ -575,7 +580,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Iterator<Intersection> getIntersectionIterator() {
-		throw new UnsupportedOperationException();
+		return board.getIntersectionIterator();
 	}
 
 	/* (non-Javadoc)
@@ -583,7 +588,19 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Intersection> getHarborIntersections() {
-		throw new UnsupportedOperationException();
+		Iterator<Path>ip=getPathIterator();
+		Set<Intersection>si=new TreeSet<Intersection>();
+		Path p;
+		while (ip.hasNext()){
+			p=ip.next();
+			if (p.getHarborType()!=null){
+				Set<Intersection> si1=getIntersectionsFromPath(p);
+				for(Intersection i:si1){
+					si.add(i);
+				}
+			}
+		}
+		return si;
 	}
 
 	/* (non-Javadoc)
@@ -591,7 +608,13 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public HarborType getHarborType(Intersection intersection) {
-		throw new UnsupportedOperationException();
+		Set<Path>sp=getPathsFromIntersection(intersection);
+		HarborType hb;
+		for (Path p:sp){
+			hb=p.getHarborType();
+			if (hb!=null) return hb;
+		}
+		return null;
 	}
 
 	/* (non-Javadoc)
@@ -599,7 +622,12 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<HarborType> getHarborTypes(Player player) {
-		throw new UnsupportedOperationException();
+		Set<Intersection>si=getHarborIntersections();
+		Set<HarborType>sht=new TreeSet<HarborType>();
+		for(Intersection i:si){
+			if (i.getOwner()==player) sht.add(getHarborType(i));
+		}
+		return sht;
 	}
 
 	/* (non-Javadoc)
@@ -607,7 +635,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public ResourcePackage getResources() {
-		throw new UnsupportedOperationException();
+		return me.getResources();
 	}
 
 	/* (non-Javadoc)
@@ -734,7 +762,54 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public void attackSettlement(Location catapultPath, Location settlementIntersection, AttackResult result) {
-		
+		if (catapultPath==null || settlementIntersection==null || result==null) throw new IllegalArgumentException("iwas is null");	
+		Path path_catapult = getPath(catapultPath);
+		Intersection inter_settlement = getIntersection(settlementIntersection);
+		if (!path_catapult.hasCatapult() || !inter_settlement.hasOwner()) throw new IllegalArgumentException("kein Catapult oder Siedlung vorhanden");
+		switch(result){
+		case DRAW:
+			path_catapult.getCatapultOwner().modifyResources(Catapult.getAttackbuildingprice());
+			for(ModelObserver ob : modelObserver){
+				ob.updateResources();
+			}
+			break;
+		case DEFEAT:
+			path_catapult.getCatapultOwner().modifyResources(Catapult.getAttackbuildingprice());
+			path_catapult.removeCatapult();
+			for(ModelObserver ob : modelObserver){
+				ob.updateResources();
+				ob.updateCatapultCount();
+				ob.updatePath(path_catapult);
+			}
+			break;
+		case SUCCESS:
+			Player owner = path_catapult.getCatapultOwner();
+			Player ownerBuilding = inter_settlement.getOwner();
+			if(inter_settlement.getBuildingType()==BuildingType.Village){
+				if(owner.getVictoryPoints()< getMaxVictoryPoints()){
+					inter_settlement.removeBuilding();
+					inter_settlement.createBuilding(BuildingType.Village, owner);
+				}else{
+					inter_settlement.removeBuilding();
+				}
+			}else{
+				if(ownerBuilding.getVictoryPoints()<getMaxVictoryPoints()){
+					inter_settlement.removeBuilding();
+					inter_settlement.createBuilding(BuildingType.Village, ownerBuilding);
+				}else{
+					inter_settlement.removeBuilding();
+					inter_settlement.createBuilding(BuildingType.Village, owner);
+				}
+			}
+			owner.modifyResources(Catapult.getAttackbuildingprice());
+			for(ModelObserver ob : modelObserver){
+				ob.updateResources();
+				ob.updateIntersection(inter_settlement);
+				ob.updateSettlementCount(BuildingType.Village);
+				ob.updateSettlementCount(BuildingType.Town);
+			}
+			break;
+		}
 	}
 
 	/* (non-Javadoc)
@@ -742,7 +817,29 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public void buildCatapult(Location destination, boolean fightOutCome) {
-		throw new UnsupportedOperationException();
+		if (destination==null) throw new IllegalArgumentException(destination+" is null");
+		Path dest = getPath(destination);
+		Set<Intersection> nachbarSet = getIntersectionsFromPath(dest); 
+		boolean nachbarTown = false;
+		for (Intersection intersection : nachbarSet) {
+			if(intersection.getBuildingType()==BuildingType.Town) nachbarTown=true;
+		}
+		if(!nachbarTown) throw new IllegalArgumentException("Keine Stadt in der Naehe(Location mies)");
+		if(fightOutCome){
+			if(dest.hasCatapult()){
+				dest.removeCatapult();
+			}
+			dest.createCatapult(getCurrentPlayer());
+		}else{
+			if(!dest.hasCatapult()) throw new IllegalStateException("Wird nicht gebaut, obwohl kein Gegner vorhanden ist");
+			if(!getCurrentPlayer().checkResourcesSufficient(Catapult.getBuildingprice())) throw new IllegalArgumentException("Player has no resources to built a Catapult");
+		}
+		getCurrentPlayer().modifyResources(Catapult.getBuildingprice());
+		for(ModelObserver ob : modelObserver){
+			ob.updateResources();
+			ob.updateCatapultCount();
+			ob.updatePath(dest);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -750,7 +847,17 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public void buildStreet(Location destination) {
-		throw new UnsupportedOperationException();
+		if (destination == null) throw new IllegalArgumentException(destination + " is null");
+		Path dest = getPath(destination);
+		if (!dest.hasStreet()) throw new IllegalArgumentException("Strasse bereits vorhanden");
+		Set<Path> nachbarn = buildableStreetPaths(me);
+		if(!nachbarn.contains(dest)) throw new IllegalStateException("Keine Nachbarstrassen");
+		me.checkResourcesSufficient(Street.getPrice());
+		me.modifyResources(Street.getPrice());
+		for(ModelObserver ob : modelObserver){
+			ob.updateResources();
+			ob.updatePath(dest);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -758,9 +865,44 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public void buildSettlement(Location location, BuildingType buildingType) {
-		throw new UnsupportedOperationException();
+		if (location==null) throw new IllegalArgumentException(location+" is null");
+		Intersection i=getIntersection(location);
+		if (isBuildable(i, buildingType) && (isAffordable(buildingType))){
+			ResourcePackage price=buildingType.getPrice();
+			if (me.checkResourcesSufficient(price)) throw new IllegalArgumentException("Nicht genug Ressourcen, um es zu bauen");
+			me.modifyResources(price);
+			i.createBuilding(buildingType, me);
+			for(ModelObserver ob: modelObserver){
+				ob.updateResources();
+				ob.updateSettlementCount(buildingType);
+				ob.updateVictoryPoints();
+				ob.updateIntersection(i);
+			}	
+		}
+		else throw new IllegalArgumentException("Das Gebaüde wurde nicht gebaut");
 	}
 
+	private boolean isBuildable(Intersection i, BuildingType buildingType){
+		Set<Intersection>si;
+		if (buildingType==BuildingType.Village){
+			si=buildableVillageIntersections(me);
+			if (si.contains(i)) return true;
+			throw new IllegalArgumentException("Kein Dorf darf hier gebaut werden");
+		}
+		else if (buildingType==BuildingType.Town){
+			si=buildableTownIntersections(me);
+			if (si.contains(i)) return true;
+			throw new IllegalArgumentException("Keine Stadt darf hier gebaut werden");
+		}
+		throw new IllegalArgumentException("Es fehlt den BuildingType");
+	}
+	
+	private boolean isAffordable(BuildingType buildingType){
+		int a=affordableSettlements(buildingType);
+		if (a>0) return true;
+		throw new IllegalArgumentException("Nicht genug Ressourcen, um es zu bauen");
+	}
+	
 	/* (non-Javadoc)
 	 * @see de.unisaarland.cs.sopra.common.model.ModelWriter#longestRaodClaimed(java.util.List)
 	 */
@@ -923,6 +1065,16 @@ public class Model implements ModelReader, ModelWriter{
 	@Override
 	public Player getMe() {
 		return me;
+	}
+
+	@Override
+	public int getBoardWidth() {
+		return board.getWidth();
+	}
+
+	@Override
+	public int getBoardHeight() {
+		return board.getHeight();
 	}
 
 }
