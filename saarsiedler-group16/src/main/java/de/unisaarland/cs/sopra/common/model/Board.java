@@ -169,7 +169,7 @@ public class Board {
 			
 			@Override
 			public boolean hasNext() {
-				return i < (width)*(height)-1;
+				return i < (width)*(height);
 			}
 
 			@Override
