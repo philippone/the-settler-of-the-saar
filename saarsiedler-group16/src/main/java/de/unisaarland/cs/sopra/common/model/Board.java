@@ -90,7 +90,59 @@ public class Board {
 	}
 	
 	private void initIntersections() {
-		throw new UnsupportedOperationException();
+		for (int x = 0; x < width; x++){
+			for (int y = 0; y < height; y++){
+				for (int o = 0; o < 6; o++){
+					Path p = new Path(new Location(x, y, o));
+					if (!paths.containsKey(new Location(x, y, o))){
+						paths.put(new Location(x, y, o), p);
+						if (y % 2 == 1){
+							switch(o){
+							case 0:
+								if(isValid(y-1, x)) paths.put(new Location(y-1, x, 3), p);
+								break;
+							case 1:
+								if(isValid(y, x+1)) paths.put(new Location(y, x+1, 4), p);
+								break;
+							case 2:
+								if(isValid(y+1, x)) paths.put(new Location(y+1, x, 5), p);
+								break;
+							case 3:
+								if(isValid(y+1, x-1)) paths.put(new Location(y+1, x-1, 0), p);
+								break;
+							case 4:
+								if(isValid(y, x-1)) paths.put(new Location(y, x-1, 1), p);
+								break;
+							case 5:
+								if(isValid(y-1, x-1)) paths.put(new Location(y-1, x-1, 2), p);
+								break;
+							}
+						} else {
+							switch(o){
+							case 0:
+								if(isValid(y-1, x+1)) paths.put(new Location(y-1, x+1, 3), p);
+								break;
+							case 1:
+								if(isValid(y, x+1)) paths.put(new Location(y, x+1, 4), p);
+								break;
+							case 2:
+								if(isValid(y+1, x+1)) paths.put(new Location(y+1, x+1, 5), p);
+								break;
+							case 3:
+								if(isValid(y+1, x)) paths.put(new Location(y+1, x, 0), p);
+								break;
+							case 4:
+								if(isValid(y, x-1)) paths.put(new Location(y, x-1, 1), p);
+								break;
+							case 5:
+								if(isValid(y-1, x)) paths.put(new Location(y-1, x, 2), p);
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	public Field getField(Point point) {
