@@ -329,7 +329,7 @@ public class Model implements ModelReader, ModelWriter{
 			if(!p.hasStreet()){
 				Set<Path> nachbarn = getPathsFromPath(p);
 				for(Path n: nachbarn){
-					if(p.hasStreet()	&&	p.getStreetOwner()==player){	//doppelte abfrage zur sicherheit
+					if(n.hasStreet()	&&	n.getStreetOwner()==player){	//doppelte abfrage zur sicherheit
 						res.add(p);
 					}
 				}
