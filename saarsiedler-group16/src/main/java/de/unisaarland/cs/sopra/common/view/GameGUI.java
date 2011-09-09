@@ -81,10 +81,10 @@ public class GameGUI extends View implements Runnable{
 		   GLU.gluPerspective(45.0f, ((float)setting.getWindowWidth())/setting.getWindowHeight(), 0.1f, 5000.0f); //-5000.f ist die maximale z tiefe
 		   GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		   // clear the screen
-//		   GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+		   GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		   // center square according to screen size
 		   GL11.glPushMatrix();
-		   GL11.glTranslatef(0.0f, -0.0f, -2000.0f); //-4000 ist z koord
+		   GL11.glTranslatef(-400.0f, 600.0f, -2000.0f); //-4000 ist z koord
 			// rotate square according to angle
 		   GL11.glRotatef(0, 0, 0, 0);
 		   GL11.glColor3f(1.0f, 1.0f, 1.0f);
@@ -231,8 +231,8 @@ public class GameGUI extends View implements Runnable{
 			  finished = true;
 		      } 
 		      else if (Display.isActive()) {
-		          //render();
-		          //Display.sync(60);
+		          render();
+		          Display.sync(60);
 		        } 
 		      // The window is not in the foreground, so we can allow other stuff to run and
 		      // infrequently update
@@ -242,7 +242,7 @@ public class GameGUI extends View implements Runnable{
 		        } catch (InterruptedException e) {}
 		      }
 		      if (Display.isVisible() || Display.isDirty()) {
-		          //render();
+		          render();
 		      }
 		}
 		Display.destroy();
