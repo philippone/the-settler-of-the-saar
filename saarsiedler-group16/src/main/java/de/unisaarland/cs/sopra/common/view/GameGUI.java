@@ -66,7 +66,7 @@ public class GameGUI extends View implements Runnable{
 		
 		     textureMap.get(f.getFieldType()).bind();
 		     GL11.glBegin(GL11.GL_POLYGON);
-		      // GL11.glColor4f(1.0f,1.0f,1.0f,1.0f); transparenz
+		       //GL11.glColor4f(1.0f,1.0f,1.0f,1.0f); //transparenz
 		       GL11.glTexCoord2f(0,0);
 		       GL11.glVertex3i(-150+x, -150+y, 0);
 		       GL11.glTexCoord2f(1,0);
@@ -79,7 +79,7 @@ public class GameGUI extends View implements Runnable{
 		     
 		     numberTextureMap.get(f.getNumber()).bind();
 		     GL11.glBegin(GL11.GL_POLYGON);
-		      // GL11.glColor4f(1.0f,1.0f,1.0f,1.0f); transparenz
+		       //GL11.glColor4f(1.0f,1.0f,1.0f,1.0f); //transparenz
 		       GL11.glTexCoord2f(0,0);
 		       GL11.glVertex3i(-150+x, -150+y, 1);
 		       GL11.glTexCoord2f(1,0);
@@ -230,7 +230,8 @@ public class GameGUI extends View implements Runnable{
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
         GL11.glClearDepth(1.0f); // Depth Buffer Setup
         GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA,GL11.GL_ONE);
+        GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
 		
         Keyboard.enableRepeatEvents(true);
         
