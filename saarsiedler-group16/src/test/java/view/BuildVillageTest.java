@@ -273,7 +273,7 @@ public class BuildVillageTest{
 		};
 		Controller con = new Controller(connect, model); 
 		ControllerAdapter conAda = new ControllerAdapter(con, model);
-		AI ai = new AI(new Player(), model, conAda);
+		AI ai = new AI(0, model, conAda);
 		
 		model.matchStart(new long[] {0,1,2}, new byte[] {8,6});
 		model.setTableOrder(new long[] {2,1,0});

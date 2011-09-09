@@ -147,7 +147,7 @@ public class TestUtil {
 	public static ModelObserver getTestView(Player player) throws IOException {
 		ModelReader modelReader = null;
 		ControllerAdapter controllerAdapter = null;
-		ModelObserver view = new AI(player, modelReader, controllerAdapter);
+		ModelObserver view = new AI(0, modelReader, controllerAdapter);
 		return view;
 	}
 
@@ -162,6 +162,8 @@ public class TestUtil {
 					new byte[] {0,1,(1 << 4) | 0, 
 								2,2,(4 << 4) | 1
 									});
+			Board b = new Board(worldrep);
+			System.out.printf("Width: %d, Height: %d", b.getWidth(), b.getHeight());
 			return new Board(worldrep);
 	}
 

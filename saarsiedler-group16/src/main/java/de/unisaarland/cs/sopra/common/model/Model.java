@@ -73,6 +73,7 @@ public class Model implements ModelReader, ModelWriter{
 	 * @return Point of field
 	 */
 	public static Point getLocation(Field field) {
+		if (field==null) throw new IllegalArgumentException();
 		return field.getLocation();
 	}
 	
@@ -80,6 +81,7 @@ public class Model implements ModelReader, ModelWriter{
 	 * @return Location of Path 
 	 */
 	public static Location getLocation(Path path) {
+		if (path==null) throw new IllegalArgumentException();
 		return path.getLocation();
 	}
 	
@@ -87,6 +89,7 @@ public class Model implements ModelReader, ModelWriter{
 	 * @return Location of Intersection
 	 */
 	public static Location getLocation(Intersection intersection) {
+		if (intersection==null) throw new IllegalArgumentException();
 		return intersection.getLocation();
 	}
 	
@@ -441,6 +444,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Path> attackableCatapults(Player player) {
+		if (player==null) throw new IllegalArgumentException();
 		Set<Path> attackableCatapults=new TreeSet<Path>();
 		Set<Path> sp=getCatapults(player);
 		for (Path p: sp){
@@ -459,12 +463,13 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Path> getStreets(Player player) {
+		if (player==null) throw new IllegalArgumentException();
 		Iterator<Path>ip=getPathIterator();
 		Set<Path>sp=new TreeSet<Path>();
 		Path p;
 		while (ip.hasNext()){
 			p=ip.next();
-			if (p.getStreetOwner()==player) sp.add(p);
+			if (p.hasStreet() && p.getStreetOwner()==player) sp.add(p);
 		}
 		return sp;
 	}
@@ -474,6 +479,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Intersection> getSettlements(Player player, BuildingType buildingType) {
+		if (player==null | buildingType==null) throw new IllegalArgumentException();
 		Iterator<Intersection>ii=getIntersectionIterator();
 		Set<Intersection>si=new TreeSet<Intersection>();
 		Intersection i;
@@ -489,6 +495,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Path> getCatapults(Player player) {
+		if (player==null)throw new IllegalArgumentException();
 		Iterator<Path>ip=getPathIterator();
 		Set<Path>sp=new TreeSet<Path>();
 		Path p;
@@ -520,6 +527,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public int getCurrentVictoryPoints(Player player) {
+		if (player==null) throw new IllegalArgumentException();
 		return player.getVictoryPoints();
 	}
 
