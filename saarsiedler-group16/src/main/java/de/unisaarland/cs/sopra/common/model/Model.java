@@ -384,7 +384,7 @@ public class Model implements ModelReader, ModelWriter{
 		Set<Path> res = new HashSet<Path>();
 		while(it.hasNext()){
 			Intersection inter = it.next();
-			if(inter.getBuildingType().equals(BuildingType.Town)	&&	inter.getOwner()==player){
+			if( inter.hasOwner()	&&	inter.getBuildingType().equals(BuildingType.Town)	&&	inter.getOwner()==player){
 				res.addAll(getPathsFromIntersection(inter));
 			}
 		}
