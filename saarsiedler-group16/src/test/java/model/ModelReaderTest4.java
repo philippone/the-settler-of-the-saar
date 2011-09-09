@@ -30,7 +30,7 @@ public class ModelReaderTest4 {
 	@Before
 	public void setUp() throws IOException {
 		model2 = TestUtil.getStandardModel2();
-		model1= TestUtil.getStandardModel1();
+		model1 = TestUtil.getStandardModel1();
 	}	
 	
 	@Test
@@ -327,7 +327,7 @@ public class ModelReaderTest4 {
 	}
 	
 	@Test
-	public void testGetSettlements(Player player, BuildingType buildingType) {
+	public void testGetSettlements() {
 		setUp2();
 		//player2 only towns
 		model2.buildSettlement(new Location(0,0,5) , BuildingType.Town);
