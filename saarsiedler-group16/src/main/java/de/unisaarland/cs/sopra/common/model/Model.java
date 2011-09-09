@@ -2,6 +2,7 @@ package de.unisaarland.cs.sopra.common.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -125,9 +126,11 @@ public class Model implements ModelReader, ModelWriter{
 		// all roads contain only one path
 		List<List<Path>> suppressedRoadList=new ArrayList<List<Path>>();
 		for (List<Path> road : roadList){
-			if (continueRoad(road, roadList)) suppressedRoadList.add(road);
-			// if the road has been continued, new longer road(s)'d have been put in roadlist
-			// we'll just remove the short one
+			if (continueRoad(road, roadList)) {
+				suppressedRoadList.add(road);
+				// if the road has been continued, new longer road(s)'d have been put in roadlist
+				// we'll just remove the short one
+				}
 		}
 		for (List<Path> suppressedRoad : suppressedRoadList) roadList.remove(suppressedRoad);
 		// now there's only finished roads
@@ -200,10 +203,11 @@ public class Model implements ModelReader, ModelWriter{
 		if (p.getStreetOwner()==player && !(road.contains(p))) {
 		// 	meaning if this path is owned by player and not already in the road
 		// then we can continue the road while adding this path
-		// then we add that new road in the roadList
+		// then we add that new road in the roadList if it wasn't already here
 		// the elder one'll be removed from the roadList since it has been continued
 			road.add(p);
-			roadList.add(road);
+			if (!(roadList.contains(road))) roadList.add(road);
+			// no doubloons
 			return true;
 		}
 		return false;
@@ -322,7 +326,7 @@ public class Model implements ModelReader, ModelWriter{
 			if(!p.hasStreet()){
 				Set<Path> nachbarn = getPathsFromPath(p);
 				for(Path n: nachbarn){
-					if(p.hasStreet()	&&	p.getStreetOwner()==player){	//doppelte abfrage zur sicherheit
+					if(n.hasStreet()	&&	n.getStreetOwner()==player){	//doppelte abfrage zur sicherheit
 						res.add(p);
 					}
 				}
@@ -770,8 +774,8 @@ public class Model implements ModelReader, ModelWriter{
 			}
 			break;
 		case DEFEAT:
-			path_catapult.removeCatapult();
 			path_catapult.getCatapultOwner().modifyResources(Catapult.getAttackbuildingprice());
+			path_catapult.removeCatapult();
 			for(ModelObserver ob : modelObserver){
 				ob.updateResources();
 				ob.updateCatapultCount();

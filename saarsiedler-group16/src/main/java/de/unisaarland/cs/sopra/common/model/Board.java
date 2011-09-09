@@ -10,104 +10,281 @@ import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 
 public class Board {
 
-	private OurMap<Field> field;
-	private OurMap<Path> path;
-	private OurMap<Intersection> intersection;
+	private Map<Point, Field> fields;
+	private Map<Location, Path> paths;
+	private Map<Location, Intersection> intersections;
 	private int width;
 	private int height;
 	
-	class OurMap<T> {
-		Map<Point, T> m;
-		
-		OurMap(){ m = new HashMap<Point, T>(); }
-		
-		T get(Point position){
-			return m.get(position);
-		}
-		
-		boolean put(Point position, T t){
-			boolean validPosition = position.getX() >= 0 && position.getX() < width
-					&& position.getY() >= 0 && position.getY() < height;
-			if (validPosition){ m.put(position, t); }
-			return validPosition;
-		}
-		
-		Iterator<T> iterator(){ return m.values().iterator(); }
-	}
-	
+	//TODO
 	public Board(WorldRepresentation worldRepresentation) {
 		this.height = worldRepresentation.getHeight();
 		this.width = worldRepresentation.getWidth();
-		this.field = new OurMap<Field>();
+		this.fields = new HashMap<Point, Field>();
+		this.paths = new HashMap<Location, Path>();
+		this.intersections = new HashMap<Location, Intersection>();
+		// ok
 		for (int i = 0; i < width*height; i++) {
 			Point p = new Point(i/width,i%width);
 			FieldType fieldType = FieldType.convert( worldRepresentation.getFieldType(i/width,i%width) );
-			this.field.put(p, new Field(fieldType, p));
+			this.fields.put(p, new Field(fieldType, p));
 		}
-		this.path = new OurMap<Path>();
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < height; x++) {
-				for (int ori = 0; ori < 6; ori++) {
-					Location loc = new Location(y,x,ori);
-					Path p = new Path(loc);
-					if (path.get(loc) == null) {
-						path.put(loc, p);
-						switch(loc.getOrientation()) {
+		initPaths();
+		initIntersections();
+	}
+	
+	private void initPaths() {
+		for (int x = 0; x < width; x++){
+			for (int y = 0; y < height; y++){
+				for (int o = 0; o < 6; o++){
+					Path p = new Path(new Location(x, y, o));
+					if (!paths.containsKey(new Location(x, y, o))){
+						paths.put(new Location(x, y, o), p);
+						if (y % 2 == 1){
+							switch(o){
 							case 0:
-								if (loc.getX()%2==0 && loc.getY()-1 > 0 && loc.getX()+1 < width);
+								if(isValid(y-1, x)) paths.put(new Location(y-1, x, 3), p);
+								break;
 							case 1:
+								if(isValid(y, x+1)) paths.put(new Location(y, x+1, 4), p);
+								break;
 							case 2:
+								if(isValid(y+1, x)) paths.put(new Location(y+1, x, 5), p);
+								break;
 							case 3:
+								if(isValid(y+1, x-1)) paths.put(new Location(y+1, x-1, 0), p);
+								break;
 							case 4:
+								if(isValid(y, x-1)) paths.put(new Location(y, x-1, 1), p);
+								break;
 							case 5:
+								if(isValid(y-1, x-1)) paths.put(new Location(y-1, x-1, 2), p);
+								break;
+							}
+						} else {
+							switch(o){
+							case 0:
+								if(isValid(y-1, x+1)) paths.put(new Location(y-1, x+1, 3), p);
+								break;
+							case 1:
+								if(isValid(y, x+1)) paths.put(new Location(y, x+1, 4), p);
+								break;
+							case 2:
+								if(isValid(y+1, x+1)) paths.put(new Location(y+1, x+1, 5), p);
+								break;
+							case 3:
+								if(isValid(y+1, x)) paths.put(new Location(y+1, x, 0), p);
+								break;
+							case 4:
+								if(isValid(y, x-1)) paths.put(new Location(y, x-1, 1), p);
+								break;
+							case 5:
+								if(isValid(y-1, x)) paths.put(new Location(y-1, x, 2), p);
+								break;
+							}
 						}
-						
 					}
 				}
 			}
 		}
 	}
 	
+	private void initIntersections() {
+		throw new UnsupportedOperationException();
+	}
+	
 	public Field getField(Point point) {
-		return this.field.get(point);
+		return this.fields.get(point);
 	}
 	
-	public Intersection getIntersection(Point location) {
-		return this.intersection.get(location);
+	public Intersection getIntersection(Location location) {
+		return this.intersections.get(location);
 	}
 	
-	public Path getPath(Point location) {
-		return this.path.get(location);
+	public Path getPath(Location location) {
+		return this.paths.get(location);
 	}
 	
 	public Set<Field> getFieldsFromField(Field field) {
 		Point loc = field.getLocation();
+		int x = loc.getX();
+		int y = loc.getY();
 		Set<Field> s = new HashSet<Field>();
-		s.add(this.getField(new Point(loc.getY(),loc.getX()-1)));
-		s.add(this.getField(new Point(loc.getY(),loc.getX()+1)));
-		s.add(this.getField(new Point(loc.getY()-1,loc.getX())));
-		s.add(this.getField(new Point(loc.getY()+1,loc.getX())));
-		s.add(this.getField(new Point(loc.getY()-1,loc.getX()-1)));
-		s.add(this.getField(new Point(loc.getY()-1,loc.getX()+1)));
-		s.add(this.getField(new Point(loc.getY()+1,loc.getX()-1)));
-		s.add(this.getField(new Point(loc.getY()+1,loc.getX()+1)));
+		if(isValid(y-1, x)) s.add(this.getField(new Point(y-1,x)));
+		if(isValid(y, x-1)) s.add(this.getField(new Point(y,x-1)));
+		if(isValid(y, x+1)) s.add(this.getField(new Point(y,x+1)));
+		if(isValid(y+1, x)) s.add(this.getField(new Point(y+1,x)));
+		if (y%2 == 1 && isValid(y-1, x-1)) s.add(this.getField(new Point(y-1, x-1)));
+		if (y%2 == 0 && isValid(y-1, x+1)) s.add(this.getField(new Point(y-1, x+1)));
+		if (y%2 == 1 && isValid(y+1, x-1)) s.add(this.getField(new Point(y+1, x-1)));
+		if (y%2 == 0 && isValid(y+1, x+1)) s.add(this.getField(new Point(y+1, x+1)));
 		return s;
 	}
 	
 	public Set<Field> getFieldsFromIntersection(Intersection intersection) {
-		throw new UnsupportedOperationException();
+		Location loc = intersection.getLocation();
+		int x = loc.getX();
+		int y = loc.getY();
+		int o = loc.getOrientation();
+		Set<Field> s = new HashSet<Field>();
+		s.add(this.getField(new Point(x, y)));
+		if (y % 2 == 1){
+			switch(o){
+			case 0:
+				if (isValid(y-1, x-1)) s.add(this.getField(new Point(y-1, x-1)));
+				if (isValid(y-1, x)) s.add(this.getField(new Point(y-1, x)));
+				break;
+			case 1:
+				if (isValid(y, x+1)) s.add(this.getField(new Point(y, x+1)));
+				if (isValid(y-1, x)) s.add(this.getField(new Point(y-1, x)));
+				break;
+			case 2:
+				if (isValid(y, x+1)) s.add(this.getField(new Point(y, x+1)));
+				if (isValid(y+1, x)) s.add(this.getField(new Point(y+1, x)));
+				break;
+			case 3:
+				if (isValid(y+1, x)) s.add(this.getField(new Point(y+1, x)));
+				if (isValid(y+1, x-1)) s.add(this.getField(new Point(y+1, x-1)));
+				break;
+			case 4:
+				if (isValid(y+1, x-1)) s.add(this.getField(new Point(y+1, x-1)));
+				if (isValid(y, x-1)) s.add(this.getField(new Point(y, x-1)));
+				break;
+			case 5:
+				if (isValid(y, x-1)) s.add(this.getField(new Point(y, x-1)));
+				if (isValid(y-1, x-1)) s.add(this.getField(new Point(y-1, x-1)));
+				break;
+			}
+		} else {
+			switch(o){
+			case 0:
+				if (isValid(y-1, x+1)) s.add(this.getField(new Point(y-1, x+1)));
+				if (isValid(y-1, x)) s.add(this.getField(new Point(y-1, x)));
+				break;
+			case 1:
+				if (isValid(y, x+1)) s.add(this.getField(new Point(y, x+1)));
+				if (isValid(y-1, x+1)) s.add(this.getField(new Point(y-1, x+1)));
+				break;
+			case 2:
+				if (isValid(y, x+1)) s.add(this.getField(new Point(y, x+1)));
+				if (isValid(y+1, x+1)) s.add(this.getField(new Point(y+1, x+1)));
+				break;
+			case 3:
+				if (isValid(y+1, x)) s.add(this.getField(new Point(y+1, x)));
+				if (isValid(y+1, x+1)) s.add(this.getField(new Point(y+1, x+1)));
+				break;
+			case 4:
+				if (isValid(y+1, x)) s.add(this.getField(new Point(y+1, x)));
+				if (isValid(y, x-1)) s.add(this.getField(new Point(y, x-1)));
+				break;
+			case 5:
+				if (isValid(y, x-1)) s.add(this.getField(new Point(y, x-1)));
+				if (isValid(y-1, x)) s.add(this.getField(new Point(y-1, x)));
+				break;
+			}
+		}
+		return s;
 	}
 	
 	public Set<Field> getFieldsFromPath(Path path) {
-		throw new UnsupportedOperationException();
+		Location loc = path.getLocation();
+		int x = loc.getX();
+		int y = loc.getY();
+		int o = loc.getOrientation();
+		Set<Field> s = new HashSet<Field>();
+		s.add(this.getField(new Point(x, y)));
+		if (y % 2 == 1){
+			switch(o){
+			case 0:
+				if (isValid(y-1, x)) s.add(this.getField(new Point(y-1, x)));
+				break;
+			case 1:
+				if (isValid(y, x+1)) s.add(this.getField(new Point(y, x+1)));
+				break;
+			case 2:
+				if (isValid(y+1, x)) s.add(this.getField(new Point(y+1, x)));
+				break;
+			case 3:
+				if (isValid(y+1, x-1)) s.add(this.getField(new Point(y+1, x-1)));
+				break;
+			case 4:
+				if (isValid(y, x-1)) s.add(this.getField(new Point(y, x-1)));
+				break;
+			case 5:
+				if (isValid(y-1, x-1)) s.add(this.getField(new Point(y-1, x-1)));
+				break;
+			}
+		} else {
+			switch(o){
+			case 0:
+				if (isValid(y-1, x+1)) s.add(this.getField(new Point(y-1, x+1)));
+				break;
+			case 1:
+				if (isValid(y, x+1)) s.add(this.getField(new Point(y, x+1)));
+				break;
+			case 2:
+				if (isValid(y+1, x+1)) s.add(this.getField(new Point(y+1, x+1)));
+				break;
+			case 3:
+				if (isValid(y+1, x)) s.add(this.getField(new Point(y+1, x)));
+				break;
+			case 4:
+				if (isValid(y, x-1)) s.add(this.getField(new Point(y, x-1)));
+				break;
+			case 5:
+				if (isValid(y-1, x)) s.add(this.getField(new Point(y-1, x)));
+				break;
+			}
+		}
+		return s;
 	}
 	
 	public Set<Intersection> getIntersectionsFromField(Field field) {
-		throw new UnsupportedOperationException();
+		Point loc = field.getLocation();
+		int x = loc.getX();
+		int y = loc.getY();
+		Set<Intersection> s = new HashSet<Intersection>();
+		for (int o = 0; o < 6; o++){ s.add(getIntersection(new Location(x, y, o))); }
+		return s;
 	}
 	
 	public Set<Intersection> getIntersectionsFromIntersection(Intersection intersection) {
-		throw new UnsupportedOperationException();
+		Location loc = intersection.getLocation();
+		int x = loc.getX();
+		int y = loc.getY();
+		int o = loc.getOrientation();
+		Set<Intersection> s = new HashSet<Intersection>();
+		s.add(getIntersection(new Location(x, y, (o+5)%6)));
+		s.add(getIntersection(new Location(x, y, (o+1)%6)));
+		if (y % 2 == 1){
+			switch(o){
+			case 0:
+				if (isValid(y-1, x-1)) s.add(this.getIntersection(new Location(y-1, x-1, 1)));
+				if (isValid(y-1, x)) s.add(this.getIntersection(new Location(y-1, x, 5)));
+				break;
+			case 1:
+				if (isValid(y, x+1)) s.add(this.getIntersection(new Location(y, x+1, 0)));
+				if (isValid(y-1, x)) s.add(this.getIntersection(new Location(y-1, x, 2)));
+				break;
+			case 2:
+				if (isValid(y, x+1)) s.add(this.getIntersection(new Location(y, x+1, 3)));
+				if (isValid(y+1, x)) s.add(this.getIntersection(new Location(y+1, x, 1)));
+				break;
+			case 3:
+				if (isValid(y+1, x-1)) s.add(this.getIntersection(new Location(y+1, x-1, 1)));
+				if (isValid(y+1, x)) s.add(this.getIntersection(new Location(y+1, x, 5)));
+				break;
+			case 4:
+				if (isValid(y, x-1)) s.add(this.getIntersection(new Location(y, x-1, 2)));
+				if (isValid(y+1, x-1)) s.add(this.getIntersection(new Location(y+1, x-1, 0)));
+				break;
+			case 5:
+				if (isValid(y, x-1)) s.add(this.getIntersection(new Location(y, x-1, 1)));
+				if (isValid(y-1, x-1)) s.add(this.getIntersection(new Location(y-1, x-1, 3)));
+				break;
+			}
+		}
+		return s;
 	}
 	
 	public Set<Intersection> getIntersectionsFromPath(Path path) {
@@ -115,7 +292,12 @@ public class Board {
 	}
 	
 	public Set<Path> getPathsFromField(Field field) {
-		throw new UnsupportedOperationException();
+		Point loc = field.getLocation();
+		int x = loc.getX();
+		int y = loc.getY();
+		Set<Path> s = new HashSet<Path>();
+		for (int o = 0; o < 6; o++){ s.add(getPath(new Location(x, y, o))); }
+		return s;
 	}
 	
 	public Set<Path> getPathsFromIntersection(Intersection intersection) {
@@ -176,7 +358,7 @@ public class Board {
 			public Field next() {
 				Point p = new Point(i/width,i%width);
 				i++;
-				return field.get(p);
+				return fields.get(p);
 			}
 
 			@Override
@@ -188,18 +370,16 @@ public class Board {
 	}
 	
 	public Iterator<Path> getPathIterator() {
-		return path.iterator();
+		return paths.values().iterator();
 	}
 	
 	public Iterator<Intersection> getIntersectionIterator() {
-		return intersection.iterator();
+		return intersections.values().iterator();
 	}
 	
-	private Field getField(int x, int y) { return getField(new Point(x, y)); }
-	
-	private Intersection getIntersection(int x, int y) { return getIntersection(new Point(x, y)); }
-	
-	private Path getPath(int x, int y) { return getPath(new Point(x, y)); }
+	private boolean isValid(int x, int y){
+		return x >= 0 && x < width && y >= 0 && y < height;
+	}
 
 	public int getWidth() {
 		return width;

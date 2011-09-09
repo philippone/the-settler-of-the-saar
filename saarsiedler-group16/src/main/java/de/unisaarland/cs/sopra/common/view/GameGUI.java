@@ -58,11 +58,11 @@ public class GameGUI extends View implements Runnable{
 		   switch(f.getLocation().getY()%2) {
 		   case 0:
 			   x = f.getLocation().getX()*250;
-			   y = f.getLocation().getY()*-215; 
+			   y = f.getLocation().getY()*215; 
 			   break;
 		   case 1:
 			   x = f.getLocation().getX()*250-125;
-			   y = f.getLocation().getY()*-215;
+			   y = f.getLocation().getY()*215;
 			   break;
 		   }
 		
@@ -93,7 +93,7 @@ public class GameGUI extends View implements Runnable{
 		   GL11.glPushMatrix();
 		   GL11.glTranslatef(x,y,z); //-4000 ist z koord
 			// rotate square according to angle
-		   GL11.glRotatef(0, 0, 0, 0);
+		   GL11.glRotatef(180, 1.0f, 0, 0);
 		   GL11.glColor3f(1.0f, 1.0f, 1.0f);
 		   //TODO: center map and calculate initial zoom!!!
 	
