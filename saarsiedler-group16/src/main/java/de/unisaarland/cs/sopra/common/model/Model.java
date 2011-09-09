@@ -132,10 +132,6 @@ public class Model implements ModelReader, ModelWriter{
 				// we'll just remove the short one
 				}
 		}
-		Set<List<Path>> set = new HashSet<List<Path>>() ;
-        set.addAll(roadList) ;
-        roadList = new ArrayList<List<Path>>(set) ;
-        // we remove the doubloons
 		for (List<Path> suppressedRoad : suppressedRoadList) roadList.remove(suppressedRoad);
 		// now there's only finished roads
 		int maxsize=5;
@@ -207,10 +203,11 @@ public class Model implements ModelReader, ModelWriter{
 		if (p.getStreetOwner()==player && !(road.contains(p))) {
 		// 	meaning if this path is owned by player and not already in the road
 		// then we can continue the road while adding this path
-		// then we add that new road in the roadList
+		// then we add that new road in the roadList if it wasn't already here
 		// the elder one'll be removed from the roadList since it has been continued
 			road.add(p);
-			roadList.add(road);
+			if (!(roadList.contains(road))) roadList.add(road);
+			// no doubloons
 			return true;
 		}
 		return false;
