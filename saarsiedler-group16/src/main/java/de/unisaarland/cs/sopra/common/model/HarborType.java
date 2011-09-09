@@ -33,19 +33,20 @@ public enum HarborType {
 	}
 	
 	public static HarborType convert(de.unisaarland.cs.st.saarsiedler.comm.Resource resource) {
+		if (resource == null) return GENERAL_HARBOR;
 		switch (resource) {
-		case Brick:
-			return BRICK_HARBOR;
-		case Grain: 
-			return GRAIN_HARBOR;
-		case Lumber: 
-			return LUMBER_HARBOR;
-		case Ore:
-			return ORE_HARBOR;
-		case Wool: 
-			return WOOL_HARBOR;
-		default:
-			return GENERAL_HARBOR;
+			case Brick:
+				return BRICK_HARBOR;
+			case Grain: 
+				return GRAIN_HARBOR;
+			case Lumber: 
+				return LUMBER_HARBOR;
+			case Ore:
+				return ORE_HARBOR;
+			case Wool: 
+				return WOOL_HARBOR;
+			default:
+				throw new IllegalStateException();
 		}
 	}
 	
