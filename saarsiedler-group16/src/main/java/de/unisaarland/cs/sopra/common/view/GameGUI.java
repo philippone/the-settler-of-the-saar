@@ -64,18 +64,31 @@ public class GameGUI extends View implements Runnable{
 			   break;
 		   }
 		
-	     textureMap.get(f.getFieldType()).bind();
-	     GL11.glBegin(GL11.GL_POLYGON);
-	      // GL11.glColor4f(1.0f,1.0f,1.0f,1.0f); transparenz
-	       GL11.glTexCoord2f(0,0);
-	       GL11.glVertex2i(-150+x, -150+y);
-	       GL11.glTexCoord2f(1,0);
-	       GL11.glVertex2i(150+x, -150+y);
-	       GL11.glTexCoord2f(1,1);
-	       GL11.glVertex2i(150+x, 150+y);
-	       GL11.glTexCoord2f(0,1);
-	       GL11.glVertex2i(-150+x, 150+y);
-	     GL11.glEnd();
+		     textureMap.get(f.getFieldType()).bind();
+		     GL11.glBegin(GL11.GL_POLYGON);
+		      // GL11.glColor4f(1.0f,1.0f,1.0f,1.0f); transparenz
+		       GL11.glTexCoord2f(0,0);
+		       GL11.glVertex3i(-150+x, -150+y, 0);
+		       GL11.glTexCoord2f(1,0);
+		       GL11.glVertex3i(150+x, -150+y, 0);
+		       GL11.glTexCoord2f(1,1);
+		       GL11.glVertex3i(150+x, 150+y, 0);
+		       GL11.glTexCoord2f(0,1);
+		       GL11.glVertex3i(-150+x, 150+y, 0);
+		     GL11.glEnd();
+		     
+		     numberTextureMap.get(f.getNumber()).bind();
+		     GL11.glBegin(GL11.GL_POLYGON);
+		      // GL11.glColor4f(1.0f,1.0f,1.0f,1.0f); transparenz
+		       GL11.glTexCoord2f(0,0);
+		       GL11.glVertex3i(-150+x, -150+y, 1);
+		       GL11.glTexCoord2f(1,0);
+		       GL11.glVertex3i(150+x, -150+y, 1);
+		       GL11.glTexCoord2f(1,1);
+		       GL11.glVertex3i(150+x, 150+y, 1);
+		       GL11.glTexCoord2f(0,1);
+		       GL11.glVertex3i(-150+x, 150+y, 1);
+		     GL11.glEnd();
 	}
 	
 	
