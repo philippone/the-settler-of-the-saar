@@ -410,7 +410,8 @@ public class BoardTest {
 	@Test
 	public void testGetIntersectionsFromIntersectionRand(){
 		//create both sets
-		Set<Intersection> i1=b.getIntersectionsFromIntersection(b.getIntersection(new Location(3, 0, 4)));
+		Intersection i = b.getIntersection(new Location(3, 0, 4));
+		Set<Intersection> i1=b.getIntersectionsFromIntersection(i);
 		Set<Intersection> i2=new HashSet<Intersection>();
 		i2.add(b.getIntersection(new Location(3, 0 ,5)));
 		i2.add(b.getIntersection(new Location(3, 0, 3)));

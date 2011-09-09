@@ -30,7 +30,8 @@ public class Board {
 		initPaths();
 		initIntersections();
 	}
-	 // Done
+	 
+	// Done
 	private void initPaths() {
 		for (int x = 0; x < width; x++){
 			for (int y = 0; y < height; y++){
@@ -86,7 +87,8 @@ public class Board {
 			}
 		}
 	}
-	 //Done
+	
+	//Done TODO nach fehlern suchen!
 	private void initIntersections() {
 		for (int x = 0; x < width; x++){
 			for (int y = 0; y < height; y++){
@@ -157,16 +159,19 @@ public class Board {
 	
 	//Done
 	public Field getField(Point point) {
+		assert(fields.containsKey(point));
 		return this.fields.get(point);
 	}
 	
 	//Done
 	public Intersection getIntersection(Location location) {
+		assert(intersections.containsKey(location));
 		return this.intersections.get(location);
 	}
 	
 	//Done
 	public Path getPath(Location location) {
+		assert(paths.containsKey(location));
 		return this.paths.get(location);
 	}
 	
@@ -426,40 +431,15 @@ public class Board {
 		int x = path.getLocation().getX();
 		int y = path.getLocation().getY();
 		int o = path.getLocation().getOrientation();
-		Set<Path> ps = new HashSet<Path>();
-		ps.add(getPath(new Location(y, x, (o+1)%6)));
-		ps.add(getPath(new Location(y, x, (o+5)%6)));
-		switch(o){
-		case 0:
-			if (y%2 == 1){
-				
+		Set<Path> s = new HashSet<Path>();
+		s.add(getPath(new Location(y, x, (o+1)%6)));
+		s.add(getPath(new Location(y, x, (o+5)%6)));
+		if (y%2 == 1){
+			switch(o){
+			case 0:
+				if (isValid(x-1, y-1)) s.add(getPath(new Location(x-1, y-1, 1)));
 			}
-			else {
-				
-			}
-			break;
-		case 1:
-			ps.add(getPath(new Location(y, x+1, 5)));
-			ps.add(getPath(new Location(y, x+1, 3)));
-			break;
-		case 2:
-			ps.add(getPath(new Location(y, x+1, 5)));
-			ps.add(getPath(new Location(y, x+1, 3)));
-			break;
-		case 3:
-			ps.add(getPath(new Location(y, x+1, 5)));
-			ps.add(getPath(new Location(y, x+1, 3)));
-			break;
-		case 4:
-			ps.add(getPath(new Location(y, x-1, 0)));
-			ps.add(getPath(new Location(y, x-1, 2)));
-			break;
-		case 5:
-			ps.add(getPath(new Location(y, x+1, 5)));
-			ps.add(getPath(new Location(y, x+1, 3)));
-			break;
 		}
-		return ps;
 	}
 	
 	//Done
