@@ -293,6 +293,7 @@ public class ModelWriterTest {
 	
 	@Test
 	public void respondTradeTestPositive() {
+		//TODO: nur 3 anstatt 4 Spiler
 		Player p = model.getCurrentPlayer();
 		p.modifyResources(new ResourcePackage(3, 4, 0, 2, 1));
 		model.tradeOffer(-1, -1, 1, 0, 0);
