@@ -265,7 +265,7 @@ public class Board {
 		int y = loc.getY();
 		int o = loc.getOrientation();
 		Set<Field> s = new HashSet<Field>();
-		s.add(this.getField(new Point(x, y)));
+		s.add(this.getField(new Point(y, x)));
 		if (y % 2 == 1){
 			switch(o){
 			case 0:

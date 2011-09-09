@@ -118,7 +118,7 @@ public class BoardTest {
 	}
 	@Test
 	public void testGethPath3(){
-		assertEquals(new Path(new Location(1, 2, 5)), b.getPath(new Location(1, 2, 5)));
+		assertEquals(b.getPath(new Location(1, 2, 5)), b.getPath(new Location(1, 2, 5)));
 		assertEquals(b.getPath(new Location(1, 2, 5)), b.getPath(new Location(0, 1, 2)));
 		
 	}
@@ -131,18 +131,18 @@ public class BoardTest {
 	
 	@Test
 	public void testGetPath4(){
-		assertEquals(new Path(new Location(2, 0, 0)), b.getPath(new Location(2, 0, 0)));
+		assertEquals(b.getPath(new Location(2, 0, 0)), b.getPath(new Location(2, 0, 0)));
 		assertEquals(b.getPath(new Location(2, 0, 0)), b.getPath(new Location(1, 1, 3)));
 	}
 	@Test
 	public void testGetPathsFromPaths() {
 		//initialize path3;
-		path3 = new Path(new Location(1, 1, 2));
+		path3 = b.getPath(new Location(1, 1, 2));
 		// initialize the 4 neighbours from path3
-		path4 = new Path(new Location(1, 1, 1));
-		path5 = new Path(new Location(1, 1, 3));
-		path6 = new Path(new Location(2, 1, 0));
-		path7 = new Path(new Location(2, 1, 4));
+		path4 = b.getPath(new Location(1, 1, 1));
+		path5 = b.getPath(new Location(1, 1, 3));
+		path6 = b.getPath(new Location(2, 1, 0));
+		path7 = b.getPath(new Location(2, 1, 4));
 		//create both sets
 		pathSet = b.getPathsFromPath(path3);
 		pathSet2 = new HashSet<Path>();
@@ -160,11 +160,11 @@ public class BoardTest {
 	@Test
 	public void testGetPathsFromPathsRand1(){
 		//create both Sets
-		pathSet13 = b.getPathsFromPath(new Path(new Location(1, 0, 3)));
+		pathSet13 = b.getPathsFromPath(b.getPath(new Location(1, 0, 3)));
 		pathSet14 = new HashSet<Path>();
-		pathSet14.add(new Path(new Location(1, 0, 4)));
-		pathSet14.add(new Path(new Location(1, 0, 2)));
-		pathSet14.add(new Path(new Location(2, 0, 4)));
+		pathSet14.add(b.getPath(new Location(1, 0, 4)));
+		pathSet14.add(b.getPath(new Location(1, 0, 2)));
+		pathSet14.add(b.getPath(new Location(2, 0, 4)));
 		//test if both sets have identical content
 		assertTrue (pathSet14.containsAll(pathSet13));
 		assertTrue (pathSet13.containsAll(pathSet14));
@@ -175,8 +175,8 @@ public class BoardTest {
 		//create both Sets
 		pathSet15 = b.getPathsFromPath(new Path(new Location(0, 2, 0)));
 		pathSet16 = new HashSet<Path>();
-		pathSet16.add(new Path(new Location(0, 2, 1)));
-		pathSet16.add(new Path(new Location(0, 2, 5)));
+		pathSet16.add(b.getPath(new Location(0, 2, 1)));
+		pathSet16.add(b.getPath(new Location(0, 2, 5)));
 		//test if both sets have identical content
 		assertTrue (pathSet15.containsAll(pathSet16));
 		assertTrue (pathSet16.containsAll(pathSet15));
@@ -187,12 +187,12 @@ public class BoardTest {
 	public void testGetPathsFromIntersection() {
 		
 		//create an intersection
-		i3 = new Intersection(new Location (0, 0, 2));
+		i3 = b.getIntersection(new Location (0, 0, 2));
 		
 		//create the neighbours of the intersection
-		path9 = new Path(new Location(0, 0, 1));
-		path10 = new Path(new Location(1, 1, 5));
-		path11 = new Path(new Location(1, 1, 0));
+		path9 = b.getPath(new Location(0, 0, 1));
+		path10 = b.getPath(new Location(0, 0, 2));
+		path11 = b.getPath(new Location(0, 1, 4));
 		//create both Sets
 		pathSet3 = b.getPathsFromIntersection(i3);
 		pathSet4 = new HashSet<Path>();
@@ -207,10 +207,11 @@ public class BoardTest {
 	@Test
 	public void testGetPathsFromIntersectionRand(){
 		//create both Sets
-		pathSet11 = b.getPathsFromIntersection(new Intersection(new Location(0, 1, 1)));
+		pathSet11 = b.getPathsFromIntersection(b.getIntersection(new Location(0, 1, 1)));
 		pathSet12 = new HashSet<Path>();
-		pathSet12.add(new Path(new Location(0, 1, 0)));
-		pathSet12.add(new Path(new Location(0, 1, 5)));
+		pathSet12.add(b.getPath(new Location(0, 1, 0)));
+		pathSet12.add(b.getPath(new Location(0, 1, 1)));
+		pathSet12.add(b.getPath(new Location(0, 2, 5)));
 		//test if both sets have identical content
 		assertTrue(pathSet11.containsAll(pathSet12));
 		assertTrue(pathSet12.containsAll(pathSet11));
@@ -223,12 +224,12 @@ public class BoardTest {
 		// create both Sets
 		pathSet5 = b.getPathsFromField(f3);
 		pathSet6 = new HashSet<Path>();
-		pathSet6.add(new Path(new Location(0, 0, 0)));
-		pathSet6.add(new Path(new Location(0, 0, 1)));
-		pathSet6.add(new Path(new Location(0, 0, 2)));
-		pathSet6.add(new Path(new Location(0, 0, 3)));
-		pathSet6.add(new Path(new Location(0, 0, 4)));
-		pathSet6.add(new Path(new Location(0, 0, 5)));
+		pathSet6.add(b.getPath(new Location(0, 0, 0)));
+		pathSet6.add(b.getPath(new Location(0, 0, 1)));
+		pathSet6.add(b.getPath(new Location(0, 0, 2)));
+		pathSet6.add(b.getPath(new Location(0, 0, 3)));
+		pathSet6.add(b.getPath(new Location(0, 0, 4)));
+		pathSet6.add(b.getPath(new Location(0, 0, 5)));
 		// test if both sets have identical content
 		assertTrue(pathSet5.containsAll(pathSet6));
 		assertTrue(pathSet6.containsAll(pathSet5));
@@ -239,8 +240,8 @@ public class BoardTest {
 		// create both Sets
 		pathSet7 = b.getPathsFromIntersection(new Intersection(new Location(0, 0, 0)));
 		pathSet8 = new HashSet<Path>();
-		pathSet8.add(new Path(new Location(0, 0, 0)));
-		pathSet8.add(new Path(new Location(0, 0, 5)));
+		pathSet8.add(b.getPath(new Location(0, 0, 0)));
+		pathSet8.add(b.getPath(new Location(0, 0, 5)));
 		// test if both sets have identical content
 		assertTrue(pathSet7.containsAll(pathSet8));
 		assertTrue(pathSet8.containsAll(pathSet7));
@@ -249,10 +250,10 @@ public class BoardTest {
 	@Test
 	 public void testgetPathsFromIntersectionRand2(){
 		 //create both Sets
-		 Set<Path> cSet = b.getPathsFromIntersection(new Intersection(new Location(3, 2, 3)));
+		 Set<Path> cSet = b.getPathsFromIntersection(b.getIntersection(new Location(3, 1, 3)));
 		 Set<Path> eSet =  new HashSet<Path>();
-		 eSet.add(new Path(new Location(3, 2, 2)));
-		 eSet.add(new Path(new Location(3, 2, 3)));
+		 eSet.add(b.getPath(new Location(3, 1, 2)));
+		 eSet.add(b.getPath(new Location(3, 1, 3)));
 		//test if both sets have identical content
 			assertTrue(eSet.containsAll(cSet));
 			assertTrue(cSet.containsAll(eSet));
@@ -384,21 +385,21 @@ public class BoardTest {
 	public void testGetFieldsFromPath2(){
 		//one neighbor field
 		Field fi = b.getField(new Point(3, 2));
-		Set<Field> cSet = b.getFieldsFromPath(new Path(new Location(3, 2, 3)));
+		Set<Field> cSet = b.getFieldsFromPath(b.getPath(new Location(3, 2, 3)));
 		Set<Field> eSet = new HashSet<Field>();
-		eSet.add(fi);
+		eSet.add(b.getField(new Point(3,2)));
 		
 		assertTrue(cSet.containsAll(eSet));
 		assertTrue(eSet.containsAll(cSet));
 	}
-
+	@Test
 	public void testGetFieldsFromPath3() {
 
 		// create both sets
-		Set<Field> cSet = b.getFieldsFromPath(new Path(new Location(3, 1, 5)));
+		Set<Field> cSet = b.getFieldsFromPath(b.getPath(new Location(3, 1, 5)));
 		Set<Field> eSet = new HashSet<Field>();
-		eSet.add(new Field(FieldType.WATER, new Point(2, 0)));
-		eSet.add(new Field(FieldType.WATER, new Point(3, 1)));
+		eSet.add(b.getField( new Point(2, 0)));
+		eSet.add(b.getField( new Point(3, 1)));
 		// test if both sets have identical content
 		assertTrue(cSet.containsAll(eSet));
 		assertTrue(eSet.containsAll(cSet));
@@ -487,8 +488,8 @@ public class BoardTest {
 
 		// check if harbors are being properly initialized. 
 
-		Path p = new Path(new Location(1, 0, 1));
-		Path p2 = new Path(new Location(1, 1, 4));
+		Path p = b.getPath(new Location(1, 0, 1));
+		Path p2 = b.getPath(new Location(1, 1, 4));
 		b.getPath(new Location(1, 0, 1)).setHarborType(HarborType.GENERAL_HARBOR);
 		assertEquals(HarborType.GENERAL_HARBOR, p.getHarborType());
 		assertEquals(p2.getHarborType(), p.getHarborType());
