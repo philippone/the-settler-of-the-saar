@@ -913,10 +913,12 @@ public class Model implements ModelReader, ModelWriter{
 	@Override
 	public void buildSettlement(Location location, BuildingType buildingType) {
 		if (location==null) throw new IllegalArgumentException(location+" is null");
+			System.out.println("l: "+location);
 		Intersection i=getIntersection(location);
+			System.out.println("In: "+i);
 		if (isBuildable(i, buildingType) && (isAffordable(buildingType))){
-			me.modifyResources(buildingType.getPrice());
-			i.createBuilding(buildingType, me);
+			getCurrentPlayer().modifyResources(buildingType.getPrice());
+			i.createBuilding(buildingType, getCurrentPlayer());
 			for(ModelObserver ob: modelObserver){
 				ob.updateResources();
 				ob.updateSettlementCount(buildingType);
@@ -930,14 +932,18 @@ public class Model implements ModelReader, ModelWriter{
 	private boolean isBuildable(Intersection i, BuildingType buildingType){
 		Set<Intersection>si;
 		if (buildingType==BuildingType.Village){
-			si=buildableVillageIntersections(me);
+			si=buildableVillageIntersections(getCurrentPlayer());
+			System.out.println(si);
+			System.out.println(i);
 			if (si.contains(i)) return true;
-			throw new IllegalArgumentException("Kein Dorf darf hier gebaut werden");
+			return false;
+//			throw new IllegalArgumentException("Kein Dorf darf hier gebaut werden");
 		}
 		else if (buildingType==BuildingType.Town){
-			si=buildableTownIntersections(me);
+			si=buildableTownIntersections(getCurrentPlayer());
 			if (si.contains(i)) return true;
-			throw new IllegalArgumentException("Keine Stadt darf hier gebaut werden");
+			return false;
+//			throw new IllegalArgumentException("Keine Stadt darf hier gebaut werden");
 		}
 		throw new IllegalArgumentException("Es fehlt den BuildingType");
 	}

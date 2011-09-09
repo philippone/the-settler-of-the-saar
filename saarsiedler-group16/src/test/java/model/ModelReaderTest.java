@@ -40,6 +40,7 @@ public class ModelReaderTest {
 		assertTrue("Empty", currentSet.size() == 0);
 		// Village on the LumberHarbor (special Harbor)
 		currentPlayer.modifyResources(new ResourcePackage(10000,10000,10000,10000,10000));
+		model.getPath(new Location(2,1,0)).createStreet(currentPlayer);
 		model.buildSettlement(new Location(2, 1, 1), BuildingType.Village);
 		Set<HarborType> expectedSet = new HashSet<HarborType>();
 		expectedSet.add(HarborType.LUMBER_HARBOR);

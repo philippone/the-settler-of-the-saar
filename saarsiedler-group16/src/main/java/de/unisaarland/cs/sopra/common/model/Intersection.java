@@ -64,4 +64,9 @@ public class Intersection {
 		return location.hashCode();
 	}
 	
+	@Override
+	public String toString() {
+		
+		return "[INT: "+location+", "+building+"]";
+	}
 }
