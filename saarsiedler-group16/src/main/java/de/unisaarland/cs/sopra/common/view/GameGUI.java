@@ -1,6 +1,8 @@
 package de.unisaarland.cs.sopra.common.view;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -313,6 +315,36 @@ public class GameGUI extends View implements Runnable{
 	}
 
 	public static void main(String[] args) throws Exception {
+		String[] list = new String[] {
+				"src/main/resources/native/jinput-dx8_64.dll",
+				"src/main/resources/native/jinput-dx8.dll",
+				"src/main/resources/native/jinput-raw_64.dll",
+				"src/main/resources/native/jinput-raw.dll",
+				"src/main/resources/native/libjinput-linux.so",
+				"src/main/resources/native/libjinput-linux64.so",
+				"src/main/resources/native/libjinput-osx.jnilib",
+				"src/main/resources/native/liblwjgl.jnilib",
+				"src/main/resources/native/liblwjgl.so",
+				"src/main/resources/native/liblwjgl64.so",
+				"src/main/resources/native/libopenal.so",
+				"src/main/resources/native/libopenal64.so",
+				"src/main/resources/native/lwjgl.dll",
+				"src/main/resources/native/lwjgl64.dll",
+				"src/main/resources/native/openal.dylib",
+				"src/main/resources/native/OpenAL32.dll",
+				"src/main/resources/native/OpenAL64.dll"
+		};
+		String tmpdir = System.getProperty("java.io.tmpdir");
+		for (String act : list) {
+			InputStream input = ClassLoader.getSystemResourceAsStream(act);
+			File file = new File(tmpdir + act);
+			//file.
+		}
+		
+		//java.lang.reflect.Field x = GameGUI.class.getClassLoader().getClass().getField("sys_path");
+		//x.set(null, null);
+		//x.set
+		
 		WorldRepresentation worldrep = new WorldRepresentation(4, 4, 2, 9, 5, 4,  
 				new byte[] {1,2,3,4,
 							5,1,2,3,
