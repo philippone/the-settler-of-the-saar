@@ -1016,7 +1016,10 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public void robberMoved(Point sourceField, Point destinationField, long victimPlayer, Resource stolenResource) {
-		throw new UnsupportedOperationException();
+		// TODO (Philipp)
+		getField(sourceField).setRobber(false);
+		getField(destinationField).setRobber(true);
+		//this.getPlayerMap().
 	}
 
 	/* (non-Javadoc)
@@ -1024,6 +1027,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public void tradeOffer(int lumber, int brick, int wool, int grain, int ore) {
+		// TODO (Philipp)
 		throw new UnsupportedOperationException();
 	}
 
@@ -1032,6 +1036,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public void respondTrade(long playerID) {
+		// TODO (Philipp)
 		throw new UnsupportedOperationException();
 	}
 
