@@ -198,17 +198,30 @@ public class ModelTest {
 	public void testSetFieldNumbers() {
 		Iterator<Field> fieldIterator = model.getFieldIterator();
 		// an neue Welt anpassen!!!!
-		long[] fieldnumbers = new long[] {8,6}; 
+		long[] fieldnumbers = new long[] {2,3,4,5,
+				 6,8,9,10,
+				 11,12,11,10,
+				 9,8,6,5}; 
 		int i = 0;
-		long[] reihenfolge = new long[2];
+		long[] reihenfolge = new long[16];
 		while (fieldIterator.hasNext()) {
 			Field f = fieldIterator.next();
 			if (f.getNumber() != 0) {
 				reihenfolge[i++] = f.getNumber();
+				System.out.println(f.getNumber());
+				
 			}
 		}
+		boolean status = false;
+		i = 0;
+		while(i < 16) {
+			if(fieldnumbers[i] == reihenfolge[i]) {
+				status = true;
+			} break;
+		}
+		
 		// ist die Reihenfolge der Felder richitg
-		assertEquals("Feldnummern nicht richitg gesetzt", reihenfolge, fieldnumbers);
+		assertTrue("Feldnummern nicht richitg gesetzt", status);
 	}
 	
 	@Test
