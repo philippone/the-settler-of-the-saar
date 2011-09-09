@@ -10,41 +10,22 @@ import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 
 public class Board {
 
-	private OurMap<Field> field;
-	private OurMap<Path> path;
-	private OurMap<Intersection> intersection;
+	private Map<Point, Field> field;
+	private Map<Location, Path> path;
+	private Map<Location, Intersection> intersection;
 	private int width;
 	private int height;
-	
-	class OurMap<T> {
-		Map<Point, T> m;
-		
-		OurMap(){ m = new HashMap<Point, T>(); }
-		
-		T get(Point position){
-			return m.get(position);
-		}
-		
-		boolean put(Point position, T t){
-			boolean validPosition = position.getX() >= 0 && position.getX() < width
-					&& position.getY() >= 0 && position.getY() < height;
-			if (validPosition){ m.put(position, t); }
-			return validPosition;
-		}
-		
-		Iterator<T> iterator(){ return m.values().iterator(); }
-	}
 	
 	public Board(WorldRepresentation worldRepresentation) {
 		this.height = worldRepresentation.getHeight();
 		this.width = worldRepresentation.getWidth();
-		this.field = new OurMap<Field>();
+		this.field = new HashMap<Point, Field>();
 		for (int i = 0; i < width*height; i++) {
 			Point p = new Point(i/width,i%width);
 			FieldType fieldType = FieldType.convert( worldRepresentation.getFieldType(i/width,i%width) );
 			this.field.put(p, new Field(fieldType, p));
 		}
-		this.path = new OurMap<Path>();
+		this.path = new HashMap<Location, Path>();
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < height; x++) {
 				for (int ori = 0; ori < 6; ori++) {
@@ -82,20 +63,83 @@ public class Board {
 	
 	public Set<Field> getFieldsFromField(Field field) {
 		Point loc = field.getLocation();
+		int x = loc.getX();
+		int y = loc.getY();
 		Set<Field> s = new HashSet<Field>();
-		s.add(this.getField(new Point(loc.getY(),loc.getX()-1)));
-		s.add(this.getField(new Point(loc.getY(),loc.getX()+1)));
-		s.add(this.getField(new Point(loc.getY()-1,loc.getX())));
-		s.add(this.getField(new Point(loc.getY()+1,loc.getX())));
-		s.add(this.getField(new Point(loc.getY()-1,loc.getX()-1)));
-		s.add(this.getField(new Point(loc.getY()-1,loc.getX()+1)));
-		s.add(this.getField(new Point(loc.getY()+1,loc.getX()-1)));
-		s.add(this.getField(new Point(loc.getY()+1,loc.getX()+1)));
+		if(isValid(y-1, x)) s.add(this.getField(new Point(y-1,x)));
+		if(isValid(y, x-1)) s.add(this.getField(new Point(y,x-1)));
+		if(isValid(y, x+1)) s.add(this.getField(new Point(y,x+1)));
+		if(isValid(y+1, x)) s.add(this.getField(new Point(y+1,x)));
+		if (y%2 == 1 && isValid(y-1, x-1)) s.add(this.getField(new Point(y-1, x-1)));
+		if (y%2 == 0 && isValid(y-1, x+1)) s.add(this.getField(new Point(y-1, x+1)));
+		if (y%2 == 1 && isValid(y+1, x-1)) s.add(this.getField(new Point(y+1, x-1)));
+		if (y%2 == 0 && isValid(y+1, x+1)) s.add(this.getField(new Point(y+1, x+1)));
 		return s;
 	}
 	
 	public Set<Field> getFieldsFromIntersection(Intersection intersection) {
-		throw new UnsupportedOperationException();
+		Location loc = intersection.getLocation();
+		int x = loc.getX();
+		int y = loc.getY();
+		int o = loc.getOrientation();
+		Set<Field> s = new HashSet<Field>();
+		s.add(this.getField(new Point(x, y)));
+		if (y % 2 == 1){
+			switch(o){
+			case 0:
+				if (isValid(y-1, x-1)) s.add(this.getField(new Point(y-1, x-1)));
+				if (isValid(y-1, x)) s.add(this.getField(new Point(y-1, x)));
+				break;
+			case 1:
+				if (isValid(y, x+1)) s.add(this.getField(new Point(y, x+1)));
+				if (isValid(y-1, x)) s.add(this.getField(new Point(y-1, x)));
+				break;
+			case 2:
+				if (isValid(y, x+1)) s.add(this.getField(new Point(y, x+1)));
+				if (isValid(y+1, x)) s.add(this.getField(new Point(y+1, x)));
+				break;
+			case 3:
+				if (isValid(y+1, x)) s.add(this.getField(new Point(y+1, x)));
+				if (isValid(y+1, x-1)) s.add(this.getField(new Point(y+1, x-1)));
+				break;
+			case 4:
+				if (isValid(y+1, x-1)) s.add(this.getField(new Point(y+1, x-1)));
+				if (isValid(y, x-1)) s.add(this.getField(new Point(y, x-1)));
+				break;
+			case 5:
+				if (isValid(y, x-1)) s.add(this.getField(new Point(y, x-1)));
+				if (isValid(y-1, x-1)) s.add(this.getField(new Point(y-1, x-1)));
+				break;
+			}
+		} else {
+			switch(o){
+			case 0:
+				if (isValid(y-1, x+1)) s.add(this.getField(new Point(y-1, x+1)));
+				if (isValid(y-1, x)) s.add(this.getField(new Point(y-1, x)));
+				break;
+			case 1:
+				if (isValid(y, x+1)) s.add(this.getField(new Point(y, x+1)));
+				if (isValid(y-1, x+1)) s.add(this.getField(new Point(y-1, x+1)));
+				break;
+			case 2:
+				if (isValid(y, x+1)) s.add(this.getField(new Point(y, x+1)));
+				if (isValid(y+1, x+1)) s.add(this.getField(new Point(y+1, x+1)));
+				break;
+			case 3:
+				if (isValid(y+1, x)) s.add(this.getField(new Point(y+1, x)));
+				if (isValid(y+1, x+1)) s.add(this.getField(new Point(y+1, x+1)));
+				break;
+			case 4:
+				if (isValid(y+1, x)) s.add(this.getField(new Point(y+1, x)));
+				if (isValid(y, x-1)) s.add(this.getField(new Point(y, x-1)));
+				break;
+			case 5:
+				if (isValid(y, x-1)) s.add(this.getField(new Point(y, x-1)));
+				if (isValid(y-1, x)) s.add(this.getField(new Point(y-1, x)));
+				break;
+			}
+		}
+		return s;
 	}
 	
 	public Set<Field> getFieldsFromPath(Path path) {
@@ -169,12 +213,13 @@ public class Board {
 			
 			@Override
 			public boolean hasNext() {
-				return i < (width)*(height);
+				return i < (width)*(height) -1;
 			}
 
 			@Override
 			public Field next() {
 				Point p = new Point(i/width,i%width);
+				i++;
 				return field.get(p);
 			}
 
@@ -187,17 +232,15 @@ public class Board {
 	}
 	
 	public Iterator<Path> getPathIterator() {
-		return path.iterator();
+		return path.values().iterator();
 	}
 	
 	public Iterator<Intersection> getIntersectionIterator() {
-		return intersection.iterator();
+		return intersection.values().iterator();
 	}
 	
-	private Field getField(int x, int y) { return getField(new Point(x, y)); }
-	
-	private Intersection getIntersection(int x, int y) { return getIntersection(new Point(x, y)); }
-	
-	private Path getPath(int x, int y) { return getPath(new Point(x, y)); }
+	private boolean isValid(int x, int y){
+		return x >= 0 && x < width && y >= 0 && y < height;
+	}
 	
 }
