@@ -93,9 +93,6 @@ public class GameGUI extends View implements Runnable{
 			// rotate square according to angle
 		   GL11.glRotatef(180, 1.0f, 0, 0);
 		   GL11.glColor3f(1.0f, 1.0f, 1.0f);
-		   //TODO: center map and calculate initial zoom!!!
-	
-		  // GL11.glTranslatef(-modelReader.getBoardWidth()*215/2, modelReader.getBoardHeight()*250/2, 0.0f);
 		   
 		   Iterator<Field> iter = renderFieldList.iterator();
 		   while (iter.hasNext()) {
@@ -193,16 +190,25 @@ public class GameGUI extends View implements Runnable{
 			Display.create();
 			
 			textureMap = new HashMap<FieldType,Texture>();
-			textureMap.put(FieldType.MOUNTAINS, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Mountains.png")));
-			textureMap.put(FieldType.DESERT, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Desert.png")));
-			textureMap.put(FieldType.FIELDS, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields.png")));
-			textureMap.put(FieldType.FOREST, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Forest.png")));
-			textureMap.put(FieldType.HILLS, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Hills.png")));
-			textureMap.put(FieldType.PASTURE, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Pasture.png")));
-			textureMap.put(FieldType.WATER, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Water.png")));
+			textureMap.put(FieldType.MOUNTAINS, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Mountains.png")));
+			textureMap.put(FieldType.DESERT, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Desert.png")));
+			textureMap.put(FieldType.FIELDS, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Fields.png")));
+			textureMap.put(FieldType.FOREST, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Forest.png")));
+			textureMap.put(FieldType.HILLS, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Hills.png")));
+			textureMap.put(FieldType.PASTURE, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Pasture.png")));
+			textureMap.put(FieldType.WATER, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Water.png")));
 			
 			numberTextureMap = new HashMap<Integer,Texture>();
-			numberTextureMap.put(5, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/5.png")));
+			numberTextureMap.put(2, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/2.png")));
+			numberTextureMap.put(3, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/3.png")));
+			numberTextureMap.put(4, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/4.png")));
+			numberTextureMap.put(5, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/5.png")));
+			numberTextureMap.put(6, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/6.png")));
+			numberTextureMap.put(8, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/8.png")));
+			numberTextureMap.put(9, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/9.png")));
+			numberTextureMap.put(10, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/10.png")));
+			numberTextureMap.put(11, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/11.png")));
+			numberTextureMap.put(12, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/12.png")));
 		} catch (Exception e) {}
 		
 		GL11.glDisable(GL11.GL_DEPTH_TEST); // Enables Depth Testing
@@ -221,13 +227,15 @@ public class GameGUI extends View implements Runnable{
         	renderFieldList.add(iter.next());
         }
         
+      //TODO: center map and calculate initial zoom!!!
+        
         Display.update();
         render();
         Display.update();
         render();
         Display.update();
         render();
-        //render two times to fill the double buffer
+        //render two/three times to fill the double/triple buffer
 
     boolean finished = false;
 		while (!finished) {
@@ -344,7 +352,7 @@ public class GameGUI extends View implements Runnable{
 		if (System.getProperty("sun.desktop").equals("windows")) seperator = ";";
 		else seperator = ":";
 		
-		System.setProperty("java.library.path", System.getProperty("java.library.path") + ";" + tmpdir);
+		System.setProperty("java.library.path", System.getProperty("java.library.path") + seperator + tmpdir);
 
 		
 		java.lang.reflect.Field vvv = ClassLoader.class.getDeclaredField("sys_paths");
