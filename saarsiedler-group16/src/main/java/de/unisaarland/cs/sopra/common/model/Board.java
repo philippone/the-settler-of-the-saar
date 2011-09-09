@@ -426,7 +426,7 @@ public class Board {
 		return s;
 	}
 	
-	//?
+	//? TODO
 	public Set<Path> getPathsFromPath(Path path) {
 		int x = path.getLocation().getX();
 		int y = path.getLocation().getY();
@@ -440,6 +440,7 @@ public class Board {
 				if (isValid(x-1, y-1)) s.add(getPath(new Location(x-1, y-1, 1)));
 			}
 		}
+		return s;
 	}
 	
 	//Done
