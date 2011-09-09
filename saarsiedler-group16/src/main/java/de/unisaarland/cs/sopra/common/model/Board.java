@@ -21,33 +21,76 @@ public class Board {
 		this.height = worldRepresentation.getHeight();
 		this.width = worldRepresentation.getWidth();
 		this.fields = new HashMap<Point, Field>();
+		this.paths = new HashMap<Location, Path>();
+		this.intersections = new HashMap<Location, Intersection>();
+		// ok
 		for (int i = 0; i < width*height; i++) {
 			Point p = new Point(i/width,i%width);
 			FieldType fieldType = FieldType.convert( worldRepresentation.getFieldType(i/width,i%width) );
 			this.fields.put(p, new Field(fieldType, p));
 		}
-		this.paths = new HashMap<Location, Path>();
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < height; x++) {
-				for (int ori = 0; ori < 6; ori++) {
-					Location loc = new Location(y,x,ori);
-					Path p = new Path(loc);
-					if (paths.get(loc) == null) {
-						paths.put(loc, p);
-						switch(loc.getOrientation()) {
+		initPaths();
+		initIntersections();
+	}
+	
+	private void initPaths() {
+		for (int x = 0; x < width; x++){
+			for (int y = 0; y < height; y++){
+				for (int o = 0; o < 6; o++){
+					Path p = new Path(new Location(x, y, o));
+					if (!paths.containsKey(new Location(x, y, o))){
+						paths.put(new Location(x, y, o), p);
+						if (y % 2 == 1){
+							switch(o){
 							case 0:
-								if (loc.getX()%2==0 && loc.getY()-1 > 0 && loc.getX()+1 < width);
+								if(isValid(y-1, x)) paths.put(new Location(y-1, x, 3), p);
+								break;
 							case 1:
+								if(isValid(y, x+1)) paths.put(new Location(y, x+1, 4), p);
+								break;
 							case 2:
+								if(isValid(y+1, x)) paths.put(new Location(y+1, x, 5), p);
+								break;
 							case 3:
+								if(isValid(y+1, x-1)) paths.put(new Location(y+1, x-1, 0), p);
+								break;
 							case 4:
+								if(isValid(y, x-1)) paths.put(new Location(y, x-1, 1), p);
+								break;
 							case 5:
+								if(isValid(y-1, x-1)) paths.put(new Location(y-1, x-1, 2), p);
+								break;
+							}
+						} else {
+							switch(o){
+							case 0:
+								if(isValid(y-1, x+1)) paths.put(new Location(y-1, x+1, 3), p);
+								break;
+							case 1:
+								if(isValid(y, x+1)) paths.put(new Location(y, x+1, 4), p);
+								break;
+							case 2:
+								if(isValid(y+1, x+1)) paths.put(new Location(y+1, x+1, 5), p);
+								break;
+							case 3:
+								if(isValid(y+1, x)) paths.put(new Location(y+1, x, 0), p);
+								break;
+							case 4:
+								if(isValid(y, x-1)) paths.put(new Location(y, x-1, 1), p);
+								break;
+							case 5:
+								if(isValid(y-1, x)) paths.put(new Location(y-1, x, 2), p);
+								break;
+							}
 						}
-						
 					}
 				}
 			}
 		}
+	}
+	
+	private void initIntersections() {
+		throw new UnsupportedOperationException();
 	}
 	
 	public Field getField(Point point) {
@@ -63,7 +106,7 @@ public class Board {
 	}
 	
 	public Set<Field> getFieldsFromField(Field field) {
-		Point loc = field.getLocation();Point
+		Point loc = field.getLocation();
 		int x = loc.getX();
 		int y = loc.getY();
 		Set<Field> s = new HashSet<Field>();
@@ -206,7 +249,42 @@ public class Board {
 	}
 	
 	public Set<Intersection> getIntersectionsFromIntersection(Intersection intersection) {
-		throw new UnsupportedOperationException();
+		Location loc = intersection.getLocation();
+		int x = loc.getX();
+		int y = loc.getY();
+		int o = loc.getOrientation();
+		Set<Intersection> s = new HashSet<Intersection>();
+		s.add(getIntersection(new Location(x, y, (o+5)%6)));
+		s.add(getIntersection(new Location(x, y, (o+1)%6)));
+		if (y % 2 == 1){
+			switch(o){
+			case 0:
+				if (isValid(y-1, x-1)) s.add(this.getIntersection(new Location(y-1, x-1, 1)));
+				if (isValid(y-1, x)) s.add(this.getIntersection(new Location(y-1, x, 5)));
+				break;
+			case 1:
+				if (isValid(y, x+1)) s.add(this.getIntersection(new Location(y, x+1, 0)));
+				if (isValid(y-1, x)) s.add(this.getIntersection(new Location(y-1, x, 2)));
+				break;
+			case 2:
+				if (isValid(y, x+1)) s.add(this.getIntersection(new Location(y, x+1, 3)));
+				if (isValid(y+1, x)) s.add(this.getIntersection(new Location(y+1, x, 1)));
+				break;
+			case 3:
+				if (isValid(y+1, x-1)) s.add(this.getIntersection(new Location(y+1, x-1, 1)));
+				if (isValid(y+1, x)) s.add(this.getIntersection(new Location(y+1, x, 5)));
+				break;
+			case 4:
+				if (isValid(y, x-1)) s.add(this.getIntersection(new Location(y, x-1, 2)));
+				if (isValid(y+1, x-1)) s.add(this.getIntersection(new Location(y+1, x-1, 0)));
+				break;
+			case 5:
+				if (isValid(y, x-1)) s.add(this.getIntersection(new Location(y, x-1, 1)));
+				if (isValid(y-1, x-1)) s.add(this.getIntersection(new Location(y-1, x-1, 3)));
+				break;
+			}
+		}
+		return s;
 	}
 	
 	public Set<Intersection> getIntersectionsFromPath(Path path) {
@@ -273,7 +351,7 @@ public class Board {
 			
 			@Override
 			public boolean hasNext() {
-				return i < (width)*(height) -1;
+				return i < (width)*(height);
 			}
 
 			@Override
