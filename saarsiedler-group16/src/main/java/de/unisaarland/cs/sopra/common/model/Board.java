@@ -159,19 +159,30 @@ public class Board {
 	
 	//Done
 	public Field getField(Point point) {
-		assert(fields.containsKey(point));
+		//assert(fields.containsKey(point));
+		if (point.getX() < 0 || point.getX() > this.width || 
+				point.getY() < 0 || point.getY() > this.height) 
+			throw new IllegalArgumentException();
 		return this.fields.get(point);
 	}
 	
 	//Done
 	public Intersection getIntersection(Location location) {
-		assert(intersections.containsKey(location));
+		//assert(intersections.containsKey(location));
+		if (location.getX() < 0 || location.getX() > this.width || 
+				location.getY() < 0 || location.getY() > this.height ||
+				location.getOrientation() < 0 || location.getOrientation() > 5) 
+			throw new IllegalArgumentException();
 		return this.intersections.get(location);
 	}
 	
 	//Done
 	public Path getPath(Location location) {
-		assert(paths.containsKey(location));
+		//assert(paths.containsKey(location));
+		if (location.getX() < 0 || location.getX() > this.width || 
+				location.getY() < 0 || location.getY() > this.height ||
+				location.getOrientation() < 0 || location.getOrientation() > 5) 
+			throw new IllegalArgumentException();
 		return this.paths.get(location);
 	}
 	

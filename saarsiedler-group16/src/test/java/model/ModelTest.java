@@ -208,8 +208,6 @@ public class ModelTest {
 			Field f = fieldIterator.next();
 			if (f.getNumber() != 0) {
 				reihenfolge[i++] = f.getNumber();
-				System.out.println(f.getNumber());
-				
 			}
 		}
 		boolean status = false;
@@ -307,7 +305,7 @@ public class ModelTest {
 		assertEquals("Felder sind ungleich",f.getLocation(), p);
 		// Feld ausserhalb des Spielfeldes
 		try {
-			Field f2 = model.getField(new Point(5,5));
+			Field f2 = model.getField(new Point(20,20));
 			fail("Point ausserhalb des Spielfeldes, sollte IllegalArgumentException werfen");
 		} catch(IllegalArgumentException e) {
 			// Test sollte durchlaufen
@@ -326,7 +324,7 @@ public class ModelTest {
 		Location l = Model.getLocation(i);
 		assertEquals("Intersections sind ungleich", i.getLocation(), l);
 		try {
-			Intersection i2 = model.getIntersection(new Location(5,5,5));
+			Intersection i2 = model.getIntersection(new Location(50,50,50));
 			fail("Intersection ausserhalb des Spielfeldes, sollte IllegalArumentException werfen");
 		} catch(IllegalArgumentException e) {
 			//Test sollte durchlaufen
@@ -345,7 +343,7 @@ public class ModelTest {
 		Location l = Model.getLocation(p);
 		assertEquals("Intersections sind ungleich", p.getLocation(), l);
 		try {
-			Path p2 = model.getPath(new Location(5,5,5));
+			Path p2 = model.getPath(new Location(50,50,50));
 			fail("Intersection ausserhalb des Spielfeldes, sollte IllegalArumentException werfen");
 		} catch(IllegalArgumentException e) {
 			//Test sollte durchlaufen
