@@ -151,6 +151,11 @@ public class Model implements ModelReader, ModelWriter{
 		return roadList;
 	}
 	
+	/**
+	 * @param road
+	 * @param roadList
+	 * @return
+	 */
 	private boolean continueRoad(List<Path> road, List<List<Path>> roadList){
 		boolean b=false;
 		for (Path p : road){
@@ -160,6 +165,12 @@ public class Model implements ModelReader, ModelWriter{
 		// has the road been continued?
 	}
 	
+	/**
+	 * @param p
+	 * @param road
+	 * @param roadList
+	 * @return
+	 */
 	private boolean continueRoadFromPath(Path p, List<Path> road, List<List<Path>> roadList){
 		Set<Intersection> si=getIntersectionsFromPath(p);
 		Player player= p.getStreetOwner();
@@ -173,6 +184,13 @@ public class Model implements ModelReader, ModelWriter{
 		return b;
 	}
 	
+	/**
+	 * @param i
+	 * @param p
+	 * @param road
+	 * @param roadList
+	 * @return
+	 */
 	private boolean continueRoadTroughIntersection(Intersection i,Path p, List<Path> road, List<List<Path>> roadList){
 		Player player = p.getStreetOwner();
 			Set<Path> sp=getPathsFromIntersection(i);
@@ -188,6 +206,11 @@ public class Model implements ModelReader, ModelWriter{
 			return b;
 	}
 	
+	/**
+	 * @param i
+	 * @param road
+	 * @return
+	 */
 	private boolean isExtremityOfRoad(Intersection i,List<Path>road){
 		Set<Path> sp=getPathsFromIntersection(i);
 		int a=0;
@@ -198,12 +221,23 @@ public class Model implements ModelReader, ModelWriter{
 		// an intersection is the extremity of the road when it has only a neighbor path in the road
 	}
 	
+	/**
+	 * @param road
+	 * @return
+	 */
 	private List<Path> copy(List<Path> road){
 		List<Path> road1=new ArrayList<Path>();
 		for (Path p:road) road1.add(p);
 		return road1;
 	}
 	
+	/**
+	 * @param road
+	 * @param player
+	 * @param p
+	 * @param roadList
+	 * @return
+	 */
 	private boolean addPathToRoad( List<Path> road, Player player, Path p ,List<List<Path>> roadList){
 		if (p.getStreetOwner()==player && !(road.contains(p))) {
 		// 	meaning if this path is owned by player and not already in the road
@@ -927,7 +961,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public void matchStart(long[] players, byte[] numbers) {
-		if (players==null || numbers==null) throw new IllegalArgumentException(players +" oder "+ numbers+ " is null");
+		if (players==null || numbers==null) throw new IllegalArgumentException(players +" or "+ numbers+ " are null");
 		setTableOrder(players);
 		setFieldNumbers(numbers);
 		//TODO evtl noch mehr zu tun als das
