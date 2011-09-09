@@ -777,8 +777,8 @@ public class Model implements ModelReader, ModelWriter{
 			}
 			break;
 		case DEFEAT:
-			path_catapult.removeCatapult();
 			path_catapult.getCatapultOwner().modifyResources(Catapult.getAttackbuildingprice());
+			path_catapult.removeCatapult();
 			for(ModelObserver ob : modelObserver){
 				ob.updateResources();
 				ob.updateCatapultCount();
