@@ -1,8 +1,6 @@
 package de.unisaarland.cs.sopra.common.view;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -15,7 +13,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.glu.GLU;
+//import org.lwjgl.util.glu.GLU;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
@@ -85,7 +83,7 @@ public class GameGUI extends View implements Runnable{
 	private void render() {
 		   GL11.glMatrixMode(GL11.GL_PROJECTION);
 		   GL11.glLoadIdentity();
-		   GLU.gluPerspective(45.0f, ((float)setting.getWindowWidth())/setting.getWindowHeight(), 0.1f, 5000.0f); //-5000.f ist die maximale z tiefe
+		   //GLU.gluPerspective(45.0f, ((float)setting.getWindowWidth())/setting.getWindowHeight(), 0.1f, 5000.0f); //-5000.f ist die maximale z tiefe
 		   GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		   // clear the screen
 		   GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
@@ -314,36 +312,42 @@ public class GameGUI extends View implements Runnable{
 		}
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws Exception {		
+		
 		String[] list = new String[] {
-				"src/main/resources/native/jinput-dx8_64.dll",
-				"src/main/resources/native/jinput-dx8.dll",
-				"src/main/resources/native/jinput-raw_64.dll",
-				"src/main/resources/native/jinput-raw.dll",
-				"src/main/resources/native/libjinput-linux.so",
-				"src/main/resources/native/libjinput-linux64.so",
-				"src/main/resources/native/libjinput-osx.jnilib",
-				"src/main/resources/native/liblwjgl.jnilib",
-				"src/main/resources/native/liblwjgl.so",
-				"src/main/resources/native/liblwjgl64.so",
-				"src/main/resources/native/libopenal.so",
-				"src/main/resources/native/libopenal64.so",
-				"src/main/resources/native/lwjgl.dll",
-				"src/main/resources/native/lwjgl64.dll",
-				"src/main/resources/native/openal.dylib",
-				"src/main/resources/native/OpenAL32.dll",
-				"src/main/resources/native/OpenAL64.dll"
+				"jinput-dx8_64.dll",
+				"jinput-dx8.dll",
+				"jinput-raw_64.dll",
+				"jinput-raw.dll",
+				"libjinput-linux.so",
+				"libjinput-linux64.so",
+				"libjinput-osx.jnilib",
+				"liblwjgl.jnilib",
+				"liblwjgl.so",
+				"liblwjgl64.so",
+				"libopenal.so",
+				"libopenal64.so",
+				"lwjgl.dll",
+				"lwjgl64.dll",
+				"openal.dylib",
+				"OpenAL32.dll",
+				"OpenAL64.dll"
 		};
 		String tmpdir = System.getProperty("java.io.tmpdir");
+		
 		for (String act : list) {
-			InputStream input = ClassLoader.getSystemResourceAsStream(act);
-			File file = new File(tmpdir + act);
-			//file.
+			InputStream input = ClassLoader.getSystemClassLoader().getResourceAsStream("native/" + act);
+			saveFile(tmpdir + "/" + act, input);
 		}
 		
-		//java.lang.reflect.Field x = GameGUI.class.getClassLoader().getClass().getField("sys_path");
-		//x.set(null, null);
-		//x.set
+		System.setProperty("java.library.path", System.getProperty("java.library.path") + ":/tmp");
+
+		
+		java.lang.reflect.Field vvv = ClassLoader.class.getDeclaredField("sys_paths");
+		
+		vvv.setAccessible(true); 
+		vvv.set(null, null);
+		
 		
 		WorldRepresentation worldrep = new WorldRepresentation(4, 4, 2, 9, 5, 4,  
 				new byte[] {1,2,3,4,
@@ -404,9 +408,19 @@ public class GameGUI extends View implements Runnable{
 														 11,12,11,10,
 														 9,8,6,5});
 		
-		Setting setting = new Setting(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight(), false);
+		Setting setting = new Setting(Display.getDisplayMode().getWidth(), Display.getDisplayMode().getHeight(), false);
 		GameGUI gameGUI = new GameGUI(0, model, null, null, setting);
-		new Thread(gameGUI).start();
+		//new Thread(gameGUI).start();
 	}
+	
+	private static void saveFile(String filename, InputStream inputStr) throws IOException {
+		   FileOutputStream fos = new FileOutputStream(filename);
+		   int len = -1;
+		   byte[] buffer = new byte[1024];
+		   while ((len = inputStr.read(buffer)) != -1) {
+		      fos.write(buffer,0,len);
+		   }
+		   fos.close();
+		}
 	
 }
