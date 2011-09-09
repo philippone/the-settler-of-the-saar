@@ -38,6 +38,50 @@ public class BoardTest {
 
 			
 	}
+	
+	@Test
+	public void testBoardIntersection(){
+		for (int x = 0; x< 3; ++x){
+			for (int y = 0; y < 4; ++y) {
+				for (int o = 0; o<6; ++o){
+					b.getIntersection(new Location(y, x, o));
+					assertFalse(null == b.getIntersection(new Location(y, x, o)));
+				}
+					
+			}
+		}
+		
+	}
+	
+	@Test
+	public void testBoardPath(){
+		for (int x = 0; x< 3; ++x){
+			for (int y = 0; y < 4; ++y) {
+				for (int o = 0; o<6; ++o){
+					b.getPath(new Location(x, y, o));
+					assertFalse(null == b.getPath(new Location(y, x, o)));
+				}
+					
+			}
+		}
+		
+	}
+	
+	
+	@Test
+	public void testBoardField(){
+		for (int x = 0; x< 3; ++x){
+			for (int y = 0; y < 4; ++y) {
+					b.getField(new Point(y,x));
+					assertFalse(null == b.getField(new Point(y, x)));
+				}
+					
+			}
+		}
+		
+
+	
+
 	@Test
 	public void testGetField() {
 
