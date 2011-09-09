@@ -23,8 +23,8 @@ public class Board {
 		this.paths = new HashMap<Location, Path>();
 		this.intersections = new HashMap<Location, Intersection>();
 		for (int i = 0; i < width*height; i++) {
-			Point p = new Point(i/width,i%height);
-			FieldType fieldType = FieldType.convert( worldRepresentation.getFieldType(i/width,i%height) );
+			Point p = new Point(i/width,i%width);
+			FieldType fieldType = FieldType.convert( worldRepresentation.getFieldType(i/width,i%width) );
 			this.fields.put(p, new Field(fieldType, p));
 		}
 		initPaths();
