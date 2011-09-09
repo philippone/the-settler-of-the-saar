@@ -190,8 +190,8 @@ public class ModelTest {
 	
 	@Test
 	public void testSetTableOrder() {
-		long[] expectedTableOrder = new long[] {2,1,0};
-		assertEquals("TableOrder nicht richitg gesetzt", expectedTableOrder, model.getTableOrder());
+		assertEquals("TableOrder nicht richitg gesetzt", model.getPlayerMap().get(1L), model.getTableOrder().get(0));
+		assertEquals("TableOrder nicht richitg gesetzt", model.getPlayerMap().get(0L), model.getTableOrder().get(1));
 	}
 	
 	@Test

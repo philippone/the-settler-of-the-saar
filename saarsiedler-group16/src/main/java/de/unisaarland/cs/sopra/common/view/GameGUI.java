@@ -13,7 +13,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
-//import org.lwjgl.util.glu.GLU;
+import org.lwjgl.util.glu.GLU;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
@@ -83,7 +83,7 @@ public class GameGUI extends View implements Runnable{
 	private void render() {
 		   GL11.glMatrixMode(GL11.GL_PROJECTION);
 		   GL11.glLoadIdentity();
-		   //GLU.gluPerspective(45.0f, ((float)setting.getWindowWidth())/setting.getWindowHeight(), 0.1f, 5000.0f); //-5000.f ist die maximale z tiefe
+		   GLU.gluPerspective(45.0f, ((float)setting.getWindowWidth())/setting.getWindowHeight(), 0.1f, 5000.0f); //-5000.f ist die maximale z tiefe
 		   GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		   // clear the screen
 		   GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
@@ -340,7 +340,11 @@ public class GameGUI extends View implements Runnable{
 			saveFile(tmpdir + "/" + act, input);
 		}
 		
-		System.setProperty("java.library.path", System.getProperty("java.library.path") + ":/tmp");
+		String seperator;
+		if (System.getProperty("sun.desktop").equals("windows")) seperator = ";";
+		else seperator = ":";
+		
+		System.setProperty("java.library.path", System.getProperty("java.library.path") + ";" + tmpdir);
 
 		
 		java.lang.reflect.Field vvv = ClassLoader.class.getDeclaredField("sys_paths");
@@ -408,9 +412,9 @@ public class GameGUI extends View implements Runnable{
 														 11,12,11,10,
 														 9,8,6,5});
 		
-		Setting setting = new Setting(Display.getDisplayMode().getWidth(), Display.getDisplayMode().getHeight(), false);
+		Setting setting = new Setting(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight(), false);
 		GameGUI gameGUI = new GameGUI(0, model, null, null, setting);
-		//new Thread(gameGUI).start();
+		new Thread(gameGUI).start();
 	}
 	
 	private static void saveFile(String filename, InputStream inputStr) throws IOException {

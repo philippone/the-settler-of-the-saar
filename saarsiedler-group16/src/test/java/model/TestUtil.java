@@ -71,8 +71,8 @@ public class TestUtil {
 				return new long[] {};
 			}
 		};
-		Model model = new Model(worldrep, matchinfo, 0);
-		model.matchStart(new long[] {0,1}, new byte[] {2,3,4,5,
+		Model model = new Model(worldrep, matchinfo, 1);
+		model.matchStart(new long[] {1,0}, new byte[] {2,3,4,5,
 														 6,8,9,10,
 														 11,12,11,10,
 														 9,8,6,5});
@@ -117,7 +117,7 @@ public class TestUtil {
 			
 			@Override
 			public int getNumPlayers() {
-				return 3;
+				return 2;
 			}
 			
 			@Override
@@ -127,7 +127,7 @@ public class TestUtil {
 			
 			@Override
 			public long[] getCurrentPlayers() {
-				return new long[] {0,1,2};
+				return new long[] {2,0};
 			}
 			
 			@Override
@@ -136,7 +136,7 @@ public class TestUtil {
 			}
 		};
 		Model model = new Model(worldrep, matchinfo, 0);
-		model.matchStart(new long[] {0,1,2}, new byte[] {8,6});
+		model.matchStart(new long[] {0,2}, new byte[] {8,6});
 		return model;
 	}
 	
@@ -163,7 +163,6 @@ public class TestUtil {
 								2,2,(4 << 4) | 1
 									});
 			Board b = new Board(worldrep);
-			System.out.printf("Width: %d, Height: %d", b.getWidth(), b.getHeight());
 			return new Board(worldrep);
 	}
 

@@ -1,11 +1,11 @@
 package model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,10 +13,8 @@ import org.junit.Test;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.HarborType;
-import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.Model;
-import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Point;
 import de.unisaarland.cs.sopra.common.model.Resource;
@@ -43,7 +41,7 @@ public class ModelReaderTest {
 		// Village on the LumberHarbor (special Harbor)
 		currentPlayer.modifyResources(new ResourcePackage(10000,10000,10000,10000,10000));
 		model.buildSettlement(new Location(2, 1, 1), BuildingType.Village);
-		Set<HarborType> expectedSet = new TreeSet<HarborType>();
+		Set<HarborType> expectedSet = new HashSet<HarborType>();
 		expectedSet.add(HarborType.LUMBER_HARBOR);
 		currentSet = model.getHarborTypes(currentPlayer);
 		assertTrue("Contains one element : LUMBER_HARBOR TYPE", currentSet.size() == 1);
@@ -77,7 +75,6 @@ public class ModelReaderTest {
 	@Test
 	public void testGetResources() {
 		model.newRound(8);
-		Player currentPlayer = model.getCurrentPlayer();
 		// leeres resourcePackage
 		ResourcePackage expectedPackage = new ResourcePackage(0,0,0,0,0);
 		ResourcePackage currentPackage = model.getResources();
@@ -85,7 +82,7 @@ public class ModelReaderTest {
 		
 		// gefuelltes ResourcePackage
 		expectedPackage = new ResourcePackage(1,2,3,4,5);
-		currentPlayer.modifyResources(new ResourcePackage(1,2,3,4,5));
+		model.getMe().modifyResources(new ResourcePackage(1,2,3,4,5));
 		currentPackage = model.getResources();
 		assertEquals("ResoursePackages not equal", expectedPackage, currentPackage);
 	}

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import de.unisaarland.cs.sopra.common.ModelObserver;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
@@ -109,7 +108,7 @@ public class Model implements ModelReader, ModelWriter{
 	 * @return current Player
 	 */
 	public Player getCurrentPlayer() {
-		return this.players.get( (this.round % this.players.size()) - 1 );
+		return this.players.get( (this.round + this.players.size()-1) % this.players.size() );
 	}
 	
 	/**
@@ -241,8 +240,9 @@ public class Model implements ModelReader, ModelWriter{
 		while(iter.hasNext()) {
 			Field f = iter.next();
 			if(f.getFieldType()!=FieldType.DESERT  &&	f.getFieldType()!=FieldType.WATER){
-				f.setNumber(numbers[i++]);
+				f.setNumber(numbers[i]);
 			}
+			i++;
 		}
 	}
 	
@@ -323,7 +323,7 @@ public class Model implements ModelReader, ModelWriter{
 	public Set<Path> buildableStreetPaths(Player player) {
 		if (player==null) throw new IllegalArgumentException(player+ "is null");
 		Iterator<Path> it = getPathIterator();
-		Set<Path> res = new TreeSet<Path>();
+		Set<Path> res = new HashSet<Path>();
 		while(it.hasNext()){
 			Path p = it.next();
 			if(!p.hasStreet()){
@@ -345,7 +345,7 @@ public class Model implements ModelReader, ModelWriter{
 	public Set<Path> buildableCatapultPaths(Player player) {
 		if (player==null) throw new IllegalArgumentException(player+ "is null");
 		Iterator<Intersection> it = getIntersectionIterator();
-		Set<Path> res = new TreeSet<Path>();
+		Set<Path> res = new HashSet<Path>();
 		while(it.hasNext()){
 			Intersection inter = it.next();
 			if(inter.getBuildingType().equals(BuildingType.Town)	&&	inter.getOwner()==player){
@@ -426,7 +426,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Intersection> attackableSettlements(Player player, BuildingType buildingType) {
-		Set<Intersection> attackableSettlements=new TreeSet<Intersection>();
+		Set<Intersection> attackableSettlements=new HashSet<Intersection>();
 		Set<Path> sp=getCatapults(player);
 		for (Path p: sp){
 			Set<Intersection> si=getIntersectionsFromPath(p);
@@ -445,7 +445,7 @@ public class Model implements ModelReader, ModelWriter{
 	@Override
 	public Set<Path> attackableCatapults(Player player) {
 		if (player==null) throw new IllegalArgumentException();
-		Set<Path> attackableCatapults=new TreeSet<Path>();
+		Set<Path> attackableCatapults=new HashSet<Path>();
 		Set<Path> sp=getCatapults(player);
 		for (Path p: sp){
 			Set<Path> sp1=getPathsFromPath(p);
@@ -465,7 +465,7 @@ public class Model implements ModelReader, ModelWriter{
 	public Set<Path> getStreets(Player player) {
 		if (player==null) throw new IllegalArgumentException();
 		Iterator<Path>ip=getPathIterator();
-		Set<Path>sp=new TreeSet<Path>();
+		Set<Path>sp=new HashSet<Path>();
 		Path p;
 		while (ip.hasNext()){
 			p=ip.next();
@@ -481,7 +481,7 @@ public class Model implements ModelReader, ModelWriter{
 	public Set<Intersection> getSettlements(Player player, BuildingType buildingType) {
 		if (player==null | buildingType==null) throw new IllegalArgumentException();
 		Iterator<Intersection>ii=getIntersectionIterator();
-		Set<Intersection>si=new TreeSet<Intersection>();
+		Set<Intersection>si=new HashSet<Intersection>();
 		Intersection i;
 		while (ii.hasNext()){
 			i=ii.next();
@@ -497,7 +497,7 @@ public class Model implements ModelReader, ModelWriter{
 	public Set<Path> getCatapults(Player player) {
 		if (player==null)throw new IllegalArgumentException();
 		Iterator<Path>ip=getPathIterator();
-		Set<Path>sp=new TreeSet<Path>();
+		Set<Path>sp=new HashSet<Path>();
 		Path p;
 		while (ip.hasNext()){
 			p=ip.next();
@@ -537,7 +537,7 @@ public class Model implements ModelReader, ModelWriter{
 	@Override
 	public Set<Field> canPlaceRobber() {
 		Iterator<Field>itf=getFieldIterator();
-		Set<Field>sf=new TreeSet<Field>();
+		Set<Field>sf=new HashSet<Field>();
 		Field f;
 		while (itf.hasNext()){
 			f=itf.next();
@@ -558,7 +558,7 @@ public class Model implements ModelReader, ModelWriter{
 	@Override
 	public Set<Field> getRobberFields() {
 		Iterator<Field>itf=getFieldIterator();
-		Set<Field>sf=new TreeSet<Field>();
+		Set<Field>sf=new HashSet<Field>();
 		Field f;
 		while (itf.hasNext()){
 			f=itf.next();
@@ -597,7 +597,7 @@ public class Model implements ModelReader, ModelWriter{
 	@Override
 	public Set<Intersection> getHarborIntersections() {
 		Iterator<Path>ip=getPathIterator();
-		Set<Intersection>si=new TreeSet<Intersection>();
+		Set<Intersection>si=new HashSet<Intersection>();
 		Path p;
 		while (ip.hasNext()){
 			p=ip.next();
@@ -631,7 +631,7 @@ public class Model implements ModelReader, ModelWriter{
 	@Override
 	public Set<HarborType> getHarborTypes(Player player) {
 		Set<Intersection>si=getHarborIntersections();
-		Set<HarborType>sht=new TreeSet<HarborType>();
+		Set<HarborType>sht=new HashSet<HarborType>();
 		for(Intersection i:si){
 			if (i.getOwner()==player) sht.add(getHarborType(i));
 		}
@@ -876,9 +876,7 @@ public class Model implements ModelReader, ModelWriter{
 		if (location==null) throw new IllegalArgumentException(location+" is null");
 		Intersection i=getIntersection(location);
 		if (isBuildable(i, buildingType) && (isAffordable(buildingType))){
-			ResourcePackage price=buildingType.getPrice();
-			if (me.checkResourcesSufficient(price)) throw new IllegalArgumentException("Nicht genug Ressourcen, um es zu bauen");
-			me.modifyResources(price);
+			me.modifyResources(buildingType.getPrice());
 			i.createBuilding(buildingType, me);
 			for(ModelObserver ob: modelObserver){
 				ob.updateResources();
@@ -887,7 +885,7 @@ public class Model implements ModelReader, ModelWriter{
 				ob.updateIntersection(i);
 			}	
 		}
-		else throw new IllegalArgumentException("Das Gebaüde wurde nicht gebaut");
+		else throw new IllegalArgumentException("Das Gebaeude wurde nicht gebaut");
 	}
 
 	private boolean isBuildable(Intersection i, BuildingType buildingType){
@@ -1030,7 +1028,7 @@ public class Model implements ModelReader, ModelWriter{
 		if (player == null)
 			throw new IllegalArgumentException(player + " is null");
 		Set<Path> streetSet = getStreets(player);
-		Set<Intersection> ret = new TreeSet<Intersection>();
+		Set<Intersection> ret = new HashSet<Intersection>();
 		for (Path path : streetSet) {
 			Set<Intersection> pathInt = getIntersectionsFromPath(path);
 			for (Intersection intersection : pathInt) {
