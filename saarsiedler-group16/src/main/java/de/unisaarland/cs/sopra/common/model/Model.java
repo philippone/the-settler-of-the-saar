@@ -2,6 +2,7 @@ package de.unisaarland.cs.sopra.common.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -125,10 +126,16 @@ public class Model implements ModelReader, ModelWriter{
 		// all roads contain only one path
 		List<List<Path>> suppressedRoadList=new ArrayList<List<Path>>();
 		for (List<Path> road : roadList){
-			if (continueRoad(road, roadList)) suppressedRoadList.add(road);
-			// if the road has been continued, new longer road(s)'d have been put in roadlist
-			// we'll just remove the short one
+			if (continueRoad(road, roadList)) {
+				suppressedRoadList.add(road);
+				// if the road has been continued, new longer road(s)'d have been put in roadlist
+				// we'll just remove the short one
+				}
 		}
+		Set<List<Path>> set = new HashSet<List<Path>>() ;
+        set.addAll(roadList) ;
+        roadList = new ArrayList<List<Path>>(set) ;
+        // we remove the doubloons
 		for (List<Path> suppressedRoad : suppressedRoadList) roadList.remove(suppressedRoad);
 		// now there's only finished roads
 		int maxsize=5;
