@@ -10,29 +10,29 @@ import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 
 public class Board {
 
-	private Map<Point, Field> field;
-	private Map<Location, Path> path;
-	private Map<Location, Intersection> intersection;
+	private Map<Point, Field> fields;
+	private Map<Location, Path> paths;
+	private Map<Location, Intersection> intersections;
 	private int width;
 	private int height;
 	
 	public Board(WorldRepresentation worldRepresentation) {
 		this.height = worldRepresentation.getHeight();
 		this.width = worldRepresentation.getWidth();
-		this.field = new HashMap<Point, Field>();
+		this.fields = new HashMap<Point, Field>();
 		for (int i = 0; i < width*height; i++) {
 			Point p = new Point(i/width,i%width);
 			FieldType fieldType = FieldType.convert( worldRepresentation.getFieldType(i/width,i%width) );
-			this.field.put(p, new Field(fieldType, p));
+			this.fields.put(p, new Field(fieldType, p));
 		}
-		this.path = new HashMap<Location, Path>();
+		this.paths = new HashMap<Location, Path>();
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < height; x++) {
 				for (int ori = 0; ori < 6; ori++) {
 					Location loc = new Location(y,x,ori);
 					Path p = new Path(loc);
-					if (path.get(loc) == null) {
-						path.put(loc, p);
+					if (paths.get(loc) == null) {
+						paths.put(loc, p);
 						switch(loc.getOrientation()) {
 							case 0:
 								if (loc.getX()%2==0 && loc.getY()-1 > 0 && loc.getX()+1 < width);
@@ -50,15 +50,15 @@ public class Board {
 	}
 	
 	public Field getField(Point point) {
-		return this.field.get(point);
+		return this.fields.get(point);
 	}
 	
 	public Intersection getIntersection(Point location) {
-		return this.intersection.get(location);
+		return this.intersections.get(location);
 	}
 	
 	public Path getPath(Point location) {
-		return this.path.get(location);
+		return this.paths.get(location);
 	}
 	
 	public Set<Field> getFieldsFromField(Field field) {
@@ -143,7 +143,56 @@ public class Board {
 	}
 	
 	public Set<Field> getFieldsFromPath(Path path) {
-		throw new UnsupportedOperationException();
+		Location loc = path.getLocation();
+		int x = loc.getX();
+		int y = loc.getY();
+		int o = loc.getOrientation();
+		Set<Field> s = new HashSet<Field>();
+		s.add(this.getField(new Point(x, y)));
+		if (y % 2 == 1){
+			switch(o){
+			case 0:
+				if (isValid(y-1, x)) s.add(this.getField(new Point(y-1, x)));
+				break;
+			case 1:
+				if (isValid(y, x+1)) s.add(this.getField(new Point(y, x+1)));
+				break;
+			case 2:
+				if (isValid(y+1, x)) s.add(this.getField(new Point(y+1, x)));
+				break;
+			case 3:
+				if (isValid(y+1, x-1)) s.add(this.getField(new Point(y+1, x-1)));
+				break;
+			case 4:
+				if (isValid(y, x-1)) s.add(this.getField(new Point(y, x-1)));
+				break;
+			case 5:
+				if (isValid(y-1, x-1)) s.add(this.getField(new Point(y-1, x-1)));
+				break;
+			}
+		} else {
+			switch(o){
+			case 0:
+				if (isValid(y-1, x+1)) s.add(this.getField(new Point(y-1, x+1)));
+				break;
+			case 1:
+				if (isValid(y, x+1)) s.add(this.getField(new Point(y, x+1)));
+				break;
+			case 2:
+				if (isValid(y+1, x+1)) s.add(this.getField(new Point(y+1, x+1)));
+				break;
+			case 3:
+				if (isValid(y+1, x)) s.add(this.getField(new Point(y+1, x)));
+				break;
+			case 4:
+				if (isValid(y, x-1)) s.add(this.getField(new Point(y, x-1)));
+				break;
+			case 5:
+				if (isValid(y-1, x)) s.add(this.getField(new Point(y-1, x)));
+				break;
+			}
+		}
+		return s;
 	}
 	
 	public Set<Intersection> getIntersectionsFromField(Field field) {
@@ -220,7 +269,7 @@ public class Board {
 			public Field next() {
 				Point p = new Point(i/width,i%width);
 				i++;
-				return field.get(p);
+				return fields.get(p);
 			}
 
 			@Override
@@ -232,11 +281,11 @@ public class Board {
 	}
 	
 	public Iterator<Path> getPathIterator() {
-		return path.values().iterator();
+		return paths.values().iterator();
 	}
 	
 	public Iterator<Intersection> getIntersectionIterator() {
-		return intersection.values().iterator();
+		return intersections.values().iterator();
 	}
 	
 	private boolean isValid(int x, int y){
