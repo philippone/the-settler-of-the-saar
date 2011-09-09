@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashSet;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -83,13 +83,13 @@ public class ModelReaderTest4 {
 		Player p2 = model2.getTableOrder().get(2);
 		
 		//"richtige" Vergleichs-Sets erstellen
-		TreeSet<Path> t0 = new TreeSet<Path>();
+		HashSet<Path> t0 = new HashSet<Path>();
 		t0.add(model2.getPath(new Location(0,0,1)));
 		t0.add(model2.getPath(new Location(1,0,1)));
 		assertEquals(t0, model2.getCatapults(p0));
 		
 		//"richtige" Vergleichs-Sets erstellen
-		TreeSet<Path> t1 = new TreeSet<Path>();
+		HashSet<Path> t1 = new HashSet<Path>();
 		t1.add(model2.getPath(new Location(0,0,4)));
 		t1.add(model2.getPath(new Location(1,0,4)));
 		t1.add(model2.getPath(new Location(1,0,5)));
@@ -120,7 +120,7 @@ public class ModelReaderTest4 {
 	
 	@Test
 	public void testGetMaxVictoryPoints() {
-		assertEquals("Standardmodel hat 9 maxVillages nicht: "+ model2.getMaxVictoryPoints(),9,model2.getMaxVictoryPoints());
+		assertEquals("Standardmodel hat 5 maxVillages nicht: "+ model2.getMaxVictoryPoints(),5,model2.getMaxVictoryPoints());
 	}
 	
 	@Test
@@ -140,7 +140,7 @@ public class ModelReaderTest4 {
 	
 	@Test
 	public void testCanPlaceRobber() throws IOException {
-		Set<Field> canSet = new TreeSet<Field>();
+		Set<Field> canSet = new HashSet<Field>();
 		canSet.add(model1.getField(new Point(3, 0)));
 		canSet.add(model1.getField(new Point(0, 0)));
 		canSet.add(model1.getField(new Point(0, 1)));
@@ -168,9 +168,9 @@ public class ModelReaderTest4 {
 	
 	@Test
 	public void testGetRobberFields() {
-		assertEquals("keine Rauber vorhanden, muss also null sein", null , model2.getRobberFields());
+		assertTrue("keine Rauber vorhanden, set muss also leer sein", model2.getRobberFields().size() == 0);
 		
-		Set<Field> placedRobber = new TreeSet<Field>();
+		Set<Field> placedRobber = new HashSet<Field>();
 		Field f1 = model2.getField(new Point(0, 0));
 		f1.setRobber(true);	
 		placedRobber.add(f1);
@@ -210,7 +210,7 @@ public class ModelReaderTest4 {
 	
 	@Test
 	public void testGetHarborIntersections() {
-		Set<Intersection> iset = new TreeSet<Intersection>();
+		Set<Intersection> iset = new HashSet<Intersection>();
 		iset.add(model1.getIntersection(new Location(1,0,1)));
 		iset.add(model1.getIntersection(new Location(1,0,2)));
 		iset.add(model1.getIntersection(new Location(2,1,1)));
@@ -223,9 +223,7 @@ public class ModelReaderTest4 {
 	public void testGetHarborType() {
 		assertEquals(HarborType.GENERAL_HARBOR, model1.getHarborType(model1.getIntersection(new Location(1,0,1))));
 		assertEquals(HarborType.LUMBER_HARBOR, model1.getHarborType(model1.getIntersection(new Location(2,1,1))));
-		
 		assertNotSame(HarborType.GRAIN_HARBOR, model1.getHarborType(model1.getIntersection(new Location(1,0,1))));
-		
 		assertNotSame(HarborType.GENERAL_HARBOR, model1.getHarborType(model1.getIntersection(new Location(1,0,1))));
 	}
 	
@@ -247,19 +245,19 @@ public class ModelReaderTest4 {
 		
 		
 		// "richtige" vergleichssets erstellen
-		Set<Intersection> p0AttackableVillageSet = new TreeSet<Intersection>();
+		Set<Intersection> p0AttackableVillageSet = new HashSet<Intersection>();
 		p0AttackableVillageSet.add(model2.getIntersection(new Location(0, 0, 5)));
 		assertEquals(p0AttackableVillageSet ,model2.attackableSettlements(p0, BuildingType.Village)); 
 		
-		Set<Intersection> p0AttackableTownsSet = new TreeSet<Intersection>();
+		Set<Intersection> p0AttackableTownsSet = new HashSet<Intersection>();
 		p0AttackableTownsSet.add(model2.getIntersection(new Location(1, 1, 5)));
 		assertEquals(p0AttackableTownsSet ,model2.attackableSettlements(p0, BuildingType.Town)); 
 		
-		Set<Intersection> p1AttackableTownsSet = new TreeSet<Intersection>();
+		Set<Intersection> p1AttackableTownsSet = new HashSet<Intersection>();
 		p1AttackableTownsSet.add(model2.getIntersection(new Location(1, 0, 1)));
 		assertEquals(p1AttackableTownsSet ,model2.attackableSettlements(p0, BuildingType.Town)); 
 		
-		Set<Intersection> p2AttackableVillageSet = new TreeSet<Intersection>();
+		Set<Intersection> p2AttackableVillageSet = new HashSet<Intersection>();
 		p2AttackableVillageSet.add(model2.getIntersection(new Location(0, 0, 1)));
 		p2AttackableVillageSet.add(model2.getIntersection(new Location(0, 0, 5)));
 		assertEquals(p2AttackableVillageSet ,model2.attackableSettlements(p0, BuildingType.Village)); 
@@ -284,11 +282,11 @@ public class ModelReaderTest4 {
 		model2.getPath(new Location (3,2,0)).createCatapult(p2);
 		
 		//"antwortssets"
-		Set<Path> p0Attack = new TreeSet<Path>();
+		Set<Path> p0Attack = new HashSet<Path>();
 		p0Attack.add(model2.getPath(new Location(1,2,2)));
 		assertEquals(p0Attack, model2.attackableCatapults(p0));
 		
-		Set<Path> p1Attack = new TreeSet<Path>();
+		Set<Path> p1Attack = new HashSet<Path>();
 		p1Attack.add(model2.getPath(new Location(1,3,3)));
 		p1Attack.add(model2.getPath(new Location(1,3,4)));
 		assertEquals(p1Attack, model2.attackableCatapults(p1));
@@ -314,12 +312,12 @@ public class ModelReaderTest4 {
 		Player p1 = model2.getTableOrder().get(1);
 		
 		//"StreetSets"
-		Set<Path> p0Paths = new TreeSet<Path>();
+		Set<Path> p0Paths = new HashSet<Path>();
 		p0Paths.add(model2.getPath(new Location(0, 0, 1)));
 		p0Paths.add(model2.getPath(new Location(1, 0, 1)));
 		assertEquals(p0Paths, model2.getStreets(p0));
 		
-		Set<Path> p1Paths = new TreeSet<Path>();
+		Set<Path> p1Paths = new HashSet<Path>();
 		p1Paths.add(model2.getPath(new Location(0, 0, 5)));
 		p1Paths.add(model2.getPath(new Location(1, 0, 5)));
 		p1Paths.add(model2.getPath(new Location(1, 0, 4)));
@@ -337,20 +335,20 @@ public class ModelReaderTest4 {
 		Player p2 = model2.getTableOrder().get(2);
 		
 		//SettlementSets
-		Set<Intersection> p0Villages = new TreeSet<Intersection>();
+		Set<Intersection> p0Villages = new HashSet<Intersection>();
 		p0Villages.add(model2.getIntersection(new Location(0,0,1)));
 		assertEquals(p0Villages, model2.getSettlements(p0, BuildingType.Village));
 		
-		Set<Intersection> p0Towns = new TreeSet<Intersection>();
+		Set<Intersection> p0Towns = new HashSet<Intersection>();
 		p0Towns.add(model2.getIntersection(new Location(1,0,1)));
 		assertEquals(p0Towns, model2.getSettlements(p0, BuildingType.Town));
 		
-		Set<Intersection> p1Towns = new TreeSet<Intersection>();
+		Set<Intersection> p1Towns = new HashSet<Intersection>();
 		p1Towns.add(model2.getIntersection(new Location(0,0,5)));
 		p1Towns.add(model2.getIntersection(new Location(1,0,5)));
 		assertEquals(p1Towns, model2.getSettlements(p1, BuildingType.Town));
 		
-		Set<Intersection> p2Villages = new TreeSet<Intersection>();
+		Set<Intersection> p2Villages = new HashSet<Intersection>();
 		p2Villages.add(model2.getIntersection(new Location(3,0,0)));
 		p2Villages.add(model2.getIntersection(new Location(3,1,0)));
 		assertEquals(p2Villages, model2.getSettlements(p2, BuildingType.Village));

@@ -49,6 +49,9 @@ public class Model implements ModelReader, ModelWriter{
 				this.maxVictoryPoints = worldRepresentation.getVictoryPoints(i);
 		}
 		if(this.maxVictoryPoints == 0) throw new IllegalStateException();
+		for(int i = 0; i < worldRepresentation.getNumHarbors(); i++) {
+			board.getPath(new Location(worldRepresentation.getHarborRow(i), worldRepresentation.getHarborCol(i), worldRepresentation.getHarborDir(i))).setHarborType(HarborType.convert(worldRepresentation.getHarborType(i)));
+		}
 		this.meID = meID;
 	}
 	
@@ -240,9 +243,8 @@ public class Model implements ModelReader, ModelWriter{
 		while(iter.hasNext()) {
 			Field f = iter.next();
 			if(f.getFieldType()!=FieldType.DESERT  &&	f.getFieldType()!=FieldType.WATER){
-				f.setNumber(numbers[i]);
+				f.setNumber(numbers[i++]);
 			}
-			i++;
 		}
 	}
 	

@@ -1,5 +1,7 @@
 package de.unisaarland.cs.sopra.common.model;
 
+import javax.swing.text.html.CSS;
+
 public enum HarborType {
 
 	GENERAL_HARBOR, LUMBER_HARBOR, BRICK_HARBOR, WOOL_HARBOR, GRAIN_HARBOR, ORE_HARBOR;
@@ -29,4 +31,22 @@ public enum HarborType {
 		}
 		
 	}
+	
+	public static HarborType convert(de.unisaarland.cs.st.saarsiedler.comm.Resource resource) {
+		switch (resource) {
+		case Brick:
+			return BRICK_HARBOR;
+		case Grain: 
+			return GRAIN_HARBOR;
+		case Lumber: 
+			return LUMBER_HARBOR;
+		case Ore:
+			return ORE_HARBOR;
+		case Wool: 
+			return WOOL_HARBOR;
+		default:
+			return GENERAL_HARBOR;
+		}
+	}
+	
 }
