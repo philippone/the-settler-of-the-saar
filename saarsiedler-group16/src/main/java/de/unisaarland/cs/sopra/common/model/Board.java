@@ -93,49 +93,61 @@ public class Board {
 		for (int x = 0; x < width; x++){
 			for (int y = 0; y < height; y++){
 				for (int o = 0; o < 6; o++){
-					Path p = new Path(new Location(x, y, o));
-					if (!paths.containsKey(new Location(x, y, o))){
-						paths.put(new Location(x, y, o), p);
+					Intersection i = new Intersection(new Location(x, y, o));
+					if (!intersections.containsKey(new Location(x, y, o))){
+						intersections.put(new Location(x, y, o), i);
 						if (y % 2 == 1){
 							switch(o){
 							case 0:
-								if(isValid(y-1, x)) paths.put(new Location(y-1, x, 3), p);
+								if(isValid(y-1, x-1)) intersections.put(new Location(y-1, x-1, 2), i);
+								if(isValid(y-1, x)) intersections.put(new Location(y-1, x, 4), i);
 								break;
 							case 1:
-								if(isValid(y, x+1)) paths.put(new Location(y, x+1, 4), p);
+								if(isValid(y-1, x)) intersections.put(new Location(y-1, x, 3), i);
+								if(isValid(y, x+1)) intersections.put(new Location(y, x+1, 5), i);
 								break;
 							case 2:
-								if(isValid(y+1, x)) paths.put(new Location(y+1, x, 5), p);
+								if(isValid(y, x+1)) intersections.put(new Location(y, x+1, 4), i);
+								if(isValid(y+1, x)) intersections.put(new Location(y+1, x, 0), i);
 								break;
 							case 3:
-								if(isValid(y+1, x-1)) paths.put(new Location(y+1, x-1, 0), p);
+								if(isValid(y+1, x)) intersections.put(new Location(y+1, x, 5), i);
+								if(isValid(y+1, x-1)) intersections.put(new Location(y+1, x-1, 1), i);
 								break;
 							case 4:
-								if(isValid(y, x-1)) paths.put(new Location(y, x-1, 1), p);
+								if(isValid(y+1, x-1)) intersections.put(new Location(y+1, x-1, 0), i);
+								if(isValid(y, x-1)) intersections.put(new Location(y, x-1, 2), i);
 								break;
 							case 5:
-								if(isValid(y-1, x-1)) paths.put(new Location(y-1, x-1, 2), p);
+								if(isValid(y, x-1)) intersections.put(new Location(y, x-1, 1), i);
+								if(isValid(y-1, x-1)) intersections.put(new Location(y-1, x-1, 3), i);
 								break;
 							}
 						} else {
 							switch(o){
 							case 0:
-								if(isValid(y-1, x+1)) paths.put(new Location(y-1, x+1, 3), p);
+								if(isValid(y-1, x+1)) intersections.put(new Location(y-1, x+1, 4), i);
+								if(isValid(y-1, x)) intersections.put(new Location(y-1, x, 2), i);
 								break;
 							case 1:
-								if(isValid(y, x+1)) paths.put(new Location(y, x+1, 4), p);
+								if(isValid(y-1, x+1)) intersections.put(new Location(y-1, x+1, 3), i);
+								if(isValid(y, x+1)) intersections.put(new Location(y, x+1, 5), i);
 								break;
 							case 2:
-								if(isValid(y+1, x+1)) paths.put(new Location(y+1, x+1, 5), p);
+								if(isValid(y, x+1)) intersections.put(new Location(y, x+1, 4), i);
+								if(isValid(y+1, x+1)) intersections.put(new Location(y+1, x+1, 0), i);
 								break;
 							case 3:
-								if(isValid(y+1, x)) paths.put(new Location(y+1, x, 0), p);
+								if(isValid(y+1, x+1)) intersections.put(new Location(y+1, x+1, 5), i);
+								if(isValid(y+1, x)) intersections.put(new Location(y+1, x, 1), i);
 								break;
 							case 4:
-								if(isValid(y, x-1)) paths.put(new Location(y, x-1, 1), p);
+								if(isValid(y+1, x)) intersections.put(new Location(y+1, x, 0), i);
+								if(isValid(y, x-1)) intersections.put(new Location(y, x-1, 2), i);
 								break;
 							case 5:
-								if(isValid(y-1, x)) paths.put(new Location(y-1, x, 2), p);
+								if(isValid(y, x-1)) intersections.put(new Location(y, x-1, 1), i);
+								if(isValid(y-1, x)) intersections.put(new Location(y-1, x, 3), i);
 								break;
 							}
 						}
