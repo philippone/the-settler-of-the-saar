@@ -760,11 +760,14 @@ public class Model implements ModelReader, ModelWriter{
 					}
 				}
 			}
-		for(ModelObserver ob : modelObserver){
-			ob.updateResources();
-		}
+			for(ModelObserver ob : modelObserver){
+				ob.updateResources();
+			}
 		}	
-		
+		this.round++;
+		for(ModelObserver ob : modelObserver){
+			ob.eventNewRound(getCurrentPlayer() == me);
+		}
 	}
 
 	/* (non-Javadoc)
