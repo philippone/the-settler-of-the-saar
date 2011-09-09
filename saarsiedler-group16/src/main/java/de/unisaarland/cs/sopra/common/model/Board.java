@@ -16,6 +16,7 @@ public class Board {
 	private int width;
 	private int height;
 	
+	//TODO
 	public Board(WorldRepresentation worldRepresentation) {
 		this.height = worldRepresentation.getHeight();
 		this.width = worldRepresentation.getWidth();
@@ -53,16 +54,16 @@ public class Board {
 		return this.fields.get(point);
 	}
 	
-	public Intersection getIntersection(Point location) {
+	public Intersection getIntersection(Location location) {
 		return this.intersections.get(location);
 	}
 	
-	public Path getPath(Point location) {
+	public Path getPath(Location location) {
 		return this.paths.get(location);
 	}
 	
 	public Set<Field> getFieldsFromField(Field field) {
-		Point loc = field.getLocation();
+		Point loc = field.getLocation();Point
 		int x = loc.getX();
 		int y = loc.getY();
 		Set<Field> s = new HashSet<Field>();
@@ -196,7 +197,12 @@ public class Board {
 	}
 	
 	public Set<Intersection> getIntersectionsFromField(Field field) {
-		throw new UnsupportedOperationException();
+		Point loc = field.getLocation();
+		int x = loc.getX();
+		int y = loc.getY();
+		Set<Intersection> s = new HashSet<Intersection>();
+		for (int o = 0; o < 6; o++){ s.add(getIntersection(new Location(x, y, o))); }
+		return s;
 	}
 	
 	public Set<Intersection> getIntersectionsFromIntersection(Intersection intersection) {
@@ -208,7 +214,12 @@ public class Board {
 	}
 	
 	public Set<Path> getPathsFromField(Field field) {
-		throw new UnsupportedOperationException();
+		Point loc = field.getLocation();
+		int x = loc.getX();
+		int y = loc.getY();
+		Set<Path> s = new HashSet<Path>();
+		for (int o = 0; o < 6; o++){ s.add(getPath(new Location(x, y, o))); }
+		return s;
 	}
 	
 	public Set<Path> getPathsFromIntersection(Intersection intersection) {
