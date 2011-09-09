@@ -1019,7 +1019,10 @@ public class Model implements ModelReader, ModelWriter{
 		// TODO (Philipp)
 		getField(sourceField).setRobber(false);
 		getField(destinationField).setRobber(true);
-		//this.getPlayerMap().
+		playerMap.get(victimPlayer).getResources().modifyResource(stolenResource, -1);
+		for(ModelObserver ob : modelObserver) {
+			ob.eventRobber();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -1028,7 +1031,10 @@ public class Model implements ModelReader, ModelWriter{
 	@Override
 	public void tradeOffer(int lumber, int brick, int wool, int grain, int ore) {
 		// TODO (Philipp)
-		throw new UnsupportedOperationException();
+		lastTrade = new ResourcePackage(lumber, brick, wool, grain, ore);
+		for(ModelObserver mo : modelObserver) {
+			mo.eventTrade(lastTrade);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -1037,7 +1043,11 @@ public class Model implements ModelReader, ModelWriter{
 	@Override
 	public void respondTrade(long playerID) {
 		// TODO (Philipp)
-		throw new UnsupportedOperationException();
+		getCurrentPlayer().modifyResources(lastTrade);
+		playerMap.get(playerID).modifyResources(lastTrade);
+		for(ModelObserver mo : modelObserver) {
+			mo.updateResources();
+		}
 	}
 
 	/* (non-Javadoc)
