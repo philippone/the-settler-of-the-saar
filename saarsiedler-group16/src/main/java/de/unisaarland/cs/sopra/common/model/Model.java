@@ -469,7 +469,7 @@ public class Model implements ModelReader, ModelWriter{
 		Path p;
 		while (ip.hasNext()){
 			p=ip.next();
-			if (p.getStreetOwner()==player) sp.add(p);
+			if (p.hasStreet() && p.getStreetOwner()==player) sp.add(p);
 		}
 		return sp;
 	}
