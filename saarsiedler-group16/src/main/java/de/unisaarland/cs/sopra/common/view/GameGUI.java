@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
@@ -36,6 +38,9 @@ public class GameGUI extends View implements Runnable{
 	private Map<FieldType,Texture> textureMap;
 	private Map<Integer,Texture> numberTextureMap;
 	private List<Field> renderFieldList;
+	float x = -400.0f;
+	float y = 600.0f;
+	float z = -2000.0f;
 	
 	GameGUI(long meID, ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player,String> playerNames, Setting setting) throws Exception {
 		super(meID, modelReader, controllerAdapter);
@@ -84,7 +89,7 @@ public class GameGUI extends View implements Runnable{
 		   GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		   // center square according to screen size
 		   GL11.glPushMatrix();
-		   GL11.glTranslatef(-400.0f, 600.0f, -2000.0f); //-4000 ist z koord
+		   GL11.glTranslatef(x,y,z); //-4000 ist z koord
 			// rotate square according to angle
 		   GL11.glRotatef(0, 0, 0, 0);
 		   GL11.glColor3f(1.0f, 1.0f, 1.0f);
@@ -208,6 +213,8 @@ public class GameGUI extends View implements Runnable{
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA,GL11.GL_ONE);
 		
+        Keyboard.enableRepeatEvents(true);
+        
         renderFieldList = new LinkedList<Field>();
         Iterator<Field> iter = modelReader.getFieldIterator();
         while (iter.hasNext()) {
@@ -218,11 +225,13 @@ public class GameGUI extends View implements Runnable{
         render();
         Display.update();
         render();
+        Display.update();
+        render();
         //render two times to fill the double buffer
-        //TODO: how to handle zoom and scroll?
 
     boolean finished = false;
 		while (!finished) {
+			  handleInput();
 		      // Always call Window.update(), all the time - it does some behind the
 		      // scenes work, and also displays the rendered output
 			  Display.update();
@@ -248,6 +257,61 @@ public class GameGUI extends View implements Runnable{
 		Display.destroy();
 	}
 	
+	private void handleInput() {
+		int mx = Mouse.getX();
+		int my = Mouse.getY();
+		
+		if (mx < 50) {
+			x+=5;
+		}
+		else if (mx > setting.getWindowWidth()-50) {
+			x-=5;
+		}
+		if (my < 50) {
+			y+=5;
+		}
+		else if (my > setting.getWindowHeight()-50) {
+			y-=5;
+		}
+		
+		switch (Mouse.getEventDWheel()) {
+			case -1: 			
+				if (z+50 < -500)
+					z+=50;
+				break;
+			case 1: 			
+				if (z-50 > -5000)
+					z-=50; 
+				break;
+		}
+		
+		
+		if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
+			x+=5;
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
+			x-=5;
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
+			y-=5;
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
+			y+=5;
+		}
+		if (Keyboard.isKeyDown(0)) {
+			if (z+50 < -500)
+				z+=50;
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_MINUS)) {
+			if (z-50 > -5000)
+				z-=50;
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+			Display.destroy();
+			System.exit(0);
+		}
+	}
+
 	public static void main(String[] args) throws Exception {
 		WorldRepresentation worldrep = new WorldRepresentation(4, 4, 2, 9, 5, 4,  
 				new byte[] {1,2,3,4,
@@ -307,7 +371,8 @@ public class GameGUI extends View implements Runnable{
 														 6,8,9,10,
 														 11,12,11,10,
 														 9,8,6,5});
-		Setting setting = new Setting(1024, 600, false);
+		
+		Setting setting = new Setting(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight(), false);
 		GameGUI gameGUI = new GameGUI(0, model, null, null, setting);
 		new Thread(gameGUI).start();
 	}
