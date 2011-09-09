@@ -147,7 +147,7 @@ public class TestUtil {
 	public static ModelObserver getTestView(Player player) throws IOException {
 		ModelReader modelReader = null;
 		ControllerAdapter controllerAdapter = null;
-		ModelObserver view = new AI(player, modelReader, controllerAdapter);
+		ModelObserver view = new AI(0, modelReader, controllerAdapter);
 		return view;
 	}
 

@@ -33,12 +33,12 @@ public class Board {
 	 
 	// Done
 	private void initPaths() {
-		for (int x = 0; x < width; x++){
-			for (int y = 0; y < height; y++){
+		for (int y = 0; y < height; y++){
+			for (int x = 0; x < width; x++){
 				for (int o = 0; o < 6; o++){
-					Path p = new Path(new Location(x, y, o));
-					if (!paths.containsKey(new Location(x, y, o))){
-						paths.put(new Location(x, y, o), p);
+					Path p = new Path(new Location(y, x, o));
+					if (!paths.containsKey(new Location(y, x, o))){
+						paths.put(new Location(y, x, o), p);
 						if (y % 2 == 1){
 							switch(o){
 							case 0:
@@ -90,12 +90,12 @@ public class Board {
 	
 	//Done TODO nach fehlern suchen!
 	private void initIntersections() {
-		for (int x = 0; x < width; x++){
-			for (int y = 0; y < height; y++){
+		for (int y = 0; y < height; y++){
+			for (int x = 0; x < width; x++){
 				for (int o = 0; o < 6; o++){
-					Intersection i = new Intersection(new Location(x, y, o));
-					if (!intersections.containsKey(new Location(x, y, o))){
-						intersections.put(new Location(x, y, o), i);
+					Intersection i = new Intersection(new Location(y, x, o));
+					if (!intersections.containsKey(new Location(y, x, o))){
+						intersections.put(new Location(y, x, o), i);
 						if (y % 2 == 1){
 							switch(o){
 							case 0:
@@ -480,7 +480,7 @@ public class Board {
 	}
 	
 	//Done
-	private boolean isValid(int x, int y){
+	private boolean isValid(int y, int x){
 		return x >= 0 && x < width && y >= 0 && y < height;
 	}
 

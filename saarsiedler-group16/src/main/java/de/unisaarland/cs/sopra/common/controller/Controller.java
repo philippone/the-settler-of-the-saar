@@ -1,6 +1,8 @@
 package de.unisaarland.cs.sopra.common.controller;
 
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,7 +25,15 @@ public class Controller {
 	private Resource r;
 	
 	public Controller(Connection connection, ModelWriter modelWriter) {
-		this.connection = connection;
+		try {
+			this.connection = Connection.establish("aendereMich", true);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.modelWriter = modelWriter;
 	}
 	
