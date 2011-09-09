@@ -318,6 +318,7 @@ public class Board {
 	}
 	
 	//Done
+	//Done
 	public Set<Intersection> getIntersectionsFromIntersection(Intersection intersection) {
 		Location loc = intersection.getLocation();
 		int x = loc.getX();
@@ -384,10 +385,20 @@ public class Board {
 		return s;
 	}
 	
+	//Done
+	//Done
 	public Set<Intersection> getIntersectionsFromPath(Path path) {
-		throw new UnsupportedOperationException();
+		Location loc = path.getLocation();
+		int x = loc.getX();
+		int y = loc.getY();
+		int o = loc.getOrientation();
+		Set<Intersection> s = new HashSet<Intersection>();
+		s.add(getIntersection(new Location(x, y, o)));
+		s.add(getIntersection(new Location(x, y, (o+1)%6)));
+		return s;
 	}
 	
+	//Done
 	//Done
 	public Set<Path> getPathsFromField(Field field) {
 		Point loc = field.getLocation();
@@ -398,8 +409,16 @@ public class Board {
 		return s;
 	}
 	
+	//Done
 	public Set<Path> getPathsFromIntersection(Intersection intersection) {
-		throw new UnsupportedOperationException();
+		Location loc = intersection.getLocation();
+		int x = loc.getX();
+		int y = loc.getY();
+		int o = loc.getOrientation();
+		Set<Path> s = new HashSet<Path>();
+		s.add(getPath(new Location(x, y, o)));
+		s.add(getPath(new Location(x, y, (o+5)%6)));
+		return s;
 	}
 	
 	//?
