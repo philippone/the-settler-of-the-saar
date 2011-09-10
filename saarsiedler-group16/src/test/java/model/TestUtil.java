@@ -141,7 +141,7 @@ public class TestUtil {
 	}
 	
 	public static Connection getTestConnection() throws UnknownHostException, IOException {
-		return Connection.establish("testserver", false);
+		return Connection.establish("sopra.cs.uni-saarland.de", false);
 	}
 	
 	public static ModelObserver getTestView(Player player) throws IOException {
@@ -162,7 +162,6 @@ public class TestUtil {
 					new byte[] {0,1,(1 << 4) | 0, 
 								2,2,(4 << 4) | 1
 									});
-			Board b = new Board(worldrep);
 			return new Board(worldrep);
 	}
 
