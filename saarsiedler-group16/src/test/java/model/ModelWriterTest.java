@@ -301,7 +301,7 @@ public class ModelWriterTest {
 
 		Player p2 = model.getTableOrder().get(0);
 		Player p3 = model.getTableOrder().get(1);
-		Player p4 = model.getTableOrder().get(2);
+		//Player p4 = model.getTableOrder().get(2);
 
 		if (p2 != p1) {
 			Set<Long> keySet = model.getPlayerMap().keySet();
@@ -318,23 +318,31 @@ public class ModelWriterTest {
 				if (player.equals(p3))
 					model.respondTrade(l);
 			}
-		} else if (p4 != p1) {
-			Set<Long> keySet = model.getPlayerMap().keySet();
-			for (Long l : keySet) {
-				Player player = model.getPlayerMap().get(l);
-				if (player.equals(p2))
-					model.respondTrade(l);
-			}
+//		} else if (p4 != p1) {
+//			Set<Long> keySet = model.getPlayerMap().keySet();
+//			for (Long l : keySet) {
+//				Player player = model.getPlayerMap().get(l);
+//				if (player.equals(p2))
+//					model.respondTrade(l);
+//			}
 		}
-		assertEquals(new ResourcePackage(3, 4, 0, 2, 1), model.getCurrentPlayer().getResources());
+		assertEquals("vermute equals von ResourcePAckage ist falsch (Philipp)",new ResourcePackage(3, 4, 0, 2, 1), model.getCurrentPlayer().getResources());
 	}
 	
+	
+	@Test
 	public void respondTradePositive1(){
-		Player p = model.getCurrentPlayer();
+		model.newRound(7);
+		Player p = model.getCurrentPlayer(); // id = 0
 		p.modifyResources(new ResourcePackage(5, 6, 7, 3, 0));
+		
+		Player p2 = model.getTableOrder().get(1);
+		p2.modifyResources(new ResourcePackage(20,20,20,20,20));	// id = 2
+		
 		model.tradeOffer(-4, 0, 0, 0, 1);
-		model.respondTrade(-2);
-		assertEquals(new ResourcePackage(1, 6, 7, 3, 1), p.getResources());
+		model.respondTrade(2);
+		assertTrue("Spieler der anbietet hat falsche Resourcen",new ResourcePackage(24,20,20,20,19).equals( p2.getResources()));
+		assertTrue("Spieler der annimmt hat falsche Resourcen",new ResourcePackage(1, 6, 7, 3, 1).equals( p.getResources()));
 		
 	}
 	
@@ -343,7 +351,12 @@ public class ModelWriterTest {
 		Player p = model.getCurrentPlayer();
 		p.modifyResources(new ResourcePackage(2, 5, 6, 0, 1));
 		model.tradeOffer(0, 0, -1, 0, 1);
-		model.respondTrade(-1);
+		try {
+			model.respondTrade(-1);
+			fail("shoud throw IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// Test laueft durch
+		}
 		assertEquals(new ResourcePackage(2, 5, 6, 0, 1), p.getResources());
 	}
 	

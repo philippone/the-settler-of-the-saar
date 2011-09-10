@@ -98,6 +98,21 @@ public class ResourcePackage {
 				|| resources.get(ORE) < 0 || resources.get(WOOL) < 0);
 	}
 	
+
+	/**
+	 * @return
+	 */
+	public ResourcePackage neagateResourcePackage() {
+		ResourcePackage rp = this.copy();
+		rp.resources.put(LUMBER, - rp.resources.get(LUMBER));
+		rp.resources.put(GRAIN, - rp.resources.get(GRAIN));
+		rp.resources.put(BRICK, - rp.resources.get(BRICK));
+		rp.resources.put(ORE, - rp.resources.get(ORE));
+		rp.resources.put(WOOL, - rp.resources.get(WOOL));
+		return rp;
+
+	}
+	
 	/**
 	 * @return The absolute count of negative resources in this resourcepackage
 	 */

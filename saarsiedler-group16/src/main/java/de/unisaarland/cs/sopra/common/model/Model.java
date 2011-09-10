@@ -1036,7 +1036,7 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public void tradeOffer(int lumber, int brick, int wool, int grain, int ore) {
-		// TODO (Philipp)
+		// TODO: darf ich das ueberhaupt handeln, verhaeltnisse (Philipp)
 		lastTrade = new ResourcePackage(lumber, brick, wool, grain, ore);
 		for(ModelObserver mo : modelObserver) {
 			mo.eventTrade(lastTrade);
@@ -1049,8 +1049,9 @@ public class Model implements ModelReader, ModelWriter{
 	@Override
 	public void respondTrade(long playerID) {
 		// TODO (Philipp)
+		if (playerID < 0) throw new IllegalArgumentException();
 		getCurrentPlayer().modifyResources(lastTrade);
-		playerMap.get(playerID).modifyResources(lastTrade);
+		playerMap.get(playerID).modifyResources(lastTrade.neagateResourcePackage());
 		for(ModelObserver mo : modelObserver) {
 			mo.updateResources();
 		}

@@ -27,11 +27,12 @@ public class ResourcePackageTest {
 		assertEquals("Expected 3 as Result", respack2.getResource(WOOL),3);
 		assertEquals("Expected 4 as Result", respack2.getResource(GRAIN),4);
 		assertEquals("Expected 5 as Result", respack2.getResource(ORE),5);
-		assertEquals("Expected 1 as Result", respack.getResource(LUMBER),3);
-		assertEquals("Expected 2 as Result", respack.getResource(BRICK),6);
-		assertEquals("Expected 3 as Result", respack.getResource(WOOL),9);
-		assertEquals("Expected 4 as Result", respack.getResource(GRAIN),12);
-		assertEquals("Expected 5 as Result", respack.getResource(ORE),15);
+		
+		assertEquals("Expected 3 as Result", respack.getResource(LUMBER),3);
+		assertEquals("Expected 6 as Result", respack.getResource(BRICK),6);
+		assertEquals("Expected 9 as Result", respack.getResource(WOOL),9);
+		assertEquals("Expected 12 as Result", respack.getResource(GRAIN),12);
+		assertEquals("Expected 15 as Result", respack.getResource(ORE),15);
 	}
 	
 	@Test
@@ -64,6 +65,21 @@ public class ResourcePackageTest {
 	@Test
 	public void positiveCountTest() {
 		assertEquals(new ResourcePackage(3,6,-7,3,-7).getPositiveResourcesCount(),12);
+	}
+	
+	
+	@Test
+	public void negateResourcePackageTest1() {
+		ResourcePackage rp = new ResourcePackage(0,0,0,0,0);
+		rp.neagateResourcePackage();
+		assertTrue(rp.equals(new ResourcePackage(0,0,0,0,0)));
+	}
+	
+	@Test
+	public void negateResourcePackageTest2() {
+		ResourcePackage rp = new ResourcePackage(1,0,5,5,10);
+		ResourcePackage rp2 = rp.neagateResourcePackage();
+		assertTrue(rp2.equals(new ResourcePackage(-1,0,-5,-5,-10)));
 	}
 	
 }
