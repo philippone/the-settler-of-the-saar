@@ -1,5 +1,6 @@
 package de.unisaarland.cs.sopra.common.view;
 
+import java.awt.Font;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -7,13 +8,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.SlickException;
+import org.newdawn.slick.UnicodeFont;
+import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
@@ -38,9 +42,10 @@ public class GameGUI extends View implements Runnable{
 	private Map<FieldType,Texture> textureMap;
 	private Map<Integer,Texture> numberTextureMap;
 	private List<Field> renderFieldList;
-	float x = -400.0f;
-	float y = 600.0f;
-	float z = -2000.0f;
+	int x = 0;
+	int y = 0;
+	int z = 0;
+	UnicodeFont uniFont;
 	
 	GameGUI(long meID, ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player,String> playerNames, Setting setting) throws Exception {
 		super(meID, modelReader, controllerAdapter);
@@ -48,19 +53,22 @@ public class GameGUI extends View implements Runnable{
 		this.setting = setting;
 		this.playerNames = playerNames;
 		this.controllerAdapter = controllerAdapter;
+		this.x = (int)(815.625f*setting.getWindowWidth()/setting.getWindowHeight());
+		this.y = 820;
+		this.z = -1450;
 	}
-	
+
 	private void renderField(Field f) {
-		int x = 0;
-		int y = 0;
+		int fx = 0;
+		int fy = 0;
 		   switch(f.getLocation().getY()%2) {
 		   case 0:
-			   x = f.getLocation().getX()*250;
-			   y = f.getLocation().getY()*215; 
+			   fx = f.getLocation().getX()*250;
+			   fy = f.getLocation().getY()*215; 
 			   break;
 		   case 1:
-			   x = f.getLocation().getX()*250-125;
-			   y = f.getLocation().getY()*215;
+			   fx = f.getLocation().getX()*250-125;
+			   fy = f.getLocation().getY()*215;
 			   break;
 		   }
 		
@@ -68,51 +76,51 @@ public class GameGUI extends View implements Runnable{
 		     GL11.glBegin(GL11.GL_POLYGON);
 		       //GL11.glColor4f(1.0f,1.0f,1.0f,1.0f); //transparenz
 		       GL11.glTexCoord2f(0,0);
-		       GL11.glVertex3i(-150+x, -150+y, 0);
+		       GL11.glVertex3i(-150+fx+x, -150+fy+y, 0+z);
 		       GL11.glTexCoord2f(1,0);
-		       GL11.glVertex3i(150+x, -150+y, 0);
+		       GL11.glVertex3i(150+fx+x, -150+fy+y, 0+z);
 		       GL11.glTexCoord2f(1,1);
-		       GL11.glVertex3i(150+x, 150+y, 0);
+		       GL11.glVertex3i(150+fx+x, 150+fy+y, 0+z);
 		       GL11.glTexCoord2f(0,1);
-		       GL11.glVertex3i(-150+x, 150+y, 0);
+		       GL11.glVertex3i(-150+fx+x, 150+fy+y, 0+z);
 		     GL11.glEnd();
 		     
 		     numberTextureMap.get(f.getNumber()).bind();
 		     GL11.glBegin(GL11.GL_POLYGON);
 		       //GL11.glColor4f(1.0f,1.0f,1.0f,1.0f); //transparenz
 		       GL11.glTexCoord2f(0,0);
-		       GL11.glVertex3i(-150+x, -150+y, 1);
+		       GL11.glVertex3i(-150+fx+x, -150+fy+y, 1+z);
 		       GL11.glTexCoord2f(1,0);
-		       GL11.glVertex3i(150+x, -150+y, 1);
+		       GL11.glVertex3i(150+fx+x, -150+fy+y, 1+z);
 		       GL11.glTexCoord2f(1,1);
-		       GL11.glVertex3i(150+x, 150+y, 1);
+		       GL11.glVertex3i(150+fx+x, 150+fy+y, 1+z);
 		       GL11.glTexCoord2f(0,1);
-		       GL11.glVertex3i(-150+x, 150+y, 1);
+		       GL11.glVertex3i(-150+fx+x, 150+fy+y, 1+z);
 		     GL11.glEnd();
 	}
 	
 	
 	
 	private void render() {
-		   GL11.glMatrixMode(GL11.GL_PROJECTION);
-		   GL11.glLoadIdentity();
-		   GLU.gluPerspective(45.0f, ((float)setting.getWindowWidth())/setting.getWindowHeight(), 0.1f, 5000.0f); //-5000.f ist die maximale z tiefe
-		   GL11.glMatrixMode(GL11.GL_MODELVIEW);
-		   // clear the screen
 		   GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-		   // center square according to screen size
+		   GL11.glLoadIdentity();
 		   GL11.glPushMatrix();
-		   GL11.glTranslatef(x,y,z); //-4000 ist z koord
-			// rotate square according to angle
-		   GL11.glRotatef(180, 1.0f, 0, 0);
+		   GL11.glTranslatef(-815.625f*setting.getWindowWidth()/setting.getWindowHeight(),820,-2000);
+		   GL11.glRotatef(180, 1, 0, 0);
 		   GL11.glColor3f(1.0f, 1.0f, 1.0f);
 		   
 		   Iterator<Field> iter = renderFieldList.iterator();
-		   while (iter.hasNext()) {
+		   //while (iter.hasNext()) {
 			   		renderField(iter.next());
 			   		//iter.remove();
-			   }
+			//   }
+		   
+		   
+		   uniFont.drawString(0, 0, "x: " + x + ", y: " + y + ", z: " + z, Color.white);
+
 		   GL11.glPopMatrix();
+		   
+		   
 	}
 
 	public void drawTradeMenu() {
@@ -192,14 +200,15 @@ public class GameGUI extends View implements Runnable{
 		throw new UnsupportedOperationException();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void run() {
 		
-		try {
-			Display.setDisplayMode(new DisplayMode(setting.getWindowWidth(), setting.getWindowHeight()));
-			Display.setFullscreen(setting.isFullscreen());
+		try {//Display.getDesktopDisplayMode()
+			Display.setDisplayMode(new DisplayMode(setting.getWindowWidth(), setting.getWindowHeight())); //
 			Display.setTitle("Die Siedler von der Saar");
 			Display.setVSyncEnabled(true);
+			Display.setFullscreen(true); //setting.isFullscreen()
 			Display.create();
 			
 			textureMap = new HashMap<FieldType,Texture>();
@@ -231,9 +240,23 @@ public class GameGUI extends View implements Runnable{
         GL11.glClearDepth(1.0f); // Depth Buffer Setup
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
+        
+		GL11.glMatrixMode(GL11.GL_PROJECTION);
+		GL11.glLoadIdentity();
+		GLU.gluPerspective(+45.0f, ((float)setting.getWindowWidth())/setting.getWindowHeight(), 0.1f, 5000.0f); //-5000.f ist die maximale z tiefe
+		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		
         Keyboard.enableRepeatEvents(true);
+        
+        //create the font
+        Font awtFont = new Font("Arial", Font.BOLD, 48);
+        uniFont = new UnicodeFont(awtFont, 48, false, false);
+        uniFont.addAsciiGlyphs();
+        uniFont.getEffects().add(new ColorEffect(java.awt.Color.WHITE)); 
+        try {
+			uniFont.loadGlyphs();
+		} catch (SlickException e1) {}
+
         
         renderFieldList = new LinkedList<Field>();
         Iterator<Field> iter = modelReader.getFieldIterator();
@@ -290,16 +313,16 @@ public class GameGUI extends View implements Runnable{
 			x-=5;
 		}
 		if (my < 50) {
-			y+=5;
+			y-=5;
 		}
 		else if (my > setting.getWindowHeight()-50) {
-			y-=5;
+			y+=5;
 		}
 		
 		switch (Mouse.getEventDWheel()) {
 			case -1: 			
 				if (z+50 < -500)
-					z+=50;
+					z+=50; //TODO: fix this
 				break;
 			case 1: 			
 				if (z-50 > -5000)
@@ -315,17 +338,17 @@ public class GameGUI extends View implements Runnable{
 			x-=5;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
-			y-=5;
-		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
 			y+=5;
 		}
-		if (Keyboard.isKeyDown(0)) {
-			if (z+50 < -500)
+		if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
+			y-=5;
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_M)) {
+			if (z+50 < 3000)
 				z+=50;
 		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_MINUS)) {
-			if (z-50 > -5000)
+		if (Keyboard.isKeyDown(Keyboard.KEY_N)) {
+			if (z-50 > -1500)
 				z-=50;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
@@ -434,7 +457,10 @@ public class GameGUI extends View implements Runnable{
 														 11,12,11,10,
 														 9,8,6,5});
 		
-		Setting setting = new Setting(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight(), false);
+		//Setting setting = new Setting(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight(), true);
+		Setting setting = new Setting(1280, 1024, true);
+		//Setting setting = new Setting(800, 600, true);
+		
 		GameGUI gameGUI = new GameGUI(0, model, null, null, setting);
 		new Thread(gameGUI).start();
 	}
