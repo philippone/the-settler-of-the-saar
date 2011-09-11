@@ -5,18 +5,29 @@
 package de.unisaarland.cs.sopra.common;
 
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+
 import javax.swing.*;
+import javax.swing.table.*;
 import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
+
+import de.unisaarland.cs.st.saarsiedler.comm.Connection;
+import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
 import info.clearthought.layout.*;
+import java.util.List;
 
 /**
  * @author Hans Lange der
  */
 public class GUIFrame extends JFrame {
 	private ButtonListener actLis;
-	public GUIFrame() {
-		actLis = new ButtonListener(this);
+	private Connection connect;
+	
+	public GUIFrame(Connection connection) {
+		this.connect =connection;
+		actLis = new ButtonListener(this, connect);
 		this.setLocation(150, 30);
 //		this.setPreferredSize(new Dimension(900,600));
 //		this.pack();
@@ -25,8 +36,34 @@ public class GUIFrame extends JFrame {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		initComponents();
 		setActionListner();
+		refreshGameList();
 	}
 
+	private void refreshGameList(){
+//		gameTable.getCellEditor().
+		List<MatchInformation> matchList=null;
+		try {
+			matchList =connect.listMatches();		} catch (IOException e1) {			e1.printStackTrace();		}
+		try {
+			connect.registerMatchListUpdater(new GameListUpdater(gameTable));		}catch(IOException e){throw new IllegalStateException("iwas mit Matchlistupdater faul!!!");}
+			
+			gameTable.setModel(new DefaultTableModel(
+					parseMatchList(matchList),
+					new String[] {"MatchID", "Name", "Players", "WorldID"	}));
+	}
+	public static Object[][] parseMatchList(List<MatchInformation> matchList){
+		if (matchList == null)	throw new IllegalArgumentException("matchList is null");
+		Object[][] ret = new Object[matchList.size()][4];
+		int i =0;
+		for (MatchInformation m : matchList) {
+			ret[i][0]=m.getId();
+			ret[i][1]=m.getTitle();
+			ret[i][2]=m.getCurrentPlayers().length+"/"+m.getNumPlayers();
+			ret[i][3]=m.getWorldId();
+			i++;
+		}
+		return ret;
+	}
 	private void setActionListner() {
 		menuItemSettings.addActionListener(actLis);
 		exit.addActionListener(actLis);
@@ -38,6 +75,7 @@ public class GUIFrame extends JFrame {
 		back_Settings.addActionListener(actLis);
 		play.addActionListener(actLis);
 		settings_menu.addActionListener(actLis);
+		exit_menu.addActionListener(actLis);
 		
 	}
 
@@ -94,7 +132,6 @@ public class GUIFrame extends JFrame {
 
 		//======== lobbyPanel ========
 		{
-			lobbyPanel.setVisible(false);
 
 			// JFormDesigner evaluation mark
 			lobbyPanel.setBorder(new javax.swing.border.CompoundBorder(
@@ -119,6 +156,21 @@ public class GUIFrame extends JFrame {
 
 				//======== scrollPane4 ========
 				{
+
+					//---- gameTable ----
+					gameTable.setAutoCreateRowSorter(true);
+					gameTable.setFont(gameTable.getFont().deriveFont(Font.BOLD, gameTable.getFont().getSize() + 2f));
+					gameTable.setColumnSelectionAllowed(true);
+					gameTable.setModel(new DefaultTableModel(
+						new Object[][] {
+							{null, null, null, null},
+							{null, null, null, null},
+							{null, null, null, null},
+						},
+						new String[] {
+							"MatchID", "Name", "Players", "WorldID"
+						}
+					));
 					scrollPane4.setViewportView(gameTable);
 				}
 				panel8.add(scrollPane4, new TableLayoutConstraints(0, 0, 0, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
@@ -182,6 +234,7 @@ public class GUIFrame extends JFrame {
 
 		//======== menuPanel ========
 		{
+			menuPanel.setVisible(false);
 			menuPanel.setLayout(new BorderLayout());
 
 			//======== panel11 ========
@@ -211,7 +264,7 @@ public class GUIFrame extends JFrame {
 				panel12.setLayout(null);
 
 				//---- label1 ----
-				label1.setIcon(new ImageIcon("C:\\Users\\vale\\Desktop\\Saarlogo.png"));
+				label1.setIcon(new ImageIcon(getClass().getResource("/Textures/ClientGui/Saarlogo.png")));
 				panel12.add(label1);
 				label1.setBounds(0, 0, 1000, 175);
 
@@ -261,7 +314,7 @@ public class GUIFrame extends JFrame {
 	public JPanel lobbyPanel;
 	private JPanel panel8;
 	private JScrollPane scrollPane4;
-	JTable gameTable;
+	public JTable gameTable;
 	private JPanel panel9;
 	JButton create;
 	JButton join;
