@@ -16,7 +16,7 @@ public class GameListUpdater implements MatchListUpdater {
 	@Override
 	public void newMatch(MatchInformation info) {
 		// TODO Auto-generated method stub
-
+//		table.
 	}
 
 	@Override

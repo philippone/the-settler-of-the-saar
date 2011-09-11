@@ -5,7 +5,8 @@
 package de.unisaarland.cs.sopra.common;
 
 import java.awt.*;
-import java.io.File;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.IOException;
 
 import javax.swing.*;
@@ -24,6 +25,7 @@ import java.util.List;
 public class GUIFrame extends JFrame {
 	private ButtonListener actLis;
 	private Connection connect;
+	private Long focusedGameID;
 	
 	public GUIFrame(Connection connection) {
 		this.connect =connection;
@@ -76,7 +78,22 @@ public class GUIFrame extends JFrame {
 		play.addActionListener(actLis);
 		settings_menu.addActionListener(actLis);
 		exit_menu.addActionListener(actLis);
-		
+		gameTable.addFocusListener(new FocusListener() {
+			
+			
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				focusedGameID =-1L;
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				int colm = gameTable.getSelectedColumn();
+				focusedGameID= (Long)gameTable.getModel().getValueAt(colm, 0);
+				System.out.println("Table focused");
+			}
+		});
 	}
 
 	private void initComponents() {
@@ -160,7 +177,6 @@ public class GUIFrame extends JFrame {
 					//---- gameTable ----
 					gameTable.setAutoCreateRowSorter(true);
 					gameTable.setFont(gameTable.getFont().deriveFont(Font.BOLD, gameTable.getFont().getSize() + 2f));
-					gameTable.setColumnSelectionAllowed(true);
 					gameTable.setModel(new DefaultTableModel(
 						new Object[][] {
 							{null, null, null, null},
@@ -171,6 +187,7 @@ public class GUIFrame extends JFrame {
 							"MatchID", "Name", "Players", "WorldID"
 						}
 					));
+					gameTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 					scrollPane4.setViewportView(gameTable);
 				}
 				panel8.add(scrollPane4, new TableLayoutConstraints(0, 0, 0, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
