@@ -181,7 +181,7 @@ public class GameGUI extends View implements Runnable{
 	private void renderUI(String name, int x, int y, int layer) {
 	     int width = uiTextureMap.get(name).getImageWidth();
 	     int height = uiTextureMap.get(name).getImageHeight();
-		 int xoffset = 465;
+		 int xoffset = (int)(373*setting.getWindowWidth()/setting.getWindowHeight())+minX;
 		 int yoffset = 955;
 		 int zoffset = -950;
 	     
@@ -223,7 +223,7 @@ public class GameGUI extends View implements Runnable{
 		   uniFont.drawString(0, 0, "Debug:", Color.white);
 		   uniFont.drawString(0, 60, "x: " + x + ", y: " + y + ", z: " + z, Color.white);
 		   uniFont.drawString(0, 120, "mx: " + Mouse.getX() + ", my: " + Mouse.getY() + ", mw: " + Mouse.getEventDWheel(), Color.white);
-		   //uniFont.drawString(0, 120, "clicked on: " + x + ", y: " + y + ", z: " + z, Color.white);
+		   uniFont.drawString(0, 180, "xoffset UI: " + minX, Color.white);
 
 		   GL11.glPopMatrix();
 		   
@@ -459,10 +459,12 @@ public class GameGUI extends View implements Runnable{
 		}
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
-			x+=5;
+			//x+=5;
+			minX+=5;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
-			x-=5;
+			//x-=5;
+			minX-=5;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
 			y+=5;
@@ -575,9 +577,10 @@ public class GameGUI extends View implements Runnable{
 														 9,8,6,5,
 														 2,6,9});
 		
-		Setting setting = new Setting(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight(), true);
+		//Setting setting = new Setting(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight(), true);
 		//Setting setting = new Setting(1280, 1024, true);
 		//Setting setting = new Setting(800, 600, true);
+		Setting setting = new Setting(400, 300, true);
 		
 		GameGUI gameGUI = new GameGUI(0, model, null, null, setting);
 		new Thread(gameGUI).start();
