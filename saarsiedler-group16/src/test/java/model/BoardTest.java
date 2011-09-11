@@ -213,6 +213,9 @@ public class BoardTest {
 		pathSet12.add(b.getPath(new Location(0, 1, 1)));
 		pathSet12.add(b.getPath(new Location(0, 2, 5)));
 		//test if both sets have identical content
+		//System.out.println("path1" + b.getPath(new Location (0, 1, 0)));
+		//System.out.println("path1" + b.getPath(new Location (0, 1, 1)));
+		//
 		assertTrue(pathSet11.containsAll(pathSet12));
 		assertTrue(pathSet12.containsAll(pathSet11));
 	}
@@ -238,7 +241,8 @@ public class BoardTest {
 	@Test
 	public void testgetPathsFromIntersectionRand1() {
 		// create both Sets
-		pathSet7 = b.getPathsFromIntersection(new Intersection(new Location(0, 0, 0)));
+		Location l = new Location(0, 0 , 0);
+		pathSet7 = b.getPathsFromIntersection(b.getIntersection(l));
 		pathSet8 = new HashSet<Path>();
 		pathSet8.add(b.getPath(new Location(0, 0, 0)));
 		pathSet8.add(b.getPath(new Location(0, 0, 5)));
@@ -250,7 +254,8 @@ public class BoardTest {
 	@Test
 	 public void testgetPathsFromIntersectionRand2(){
 		 //create both Sets
-		 Set<Path> cSet = b.getPathsFromIntersection(b.getIntersection(new Location(3, 1, 3)));
+		Location l = new Location(3, 1, 3);
+		 Set<Path> cSet = b.getPathsFromIntersection(b.getIntersection(l));
 		 Set<Path> eSet =  new HashSet<Path>();
 		 eSet.add(b.getPath(new Location(3, 1, 2)));
 		 eSet.add(b.getPath(new Location(3, 1, 3)));
@@ -442,10 +447,14 @@ public class BoardTest {
 		//create both sets
 		Set<Intersection> i1=b.getIntersectionsFromIntersection(b.getIntersection(new Location(2, 1, 1)));
 		Set<Intersection> i2=new HashSet<Intersection>();
-		i2.add(b.getIntersection(new Location(1, 2 ,2)));
-		i2.add(b.getIntersection(new Location(2, 1, 0)));
+		i2.add(b.getIntersection(new Location(1, 1 ,2)));
+		i2.add(b.getIntersection(new Location(1, 2, 2)));
 		i2.add(b.getIntersection(new Location(2, 1, 2)));
 		// test if both sets have identical content
+		System.out.println("path1" + b.getIntersection(new Location (1, 1, 2)));
+		System.out.println("path1" + b.getIntersection(new Location (1, 2, 2)));
+		System.out.println("path1" + b.getIntersection(new Location (2, 1, 2)));
+		System.out.println("interesction" + b.getIntersection(new Location(2,1,1)));
 		assertTrue(i1.containsAll(i2));
 		assertTrue(i2.containsAll(i1));
 
@@ -454,11 +463,11 @@ public class BoardTest {
 	@Test
 	public void testGetIntersectionsFromIntersectionRand(){
 		//create both sets
-		Intersection i = b.getIntersection(new Location(3, 0, 4));
+		Intersection i = b.getIntersection(new Location(1, 0, 4));
 		Set<Intersection> i1=b.getIntersectionsFromIntersection(i);
 		Set<Intersection> i2=new HashSet<Intersection>();
-		i2.add(b.getIntersection(new Location(3, 0 ,5)));
-		i2.add(b.getIntersection(new Location(3, 0, 3)));
+		i2.add(b.getIntersection(new Location(1, 0 ,5)));
+		i2.add(b.getIntersection(new Location(1, 0, 3)));
 		// test if both sets have identical content
 		assertTrue(i1.containsAll(i2));
 		assertTrue(i2.containsAll(i1));
@@ -475,6 +484,18 @@ public class BoardTest {
 		Set<Intersection> i2=new HashSet<Intersection>();
 		i2.add(b.getIntersection(new Location(0,0,2)));
 		i2.add(b.getIntersection(new Location(0,0,3)));
+		
+		assertTrue(i1.containsAll(i2));
+		assertTrue(i2.containsAll(i1));
+
+	}
+	@Test
+	public void testGetIntersectionsFromPath2(){
+		Set<Intersection> i1=b.getIntersectionsFromPath(b.getPath(new Location(2,1,0)));
+		
+		Set<Intersection> i2=new HashSet<Intersection>();
+		i2.add(b.getIntersection(new Location(1,1,2)));
+		i2.add(b.getIntersection(new Location(1,2,3)));
 		
 		assertTrue(i1.containsAll(i2));
 		assertTrue(i2.containsAll(i1));

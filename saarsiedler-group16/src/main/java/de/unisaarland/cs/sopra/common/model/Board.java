@@ -210,7 +210,7 @@ public class Board {
 		int y = loc.getY();
 		int o = loc.getOrientation();
 		Set<Field> s = new HashSet<Field>();
-		s.add(this.getField(new Point(x, y)));
+		s.add(this.getField(new Point(y, x)));
 		if (y % 2 == 1){
 			switch(o){
 			case 0:
@@ -409,8 +409,8 @@ public class Board {
 		int y = loc.getY();
 		int o = loc.getOrientation();
 		Set<Intersection> s = new HashSet<Intersection>();
-		s.add(getIntersection(new Location(x, y, o)));
-		s.add(getIntersection(new Location(x, y, (o+1)%6)));
+		s.add(getIntersection(new Location(y, x, o)));
+		s.add(getIntersection(new Location(y, x, (o+1)%6)));
 		return s;
 	}
 	
