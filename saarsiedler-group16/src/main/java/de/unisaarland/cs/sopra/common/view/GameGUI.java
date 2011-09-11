@@ -31,6 +31,7 @@ import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.Point;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
@@ -42,17 +43,25 @@ public class GameGUI extends View implements Runnable{
 	private Map<FieldType,Texture> fieldTextureMap;
 	private Map<Integer,Texture> numberTextureMap;
 	private Map<String,Texture> uiTextureMap;
+	private Map<String,Texture> markTextureMap;
 	private List<Field> renderFieldList;
-	private int x = 0;
-	private int y = 0;
-	private int z = 0;
-	private int maxX;
-	private int maxY;
-	private int maxZ;
-	private int minX;
-	private int minY;
-	private int minZ;
+	private int x,y,z;
+	private int maxX, maxY, maxZ;
+	private int minX, minY, minZ;
 	private UnicodeFont uniFont;
+
+	private int selectionMode;
+	private static final int NONE = 0;
+	private static final  int INTERSECTIONS = 1;
+	private static final  int PATHS = 2;
+	private static final  int FIELDS = 3;
+	private List<Point> locations;
+	
+	private int uiMode;
+	private static final int RESOURCE_VIEW = 0;
+	private static final int TRADE_VIEW = 1;
+	private static final int BUILD_VIEW = 2;
+
 	
 	GameGUI(long meID, ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player,String> playerNames, Setting setting) throws Exception {
 		super(meID, modelReader, controllerAdapter);
@@ -60,6 +69,8 @@ public class GameGUI extends View implements Runnable{
 		this.setting = setting;
 		this.playerNames = playerNames;
 		this.controllerAdapter = controllerAdapter;
+		this.uiMode = RESOURCE_VIEW;
+		this.selectionMode = NONE;
 		
 		//center to the area where the first field is drawn
 		this.x = (int)(812.8125f*setting.getWindowWidth()/setting.getWindowHeight());
@@ -77,47 +88,94 @@ public class GameGUI extends View implements Runnable{
 		//TODO: set and use min,max for x,y 
 	}
 
-	private void renderField(Field f) {
-		int fx = 0;
-		int fy = 0;
-		   switch(f.getLocation().getY()%2) {
-		   case 0:
-			   fx = f.getLocation().getX()*250;
-			   fy = f.getLocation().getY()*215; 
-			   break;
-		   case 1:
-			   fx = f.getLocation().getX()*250-125;
-			   fy = f.getLocation().getY()*215;
-			   break;
-		   }
-		
-		     fieldTextureMap.get(f.getFieldType()).bind();
-		     GL11.glBegin(GL11.GL_POLYGON);
-		       //GL11.glColor4f(1.0f,1.0f,1.0f,1.0f); //transparenz
-		       GL11.glTexCoord2f(0,0);
-		       GL11.glVertex3i(-150+fx+x, -150+fy+y, 0+z);
-		       GL11.glTexCoord2f(1,0);
-		       GL11.glVertex3i(150+fx+x, -150+fy+y, 0+z);
-		       GL11.glTexCoord2f(1,1);
-		       GL11.glVertex3i(150+fx+x, 150+fy+y, 0+z);
-		       GL11.glTexCoord2f(0,1);
-		       GL11.glVertex3i(-150+fx+x, 150+fy+y, 0+z);
-		     GL11.glEnd();
-		     
-		     if (f.getFieldType() != FieldType.DESERT && f.getFieldType() != FieldType.WATER) {
-			     numberTextureMap.get(f.getNumber()).bind();
+	private void renderFields() {
+	   Iterator<Field> iter = renderFieldList.iterator();
+	   while (iter.hasNext()) {
+			Field f = iter.next();
+			int fx = 0;
+			int fy = 0;
+			   switch(f.getLocation().getY()%2) {
+			   case 0:
+				   fx = f.getLocation().getX()*250;
+				   fy = f.getLocation().getY()*215; 
+				   break;
+			   case 1:
+				   fx = f.getLocation().getX()*250-125;
+				   fy = f.getLocation().getY()*215;
+				   break;
+			   }
+			
+			     fieldTextureMap.get(f.getFieldType()).bind();
 			     GL11.glBegin(GL11.GL_POLYGON);
 			       //GL11.glColor4f(1.0f,1.0f,1.0f,1.0f); //transparenz
 			       GL11.glTexCoord2f(0,0);
-			       GL11.glVertex3i(-150+fx+x, -150+fy+y, 1+z);
+			       GL11.glVertex3i(-150+fx+x, -150+fy+y, 0+z);
 			       GL11.glTexCoord2f(1,0);
-			       GL11.glVertex3i(150+fx+x, -150+fy+y, 1+z);
+			       GL11.glVertex3i(150+fx+x, -150+fy+y, 0+z);
 			       GL11.glTexCoord2f(1,1);
-			       GL11.glVertex3i(150+fx+x, 150+fy+y, 1+z);
+			       GL11.glVertex3i(150+fx+x, 150+fy+y, 0+z);
 			       GL11.glTexCoord2f(0,1);
-			       GL11.glVertex3i(-150+fx+x, 150+fy+y, 1+z);
+			       GL11.glVertex3i(-150+fx+x, 150+fy+y, 0+z);
 			     GL11.glEnd();
-		     }
+			     
+			     if (f.getFieldType() != FieldType.DESERT && f.getFieldType() != FieldType.WATER) {
+				     numberTextureMap.get(f.getNumber()).bind();
+				     GL11.glBegin(GL11.GL_POLYGON);
+				       //GL11.glColor4f(1.0f,1.0f,1.0f,1.0f); //transparenz
+				       GL11.glTexCoord2f(0,0);
+				       GL11.glVertex3i(-150+fx+x, -150+fy+y, 1+z);
+				       GL11.glTexCoord2f(1,0);
+				       GL11.glVertex3i(150+fx+x, -150+fy+y, 1+z);
+				       GL11.glTexCoord2f(1,1);
+				       GL11.glVertex3i(150+fx+x, 150+fy+y, 1+z);
+				       GL11.glTexCoord2f(0,1);
+				       GL11.glVertex3i(-150+fx+x, 150+fy+y, 1+z);
+				     GL11.glEnd();
+			     }
+	   }
+	}
+	
+	private void renderMarks() {
+		switch(selectionMode) {
+		case NONE: 
+			break;
+		case FIELDS:
+			for (Point p : locations) {
+			    int fx = 0;
+			    int fy = 0;
+			    switch(p.getY()%2) {
+			    case 0:
+				   fx = p.getX()*250;
+				   fy = p.getY()*215; 
+				   break;
+			    case 1:
+				   fx = p.getX()*250-125;
+				   fy = p.getY()*215;
+				   break;
+			    }
+			    markTextureMap.get("Field").bind();
+			    GL11.glBegin(GL11.GL_POLYGON);
+			       //GL11.glColor4f(1.0f,1.0f,1.0f,1.0f); //transparenz
+			       GL11.glTexCoord2f(0,0);
+			       GL11.glVertex3i(-150+fx+x, -150+fy+y, 2+z);
+			       GL11.glTexCoord2f(1,0);
+			       GL11.glVertex3i(150+fx+x, -150+fy+y, 2+z);
+			       GL11.glTexCoord2f(1,1);
+			       GL11.glVertex3i(150+fx+x, 150+fy+y, 2+z);
+			       GL11.glTexCoord2f(0,1);
+			       GL11.glVertex3i(-150+fx+x, 150+fy+y, 2+z);
+			    GL11.glEnd();
+			}
+
+			break;
+		case INTERSECTIONS:
+			break;
+		case PATHS:
+			break;
+		}
+		
+		     
+		
 	}
 	
 	private void renderUI(String name, int x, int y, int layer) {
@@ -150,12 +208,15 @@ public class GameGUI extends View implements Runnable{
 		   GL11.glRotatef(180, 1, 0, 0);
 		   GL11.glColor3f(1.0f, 1.0f, 1.0f);
 		   
-		   Iterator<Field> iter = renderFieldList.iterator();
-		   while (iter.hasNext()) {
-			   		renderField(iter.next());
-			   		//iter.remove();
-		   }
+		   //Spielfeld
+		   renderFields();
+		   renderIntersections();
+		   renderPaths();
 		   
+		   //Markierungen
+		   renderMarks();
+		   
+		   //UI
 		   renderUI("Background", 0, 0, 0);
 		   
 		   
@@ -167,6 +228,16 @@ public class GameGUI extends View implements Runnable{
 		   GL11.glPopMatrix();
 		   
 		   
+	}
+
+	private void renderPaths() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void renderIntersections() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	public void drawTradeMenu() {
@@ -310,6 +381,10 @@ public class GameGUI extends View implements Runnable{
 		
 			uiTextureMap = new HashMap<String,Texture>();
 			uiTextureMap.put("Background", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Background.png")));
+		
+			markTextureMap = new HashMap<String,Texture>();
+			markTextureMap.put("Field", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/FieldMark.png")));
+			
 		} catch (Exception e) {}
 		
 		GL11.glDisable(GL11.GL_DEPTH_TEST); // Enables Depth Testing
@@ -449,17 +524,6 @@ public class GameGUI extends View implements Runnable{
 		vvv.setAccessible(true); 
 		vvv.set(null, null);
 		
-		
-		WorldRepresentation worldrep = new WorldRepresentation(5, 5, 2, 9, 5, 4,  
-				new byte[] {1,2,3,4,0,
-							5,1,2,3,0,
-							4,5,1,2,0,
-							3,4,5,1,0,
-							0,0,0,0,0},
-				new byte[] {1,4,
-							2,5,
-							3,6},
-				new byte[] {});
 				
 		MatchInformation matchinfo = new MatchInformation() 
 		{
@@ -504,14 +568,15 @@ public class GameGUI extends View implements Runnable{
 				return new long[] {};
 			}
 		};
-		Model model = new Model(worldrep, matchinfo, 0);
-		model.matchStart(new long[] {0,1}, new byte[]   {2,3,4,5,
+		Model model = new Model(WorldRepresentation.getDefault(), matchinfo, 0);
+		model.matchStart(new long[] {0,1}, new byte[]   {2,3,4,
 														 6,8,9,10,
 														 11,12,11,10,
-														 9,8,6,5});
+														 9,8,6,5,
+														 2,6,9});
 		
-		//Setting setting = new Setting(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight(), true);
-		Setting setting = new Setting(1280, 1024, true);
+		Setting setting = new Setting(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight(), true);
+		//Setting setting = new Setting(1280, 1024, true);
 		//Setting setting = new Setting(800, 600, true);
 		
 		GameGUI gameGUI = new GameGUI(0, model, null, null, setting);
