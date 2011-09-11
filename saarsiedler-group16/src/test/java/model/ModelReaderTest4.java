@@ -211,9 +211,9 @@ public class ModelReaderTest4 {
 	@Test
 	public void testGetHarborIntersections() {
 		Set<Intersection> iset = new HashSet<Intersection>();
-		iset.add(model1.getIntersection(new Location(1,0,1)));
+		iset.add(model1.getIntersection(new Location(0,0,3)));
 		iset.add(model1.getIntersection(new Location(1,0,2)));
-		iset.add(model1.getIntersection(new Location(2,1,1)));
+		iset.add(model1.getIntersection(new Location(1,2,3)));
 		iset.add(model1.getIntersection(new Location(2,1,2)));
 		assertEquals(iset, model1.getHarborIntersections());
 		
