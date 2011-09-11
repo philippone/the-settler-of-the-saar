@@ -60,7 +60,9 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	public void addModelObserver(ModelObserver modelObserver) {
 		if (modelObserver == null) throw new IllegalArgumentException();
-		this.modelObserver.add(modelObserver);
+		if (this.modelObserver.contains(modelObserver) ) {
+			return;
+		} else this.modelObserver.add(modelObserver);
 	}
 	
 	/**
@@ -68,7 +70,9 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	public void removeModelObserver(ModelObserver modelObserver) {
 		if (modelObserver == null) throw new IllegalArgumentException();
-		this.modelObserver.remove(modelObserver);
+		if (this.modelObserver.size() == 0) {
+			throw new IllegalArgumentException();
+		} else this.modelObserver.remove(modelObserver);
 	}
 	
 	/**
