@@ -59,7 +59,6 @@ public class ModelReaderTest4 {
 		model2.buildSettlement(new Location(1,0,1) , BuildingType.Village);
 		model2.buildStreet(new Location(1,0,1));
 		
-		
 		//new round -> first player builds
 		model2.newRound(12);
 		//Bauende Towns und Catapulte bauen

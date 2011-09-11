@@ -11,9 +11,16 @@ import de.unisaarland.cs.st.saarsiedler.comm.results.*;
 public class Client {
 	
 	private Connection connection;
-	private ClientGUI clientGUI;
+//	private ClientGUI clientGUI;
 	private Setting setting;
 	
+	public static void main(String[] args) {
+//		GUIFrame cgui= new GUIFrame();
+		
+//		ClientGUI3 clientGUI = new ClientGUI3();
+		GUIFrame g = new GUIFrame();
+	
+	}
 	public MatchInformation getMatchInformation(int matchID) {
 		throw new UnsupportedOperationException();
 	}
