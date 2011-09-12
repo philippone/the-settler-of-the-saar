@@ -31,6 +31,7 @@ public class Model implements ModelReader, ModelWriter {
 	private boolean reversedPlayersList;
 	private long meID;
 	private Player me;
+	private int bfbc;
 
 	/**
 	 * @param worldRepresentation
@@ -134,8 +135,13 @@ public class Model implements ModelReader, ModelWriter {
 	 * @return current Player
 	 */
 	public Player getCurrentPlayer() {
+		if (bfbc != this.initVillages * this.players.size()) {
 		return this.players.get((this.round + this.players.size() - 1)
 				% this.players.size());
+		}
+		else {
+			return this.players.get((bfbc/2)%this.initVillages-1);
+		}
 	}
 
 	/**
@@ -1226,8 +1232,8 @@ public class Model implements ModelReader, ModelWriter {
 					ob.updateIntersection(i);
 				}
 			} else
-				throw new IllegalArgumentException(
-						"Das Gebaeude wurde nicht gebaut");
+				throw new IllegalArgumentException(String.format(
+						"Das Gebaeude wurde nicht gebaut. isBuildable:%b, isAffordable:%b", isBuildable(i, buildingType) , isAffordable(buildingType)));
 		}
 	}
 
