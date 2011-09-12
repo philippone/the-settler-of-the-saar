@@ -485,11 +485,11 @@ public class Board {
 				if (isValid(y-1, x)) s.add(this.getPath(new Location(y-1, x, 3)));
 				break;	
 			}
-		}	
+		}
 		return s;
 	}
 	
-	//? TODO
+	//TODO
 	public Set<Path> getPathsFromPath(Path path) {
 		int x = path.getLocation().getX();
 		int y = path.getLocation().getY();
@@ -497,10 +497,84 @@ public class Board {
 		Set<Path> s = new HashSet<Path>();
 		s.add(getPath(new Location(y, x, (o+1)%6)));
 		s.add(getPath(new Location(y, x, (o+5)%6)));
-		if (y%2 == 1){
+		if (y % 2 == 1){
 			switch(o){
 			case 0:
-				if (isValid(x-1, y-1)) s.add(getPath(new Location(x-1, y-1, 1)));
+				if (isValid(y-1, x-1)) s.add(this.getPath(new Location(y-1, x-1, 1)));
+				if (isValid(y-1, x)) s.add(this.getPath(new Location(y-1, x, 4)));
+				if (isValid(y-1, x)) s.add(this.getPath(new Location(y-1, x, 2)));
+				if (isValid(y, x+1)) s.add(this.getPath(new Location(y, x+1, 5)));
+				break;
+			case 1:
+				if (isValid(y-1, x)) s.add(this.getPath(new Location(y-1, x, 2)));
+				if (isValid(y, x+1)) s.add(this.getPath(new Location(y, x+1, 5)));
+				if (isValid(y, x+1)) s.add(this.getPath(new Location(y, x+1, 3)));
+				if (isValid(y+1, x)) s.add(this.getPath(new Location(y+1, x, 0)));
+				break;
+			case 2:
+				if (isValid(y, x+1)) s.add(this.getPath(new Location(y, x+1, 3)));
+				if (isValid(y+1, x)) s.add(this.getPath(new Location(y+1, x, 0)));
+				if (isValid(y+1, x)) s.add(this.getPath(new Location(y+1, x, 4)));
+				if (isValid(y+1, x-1)) s.add(this.getPath(new Location(y+1, x-1, 1)));
+				break;
+			case 3:
+				if (isValid(y+1, x-1)) s.add(this.getPath(new Location(y+1, x-1, 1)));
+				if (isValid(y+1, x)) s.add(this.getPath(new Location(y+1, x, 4)));
+				if (isValid(y+1, x-1)) s.add(this.getPath(new Location(y+1, x-1, 5)));
+				if (isValid(y, x-1)) s.add(this.getPath(new Location(y, x-1, 2)));
+				break;
+			case 4:
+				if (isValid(y+1, x-1)) s.add(this.getPath(new Location(y+1, x-1, 5)));
+				if (isValid(y, x-1)) s.add(this.getPath(new Location(y, x-1, 2)));
+				if (isValid(y, x-1)) s.add(this.getPath(new Location(y, x-1, 0)));
+				if (isValid(y-1, x-1)) s.add(this.getPath(new Location(y-1, x-1, 3)));
+				break;
+			case 5:
+				if (isValid(y, x-1)) s.add(this.getPath(new Location(y, x-1, 0)));
+				if (isValid(y-1, x-1)) s.add(this.getPath(new Location(y-1, x-1, 3)));
+				if (isValid(y-1, x-1)) s.add(this.getPath(new Location(y-1, x-1, 1)));
+				if (isValid(y-1, x)) s.add(this.getPath(new Location(y-1, x, 4)));
+				break;	
+			}
+		}
+		else {
+			switch(o){
+			case 0:
+				if (isValid(y-1, x)) s.add(this.getPath(new Location(y-1, x, 1)));
+				if (isValid(y-1, x+1)) s.add(this.getPath(new Location(y-1, x+1, 4)));
+				if (isValid(y-1, x+1)) s.add(this.getPath(new Location(y-1, x+1, 2)));
+				if (isValid(y, x+1)) s.add(this.getPath(new Location(y, x+1, 5)));
+				break;
+			case 1:
+				if (isValid(y-1, x+1)) s.add(this.getPath(new Location(y-1, x+1, 2)));
+				if (isValid(y, x+1)) s.add(this.getPath(new Location(y, x+1, 5)));
+				if (isValid(y, x+1)) s.add(this.getPath(new Location(y, x+1, 3)));
+				if (isValid(y+1, x+1)) s.add(this.getPath(new Location(y+1, x+1, 0)));
+				break;
+			case 2:
+				if (isValid(y+1, x+1)) s.add(this.getPath(new Location(y+1, x+1, 0)));
+				if (isValid(y, x+1)) s.add(this.getPath(new Location(y, x+1, 3)));
+				if (isValid(y+1, x+1)) s.add(this.getPath(new Location(y+1, x+1, 4)));
+				if (isValid(y+1, x)) s.add(this.getPath(new Location(y+1, x, 1)));
+				break;
+			case 3:
+				if (isValid(y+1, x+1)) s.add(this.getPath(new Location(y+1, x+1, 4)));
+				if (isValid(y+1, x)) s.add(this.getPath(new Location(y+1, x, 1)));
+				if (isValid(y+1, x)) s.add(this.getPath(new Location(y+1, x, 5)));
+				if (isValid(y, x-1)) s.add(this.getPath(new Location(y, x-1, 2)));
+				break;
+			case 4:
+				if (isValid(y+1, x)) s.add(this.getPath(new Location(y+1, x, 5)));
+				if (isValid(y, x-1)) s.add(this.getPath(new Location(y, x-1, 2)));
+				if (isValid(y, x-1)) s.add(this.getPath(new Location(y, x-1, 0)));
+				if (isValid(y-1, x)) s.add(this.getPath(new Location(y-1, x, 3)));
+				break;
+			case 5:
+				if (isValid(y, x-1)) s.add(this.getPath(new Location(y, x-1, 0)));
+				if (isValid(y-1, x)) s.add(this.getPath(new Location(y-1, x, 3)));
+				if (isValid(y-1, x)) s.add(this.getPath(new Location(y-1, x, 1)));
+				if (isValid(y-1, x+1)) s.add(this.getPath(new Location(y-1, x+1, 4)));
+				break;	
 			}
 		}
 		return s;

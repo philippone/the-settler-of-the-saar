@@ -149,6 +149,7 @@ public class ModelWriterTest {
 	@Test
 	// Tests wheter it is possible to build a town in the initial phase
 	public void buildSettlementTest() {
+		
 		try {
 			model.buildSettlement(new Location(1, 1, 1), BuildingType.Town);
 			fail("You shouldn't be able to build a town in the inital phase!");
@@ -352,7 +353,7 @@ public class ModelWriterTest {
 		p.modifyResources(new ResourcePackage(2, 5, 6, 0, 1));
 		model.tradeOffer(0, 0, -1, 0, 1);
 		try {
-			model.respondTrade(-1);
+			model.respondTrade(-3);
 			fail("shoud throw IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 			// Test laueft durch

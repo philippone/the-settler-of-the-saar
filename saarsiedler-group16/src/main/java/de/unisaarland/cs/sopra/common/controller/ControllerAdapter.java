@@ -156,6 +156,7 @@ public class ControllerAdapter {
 	 * @throws IOException
 	 */
 	public void offerTrade(ResourcePackage resourcePackage) throws IllegalStateException, IOException {
+		// TODO: Ueberpruefe ob Handel so erlaubt (Verhaeltnisse)
 		int lumber = resourcePackage.getResource(LUMBER);
 		int brick =  resourcePackage.getResource(BRICK);
 		int wool =  resourcePackage.getResource(WOOL);
