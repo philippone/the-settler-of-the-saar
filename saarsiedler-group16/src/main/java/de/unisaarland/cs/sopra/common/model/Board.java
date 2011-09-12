@@ -329,7 +329,7 @@ public class Board {
 		int x = loc.getX();
 		int y = loc.getY();
 		Set<Intersection> s = new HashSet<Intersection>();
-		for (int o = 0; o < 6; o++){ s.add(getIntersection(new Location(x, y, o))); }
+		for (int o = 0; o < 6; o++){ s.add(getIntersection(new Location(y, x, o))); }
 		return s;
 	}
 	
@@ -341,8 +341,8 @@ public class Board {
 		int y = loc.getY();
 		int o = loc.getOrientation();
 		Set<Intersection> s = new HashSet<Intersection>();
-		s.add(getIntersection(new Location(x, y, (o+5)%6)));
-		s.add(getIntersection(new Location(x, y, (o+1)%6)));
+		s.add(getIntersection(new Location(y, x, (o+5)%6)));
+		s.add(getIntersection(new Location(y, x, (o+1)%6)));
 		if (y % 2 == 1){
 			switch(o){
 			case 0:
@@ -409,8 +409,8 @@ public class Board {
 		int y = loc.getY();
 		int o = loc.getOrientation();
 		Set<Intersection> s = new HashSet<Intersection>();
-		s.add(getIntersection(new Location(x, y, o)));
-		s.add(getIntersection(new Location(x, y, (o+1)%6)));
+		s.add(getIntersection(new Location(y, x, o)));
+		s.add(getIntersection(new Location(y, x, (o+1)%6)));
 		return s;
 	}
 	
@@ -421,7 +421,7 @@ public class Board {
 		int x = loc.getX();
 		int y = loc.getY();
 		Set<Path> s = new HashSet<Path>();
-		for (int o = 0; o < 6; o++){ s.add(getPath(new Location(x, y, o))); }
+		for (int o = 0; o < 6; o++){ s.add(getPath(new Location(y, x, o))); }
 		return s;
 	}
 	
@@ -432,8 +432,8 @@ public class Board {
 		int y = loc.getY();
 		int o = loc.getOrientation();
 		Set<Path> s = new HashSet<Path>();
-		s.add(getPath(new Location(x, y, o)));
-		s.add(getPath(new Location(x, y, (o+5)%6)));
+		s.add(getPath(new Location(y, x, o)));
+		s.add(getPath(new Location(y, x, (o+5)%6)));
 		return s;
 	}
 	

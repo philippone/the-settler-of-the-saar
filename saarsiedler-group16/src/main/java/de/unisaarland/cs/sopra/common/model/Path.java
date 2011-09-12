@@ -69,4 +69,9 @@ public class Path {
 		return location.hashCode();
 	}
 	
+	@Override
+	public String toString() {
+		return String.format("Loc:%s; HarbourType:%s; Street:%s; Catapult:%s", location, street, catapult, harborType);
+	}
+	
 }
