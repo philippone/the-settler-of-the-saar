@@ -57,12 +57,13 @@ public class ModelWriterTest {
 		model.buildStreet(new Location(1,1,0));
 		assertTrue(model.getIntersection(new Location(1,1,0)).hasOwner());
 		assertTrue("Owner stimmt nicht ueberein",model.getIntersection(new Location(1,1,0)).getOwner().equals(model.getTableOrder().get(0)));
+		
 		assertTrue(model.getPath(new Location(1,1,0)).hasStreet());
 		assertTrue(model.getPath(new Location(1,1,0)).getStreetOwner().equals(model.getTableOrder().get(0)));
 		
 		// 2. Spieler
-		model.buildSettlement(new Location(2,2,2), BuildingType.Village);
-		model.buildStreet(new Location(2,2,2));
+		model.buildSettlement(new Location(1,2,2), BuildingType.Village);
+		model.buildStreet(new Location(1,2,2));
 		assertTrue(model.getIntersection(new Location(1,0,0)).hasOwner());
 		assertTrue(model.getIntersection(new Location(1,0,0)).getOwner().equals(model.getTableOrder().get(1)));
 		assertTrue(model.getPath(new Location(1,0,0)).hasStreet());
@@ -73,7 +74,7 @@ public class ModelWriterTest {
 	public void build_Init_fail2Villages() {
 		model.buildSettlement(new Location(1,1,0), BuildingType.Village);
 		try {
-			model.buildSettlement(new Location(2,2,2), BuildingType.Village);
+			model.buildSettlement(new Location(1,2,2), BuildingType.Village);
 		} catch(Exception e) {
 			// Test run
 		}
@@ -333,10 +334,10 @@ public class ModelWriterTest {
 	// Tests wheter we have not got enough resources to build the specified Settlement
 	public void buildSettlement_costnegativeTest() {
 		initialize();
-		model.getPath(new Location(2, 2, 3)).createStreet(model.getCurrentPlayer());
+		model.getPath(new Location(1, 2, 3)).createStreet(model.getCurrentPlayer());
 		model.getCurrentPlayer().modifyResources(new ResourcePackage(-1000,-1000,-1000,-1000,-1000));
 		try {
-			model.buildSettlement(new Location(2, 2, 3), BuildingType.Village);
+			model.buildSettlement(new Location(1, 2, 3), BuildingType.Village);
 			fail("You shouldn't have enough resources to build the village!");
 		} catch (Exception e) { /* everything is fine */ }
 	}
@@ -347,7 +348,7 @@ public class ModelWriterTest {
 	public void buildSettlement_missingStreetTest(){
 		initialize();
 		try {
-			model.buildSettlement(new Location(2, 2, 0), BuildingType.Village);
+			model.buildSettlement(new Location(1, 2, 0), BuildingType.Village);
 			fail("There is no steet that allows you to build a new Village!");
 		}
 		catch (Exception e) { /* everything is fine */ }

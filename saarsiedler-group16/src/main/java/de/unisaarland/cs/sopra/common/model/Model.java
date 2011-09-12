@@ -1,6 +1,7 @@
 package de.unisaarland.cs.sopra.common.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,7 +32,7 @@ public class Model implements ModelReader, ModelWriter {
 	private boolean reversedPlayersList;
 	private long meID;
 	private Player me;
-	private int initPlayer;
+	private int initPlayer = 0;
 
 	/**
 	 * @param worldRepresentation
@@ -1011,7 +1012,7 @@ public class Model implements ModelReader, ModelWriter {
 	 */
 	@Override
 	public void newRound(int number) {
-		if (number == 1 || number > 12)
+		if (number < 2 || number > 12)
 			throw new IllegalArgumentException();
 
 		if (number == 7) {
@@ -1036,6 +1037,8 @@ public class Model implements ModelReader, ModelWriter {
 				ob.updateResources();
 			}
 		}
+		if (round == 0 && reversedPlayersList)
+			Collections.reverse(players);
 		this.round++;
 		for (ModelObserver ob : modelObserver) {
 			ob.eventNewRound(getCurrentPlayer() == me);
@@ -1189,17 +1192,19 @@ public class Model implements ModelReader, ModelWriter {
 				}
 			}
 			if (!hasLand)throw new IllegalStateException("Path ist nur von Wasser umgeben!");
-			if(initPlayer==players.size()-1){
-				initPlayer=0;
-				java.util.Collections.reverse(players);
-			}
-			initPlayer++;
 		}
 		getPath(destination).createStreet(getCurrentPlayer());
 		for (ModelObserver ob : modelObserver) {
 			ob.updateResources();
 			ob.updatePath(dest);
 		}
+		if(initPlayer==players.size()-1){
+			initPlayer=-1;
+			
+			java.util.Collections.reverse(players);
+			reversedPlayersList=!reversedPlayersList;
+		}
+		initPlayer++;
 	}
 
 	/*
@@ -1235,8 +1240,8 @@ public class Model implements ModelReader, ModelWriter {
 					ob.updateIntersection(i);
 				}
 			} else
-				throw new IllegalArgumentException(
-						"Das Gebaeude wurde nicht gebaut");
+				throw new IllegalArgumentException(String.format(
+						"Das Gebaeude wurde nicht gebaut. isBuildable:%b, isAffordable:%b", isBuildable(i, buildingType) , isAffordable(buildingType)));
 		}
 	}
 

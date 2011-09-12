@@ -63,9 +63,10 @@ public class ModelReaderTest4 {
 		//new round -> first player builds
 		model3.newRound(12);
 		//Bauende Towns und Catapulte bauen
-		System.out.println("InterVillage: "+ model3.getIntersection(new Location(1, 0, 1)));
+		System.out.println("InterVillage: "+ model3.getIntersection(new Location(0, 0, 1)));
 		model3.buildSettlement(new Location(0,0,1) , BuildingType.Town);
-//		model3.buildSettlement(new Location(1,0,1) , BuildingType.Town);
+		System.out.println("InterVillage: "+ model3.getIntersection(new Location(0, 0, 1)));
+		model3.buildSettlement(new Location(1,0,1) , BuildingType.Town);
 		model3.buildCatapult(new Location(0,0,1), true);
 		model3.buildCatapult(new Location(1,0,1), true);
 		
