@@ -2,6 +2,7 @@ package model;
 
 import static org.junit.Assert.*;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,6 +47,7 @@ public class HarborTypeTest {
 		assertFalse(wooHar.tradePossible(new ResourcePackage(0, 0, 0, 0, 0)));
 	}
 	
+	@After
 	public void tearDown() {
 		genHar = lumHar = briHar = wooHar = graHar = oreHar = null;
 	}

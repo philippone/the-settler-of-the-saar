@@ -2,11 +2,15 @@ package model;
 
 import static org.junit.Assert.*;
 
+import java.awt.Point;
+import java.io.IOException;
 import java.util.Random;
+import java.util.Set;
 
 import org.junit.Test;
 
 import de.unisaarland.cs.sopra.common.model.Location;
+import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.HarborType;
@@ -37,7 +41,7 @@ public class PathTest {
 	}
 	
 	@Test
-	public void testStreet() {
+	public void testStreet() throws IOException {
 		Random r = new Random();
 		int x=r.nextInt(10);
 		int y=r.nextInt(10);
@@ -49,6 +53,20 @@ public class PathTest {
 		p.createStreet(pl);
 		assertTrue(p.hasStreet());
 		assertEquals(pl,p.getStreetOwner());
+		
+		Model model = TestUtil.getStandardModel1();
+		model.buildStreet(new Location(0,0,0));
+		// on the border of the world
+		model.buildStreet(new Location(0,0,2));
+		// on the border beetween water and land
+		model.buildStreet(new Location(1,1,1));
+		// on the middle of the land
+		model.buildStreet(new Location(0,0,1));
+		// on the middle of the sea
+		assertFalse(model.getPath(new Location(0,0,0)).hasStreet());
+		assertTrue(model.getPath(new Location(0,0,2)).hasStreet());
+		assertTrue(model.getPath(new Location(1,1,1)).hasStreet());
+		assertFalse(model.getPath(new Location(0,0,1)).hasStreet());
 	}
 	
 	@Test
