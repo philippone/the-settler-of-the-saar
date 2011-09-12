@@ -14,6 +14,7 @@ import java.util.Map;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 import org.newdawn.slick.Color;
@@ -69,9 +70,13 @@ public class GameGUI extends View implements Runnable{
 	private static int windowWidth;
 	private static int windowHeight;
 	private static float aspectRatio;
+	private static int xOffset;
 	private static int xOffsetUI, yOffsetUI, zOffsetUI;
 	private static int viewportXwidth;
-	private static float ScreenToOpenGL = 0.61392405063291139241f;
+	private static int viewportYwidth;
+	private static float screenToOpenGLX;
+	private static float screenToOpenGLY;
+	
 	
 	GameGUI(long meID, ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player,String> playerNames, Setting setting) throws Exception {
 		super(meID, modelReader, controllerAdapter);
@@ -85,7 +90,11 @@ public class GameGUI extends View implements Runnable{
 		windowHeight = setting.getDisplayMode().getHeight();
 		aspectRatio = ((float)windowWidth)/windowHeight;
 		viewportXwidth = (int)(870*aspectRatio);
-		xOffsetUI = (int)((366*aspectRatio)+(viewportXwidth-1075)/2);
+		viewportYwidth = 870;
+		screenToOpenGLX = ((float)viewportXwidth/windowWidth);
+		screenToOpenGLY = ((float)viewportYwidth/windowHeight);
+		xOffset = (int)(366*aspectRatio);
+		xOffsetUI = (int)((viewportXwidth-1075)/2);
 		yOffsetUI = 955;
 		zOffsetUI = -950;
 		//center to the area where the first field is drawn
@@ -225,20 +234,25 @@ public class GameGUI extends View implements Runnable{
 		   renderPaths();
 		   //Markierungen
 		   renderMarks(); //TODO: implement markierungen
+		   
 		   //UI
-		   renderUI("Background", xOffsetUI+0, yOffsetUI+0, +zOffsetUI+0, 1500, 550);
+		   GL11.glPushMatrix();
+		   GL11.glTranslatef(xOffset, 0, 0);
+		   renderUI("Background", xOffsetUI, yOffsetUI, zOffsetUI, 1500, 550);
 		   renderUI("Res", xOffsetUI+957, yOffsetUI+20, zOffsetUI+1, 42, 330);
 		   for (Clickable act : Clickable.getList())
 			   renderUI(act);
+		   GL11.glPopMatrix();
+		   
 		   //Draw Fonts on UI
 		   GL11.glPushMatrix();
-		   GL11.glTranslatef((366*aspectRatio)+20, 400, -950);
+		   GL11.glTranslatef(xOffset+20, 400, -950);
 		   debugFont.drawString(300, 0, "Debug:", Color.white);
 		   debugFont.drawString(300, 30, "x: " + x + ", y: " + y + ", z: " + z, Color.white);
 		   debugFont.drawString(300, 60, "mx: " + Mouse.getX() + ", my: " + Mouse.getY() + ", mw: " + Mouse.getEventDWheel(), Color.white);
 		   debugFont.drawString(300, 90, "minX: " + minX + ", minY: " + minY , Color.white);
 		   GL11.glPopMatrix();
-		   GL11.glTranslatef(xOffsetUI, 955, -950);
+		   GL11.glTranslatef(xOffset+xOffsetUI, 955, -950);
 		   uiFont.drawString(1000, 20, ""+modelReader.getResources().getResource(Resource.LUMBER), Color.black);
 		   uiFont.drawString(1000, 52, ""+modelReader.getResources().getResource(Resource.BRICK), Color.black);
 		   uiFont.drawString(1000, 84, ""+modelReader.getResources().getResource(Resource.WOOL), Color.black);
@@ -418,7 +432,7 @@ public class GameGUI extends View implements Runnable{
 			new Clickable("ClaimVictory", xOffsetUI+300, yOffsetUI+240, zOffsetUI+2, 302, 65, true) {
 				@Override
 				public void execute() {
-					//TODO: implement it
+					minX = 42;
 				}
 			};
 			
@@ -475,7 +489,9 @@ public class GameGUI extends View implements Runnable{
 		int mx = Mouse.getX();
 		int my = Mouse.getY();
 		
-		Clickable.executeClicks(mx*ScreenToOpenGL, my*ScreenToOpenGL);
+		if (Mouse.isButtonDown(0)) {
+			Clickable.executeClicks(mx*screenToOpenGLX, (windowHeight-my)*screenToOpenGLY+380);
+		}
 		
 		if (Mouse.isInsideWindow()) {
 			if (mx < 50) {
@@ -626,7 +642,7 @@ public class GameGUI extends View implements Runnable{
 		//Setting setting = new Setting(new DisplayMode(1280, 1024), true);
 		//Setting setting = new Setting(new DisplayMode(800, 600), true);
 		//Setting setting = new Setting(new DisplayMode(400, 300), true);
-		Setting setting = new Setting(Display.getDesktopDisplayMode(), false);
+		Setting setting = new Setting(Display.getDesktopDisplayMode(), true);
 		
 		GameGUI gameGUI = new GameGUI(0, model, null, null, setting);
 		new Thread(gameGUI).start();
