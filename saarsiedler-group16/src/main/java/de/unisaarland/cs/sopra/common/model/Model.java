@@ -15,14 +15,14 @@ import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 import de.unisaarland.cs.st.saarsiedler.comm.results.AttackResult;
 
-public class Model implements ModelReader, ModelWriter{
+public class Model implements ModelReader, ModelWriter {
 
 	private Board board;
 	private List<Player> players;
-	private Map<Long,Player> playerMap;
+	private Map<Long, Player> playerMap;
 	private int round;
 	private List<ModelObserver> modelObserver;
-	private Map<BuildingType,Integer> maxBuilding;
+	private Map<BuildingType, Integer> maxBuilding;
 	private int maxCatapult;
 	private ResourcePackage lastTrade;
 	private int initVillages;
@@ -31,163 +31,191 @@ public class Model implements ModelReader, ModelWriter{
 	private boolean reversedPlayersList;
 	private long meID;
 	private Player me;
-	
+
 	/**
 	 * @param worldRepresentation
 	 * @param matchInformation
 	 */
-	public Model(WorldRepresentation worldRepresentation, MatchInformation matchInformation, long meID) {
+	public Model(WorldRepresentation worldRepresentation,
+			MatchInformation matchInformation, long meID) {
 		this.board = new Board(worldRepresentation);
 		this.modelObserver = new LinkedList<ModelObserver>();
-		this.maxBuilding = new TreeMap<BuildingType,Integer>();
-		this.maxBuilding.put(BuildingType.Village, worldRepresentation.getMaxVillages());
-		this.maxBuilding.put(BuildingType.Town, worldRepresentation.getMaxTowns());
+		this.maxBuilding = new TreeMap<BuildingType, Integer>();
+		this.maxBuilding.put(BuildingType.Village,
+				worldRepresentation.getMaxVillages());
+		this.maxBuilding.put(BuildingType.Town,
+				worldRepresentation.getMaxTowns());
 		this.maxCatapult = worldRepresentation.getMaxCatapults();
 		this.initVillages = worldRepresentation.getInitVillages();
-		for(int i = 0; i < worldRepresentation.getNumPlayerConfigs(); i++) {
-			if(worldRepresentation.getNumPlayers(i) == matchInformation.getNumPlayers())
+		for (int i = 0; i < worldRepresentation.getNumPlayerConfigs(); i++) {
+			if (worldRepresentation.getNumPlayers(i) == matchInformation
+					.getNumPlayers())
 				this.maxVictoryPoints = worldRepresentation.getVictoryPoints(i);
 		}
-		if(this.maxVictoryPoints == 0) throw new IllegalStateException();
-		for(int i = 0; i < worldRepresentation.getNumHarbors(); i++) {
-			board.getPath(new Location(worldRepresentation.getHarborRow(i), worldRepresentation.getHarborCol(i), worldRepresentation.getHarborDir(i))).setHarborType(HarborType.convert(worldRepresentation.getHarborType(i)));
+		if (this.maxVictoryPoints == 0)
+			throw new IllegalStateException();
+		for (int i = 0; i < worldRepresentation.getNumHarbors(); i++) {
+			board.getPath(
+					new Location(worldRepresentation.getHarborRow(i),
+							worldRepresentation.getHarborCol(i),
+							worldRepresentation.getHarborDir(i)))
+					.setHarborType(
+							HarborType.convert(worldRepresentation
+									.getHarborType(i)));
 		}
 		this.meID = meID;
 	}
-	
+
 	/**
 	 * @param modelObserver
 	 */
 	public void addModelObserver(ModelObserver modelObserver) {
-		if (modelObserver == null) throw new IllegalArgumentException();
-		if (this.modelObserver.contains(modelObserver) ) {
+		if (modelObserver == null)
+			throw new IllegalArgumentException();
+		if (this.modelObserver.contains(modelObserver)) {
 			return;
-		} else this.modelObserver.add(modelObserver);
+		} else
+			this.modelObserver.add(modelObserver);
 	}
-	
+
 	/**
 	 * @param modelObserver
 	 */
 	public void removeModelObserver(ModelObserver modelObserver) {
-		if (modelObserver == null) throw new IllegalArgumentException();
+		if (modelObserver == null)
+			throw new IllegalArgumentException();
 		if (this.modelObserver.size() == 0) {
 			throw new IllegalArgumentException();
-		} else this.modelObserver.remove(modelObserver);
+		} else
+			this.modelObserver.remove(modelObserver);
 	}
-	
+
 	/**
 	 * @return Point of field
 	 */
 	public static Point getLocation(Field field) {
-		if (field==null) throw new IllegalArgumentException();
+		if (field == null)
+			throw new IllegalArgumentException();
 		return field.getLocation();
 	}
-	
+
 	/**
-	 * @return Location of Path 
+	 * @return Location of Path
 	 */
 	public static Location getLocation(Path path) {
-		if (path==null) throw new IllegalArgumentException();
+		if (path == null)
+			throw new IllegalArgumentException();
 		return path.getLocation();
 	}
-	
+
 	/**
 	 * @return Location of Intersection
 	 */
 	public static Location getLocation(Intersection intersection) {
-		if (intersection==null) throw new IllegalArgumentException();
+		if (intersection == null)
+			throw new IllegalArgumentException();
 		return intersection.getLocation();
 	}
-	
+
 	/**
 	 * @return Locations of the Paths in the List
 	 */
 	public static List<Location> getLocationList(List<Path> pathlist) {
-		if (pathlist == null) throw new IllegalArgumentException();
+		if (pathlist == null)
+			throw new IllegalArgumentException();
 		List<Location> tmp = new LinkedList<Location>();
-		for(Path act : pathlist) {
+		for (Path act : pathlist) {
 			tmp.add(act.getLocation());
 		}
 		return tmp;
 	}
-	
+
 	/**
 	 * @return current Player
 	 */
 	public Player getCurrentPlayer() {
-		return this.players.get( (this.round + this.players.size()-1) % this.players.size() );
+		return this.players.get((this.round + this.players.size() - 1)
+				% this.players.size());
 	}
-	
+
 	/**
 	 * @param player
 	 * @return List<List<Path>>
 	 */
 	public List<List<Path>> calculateLongestRoads(Player player) {
-		if (player == null) throw new IllegalArgumentException();
-		Set<Path> pathList=getStreets(player);
+		if (player == null)
+			throw new IllegalArgumentException();
+		Set<Path> pathList = getStreets(player);
 		// all Paths that player owns
-		List<List<Path>> roadList=new ArrayList<List<Path>>();
+		List<List<Path>> roadList = new ArrayList<List<Path>>();
 		// all roads known (none)
 		for (Path p : pathList) {
-			List<Path> road=new ArrayList<Path>();
+			List<Path> road = new ArrayList<Path>();
 			road.add(p);
 		}
 		// all roads contain only one path
-		List<List<Path>> suppressedRoadList=new ArrayList<List<Path>>();
-		for (List<Path> road : roadList){
+		List<List<Path>> suppressedRoadList = new ArrayList<List<Path>>();
+		for (List<Path> road : roadList) {
 			if (continueRoad(road, roadList)) {
 				suppressedRoadList.add(road);
-				// if the road has been continued, new longer road(s)'d have been put in roadlist
+				// if the road has been continued, new longer road(s)'d have
+				// been put in roadlist
 				// we'll just remove the short one
-				}
+			}
 		}
-		for (List<Path> suppressedRoad : suppressedRoadList) roadList.remove(suppressedRoad);
+		for (List<Path> suppressedRoad : suppressedRoadList)
+			roadList.remove(suppressedRoad);
 		// now there's only finished roads
-		int maxsize=5;
-		for (List<Path> road : roadList){
-			maxsize=Math.max(maxsize, road.size());
+		int maxsize = 5;
+		for (List<Path> road : roadList) {
+			maxsize = Math.max(maxsize, road.size());
 			// what's the maximum size of the roads
 		}
-		for (List<Path> road : roadList){
-			if (road.size()<maxsize) roadList.remove(road);
+		for (List<Path> road : roadList) {
+			if (road.size() < maxsize)
+				roadList.remove(road);
 			// only the longest road(s) stay here
 		}
 		return roadList;
 	}
-	
+
 	/**
 	 * @param road
 	 * @param roadList
 	 * @return
 	 */
-	private boolean continueRoad(List<Path> road, List<List<Path>> roadList){
-		boolean b=false;
-		for (Path p : road){
-			b=b | continueRoadFromPath(p,road,roadList);
+	private boolean continueRoad(List<Path> road, List<List<Path>> roadList) {
+		boolean b = false;
+		for (Path p : road) {
+			b = b | continueRoadFromPath(p, road, roadList);
 		}
 		return b;
 		// has the road been continued?
 	}
-	
+
 	/**
 	 * @param p
 	 * @param road
 	 * @param roadList
 	 * @return
 	 */
-	private boolean continueRoadFromPath(Path p, List<Path> road, List<List<Path>> roadList){
-		Set<Intersection> si=getIntersectionsFromPath(p);
-		Player player= p.getStreetOwner();
-		boolean b=false;
-		for (Intersection i : si){
-			if (isExtremityOfRoad(i,road) && ((i.getOwner()==player) | !(i.hasOwner()))) b=b | continueRoadTroughIntersection(i,p,road,roadList);
-			// meaning we can continue a road through an intersection and the paths it leads to
+	private boolean continueRoadFromPath(Path p, List<Path> road,
+			List<List<Path>> roadList) {
+		Set<Intersection> si = getIntersectionsFromPath(p);
+		Player player = p.getStreetOwner();
+		boolean b = false;
+		for (Intersection i : si) {
+			if (isExtremityOfRoad(i, road)
+					&& ((i.getOwner() == player) | !(i.hasOwner())))
+				b = b | continueRoadTroughIntersection(i, p, road, roadList);
+			// meaning we can continue a road through an intersection and the
+			// paths it leads to
 			// only when this intersection is already the extremity of the road
 			// and only when it is free or owned by the player itself
 		}
 		return b;
 	}
-	
+
 	/**
 	 * @param i
 	 * @param p
@@ -195,46 +223,50 @@ public class Model implements ModelReader, ModelWriter{
 	 * @param roadList
 	 * @return
 	 */
-	private boolean continueRoadTroughIntersection(Intersection i,Path p, List<Path> road, List<List<Path>> roadList){
+	private boolean continueRoadTroughIntersection(Intersection i, Path p,
+			List<Path> road, List<List<Path>> roadList) {
 		Player player = p.getStreetOwner();
-			Set<Path> sp=getPathsFromIntersection(i);
-			sp.remove(p);
-			// we don't want to go back
-			boolean b=false;
-			for (Path p1 : sp){
-				// we create a new road1 containing the road
-				// we try to add the new path
-				List<Path> road1=copy(road);
-				b=b | addPathToRoad(road1 , player, p1, roadList);
-			}
-			return b;
+		Set<Path> sp = getPathsFromIntersection(i);
+		sp.remove(p);
+		// we don't want to go back
+		boolean b = false;
+		for (Path p1 : sp) {
+			// we create a new road1 containing the road
+			// we try to add the new path
+			List<Path> road1 = copy(road);
+			b = b | addPathToRoad(road1, player, p1, roadList);
+		}
+		return b;
 	}
-	
+
 	/**
 	 * @param i
 	 * @param road
 	 * @return
 	 */
-	private boolean isExtremityOfRoad(Intersection i,List<Path>road){
-		Set<Path> sp=getPathsFromIntersection(i);
-		int a=0;
-		for (Path p : sp){
-			if (road.contains(p)) a++;		
+	private boolean isExtremityOfRoad(Intersection i, List<Path> road) {
+		Set<Path> sp = getPathsFromIntersection(i);
+		int a = 0;
+		for (Path p : sp) {
+			if (road.contains(p))
+				a++;
 		}
-		return (a==1);
-		// an intersection is the extremity of the road when it has only a neighbor path in the road
+		return (a == 1);
+		// an intersection is the extremity of the road when it has only a
+		// neighbor path in the road
 	}
-	
+
 	/**
 	 * @param road
 	 * @return
 	 */
-	private List<Path> copy(List<Path> road){
-		List<Path> road1=new ArrayList<Path>();
-		for (Path p:road) road1.add(p);
+	private List<Path> copy(List<Path> road) {
+		List<Path> road1 = new ArrayList<Path>();
+		for (Path p : road)
+			road1.add(p);
 		return road1;
 	}
-	
+
 	/**
 	 * @param road
 	 * @param player
@@ -242,113 +274,141 @@ public class Model implements ModelReader, ModelWriter{
 	 * @param roadList
 	 * @return
 	 */
-	private boolean addPathToRoad( List<Path> road, Player player, Path p ,List<List<Path>> roadList){
-		if (p.getStreetOwner()==player && !(road.contains(p))) {
-		// 	meaning if this path is owned by player and not already in the road
-		// then we can continue the road while adding this path
-		// then we add that new road in the roadList if it wasn't already here
-		// the elder one'll be removed from the roadList since it has been continued
+	private boolean addPathToRoad(List<Path> road, Player player, Path p,
+			List<List<Path>> roadList) {
+		if (p.getStreetOwner() == player && !(road.contains(p))) {
+			// meaning if this path is owned by player and not already in the
+			// road
+			// then we can continue the road while adding this path
+			// then we add that new road in the roadList if it wasn't already
+			// here
+			// the elder one'll be removed from the roadList since it has been
+			// continued
 			road.add(p);
-			if (!(roadList.contains(road))) roadList.add(road);
+			if (!(roadList.contains(road)))
+				roadList.add(road);
 			// no doubloons
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
-	 * @param playerIDs (set the "Table Order")
+	 * @param playerIDs
+	 *            (set the "Table Order")
 	 */
 	public void setTableOrder(long[] playerIDs) {
-		if (playerIDs == null) throw new IllegalArgumentException();
+		if (playerIDs == null)
+			throw new IllegalArgumentException();
 		this.players = new LinkedList<Player>();
-		this.playerMap = new HashMap<Long,Player>();
-		for(long act : playerIDs) {
+		this.playerMap = new HashMap<Long, Player>();
+		for (long act : playerIDs) {
 			Player player = new Player();
-			this.playerMap.put(act,player);
+			this.playerMap.put(act, player);
 			this.players.add(player);
 		}
 		this.me = this.playerMap.get(meID);
 	}
-	
+
 	/**
-	 * @param numbers: int[] (set the numbers on the fields)
+	 * @param numbers
+	 *            : int[] (set the numbers on the fields)
 	 */
 	public void setFieldNumbers(byte[] numbers) {
-		if (numbers == null) throw new IllegalArgumentException();
+		if (numbers == null)
+			throw new IllegalArgumentException();
 		Iterator<Field> iter = board.getFieldIterator();
 		int i = 0;
-		while(iter.hasNext()) {
+		while (iter.hasNext()) {
 			Field f = iter.next();
-			if(f.getFieldType()!=FieldType.DESERT  &&	f.getFieldType()!=FieldType.WATER){
+			if (f.getFieldType() != FieldType.DESERT
+					&& f.getFieldType() != FieldType.WATER) {
 				f.setNumber(numbers[i++]);
 			}
 		}
 	}
-	
+
 	/**
-	 * @param intersection (split the longestclaimedRoad at the Location of Intersection)
+	 * @param intersection
+	 *            (split the longestclaimedRoad at the Location of Intersection)
 	 */
 	public void updateLongestRoad(Intersection intersection) {
-		if (intersection == null) throw new IllegalArgumentException();
+		if (intersection == null)
+			throw new IllegalArgumentException();
 		List<Path> tmp = new LinkedList<Path>();
-		for(Path act : this.longestClaimedRoad) {
-			if(board.getIntersectionsFromPath(act).contains(intersection)) {
+		for (Path act : this.longestClaimedRoad) {
+			if (board.getIntersectionsFromPath(act).contains(intersection)) {
 				tmp.add(act);
 				this.longestClaimedRoad.removeAll(tmp);
-				this.longestClaimedRoad = tmp.size() < this.longestClaimedRoad.size() ? tmp : this.longestClaimedRoad;
+				this.longestClaimedRoad = tmp.size() < this.longestClaimedRoad
+						.size() ? tmp : this.longestClaimedRoad;
 			}
 			tmp.add(act);
 		}
 	}
-	
+
 	/**
 	 * @return The list of ModelObservers
 	 */
 	public List<ModelObserver> getModelObservers() {
 		return this.modelObserver;
 	}
-	
+
 	/**
 	 * @return The List of Player sorted in TableOrder
 	 */
 	public List<Player> getTableOrder() {
 		return this.players;
 	}
-	
+
 	/**
 	 * @return The Map containing the mapping of playerID -> Player
 	 */
-	public Map<Long,Player> getPlayerMap() {
+	public Map<Long, Player> getPlayerMap() {
 		return this.playerMap;
 	}
-	
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getPath(de.unisaarland.cs.sopra.common.model.Location)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#getPath(de.unisaarland
+	 * .cs.sopra.common.model.Location)
 	 */
 	public Path getPath(Location location) {
-		if (location == null) throw new IllegalArgumentException();
+		if (location == null)
+			throw new IllegalArgumentException();
 		return board.getPath(location);
 	}
-	
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getIntersection(de.unisaarland.cs.sopra.common.model.Location)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getIntersection(de.
+	 * unisaarland.cs.sopra.common.model.Location)
 	 */
 	public Intersection getIntersection(Location location) {
-		if (location == null) throw new IllegalArgumentException();
+		if (location == null)
+			throw new IllegalArgumentException();
 		return board.getIntersection(location);
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getMaxBuilding(de.unisaarland.cs.sopra.common.model.BuildingType)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getMaxBuilding(de.
+	 * unisaarland.cs.sopra.common.model.BuildingType)
 	 */
 	@Override
 	public int getMaxBuilding(BuildingType buildingType) {
-		if (buildingType == null) throw new IllegalArgumentException();
+		if (buildingType == null)
+			throw new IllegalArgumentException();
 		return this.maxBuilding.get(buildingType);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getRound()
 	 */
 	@Override
@@ -361,25 +421,29 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public Set<Path> buildableStreetPaths(Player player) {
-		if (player==null) throw new IllegalArgumentException(player+ "is null");
+		if (player == null)
+			throw new IllegalArgumentException(player + "is null");
 		Iterator<Path> it = getPathIterator();
 		Set<Path> res = new HashSet<Path>();
-		while(it.hasNext()){
+		while (it.hasNext()) {
 			Path p = it.next();
-			Set<Field> fieldSet = getFieldsFromPath(p) ;
+			Set<Field> fieldSet = getFieldsFromPath(p);
 			boolean hasLand = false;
-			for (Field f: fieldSet){
-				if ((f.getFieldType() != FieldType.WATER)){
+			for (Field f : fieldSet) {
+				if ((f.getFieldType() != FieldType.WATER)) {
 					hasLand = true;
 				}
-				
+
 			}
-		
-			if(!p.hasStreet()){
+
+			if (!p.hasStreet()) {
 				Set<Path> nachbarn = getPathsFromPath(p);
-				for(Path n: nachbarn){
-					if(n.hasStreet()	&&	n.getStreetOwner()==player){	//doppelte abfrage zur sicherheit
-						if(hasLand)
+				for (Path n : nachbarn) {
+					if (n.hasStreet() && n.getStreetOwner() == player) { // doppelte
+																			// abfrage
+																			// zur
+																			// sicherheit
+						if (hasLand)
 							res.add(p);
 					}
 				}
@@ -390,40 +454,50 @@ public class Model implements ModelReader, ModelWriter{
 
 	/**
 	 * @return return Set of Paths where you can build a Catapult
-	 	 */
+	 */
 	@Override
 	public Set<Path> buildableCatapultPaths(Player player) {
-		if (player==null) throw new IllegalArgumentException(player+ "is null");
+		if (player == null)
+			throw new IllegalArgumentException(player + "is null");
 		Iterator<Intersection> it = getIntersectionIterator();
 		Set<Path> res = new HashSet<Path>();
-		while(it.hasNext()){
+		while (it.hasNext()) {
 			Intersection inter = it.next();
-			if( inter.hasOwner()	&&	inter.getBuildingType().equals(BuildingType.Town)	&&	inter.getOwner()==player){
+			if (inter.hasOwner()
+					&& inter.getBuildingType().equals(BuildingType.Town)
+					&& inter.getOwner() == player) {
 				res.addAll(getPathsFromIntersection(inter));
 			}
 		}
 		return res;
 	}
-	private int affordableThings(ResourcePackage price){
+
+	private int affordableThings(ResourcePackage price) {
 		ResourcePackage rp = getCurrentPlayer().getResources().copy();
 		int ret = -1;
-		while(!rp.hasNegativeResources()){
+		while (!rp.hasNegativeResources()) {
 			ret++;
 			rp.add(price);
 		}
-		
+
 		return ret;
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#affordableSettlements(de.unisaarland.cs.sopra.common.model.BuildingType)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#affordableSettlements
+	 * (de.unisaarland.cs.sopra.common.model.BuildingType)
 	 */
 	@Override
 	public int affordableSettlements(BuildingType buildingType) {
 		return affordableThings(buildingType.getPrice());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#affordableStreets()
 	 */
 	@Override
@@ -431,24 +505,36 @@ public class Model implements ModelReader, ModelWriter{
 		return affordableThings(Street.getPrice());
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#affordableCatapultBuild()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#affordableCatapultBuild
+	 * ()
 	 */
 	@Override
 	public int affordableCatapultBuild() {
 		return affordableThings(Catapult.getBuildingprice());
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#affordableCatapultAttack()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#affordableCatapultAttack
+	 * ()
 	 */
 	@Override
 	public int affordableCatapultAttack() {
 		return affordableThings(Catapult.getAttackcatapultprice());
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#affordableSettlementAttack()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#affordableSettlementAttack
+	 * ()
 	 */
 	@Override
 	public int affordableSettlementAttack() {
@@ -456,32 +542,41 @@ public class Model implements ModelReader, ModelWriter{
 	}
 
 	/**
-	 * @return shows how many Streets are affordable ,when you buy a Village first
+	 * @return shows how many Streets are affordable ,when you buy a Village
+	 *         first
 	 */
 	@Override
 	public int affordablePathsAfterVillage(int villageCount) {
 		ResourcePackage rp = getCurrentPlayer().getResources().copy();
 		rp.add(BuildingType.Village.getPrice());
-		if(rp.hasNegativeResources()) return 0;
+		if (rp.hasNegativeResources())
+			return 0;
 		int ret = -1;
-		while(!rp.hasNegativeResources()){
+		while (!rp.hasNegativeResources()) {
 			ret++;
 			rp.add(Street.getPrice());
 		}
 		return ret;
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#attackableSettlements(de.unisaarland.cs.sopra.common.model.Player, de.unisaarland.cs.sopra.common.model.BuildingType)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#attackableSettlements
+	 * (de.unisaarland.cs.sopra.common.model.Player,
+	 * de.unisaarland.cs.sopra.common.model.BuildingType)
 	 */
 	@Override
-	public Set<Intersection> attackableSettlements(Player player, BuildingType buildingType) {
-		Set<Intersection> attackableSettlements=new HashSet<Intersection>();
-		Set<Path> sp=getCatapults(player);
-		for (Path p: sp){
-			Set<Intersection> si=getIntersectionsFromPath(p);
-			for (Intersection i: si){
-				if (i.hasOwner() && i.getOwner()!=player && i.getBuildingType()==buildingType) {
+	public Set<Intersection> attackableSettlements(Player player,
+			BuildingType buildingType) {
+		Set<Intersection> attackableSettlements = new HashSet<Intersection>();
+		Set<Path> sp = getCatapults(player);
+		for (Path p : sp) {
+			Set<Intersection> si = getIntersectionsFromPath(p);
+			for (Intersection i : si) {
+				if (i.hasOwner() && i.getOwner() != player
+						&& i.getBuildingType() == buildingType) {
 					attackableSettlements.add(i);
 				}
 			}
@@ -489,18 +584,23 @@ public class Model implements ModelReader, ModelWriter{
 		return attackableSettlements;
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#attackableCatapults(de.unisaarland.cs.sopra.common.model.Player)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#attackableCatapults(
+	 * de.unisaarland.cs.sopra.common.model.Player)
 	 */
 	@Override
 	public Set<Path> attackableCatapults(Player player) {
-		if (player==null) throw new IllegalArgumentException();
-		Set<Path> attackableCatapults=new HashSet<Path>();
-		Set<Path> sp=getCatapults(player);
-		for (Path p: sp){
-			Set<Path> sp1=getPathsFromPath(p);
-			for (Path p1: sp1){
-				if (p.hasCatapult() && p.getCatapultOwner()!=player) {
+		if (player == null)
+			throw new IllegalArgumentException();
+		Set<Path> attackableCatapults = new HashSet<Path>();
+		Set<Path> sp = getCatapults(player);
+		for (Path p : sp) {
+			Set<Path> sp1 = getPathsFromPath(p);
+			for (Path p1 : sp1) {
+				if (p.hasCatapult() && p.getCatapultOwner() != player) {
 					attackableCatapults.add(p1);
 				}
 			}
@@ -508,118 +608,156 @@ public class Model implements ModelReader, ModelWriter{
 		return attackableCatapults;
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getStreets(de.unisaarland.cs.sopra.common.model.Player)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#getStreets(de.unisaarland
+	 * .cs.sopra.common.model.Player)
 	 */
 	@Override
 	public Set<Path> getStreets(Player player) {
-		if (player==null) throw new IllegalArgumentException();
-		Iterator<Path>ip=getPathIterator();
-		Set<Path>sp=new HashSet<Path>();
+		if (player == null)
+			throw new IllegalArgumentException();
+		Iterator<Path> ip = getPathIterator();
+		Set<Path> sp = new HashSet<Path>();
 		Path p;
-		while (ip.hasNext()){
-			p=ip.next();
-			if (p.hasStreet() && p.getStreetOwner()==player) sp.add(p);
+		while (ip.hasNext()) {
+			p = ip.next();
+			if (p.hasStreet() && p.getStreetOwner() == player)
+				sp.add(p);
 		}
 		return sp;
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getSettlements(de.unisaarland.cs.sopra.common.model.Player, de.unisaarland.cs.sopra.common.model.BuildingType)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getSettlements(de.
+	 * unisaarland.cs.sopra.common.model.Player,
+	 * de.unisaarland.cs.sopra.common.model.BuildingType)
 	 */
 	@Override
-	public Set<Intersection> getSettlements(Player player, BuildingType buildingType) {
-		if (player==null | buildingType==null) throw new IllegalArgumentException();
-		Iterator<Intersection>ii=getIntersectionIterator();
-		Set<Intersection>si=new HashSet<Intersection>();
+	public Set<Intersection> getSettlements(Player player,
+			BuildingType buildingType) {
+		if (player == null | buildingType == null)
+			throw new IllegalArgumentException();
+		Iterator<Intersection> ii = getIntersectionIterator();
+		Set<Intersection> si = new HashSet<Intersection>();
 		Intersection i;
-		while (ii.hasNext()){
-			i=ii.next();
-			if (i.getOwner()==player && i.getBuildingType()==buildingType) si.add(i);
+		while (ii.hasNext()) {
+			i = ii.next();
+			if (i.getOwner() == player && i.getBuildingType() == buildingType)
+				si.add(i);
 		}
 		return si;
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getCatapults(de.unisaarland.cs.sopra.common.model.Player)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#getCatapults(de.unisaarland
+	 * .cs.sopra.common.model.Player)
 	 */
 	@Override
 	public Set<Path> getCatapults(Player player) {
-		if (player==null)throw new IllegalArgumentException();
-		Iterator<Path>ip=getPathIterator();
-		Set<Path>sp=new HashSet<Path>();
+		if (player == null)
+			throw new IllegalArgumentException();
+		Iterator<Path> ip = getPathIterator();
+		Set<Path> sp = new HashSet<Path>();
 		Path p;
-		while (ip.hasNext()){
-			p=ip.next();
-			if (p.getCatapultOwner()==player) sp.add(p);
+		while (ip.hasNext()) {
+			p = ip.next();
+			if (p.getCatapultOwner() == player)
+				sp.add(p);
 		}
 		return sp;
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getLongestClaimedRoad()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#getLongestClaimedRoad()
 	 */
 	@Override
 	public List<Path> getLongestClaimedRoad() {
 		return longestClaimedRoad;
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getMaxVictoryPoints()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#getMaxVictoryPoints()
 	 */
 	@Override
 	public int getMaxVictoryPoints() {
 		return maxVictoryPoints;
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getCurrentVictoryPoints(de.unisaarland.cs.sopra.common.model.Player)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#getCurrentVictoryPoints
+	 * (de.unisaarland.cs.sopra.common.model.Player)
 	 */
 	@Override
 	public int getCurrentVictoryPoints(Player player) {
-		if (player==null) throw new IllegalArgumentException();
+		if (player == null)
+			throw new IllegalArgumentException();
 		return player.getVictoryPoints();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#canPlaceRobber()
 	 */
 	@Override
 	public Set<Field> canPlaceRobber() {
-		Iterator<Field>itf=getFieldIterator();
-		Set<Field>sf=new HashSet<Field>();
+		Iterator<Field> itf = getFieldIterator();
+		Set<Field> sf = new HashSet<Field>();
 		Field f;
-		while (itf.hasNext()){
-			f=itf.next();
-			if(f.hasRobber())
+		while (itf.hasNext()) {
+			f = itf.next();
+			if (f.hasRobber())
 				continue;
-			if (f.getFieldType()==FieldType.WATER){
-				Set<Field>sf1=getFieldsFromField(f);
-				for (Field f1:sf1){
-					if(f1.getFieldType()!=FieldType.WATER) sf.add(f);
+			if (f.getFieldType() == FieldType.WATER) {
+				Set<Field> sf1 = getFieldsFromField(f);
+				for (Field f1 : sf1) {
+					if (f1.getFieldType() != FieldType.WATER)
+						sf.add(f);
 				}
-			}
-			else sf.add(f);
+			} else
+				sf.add(f);
 		}
 		return sf;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getRobberFields()
 	 */
 	@Override
 	public Set<Field> getRobberFields() {
-		Iterator<Field>itf=getFieldIterator();
-		Set<Field>sf=new HashSet<Field>();
+		Iterator<Field> itf = getFieldIterator();
+		Set<Field> sf = new HashSet<Field>();
 		Field f;
-		while (itf.hasNext()){
-			f=itf.next();
-			if (f.hasRobber()) sf.add(f);
+		while (itf.hasNext()) {
+			f = itf.next();
+			if (f.hasRobber())
+				sf.add(f);
 		}
 		return sf;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getFieldIterator()
 	 */
 	@Override
@@ -627,7 +765,9 @@ public class Model implements ModelReader, ModelWriter{
 		return board.getFieldIterator();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getPathIterator()
 	 */
 	@Override
@@ -635,27 +775,34 @@ public class Model implements ModelReader, ModelWriter{
 		return board.getPathIterator();
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getIntersectionIterator()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#getIntersectionIterator
+	 * ()
 	 */
 	@Override
 	public Iterator<Intersection> getIntersectionIterator() {
 		return board.getIntersectionIterator();
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getHarborIntersections()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#getHarborIntersections()
 	 */
 	@Override
 	public Set<Intersection> getHarborIntersections() {
-		Iterator<Path>ip=getPathIterator();
-		Set<Intersection>si=new HashSet<Intersection>();
+		Iterator<Path> ip = getPathIterator();
+		Set<Intersection> si = new HashSet<Intersection>();
 		Path p;
-		while (ip.hasNext()){
-			p=ip.next();
-			if (p.getHarborType()!=null){
-				Set<Intersection> si1=getIntersectionsFromPath(p);
-				for(Intersection i:si1){
+		while (ip.hasNext()) {
+			p = ip.next();
+			if (p.getHarborType() != null) {
+				Set<Intersection> si1 = getIntersectionsFromPath(p);
+				for (Intersection i : si1) {
 					si.add(i);
 				}
 			}
@@ -663,34 +810,45 @@ public class Model implements ModelReader, ModelWriter{
 		return si;
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getHarborType(de.unisaarland.cs.sopra.common.model.Intersection)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#getHarborType(de.unisaarland
+	 * .cs.sopra.common.model.Intersection)
 	 */
 	@Override
 	public HarborType getHarborType(Intersection intersection) {
-		Set<Path>sp=getPathsFromIntersection(intersection);
+		Set<Path> sp = getPathsFromIntersection(intersection);
 		HarborType hb;
-		for (Path p:sp){
-			hb=p.getHarborType();
-			if (hb!=null) return hb;
+		for (Path p : sp) {
+			hb = p.getHarborType();
+			if (hb != null)
+				return hb;
 		}
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getHarborTypes(de.unisaarland.cs.sopra.common.model.Player)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getHarborTypes(de.
+	 * unisaarland.cs.sopra.common.model.Player)
 	 */
 	@Override
 	public Set<HarborType> getHarborTypes(Player player) {
-		Set<Intersection>si=getHarborIntersections();
-		Set<HarborType>sht=new HashSet<HarborType>();
-		for(Intersection i:si){
-			if (i.getOwner()==player) sht.add(getHarborType(i));
+		Set<Intersection> si = getHarborIntersections();
+		Set<HarborType> sht = new HashSet<HarborType>();
+		for (Intersection i : si) {
+			if (i.getOwner() == player)
+				sht.add(getHarborType(i));
 		}
 		return sht;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getResources()
 	 */
 	@Override
@@ -698,148 +856,218 @@ public class Model implements ModelReader, ModelWriter{
 		return me.getResources();
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getFieldResource(de.unisaarland.cs.sopra.common.model.Field)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#getFieldResource(de.
+	 * unisaarland.cs.sopra.common.model.Field)
 	 */
 	@Override
 	public Resource getFieldResource(Field field) {
-		Resource res=null;
-		switch(field.getFieldType()){
-			case FIELDS: 	res=Resource.GRAIN;	break;
-			case FOREST: 	res=Resource.LUMBER;break;
-			case MOUNTAINS: res=Resource.ORE;	break;
-			case HILLS:		res=Resource.BRICK;	break;
-			case PASTURE:	res=Resource.WOOL;	break;
-			default: break;
+		Resource res = null;
+		switch (field.getFieldType()) {
+		case FIELDS:
+			res = Resource.GRAIN;
+			break;
+		case FOREST:
+			res = Resource.LUMBER;
+			break;
+		case MOUNTAINS:
+			res = Resource.ORE;
+			break;
+		case HILLS:
+			res = Resource.BRICK;
+			break;
+		case PASTURE:
+			res = Resource.WOOL;
+			break;
+		default:
+			break;
 		}
 		return res;
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getFieldsFromField(de.unisaarland.cs.sopra.common.model.Field)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#getFieldsFromField(de
+	 * .unisaarland.cs.sopra.common.model.Field)
 	 */
 	@Override
 	public Set<Field> getFieldsFromField(Field field) {
 		return board.getFieldsFromField(field);
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getFieldsFromIntersection(de.unisaarland.cs.sopra.common.model.Intersection)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#getFieldsFromIntersection
+	 * (de.unisaarland.cs.sopra.common.model.Intersection)
 	 */
 	@Override
 	public Set<Field> getFieldsFromIntersection(Intersection intersection) {
 		return board.getFieldsFromIntersection(intersection);
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getFieldsFromPath(de.unisaarland.cs.sopra.common.model.Path)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#getFieldsFromPath(de
+	 * .unisaarland.cs.sopra.common.model.Path)
 	 */
 	@Override
 	public Set<Field> getFieldsFromPath(Path path) {
 		return board.getFieldsFromPath(path);
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getIntersectionsFromField(de.unisaarland.cs.sopra.common.model.Field)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#getIntersectionsFromField
+	 * (de.unisaarland.cs.sopra.common.model.Field)
 	 */
 	@Override
 	public Set<Intersection> getIntersectionsFromField(Field field) {
 		return board.getIntersectionsFromField(field);
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getIntersectionsFromIntersection(de.unisaarland.cs.sopra.common.model.Intersection)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#
+	 * getIntersectionsFromIntersection
+	 * (de.unisaarland.cs.sopra.common.model.Intersection)
 	 */
 	@Override
-	public Set<Intersection> getIntersectionsFromIntersection(Intersection intersection) {
+	public Set<Intersection> getIntersectionsFromIntersection(
+			Intersection intersection) {
 		return board.getIntersectionsFromIntersection(intersection);
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getIntersectionsFromPath(de.unisaarland.cs.sopra.common.model.Path)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#getIntersectionsFromPath
+	 * (de.unisaarland.cs.sopra.common.model.Path)
 	 */
 	@Override
 	public Set<Intersection> getIntersectionsFromPath(Path path) {
 		return board.getIntersectionsFromPath(path);
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getPathsFromField(de.unisaarland.cs.sopra.common.model.Field)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#getPathsFromField(de
+	 * .unisaarland.cs.sopra.common.model.Field)
 	 */
 	@Override
 	public Set<Path> getPathsFromField(Field field) {
 		return board.getPathsFromField(field);
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getPathsFromIntersection(de.unisaarland.cs.sopra.common.model.Intersection)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#getPathsFromIntersection
+	 * (de.unisaarland.cs.sopra.common.model.Intersection)
 	 */
 	@Override
 	public Set<Path> getPathsFromIntersection(Intersection intersection) {
 		return board.getPathsFromIntersection(intersection);
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getPathsFromPath(de.unisaarland.cs.sopra.common.model.Path)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#getPathsFromPath(de.
+	 * unisaarland.cs.sopra.common.model.Path)
 	 */
 	@Override
 	public Set<Path> getPathsFromPath(Path path) {
 		return board.getPathsFromPath(path);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.unisaarland.cs.sopra.common.model.ModelWriter#newRound(int)
 	 */
 	@Override
 	public void newRound(int number) {
-		if(number==1 || number>12) throw new IllegalArgumentException();
-		
-		if(number == 7){
-			for(ModelObserver ob : modelObserver){
+		if (number == 1 || number > 12)
+			throw new IllegalArgumentException();
+
+		if (number == 7) {
+			for (ModelObserver ob : modelObserver) {
 				ob.eventRobber();
 			}
-		}
-		else{
-			for (Iterator<Field> itFields = getFieldIterator(); itFields.hasNext();) {
-				Field field =  itFields.next();
-				if(field.getNumber()==number){	// nur zur Optimierung, streng genommen nicht noetig
-					for(Intersection inter : getIntersectionsFromField(field)){
-						if(inter.hasOwner()){
+		} else {
+			for (Iterator<Field> itFields = getFieldIterator(); itFields
+					.hasNext();) {
+				Field field = itFields.next();
+				if (field.getNumber() == number) { // nur zur Optimierung,
+													// streng genommen nicht
+													// noetig
+					for (Intersection inter : getIntersectionsFromField(field)) {
+						if (inter.hasOwner()) {
 							inter.generateGain(field.getResource(number));
 						}
 					}
 				}
 			}
-			for(ModelObserver ob : modelObserver){
+			for (ModelObserver ob : modelObserver) {
 				ob.updateResources();
 			}
-		}	
+		}
 		this.round++;
-		for(ModelObserver ob : modelObserver){
+		for (ModelObserver ob : modelObserver) {
 			ob.eventNewRound(getCurrentPlayer() == me);
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelWriter#attackSettlement(de.unisaarland.cs.sopra.common.model.Location, de.unisaarland.cs.sopra.common.model.Location, de.unisaarland.cs.st.saarsiedler.comm.results.AttackResult)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelWriter#attackSettlement(de.
+	 * unisaarland.cs.sopra.common.model.Location,
+	 * de.unisaarland.cs.sopra.common.model.Location,
+	 * de.unisaarland.cs.st.saarsiedler.comm.results.AttackResult)
 	 */
 	@Override
-	public void attackSettlement(Location catapultPath, Location settlementIntersection, AttackResult result) {
-		if (catapultPath==null || settlementIntersection==null || result==null) throw new IllegalArgumentException("iwas is null");	
+	public void attackSettlement(Location catapultPath,
+			Location settlementIntersection, AttackResult result) {
+		if (catapultPath == null || settlementIntersection == null
+				|| result == null)
+			throw new IllegalArgumentException("iwas is null");
 		Path path_catapult = getPath(catapultPath);
 		Intersection inter_settlement = getIntersection(settlementIntersection);
-		if (!path_catapult.hasCatapult() || !inter_settlement.hasOwner()) throw new IllegalArgumentException("kein Catapult oder Siedlung vorhanden");
-		switch(result){
+		if (!path_catapult.hasCatapult() || !inter_settlement.hasOwner())
+			throw new IllegalArgumentException(
+					"kein Catapult oder Siedlung vorhanden");
+		switch (result) {
 		case DRAW:
-			path_catapult.getCatapultOwner().modifyResources(Catapult.getAttackbuildingprice());
-			for(ModelObserver ob : modelObserver){
+			path_catapult.getCatapultOwner().modifyResources(
+					Catapult.getAttackbuildingprice());
+			for (ModelObserver ob : modelObserver) {
 				ob.updateResources();
 			}
 			break;
 		case DEFEAT:
-			path_catapult.getCatapultOwner().modifyResources(Catapult.getAttackbuildingprice());
+			path_catapult.getCatapultOwner().modifyResources(
+					Catapult.getAttackbuildingprice());
 			path_catapult.removeCatapult();
-			for(ModelObserver ob : modelObserver){
+			for (ModelObserver ob : modelObserver) {
 				ob.updateResources();
 				ob.updateCatapultCount();
 				ob.updatePath(path_catapult);
@@ -848,24 +1076,27 @@ public class Model implements ModelReader, ModelWriter{
 		case SUCCESS:
 			Player owner = path_catapult.getCatapultOwner();
 			Player ownerBuilding = inter_settlement.getOwner();
-			if(inter_settlement.getBuildingType()==BuildingType.Village){
-				if(owner.getVictoryPoints()< getMaxVictoryPoints()){
+			if (inter_settlement.getBuildingType() == BuildingType.Village) {
+				if (owner.getVictoryPoints() < getMaxVictoryPoints()) {
 					inter_settlement.removeBuilding();
-					inter_settlement.createBuilding(BuildingType.Village, owner);
-				}else{
+					inter_settlement
+							.createBuilding(BuildingType.Village, owner);
+				} else {
 					inter_settlement.removeBuilding();
 				}
-			}else{
-				if(ownerBuilding.getVictoryPoints()<getMaxVictoryPoints()){
+			} else {
+				if (ownerBuilding.getVictoryPoints() < getMaxVictoryPoints()) {
 					inter_settlement.removeBuilding();
-					inter_settlement.createBuilding(BuildingType.Village, ownerBuilding);
-				}else{
+					inter_settlement.createBuilding(BuildingType.Village,
+							ownerBuilding);
+				} else {
 					inter_settlement.removeBuilding();
-					inter_settlement.createBuilding(BuildingType.Village, owner);
+					inter_settlement
+							.createBuilding(BuildingType.Village, owner);
 				}
 			}
 			owner.modifyResources(Catapult.getAttackbuildingprice());
-			for(ModelObserver ob : modelObserver){
+			for (ModelObserver ob : modelObserver) {
 				ob.updateResources();
 				ob.updateIntersection(inter_settlement);
 				ob.updateSettlementCount(BuildingType.Village);
@@ -875,38 +1106,55 @@ public class Model implements ModelReader, ModelWriter{
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelWriter#buildCatapult(de.unisaarland.cs.sopra.common.model.Location, boolean)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelWriter#buildCatapult(de.unisaarland
+	 * .cs.sopra.common.model.Location, boolean)
 	 */
 	@Override
 	public void buildCatapult(Location destination, boolean fightOutCome) {
-		if (destination==null) throw new IllegalArgumentException(destination+" is null");
+		if (destination == null)
+			throw new IllegalArgumentException(destination + " is null");
 		Path dest = getPath(destination);
-		Set<Intersection> nachbarSet = getIntersectionsFromPath(dest); 
+		Set<Intersection> nachbarSet = getIntersectionsFromPath(dest);
 		boolean nachbarTown = false;
 		for (Intersection intersection : nachbarSet) {
-			if(intersection.getBuildingType()==BuildingType.Town) nachbarTown=true;
+			if (intersection.getBuildingType() == BuildingType.Town)
+				nachbarTown = true;
 		}
-		if(!nachbarTown) throw new IllegalArgumentException("Keine Stadt in der Naehe(Location mies)");
-		if(fightOutCome){
-			if(dest.hasCatapult()){
+		if (!nachbarTown)
+			throw new IllegalArgumentException(
+					"Keine Stadt in der Naehe(Location mies)");
+		if (fightOutCome) {
+			if (dest.hasCatapult()) {
 				dest.removeCatapult();
 			}
 			dest.createCatapult(getCurrentPlayer());
-		}else{
-			if(!dest.hasCatapult()) throw new IllegalStateException("Wird nicht gebaut, obwohl kein Gegner vorhanden ist");
-			if(!getCurrentPlayer().checkResourcesSufficient(Catapult.getBuildingprice())) throw new IllegalArgumentException("Player has no resources to built a Catapult");
+		} else {
+			if (!dest.hasCatapult())
+				throw new IllegalStateException(
+						"Wird nicht gebaut, obwohl kein Gegner vorhanden ist");
+			if (!getCurrentPlayer().checkResourcesSufficient(
+					Catapult.getBuildingprice()))
+				throw new IllegalArgumentException(
+						"Player has no resources to built a Catapult");
 		}
 		getCurrentPlayer().modifyResources(Catapult.getBuildingprice());
-		for(ModelObserver ob : modelObserver){
+		for (ModelObserver ob : modelObserver) {
 			ob.updateResources();
 			ob.updateCatapultCount();
 			ob.updatePath(dest);
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelWriter#buildStreet(de.unisaarland.cs.sopra.common.model.Location)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelWriter#buildStreet(de.unisaarland
+	 * .cs.sopra.common.model.Location)
 	 */
 	@Override
 	public void buildStreet(Location destination) {
@@ -915,22 +1163,27 @@ public class Model implements ModelReader, ModelWriter{
 		Path dest = getPath(destination);
 		if (dest.hasStreet())
 			throw new IllegalArgumentException("Strasse bereits vorhanden");
-		if(getRound()!=0){
-			if (getCurrentPlayer() == me && getCurrentPlayer().checkResourcesSufficient(Street.getPrice())){
+		if (getRound() != 0) {
+			if (getCurrentPlayer() == me
+					&& getCurrentPlayer().checkResourcesSufficient(
+							Street.getPrice())) {
 				me.modifyResources(Street.getPrice());
-			Set<Path> buildableStreets = buildableStreetPaths(getCurrentPlayer());
-			if (!buildableStreets.contains(dest))
-				throw new IllegalStateException("Keine Nachbarstrassen oder WasserFeld");
+				Set<Path> buildableStreets = buildableStreetPaths(getCurrentPlayer());
+				if (!buildableStreets.contains(dest))
+					throw new IllegalStateException(
+							"Keine Nachbarstrassen oder WasserFeld");
 			}
-		}else{
+		} else {
 			boolean hasLand = false;
-			Set<Field>fieldSet = getFieldsFromPath(dest);
-			for (Field f: fieldSet){
-				if ((f.getFieldType() != FieldType.WATER)){
+			Set<Field> fieldSet = getFieldsFromPath(dest);
+			for (Field f : fieldSet) {
+				if ((f.getFieldType() != FieldType.WATER)) {
 					hasLand = true;
 				}
 			}
-			if(!hasLand) throw new IllegalStateException("Path ist nur von Wasser umgeben!");
+			if (!hasLand)
+				throw new IllegalStateException(
+						"Path ist nur von Wasser umgeben!");
 		}
 		getPath(destination).createStreet(getCurrentPlayer());
 		for (ModelObserver ob : modelObserver) {
@@ -939,110 +1192,144 @@ public class Model implements ModelReader, ModelWriter{
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelWriter#buildSettlement(de.unisaarland.cs.sopra.common.model.Location, de.unisaarland.cs.sopra.common.model.BuildingType)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.unisaarland.cs.sopra.common.model.ModelWriter#buildSettlement(de.
+	 * unisaarland.cs.sopra.common.model.Location,
+	 * de.unisaarland.cs.sopra.common.model.BuildingType)
 	 */
 	@Override
 	public void buildSettlement(Location location, BuildingType buildingType) {
-		if (location==null) throw new IllegalArgumentException(location+" is null");
-			System.out.println("l: "+location);
-		Intersection i=getIntersection(location);
-			System.out.println("In: "+i);
-	if(getRound()==0){
-		i.createBuilding(buildingType, getCurrentPlayer());
-		for(ModelObserver ob: modelObserver){
-			ob.updateSettlementCount(buildingType);
-			ob.updateVictoryPoints();
-			ob.updateIntersection(i);
-		}
-	}else{
-			if (isBuildable(i, buildingType) && (isAffordable(buildingType))){
+		if (location == null)
+			throw new IllegalArgumentException(location + " is null");
+		System.out.println("l: " + location);
+		Intersection i = getIntersection(location);
+		System.out.println("In: " + i);
+		if (getRound() == 0) {
+			i.createBuilding(buildingType, getCurrentPlayer());
+			for (ModelObserver ob : modelObserver) {
+				ob.updateSettlementCount(buildingType);
+				ob.updateVictoryPoints();
+				ob.updateIntersection(i);
+			}
+		} else {
+//			System.out.println("Buildable: "+isBuildable(i, buildingType)+ " Affordable: " + isAffordable(buildingType));
+			if (isBuildable(i, buildingType) && (isAffordable(buildingType))) {
 				getCurrentPlayer().modifyResources(buildingType.getPrice());
 				i.createBuilding(buildingType, getCurrentPlayer());
-				for(ModelObserver ob: modelObserver){
+				for (ModelObserver ob : modelObserver) {
 					ob.updateResources();
 					ob.updateSettlementCount(buildingType);
 					ob.updateVictoryPoints();
 					ob.updateIntersection(i);
-				}	
-			}
-			else throw new IllegalArgumentException("Das Gebaeude wurde nicht gebaut");
+				}
+			} else
+				throw new IllegalArgumentException(
+						"Das Gebaeude wurde nicht gebaut");
 		}
 	}
 
-	private boolean isBuildable(Intersection i, BuildingType buildingType){
-		Set<Intersection>si;
-		if (buildingType==BuildingType.Village){
-			si=buildableVillageIntersections(getCurrentPlayer());
+	private boolean isBuildable(Intersection i, BuildingType buildingType) {
+		Set<Intersection> si;
+		if (buildingType == BuildingType.Village) {
+			si = buildableVillageIntersections(getCurrentPlayer());
 			System.out.println(si);
 			System.out.println(i);
-			if (si.contains(i)) return true;
+			if (si.contains(i))
+				return true;
 			return false;
-//			throw new IllegalArgumentException("Kein Dorf darf hier gebaut werden");
-		}
-		else if (buildingType==BuildingType.Town){
-			si=buildableTownIntersections(getCurrentPlayer());
+			// throw new
+			// IllegalArgumentException("Kein Dorf darf hier gebaut werden");
+		} else if (buildingType == BuildingType.Town) {
+			si = buildableTownIntersections(getCurrentPlayer());
 			System.out.println(si);
 			System.out.println(i);
-			if (si.contains(i)) return true;
+			if (si.contains(i))
+				return true;
 			return false;
-//			throw new IllegalArgumentException("Keine Stadt darf hier gebaut werden");
+			// throw new
+			// IllegalArgumentException("Keine Stadt darf hier gebaut werden");
 		}
 		throw new IllegalArgumentException("Es fehlt den BuildingType");
 	}
-	
-	private boolean isAffordable(BuildingType buildingType){
-		int a=affordableSettlements(buildingType);
-		if (a>0) return true;
-		throw new IllegalArgumentException("Nicht genug Ressourcen, um es zu bauen");
+
+	private boolean isAffordable(BuildingType buildingType) {
+		int a = affordableSettlements(buildingType);
+		if (a > 0)
+			return true;
+		throw new IllegalArgumentException(
+				"Nicht genug Ressourcen, um es zu bauen");
 	}
-	
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelWriter#longestRaodClaimed(java.util.List)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelWriter#longestRaodClaimed(java
+	 * .util.List)
 	 */
 	@Override
-	public void longestRoadClaimed(List<Location> road) throws IllegalStateException{
+	public void longestRoadClaimed(List<Location> road)
+			throws IllegalStateException {
 		throw new UnsupportedOperationException();
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelWriter#matchStart(long[], byte[])
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.unisaarland.cs.sopra.common.model.ModelWriter#matchStart(long[],
+	 * byte[])
 	 */
 	@Override
 	public void matchStart(long[] players, byte[] numbers) {
-		if (players==null || numbers==null) throw new IllegalArgumentException(players +" or "+ numbers+ " are null");
+		if (players == null || numbers == null)
+			throw new IllegalArgumentException(players + " or " + numbers
+					+ " are null");
 		setTableOrder(players);
 		setFieldNumbers(numbers);
-		//TODO evtl noch mehr zu tun als das
+		// TODO evtl noch mehr zu tun als das
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelWriter#catapultMoved(de.unisaarland.cs.sopra.common.model.Location, de.unisaarland.cs.sopra.common.model.Location, boolean)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelWriter#catapultMoved(de.unisaarland
+	 * .cs.sopra.common.model.Location,
+	 * de.unisaarland.cs.sopra.common.model.Location, boolean)
 	 */
 	@Override
-	public void catapultMoved(Location sourcePath, Location destinationPath, boolean fightOutCome) {
-		if (sourcePath==null || destinationPath==null) throw new IllegalArgumentException("iwas is null");
+	public void catapultMoved(Location sourcePath, Location destinationPath,
+			boolean fightOutCome) {
+		if (sourcePath == null || destinationPath == null)
+			throw new IllegalArgumentException("iwas is null");
 		Player owner = getPath(sourcePath).getCatapultOwner();
 		Path path_source = getPath(sourcePath);
 		Path path_dest = getPath(destinationPath);
 		Set<Intersection> iset1 = getIntersectionsFromPath(path_source);
 		Set<Intersection> iset2 = getIntersectionsFromPath(path_dest);
 		Intersection interBetweenPaths = null;
-		//finds the intersection between both paths
+		// finds the intersection between both paths
 		for (Intersection inter1 : iset1) {
 			for (Intersection inter2 : iset2) {
-				if(inter1 ==inter2) interBetweenPaths=inter1;
+				if (inter1 == inter2)
+					interBetweenPaths = inter1;
 			}
 		}
-		if(interBetweenPaths.hasOwner() && interBetweenPaths.getOwner()!=owner){
-			throw new IllegalStateException("Catapult kann nicht durch feindliche Siedlungen hindurch");
+		if (interBetweenPaths.hasOwner()
+				&& interBetweenPaths.getOwner() != owner) {
+			throw new IllegalStateException(
+					"Catapult kann nicht durch feindliche Siedlungen hindurch");
 		}
 		path_source.removeCatapult();
 		path_dest.createCatapult(owner);
-		
-		if(owner.checkResourcesSufficient(Catapult.getAttackcatapultprice())) throw new IllegalStateException("not enough money on the bankaccount!");
+
+		if (owner.checkResourcesSufficient(Catapult.getAttackcatapultprice()))
+			throw new IllegalStateException(
+					"not enough money on the bankaccount!");
 		owner.modifyResources(Catapult.getAttackcatapultprice());
-		
+
 		for (ModelObserver ob : modelObserver) {
 			ob.updatePath(path_source);
 			ob.updatePath(path_dest);
@@ -1050,7 +1337,9 @@ public class Model implements ModelReader, ModelWriter{
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.unisaarland.cs.sopra.common.model.ModelWriter#playerLeft(long)
 	 */
 	@Override
@@ -1060,66 +1349,84 @@ public class Model implements ModelReader, ModelWriter{
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelWriter#robberMoved(de.unisaarland.cs.sopra.common.model.Point, de.unisaarland.cs.sopra.common.model.Point, long, de.unisaarland.cs.sopra.common.model.Resource)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelWriter#robberMoved(de.unisaarland
+	 * .cs.sopra.common.model.Point, de.unisaarland.cs.sopra.common.model.Point,
+	 * long, de.unisaarland.cs.sopra.common.model.Resource)
 	 */
 	@Override
-	public void robberMoved(Point sourceField, Point destinationField, long victimPlayer, Resource stolenResource) {
+	public void robberMoved(Point sourceField, Point destinationField,
+			long victimPlayer, Resource stolenResource) {
 		// TODO (Philipp)
 		getField(sourceField).setRobber(false);
 		getField(destinationField).setRobber(true);
-		playerMap.get(victimPlayer).getResources().modifyResource(stolenResource, -1);
-		for(ModelObserver ob : modelObserver) {
+		playerMap.get(victimPlayer).getResources()
+				.modifyResource(stolenResource, -1);
+		for (ModelObserver ob : modelObserver) {
 			ob.eventRobber();
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelWriter#tradeOffer(int, int, int, int, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.unisaarland.cs.sopra.common.model.ModelWriter#tradeOffer(int,
+	 * int, int, int, int)
 	 */
 	@Override
 	public void tradeOffer(int lumber, int brick, int wool, int grain, int ore) {
 		// TODO: darf ich das ueberhaupt handeln, verhaeltnisse (Philipp)
 		lastTrade = new ResourcePackage(lumber, brick, wool, grain, ore);
-		for(ModelObserver mo : modelObserver) {
+		for (ModelObserver mo : modelObserver) {
 			mo.eventTrade(lastTrade);
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.unisaarland.cs.sopra.common.model.ModelWriter#respondTrade(long)
 	 */
 	@Override
 	public void respondTrade(long playerID) {
 		// TODO (Philipp)
-		if (playerID < -2) throw new IllegalArgumentException();
-		else if(playerID == -1) {
+		if (playerID < -2)
+			throw new IllegalArgumentException();
+		else if (playerID == -1) {
 			return;
-		}
-		else if(playerID == -2) {
+		} else if (playerID == -2) {
 			getCurrentPlayer().modifyResources(lastTrade);
-			for(ModelObserver mo : modelObserver) {
+			for (ModelObserver mo : modelObserver) {
 				mo.updateResources();
 			}
-		}
-		else {
+		} else {
 			getCurrentPlayer().modifyResources(lastTrade);
-			playerMap.get(playerID).modifyResources(lastTrade.neagateResourcePackage());
-			for(ModelObserver mo : modelObserver) {
+			playerMap.get(playerID).modifyResources(
+					lastTrade.neagateResourcePackage());
+			for (ModelObserver mo : modelObserver) {
 				mo.updateResources();
 			}
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getField(de.unisaarland.cs.sopra.common.model.Point)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#getField(de.unisaarland
+	 * .cs.sopra.common.model.Point)
 	 */
 	@Override
 	public Field getField(Point p) {
 		return board.getField(p);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getMaxCatapult()
 	 */
 	@Override
@@ -1127,7 +1434,9 @@ public class Model implements ModelReader, ModelWriter{
 		return maxCatapult;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getInitVillages()
 	 */
 	@Override
@@ -1135,8 +1444,12 @@ public class Model implements ModelReader, ModelWriter{
 		return initVillages;
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#buildableVillageIntersections(de.unisaarland.cs.sopra.common.model.Player)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#
+	 * buildableVillageIntersections
+	 * (de.unisaarland.cs.sopra.common.model.Player)
 	 */
 	@Override
 	public Set<Intersection> buildableVillageIntersections(Player player) {
@@ -1149,16 +1462,22 @@ public class Model implements ModelReader, ModelWriter{
 			for (Intersection intersection : pathInt) {
 				boolean buildable = true;
 				for (Intersection nachbar : getIntersectionsFromIntersection(intersection)) {
-					if(nachbar.hasOwner()) buildable=false;
+					if (nachbar.hasOwner())
+						buildable = false;
 				}
-				if(buildable) ret.add(intersection);
+				if (buildable)
+					ret.add(intersection);
 			}
 		}
 		return ret;
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#buildableTownIntersections(de.unisaarland.cs.sopra.common.model.Player)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.unisaarland.cs.sopra.common.model.ModelReader#buildableTownIntersections
+	 * (de.unisaarland.cs.sopra.common.model.Player)
 	 */
 	@Override
 	public Set<Intersection> buildableTownIntersections(Player player) {
@@ -1168,11 +1487,15 @@ public class Model implements ModelReader, ModelWriter{
 	}
 
 	@Override
-	public void returnResources(int lumber, int brick, int wool, int grain, int ore) {
-		ResourcePackage robberPackage = new ResourcePackage(lumber, brick, wool, grain, ore);
-		if(!me.checkResourcesSufficient(robberPackage)) throw new IllegalStateException("Spieler kann nicht mehr Resourcen abgeben als es hat");
+	public void returnResources(int lumber, int brick, int wool, int grain,
+			int ore) {
+		ResourcePackage robberPackage = new ResourcePackage(lumber, brick,
+				wool, grain, ore);
+		if (!me.checkResourcesSufficient(robberPackage))
+			throw new IllegalStateException(
+					"Spieler kann nicht mehr Resourcen abgeben als es hat");
 		me.modifyResources(robberPackage);
-		
+
 		for (ModelObserver ob : modelObserver) {
 			ob.updateResources();
 		}
