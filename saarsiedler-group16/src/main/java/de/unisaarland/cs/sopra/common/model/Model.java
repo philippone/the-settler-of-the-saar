@@ -915,11 +915,23 @@ public class Model implements ModelReader, ModelWriter{
 		Path dest = getPath(destination);
 		if (dest.hasStreet())
 			throw new IllegalArgumentException("Strasse bereits vorhanden");
-		Set<Path> nachbarn = buildableStreetPaths(getCurrentPlayer());
-		if (!nachbarn.contains(dest))
-			throw new IllegalStateException("Keine Nachbarstrassen oder WasserFeld");
-		if (getCurrentPlayer() == me && getCurrentPlayer().checkResourcesSufficient(Street.getPrice()))
-		getCurrentPlayer().modifyResources(Street.getPrice());
+		if(getRound()!=0){
+			if (getCurrentPlayer() == me && getCurrentPlayer().checkResourcesSufficient(Street.getPrice())){
+				me.modifyResources(Street.getPrice());
+			Set<Path> buildableStreets = buildableStreetPaths(getCurrentPlayer());
+			if (!buildableStreets.contains(dest))
+				throw new IllegalStateException("Keine Nachbarstrassen oder WasserFeld");
+			}
+		}else{
+			boolean hasLand = false;
+			Set<Field>fieldSet = getFieldsFromPath(dest);
+			for (Field f: fieldSet){
+				if ((f.getFieldType() != FieldType.WATER)){
+					hasLand = true;
+				}
+			}
+			if(!hasLand) throw new IllegalStateException("Path ist nur von Wasser umgeben!");
+		}
 		getPath(destination).createStreet(getCurrentPlayer());
 		for (ModelObserver ob : modelObserver) {
 			ob.updateResources();
@@ -936,17 +948,26 @@ public class Model implements ModelReader, ModelWriter{
 			System.out.println("l: "+location);
 		Intersection i=getIntersection(location);
 			System.out.println("In: "+i);
-		if (isBuildable(i, buildingType) && (isAffordable(buildingType))){
-			getCurrentPlayer().modifyResources(buildingType.getPrice());
-			i.createBuilding(buildingType, getCurrentPlayer());
-			for(ModelObserver ob: modelObserver){
-				ob.updateResources();
-				ob.updateSettlementCount(buildingType);
-				ob.updateVictoryPoints();
-				ob.updateIntersection(i);
-			}	
+	if(getRound()==0){
+		i.createBuilding(buildingType, getCurrentPlayer());
+		for(ModelObserver ob: modelObserver){
+			ob.updateSettlementCount(buildingType);
+			ob.updateVictoryPoints();
+			ob.updateIntersection(i);
 		}
-		else throw new IllegalArgumentException("Das Gebaeude wurde nicht gebaut");
+	}else{
+			if (isBuildable(i, buildingType) && (isAffordable(buildingType))){
+				getCurrentPlayer().modifyResources(buildingType.getPrice());
+				i.createBuilding(buildingType, getCurrentPlayer());
+				for(ModelObserver ob: modelObserver){
+					ob.updateResources();
+					ob.updateSettlementCount(buildingType);
+					ob.updateVictoryPoints();
+					ob.updateIntersection(i);
+				}	
+			}
+			else throw new IllegalArgumentException("Das Gebaeude wurde nicht gebaut");
+		}
 	}
 
 	private boolean isBuildable(Intersection i, BuildingType buildingType){
