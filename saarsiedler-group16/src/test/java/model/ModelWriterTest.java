@@ -149,6 +149,7 @@ public class ModelWriterTest {
 	@Test
 	// Tests wheter it is possible to build a town in the initial phase
 	public void buildSettlementTest() {
+		
 		try {
 			model.buildSettlement(new Location(1, 1, 1), BuildingType.Town);
 			fail("You shouldn't be able to build a town in the inital phase!");

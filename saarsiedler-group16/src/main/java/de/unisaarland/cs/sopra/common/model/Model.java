@@ -366,11 +366,21 @@ public class Model implements ModelReader, ModelWriter{
 		Set<Path> res = new HashSet<Path>();
 		while(it.hasNext()){
 			Path p = it.next();
+			Set<Field> fieldSet = getFieldsFromPath(p) ;
+			boolean hasLand = false;
+			for (Field f: fieldSet){
+				if ((f.getFieldType() != FieldType.WATER)){
+					hasLand = true;
+				}
+				
+			}
+		
 			if(!p.hasStreet()){
 				Set<Path> nachbarn = getPathsFromPath(p);
 				for(Path n: nachbarn){
 					if(n.hasStreet()	&&	n.getStreetOwner()==player){	//doppelte abfrage zur sicherheit
-						res.add(p);
+						if(hasLand)
+							res.add(p);
 					}
 				}
 			}
@@ -900,14 +910,18 @@ public class Model implements ModelReader, ModelWriter{
 	 */
 	@Override
 	public void buildStreet(Location destination) {
-		if (destination == null) throw new IllegalArgumentException(destination + " is null");
+		if (destination == null)
+			throw new IllegalArgumentException(destination + " is null");
 		Path dest = getPath(destination);
-		if (!dest.hasStreet()) throw new IllegalArgumentException("Strasse bereits vorhanden");
-		Set<Path> nachbarn = buildableStreetPaths(me);
-		if(!nachbarn.contains(dest)) throw new IllegalStateException("Keine Nachbarstrassen");
-		me.checkResourcesSufficient(Street.getPrice());
-		me.modifyResources(Street.getPrice());
-		for(ModelObserver ob : modelObserver){
+		if (dest.hasStreet())
+			throw new IllegalArgumentException("Strasse bereits vorhanden");
+		Set<Path> nachbarn = buildableStreetPaths(getCurrentPlayer());
+		if (!nachbarn.contains(dest))
+			throw new IllegalStateException("Keine Nachbarstrassen oder WasserFeld");
+		if (getCurrentPlayer() == me && getCurrentPlayer().checkResourcesSufficient(Street.getPrice()))
+		getCurrentPlayer().modifyResources(Street.getPrice());
+		getPath(destination).createStreet(getCurrentPlayer());
+		for (ModelObserver ob : modelObserver) {
 			ob.updateResources();
 			ob.updatePath(dest);
 		}
