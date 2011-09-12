@@ -29,8 +29,9 @@ public class ModelReaderTest4 {
 	
 	@Before
 	public void setUp() throws IOException {
-		model2 = TestUtil.getStandardModel2();
 		model1 = TestUtil.getStandardModel1();
+		model2 = TestUtil.getStandardModel2();
+		model3 = TestUtil.getStandardModel3();
 	}	
 	
 	@Test
