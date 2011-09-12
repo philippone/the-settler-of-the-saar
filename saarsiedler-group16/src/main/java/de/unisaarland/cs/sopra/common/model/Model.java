@@ -1298,7 +1298,13 @@ public class Model implements ModelReader, ModelWriter {
 	@Override
 	public void longestRoadClaimed(List<Location> road)
 			throws IllegalStateException {
-		throw new UnsupportedOperationException();
+		//TODO (Philipp)
+		List<Path> lr = new LinkedList<Path>();
+		for(Location l : road) {
+			lr.add(getPath(l));
+		}
+		this.longestClaimedRoad = lr;
+		//throw new UnsupportedOperationException();
 	}
 
 	/*
