@@ -1299,11 +1299,27 @@ public class Model implements ModelReader, ModelWriter {
 	public void longestRoadClaimed(List<Location> road)
 			throws IllegalStateException {
 		//TODO (Philipp)
-		List<Path> lr = new LinkedList<Path>();
-		for(Location l : road) {
-			lr.add(getPath(l));
+		if (road.size() >= 5) {
+			List<Path> lr = new LinkedList<Path>();
+			boolean rightPlayer = false;
+			for(Location l : road) {
+				Path p = getPath(l);
+				lr.add(p);
+				if (p.getStreetOwner().equals(getCurrentPlayer())) {
+					rightPlayer = true;
+				} else {
+					rightPlayer = false; 
+					break;
+				}
+			}
+			if (rightPlayer) {
+				this.longestClaimedRoad = lr;
+			} else throw new IllegalArgumentException("not the right Player");
+			
 		}
-		this.longestClaimedRoad = lr;
+		else {
+			throw new IllegalArgumentException("Roadsize <5");
+		}
 		//throw new UnsupportedOperationException();
 	}
 
