@@ -97,37 +97,45 @@ public class ModelTest {
 		 expectedLongestRoad.add(longRoad2);
 		 expectedLongestRoad.add(longRoad3);
 		 
-		 model.buildSettlement(new Location(1,1,0), BuildingType.Village);
+		 //model.buildSettlement(new Location(1,1,0), BuildingType.Village);
+		 model.getIntersection(new Location(1,1,0)).createBuilding(BuildingType.Village, owner);
 		 
-		 model.buildStreet(new Location(1,1,5));
+		 //model.buildStreet(new Location(1,1,5));
+		 model.getPath(new Location(1,1,5)).createStreet(owner);
 		 longRoad0.add(model.getPath(new Location(1,1,5)));
 		 longRoad1.add(model.getPath(new Location(1,1,5)));
 		 longRoad2.add(model.getPath(new Location(1,1,5)));
 		 longRoad3.add(model.getPath(new Location(1,1,5)));
 		 
-		 model.buildStreet(new Location(1,1,4));
+		 //model.buildStreet(new Location(1,1,4));
+		 model.getPath(new Location(1,1,4)).createStreet(owner);
 		 longRoad0.add(model.getPath(new Location(1,1,4)));
 		 longRoad1.add(model.getPath(new Location(1,1,4)));
 		 longRoad2.add(model.getPath(new Location(1,1,4)));
 		 longRoad3.add(model.getPath(new Location(1,1,4)));
 		 
-		 model.buildStreet(new Location(1,1,3));
-		 //model.buildStreet(new Location(1,1,2));
-		 model.buildStreet(new Location(2,0,5));
+		 //model.buildStreet(new Location(1,1,3));
+		 model.getPath(new Location(1,1,3)).createStreet(owner);
+		 //model.buildStreet(new Location(2,0,5));
+		 model.getPath(new Location(2,0,5)).createStreet(owner);
 		 longRoad0.add(model.getPath(new Location(2,0,5)));
 		 longRoad1.add(model.getPath(new Location(2,0,5)));
 		 longRoad2.add(model.getPath(new Location(2,0,5)));
 		 longRoad3.add(model.getPath(new Location(1,1,3)));
 		 
-		 model.buildStreet(new Location(2,0,4));
-		 model.buildStreet(new Location(2,0,1));
+		 //model.buildStreet(new Location(2,0,4));
+		 //model.buildStreet(new Location(2,0,1));
+		 model.getPath(new Location(2,0,4)).createStreet(owner);
+		 model.getPath(new Location(2,0,1)).createStreet(owner);
 		 longRoad0.add(model.getPath(new Location(2,0,4)));
 		 longRoad1.add(model.getPath(new Location(2,0,4)));
 		 longRoad2.add(model.getPath(new Location(2,0,4)));
 		 longRoad3.add(model.getPath(new Location(2,0,1)));
 		 
-		 model.buildStreet(new Location(2,0,3));
-		 model.buildStreet(new Location(2,0,2));
+		 //model.buildStreet(new Location(2,0,3));
+		 //model.buildStreet(new Location(2,0,2));
+		 model.getPath(new Location(2,0,3)).createStreet(owner);
+		 model.getPath(new Location(2,0,2)).createStreet(owner);
 		 longRoad0.add(model.getPath(new Location(2,0,3)));
 		 longRoad1.add(model.getPath(new Location(2,0,3)));
 		 longRoad1.add(model.getPath(new Location(2,0,2)));
@@ -135,44 +143,59 @@ public class ModelTest {
 		 longRoad2.add(model.getPath(new Location(2,0,2)));
 		 longRoad3.add(model.getPath(new Location(2,0,2)));
 		 
-		 model.buildStreet(new Location(1,1,2));
-		 model.buildStreet(new Location(1,2,3));
+		 //model.buildStreet(new Location(1,1,2));
+		 //model.buildStreet(new Location(1,2,3));
+		 model.getPath(new Location(1,1,2)).createStreet(owner);
+		 model.getPath(new Location(1,2,3)).createStreet(owner);
 		 longRoad2.add(model.getPath(new Location(2,0,1)));
 		 longRoad2.add(model.getPath(new Location(1,1,2)));
 		 longRoad2.add(model.getPath(new Location(1,2,3)));
 		 // 2 fertig
 		 
-		 model.buildStreet(new Location(3,0,1));
+		 //model.buildStreet(new Location(3,0,1));
+		 model.getPath(new Location(3,0,1)).createStreet(owner);
 		 longRoad0.add(model.getPath(new Location(3,0,1)));
 		 longRoad3.add(model.getPath(new Location(3,0,1)));
 		 
-		 model.buildStreet(new Location(3,1,3));
-		 model.buildStreet(new Location(3,1,2));
+		 //model.buildStreet(new Location(3,1,3));
+		 //model.buildStreet(new Location(3,1,2));
+		 model.getPath(new Location(3,1,3)).createStreet(owner);
+		 model.getPath(new Location(3,1,2)).createStreet(owner);
+		 model.getPath(new Location(3,2,3)).createStreet(owner);
 		 longRoad0.add(model.getPath(new Location(3,1,3)));
 		 longRoad3.add(model.getPath(new Location(3,1,3)));
 		 longRoad0.add(model.getPath(new Location(3,1,2)));
 		 longRoad3.add(model.getPath(new Location(3,1,2)));
+		 longRoad0.add(model.getPath(new Location(3,2,3)));
+		 longRoad3.add(model.getPath(new Location(3,2,3)));
 		 // 0 und 3 fertig
 		 
-		 model.buildStreet(new Location(2,1,3));
-		 model.buildStreet(new Location(2,1,2));
-		 model.buildStreet(new Location(2,2,3));
+		 //model.buildStreet(new Location(2,1,3));
+		 //model.buildStreet(new Location(2,1,2));
+		 //model.buildStreet(new Location(2,2,3));
+		 model.getPath(new Location(2,1,3)).createStreet(owner);
+		 model.getPath(new Location(2,1,2)).createStreet(owner);
+		 model.getPath(new Location(2,2,3)).createStreet(owner);
 		 longRoad1.add(model.getPath(new Location(2,1,3)));
 		 longRoad1.add(model.getPath(new Location(2,1,2)));
 		 longRoad1.add(model.getPath(new Location(2,2,3)));
 		 // 1 fertig
 		 
 		 // gegnerisches Dorf
-		 model.buildSettlement(new Location(2,2,3), BuildingType.Village);
-		 model.getIntersection(new Location(2,2,3)).setOwner(gegner);
+		 //model.buildSettlement(new Location(2,2,3), BuildingType.Village);
+		 model.getIntersection(new Location(2,2,3)).createBuilding(BuildingType.Village,gegner);
+		 //model.getIntersection(new Location(2,2,3)).setOwner(gegner);
 		 // Street hinter gegnerischem Dorf
-		 model.buildSettlement(new Location(3,3,3), BuildingType.Village);
-		 model.buildStreet(new Location(3,3,5));
-		 model.buildStreet(new Location(3,3,3));
+		 //model.buildSettlement(new Location(3,3,3), BuildingType.Village);
+		 model.getIntersection(new Location(3,3,4)).createBuilding(BuildingType.Village,owner);
+		 //model.buildStreet(new Location(3,3,5));
+		 //model.buildStreet(new Location(3,3,3));
+		 model.getPath(new Location(3,3,5)).createStreet(gegner);
+		 model.getPath(new Location(3,3,3)).createStreet(owner);
 		 
 		 List<List<Path>> currentLongestRoad = model.calculateLongestRoads(owner);
-		 assertEquals("Street0 0 != 9", longRoad0.size(),9);
-		 assertEquals("Street1 0 != 9", longRoad1.size(),9);
+		 assertTrue("Street0 0 != 9", longRoad0.size()==9);
+		 assertTrue("Street1 0 != 9", longRoad1.size()==9);
 		 assertEquals("Street2 0 != 9", longRoad2.size(),9);
 		 assertEquals("Street3 0 != 9", longRoad3.size(),9);
 		 
@@ -183,7 +206,7 @@ public class ModelTest {
 		 }
 		 // testet ob die normale oder reverseierte Liste == der ausgerechneten ist
 		 boolean calculateExpectedLongestRoad = expectedLongestRoad.equals(currentLongestRoad) || currentLongestRoad.equals(reverseLongestRoads);
-		 assertEquals("laengste Strassen falsch berechnet (hoffentlich richitger Test)", calculateExpectedLongestRoad, true);
+		 assertTrue("laengste Strassen falsch berechnet (hoffentlich richitger Test)", calculateExpectedLongestRoad);
 		 // claim longest Road:Road1
 		 //model.longestRaodClaimed(Model.getLocationList(longRoad0));
 	}
