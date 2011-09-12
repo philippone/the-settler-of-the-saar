@@ -47,6 +47,8 @@ public class ModelReaderTest {
 		currentSet = model.getHarborTypes(currentPlayer);
 		assertTrue("Contains one element : LUMBER_HARBOR TYPE", currentSet.size() == 1);
 		//test if both sets have identical content
+		System.out.println("curSet:" + currentSet );
+		System.out.println("expSet" + expectedSet);
 		assertTrue(currentSet.containsAll(expectedSet));
 		assertTrue(expectedSet.containsAll(currentSet));
 		

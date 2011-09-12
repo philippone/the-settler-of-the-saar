@@ -192,7 +192,7 @@ public class BoardTest {
 		//create the neighbours of the intersection
 		path9 = b.getPath(new Location(0, 0, 1));
 		path10 = b.getPath(new Location(0, 0, 2));
-		path11 = b.getPath(new Location(0, 1, 4));
+		path11 = b.getPath(new Location(0, 1, 3));
 		//create both Sets
 		pathSet3 = b.getPathsFromIntersection(i3);
 		pathSet4 = new HashSet<Path>();
@@ -216,8 +216,11 @@ public class BoardTest {
 		//System.out.println("path1" + b.getPath(new Location (0, 1, 0)));
 		//System.out.println("path1" + b.getPath(new Location (0, 1, 1)));
 		//
+		System.out.println("bla" + b.getPathsFromIntersection(b.getIntersection(new Location(0, 1, 1))));
 		assertTrue(pathSet11.containsAll(pathSet12));
 		assertTrue(pathSet12.containsAll(pathSet11));
+		System.out.println("bla" + b.getPathsFromIntersection(b.getIntersection(new Location(0, 1, 1))));
+		
 	}
 	
 	@Test

@@ -140,29 +140,39 @@ public class ModelReaderTest4 {
 	@Test
 	public void testCanPlaceRobber() throws IOException {
 		Set<Field> canSet = new HashSet<Field>();
-		canSet.add(model1.getField(new Point(3, 0)));
+		
 		canSet.add(model1.getField(new Point(0, 0)));
 		canSet.add(model1.getField(new Point(0, 1)));
 		canSet.add(model1.getField(new Point(0, 2)));
+		
 		canSet.add(model1.getField(new Point(1, 0)));
 		canSet.add(model1.getField(new Point(1, 1)));
 		canSet.add(model1.getField(new Point(1, 2)));
+	
 		canSet.add(model1.getField(new Point(2, 0)));
 		canSet.add(model1.getField(new Point(2, 1)));
 		canSet.add(model1.getField(new Point(2, 2)));
+
+	
 		canSet.add(model1.getField(new Point(3, 1)));
 		canSet.add(model1.getField(new Point(3, 2)));
+
+		Set<Field> expSet = model1.canPlaceRobber();
 		
-		assertEquals(canSet, model1.canPlaceRobber());
-		
-		//ingore robber ?!
-		model1.getField(new Point(2, 2)).setRobber(true);
-		canSet.remove(model1.getField(new Point(2, 2)));
-		model1.getField(new Point(2, 1)).setRobber(true);
-		canSet.remove(model1.getField(new Point(2, 1)));
-		
-		assertEquals(canSet, model1.canPlaceRobber());
-		
+		assertTrue(canSet.containsAll(expSet));
+		assertTrue(expSet.containsAll(canSet));
+	
+		// ingore robber ?!
+	model1.getField(new Point(2, 2)).setRobber(true);
+	canSet.remove(model1.getField(new Point(2, 2)));
+	model1.getField(new Point(2, 1)).setRobber(true);
+	canSet.remove(model1.getField(new Point(2, 1)));
+	Set<Field> expSet1 = model1.canPlaceRobber();
+	System.out.println(expSet1);
+	System.out.println(canSet);
+	assertTrue(canSet.containsAll(expSet1));
+	assertTrue(expSet1.containsAll(canSet));
+
 	}
 	
 	@Test
@@ -223,7 +233,7 @@ public class ModelReaderTest4 {
 		assertEquals(HarborType.GENERAL_HARBOR, model1.getHarborType(model1.getIntersection(new Location(1,0,1))));
 		assertEquals(HarborType.LUMBER_HARBOR, model1.getHarborType(model1.getIntersection(new Location(2,1,1))));
 		assertNotSame(HarborType.GRAIN_HARBOR, model1.getHarborType(model1.getIntersection(new Location(1,0,1))));
-		assertNotSame(HarborType.GENERAL_HARBOR, model1.getHarborType(model1.getIntersection(new Location(1,0,1))));
+		assertNotSame(HarborType.GENERAL_HARBOR, model1.getHarborType(model1.getIntersection(new Location(2,0,1))));
 	}
 	
 	@Test

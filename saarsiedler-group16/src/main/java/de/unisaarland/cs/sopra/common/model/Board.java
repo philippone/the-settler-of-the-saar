@@ -88,7 +88,7 @@ public class Board {
 		}
 	}
 	
-	//Done TODO nach fehlern suchen!
+	//Done
 	private void initIntersections() {
 		for (int y = 0; y < height; y++){
 			for (int x = 0; x < width; x++){
@@ -334,7 +334,6 @@ public class Board {
 	}
 	
 	//Done
-	//Done
 	public Set<Intersection> getIntersectionsFromIntersection(Intersection intersection) {
 		Location loc = intersection.getLocation();
 		int x = loc.getX();
@@ -402,7 +401,6 @@ public class Board {
 	}
 	
 	//Done
-	//Done
 	public Set<Intersection> getIntersectionsFromPath(Path path) {
 		Location loc = path.getLocation();
 		int x = loc.getX();
@@ -414,7 +412,6 @@ public class Board {
 		return s;
 	}
 	
-	//Done
 	//Done
 	public Set<Path> getPathsFromField(Field field) {
 		Point loc = field.getLocation();
@@ -434,6 +431,61 @@ public class Board {
 		Set<Path> s = new HashSet<Path>();
 		s.add(getPath(new Location(y, x, o)));
 		s.add(getPath(new Location(y, x, (o+5)%6)));
+		if (y % 2 == 1){
+			switch(o){
+			case 0:
+				if (isValid(y-1, x-1)) s.add(this.getPath(new Location(y-1, x-1, 1)));
+				if (isValid(y-1, x)) s.add(this.getPath(new Location(y-1, x, 4)));
+				break;
+			case 1:
+				if (isValid(y-1, x)) s.add(this.getPath(new Location(y-1, x, 2)));
+				if (isValid(y, x+1)) s.add(this.getPath(new Location(y, x+1, 5)));
+				break;
+			case 2:
+				if (isValid(y, x+1)) s.add(this.getPath(new Location(y, x+1, 3)));
+				if (isValid(y+1, x)) s.add(this.getPath(new Location(y+1, x, 0)));
+				break;
+			case 3:
+				if (isValid(y+1, x)) s.add(this.getPath(new Location(y+1, x, 4)));
+				if (isValid(y+1, x-1)) s.add(this.getPath(new Location(y+1, x-1, 1)));
+				break;
+			case 4:
+				if (isValid(y+1, x-1)) s.add(this.getPath(new Location(y+1, x-1, 5)));
+				if (isValid(y, x-1)) s.add(this.getPath(new Location(y, x-1, 2)));
+				break;
+			case 5:
+				if (isValid(y, x-1)) s.add(this.getPath(new Location(y, x-1, 0)));
+				if (isValid(y-1, x-1)) s.add(this.getPath(new Location(y-1, x-1, 3)));
+				break;	
+			}
+		} else {
+			switch(o){
+			case 0:
+				if (isValid(y-1, x+1)) s.add(this.getPath(new Location(y-1, x+1, 1)));
+				if (isValid(y-1, x)) s.add(this.getPath(new Location(y-1, x, 1)));
+				break;
+			case 1:
+				if (isValid(y-1, x+1)) s.add(this.getPath(new Location(y-1, x+1, 2)));
+				if (isValid(y, x+1)) s.add(this.getPath(new Location(y, x+1, 5)));
+				break;
+			case 2:
+				if (isValid(y, x+1)) s.add(this.getPath(new Location(y, x+1, 3)));
+				if (isValid(y+1, x+1)) s.add(this.getPath(new Location(y+1, x+1, 0)));
+				break;
+			case 3:
+				if (isValid(y+1, x)) s.add(this.getPath(new Location(y+1, x, 1)));
+				if (isValid(y+1, x+1)) s.add(this.getPath(new Location(y+1, x+1, 4)));
+				break;
+			case 4:
+				if (isValid(y+1, x)) s.add(this.getPath(new Location(y+1, x, 5)));
+				if (isValid(y, x-1)) s.add(this.getPath(new Location(y, x-1, 2)));
+				break;
+			case 5:
+				if (isValid(y, x-1)) s.add(this.getPath(new Location(y, x-1, 0)));
+				if (isValid(y-1, x)) s.add(this.getPath(new Location(y-1, x, 3)));
+				break;	
+			}
+		}	
 		return s;
 	}
 	

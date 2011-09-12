@@ -581,6 +581,8 @@ public class Model implements ModelReader, ModelWriter{
 		Field f;
 		while (itf.hasNext()){
 			f=itf.next();
+			if(f.hasRobber())
+				continue;
 			if (f.getFieldType()==FieldType.WATER){
 				Set<Field>sf1=getFieldsFromField(f);
 				for (Field f1:sf1){
