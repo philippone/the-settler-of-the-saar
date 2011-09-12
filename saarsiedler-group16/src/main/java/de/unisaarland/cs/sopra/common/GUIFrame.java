@@ -11,12 +11,9 @@ import java.io.IOException;
 
 import javax.swing.*;
 import javax.swing.table.*;
-import com.jgoodies.forms.factories.*;
-import com.jgoodies.forms.layout.*;
 
 import de.unisaarland.cs.st.saarsiedler.comm.Connection;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
-import info.clearthought.layout.*;
 import java.util.List;
 
 /**
@@ -157,19 +154,19 @@ public class GUIFrame extends JFrame {
 					javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Dialog", java.awt.Font.BOLD, 12),
 					java.awt.Color.red), lobbyPanel.getBorder())); lobbyPanel.addPropertyChangeListener(new java.beans.PropertyChangeListener(){public void propertyChange(java.beans.PropertyChangeEvent e){if("border".equals(e.getPropertyName()))throw new RuntimeException();}});
 
-			lobbyPanel.setLayout(new TableLayout(new double[][] {
-				{999},
-				{592, 91}}));
-			((TableLayout)lobbyPanel.getLayout()).setHGap(5);
-			((TableLayout)lobbyPanel.getLayout()).setVGap(5);
+			lobbyPanel.setLayout(new GridBagLayout());
+			((GridBagLayout)lobbyPanel.getLayout()).columnWidths = new int[] {999, 0};
+			((GridBagLayout)lobbyPanel.getLayout()).rowHeights = new int[] {597, 91, 0};
+			((GridBagLayout)lobbyPanel.getLayout()).columnWeights = new double[] {0.0, 1.0E-4};
+			((GridBagLayout)lobbyPanel.getLayout()).rowWeights = new double[] {0.0, 0.0, 1.0E-4};
 
 			//======== panel8 ========
 			{
-				panel8.setLayout(new TableLayout(new double[][] {
-					{747, 245},
-					{589}}));
-				((TableLayout)panel8.getLayout()).setHGap(5);
-				((TableLayout)panel8.getLayout()).setVGap(5);
+				panel8.setLayout(new GridBagLayout());
+				((GridBagLayout)panel8.getLayout()).columnWidths = new int[] {752, 245, 0};
+				((GridBagLayout)panel8.getLayout()).rowHeights = new int[] {589, 0};
+				((GridBagLayout)panel8.getLayout()).columnWeights = new double[] {0.0, 0.0, 1.0E-4};
+				((GridBagLayout)panel8.getLayout()).rowWeights = new double[] {0.0, 1.0E-4};
 
 				//======== scrollPane4 ========
 				{
@@ -190,37 +187,55 @@ public class GUIFrame extends JFrame {
 					gameTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 					scrollPane4.setViewportView(gameTable);
 				}
-				panel8.add(scrollPane4, new TableLayoutConstraints(0, 0, 0, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				panel8.add(scrollPane4, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 0, 5), 0, 0));
 			}
-			lobbyPanel.add(panel8, new TableLayoutConstraints(0, 0, 0, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+			lobbyPanel.add(panel8, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+				new Insets(0, 0, 5, 0), 0, 0));
 
 			//======== panel9 ========
 			{
-				panel9.setLayout(new FormLayout(
-					"default, $lcgap, $button, $lcgap, default, $lcgap, $button, $lcgap, default, $lcgap, $button, $lcgap, 130dlu, $lcgap, $button, $lcgap, 67dlu, $lcgap, $button, $lcgap, default",
-					"default, $lgap, fill:default, $lgap, default"));
+				panel9.setLayout(new GridBagLayout());
+				((GridBagLayout)panel9.getLayout()).columnWidths = new int[] {0, 5, 75, 5, 0, 5, 75, 5, 0, 5, 75, 5, 195, 5, 75, 5, 101, 5, 75, 5, 0, 0};
+				((GridBagLayout)panel9.getLayout()).rowHeights = new int[] {0, 5, 0, 5, 0, 0};
+				((GridBagLayout)panel9.getLayout()).columnWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+				((GridBagLayout)panel9.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
 				//---- create ----
 				create.setText("create");
-				panel9.add(create, CC.xy(3, 3));
+				panel9.add(create, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 0, 0), 0, 0));
 
 				//---- join ----
 				join.setText("join");
-				panel9.add(join, CC.xy(7, 3));
+				panel9.add(join, new GridBagConstraints(6, 2, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 0, 0), 0, 0));
 
 				//---- back_lobby ----
 				back_lobby.setText("back");
-				panel9.add(back_lobby, CC.xy(11, 3));
+				panel9.add(back_lobby, new GridBagConstraints(10, 2, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 0, 0), 0, 0));
 
 				//---- refresh ----
 				refresh.setText("refresh");
-				panel9.add(refresh, CC.xy(15, 3));
+				panel9.add(refresh, new GridBagConstraints(14, 2, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 0, 0), 0, 0));
 
 				//---- toggleAI ----
 				toggleAI.setText("Join as AI");
-				panel9.add(toggleAI, CC.xy(19, 3));
+				panel9.add(toggleAI, new GridBagConstraints(18, 2, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 0, 0), 0, 0));
 			}
-			lobbyPanel.add(panel9, new TableLayoutConstraints(0, 1, 0, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+			lobbyPanel.add(panel9, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+				new Insets(0, 0, 0, 0), 0, 0));
 		}
 		contentPane.add(lobbyPanel);
 		lobbyPanel.setBounds(0, 0, 1000, 665);
@@ -228,23 +243,29 @@ public class GUIFrame extends JFrame {
 		//======== settingsPanel ========
 		{
 			settingsPanel.setVisible(false);
-			settingsPanel.setLayout(new TableLayout(new double[][] {
-				{0.25, 0.5, 0.25, TableLayout.FILL},
-				{TableLayout.FILL}}));
+			settingsPanel.setLayout(new GridBagLayout());
+			((GridBagLayout)settingsPanel.getLayout()).columnWidths = new int[] {0, 0, 0, 0, 0};
+			((GridBagLayout)settingsPanel.getLayout()).rowHeights = new int[] {0, 0};
+			((GridBagLayout)settingsPanel.getLayout()).columnWeights = new double[] {0.25, 0.5, 0.25, 1.0, 1.0E-4};
+			((GridBagLayout)settingsPanel.getLayout()).rowWeights = new double[] {1.0, 1.0E-4};
 
 			//======== panel10 ========
 			{
-				panel10.setLayout(new TableLayout(new double[][] {
-					{0.36, 0.28, 0.36},
-					{152, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, 333, TableLayout.PREFERRED}}));
-				((TableLayout)panel10.getLayout()).setHGap(5);
-				((TableLayout)panel10.getLayout()).setVGap(5);
+				panel10.setLayout(new GridBagLayout());
+				((GridBagLayout)panel10.getLayout()).columnWidths = new int[] {0, 0, 0, 0};
+				((GridBagLayout)panel10.getLayout()).rowHeights = new int[] {157, 0, 0, 0, 0, 0, 0, 0, 338, 0, 0};
+				((GridBagLayout)panel10.getLayout()).columnWeights = new double[] {0.36, 0.28, 0.36, 1.0E-4};
+				((GridBagLayout)panel10.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
 				//---- back_Settings ----
 				back_Settings.setText("back to Menu");
-				panel10.add(back_Settings, new TableLayoutConstraints(1, 9, 1, 9, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				panel10.add(back_Settings, new GridBagConstraints(1, 9, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 0, 5), 0, 0));
 			}
-			settingsPanel.add(panel10, new TableLayoutConstraints(1, 0, 1, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+			settingsPanel.add(panel10, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+				new Insets(0, 0, 0, 0), 0, 0));
 		}
 		contentPane.add(settingsPanel);
 		settingsPanel.setBounds(0, 0, 1000, 675);
@@ -256,23 +277,29 @@ public class GUIFrame extends JFrame {
 
 			//======== panel11 ========
 			{
-				panel11.setLayout(new TableLayout(new double[][] {
-					{0.36, 0.28, 0.36},
-					{TableLayout.PREFERRED, 10, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, 57, TableLayout.PREFERRED}}));
-				((TableLayout)panel11.getLayout()).setHGap(5);
-				((TableLayout)panel11.getLayout()).setVGap(5);
+				panel11.setLayout(new GridBagLayout());
+				((GridBagLayout)panel11.getLayout()).columnWidths = new int[] {0, 0, 0, 0};
+				((GridBagLayout)panel11.getLayout()).rowHeights = new int[] {0, 15, 0, 0, 0, 0, 0, 0, 0, 62, 0, 0};
+				((GridBagLayout)panel11.getLayout()).columnWeights = new double[] {0.36, 0.28, 0.36, 1.0E-4};
+				((GridBagLayout)panel11.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
 				//---- play ----
 				play.setText("Play");
-				panel11.add(play, new TableLayoutConstraints(1, 5, 1, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				panel11.add(play, new GridBagConstraints(1, 5, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- settings_menu ----
 				settings_menu.setText("Settings");
-				panel11.add(settings_menu, new TableLayoutConstraints(1, 7, 1, 7, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				panel11.add(settings_menu, new GridBagConstraints(1, 7, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- exit_menu ----
 				exit_menu.setText("Quit Game");
-				panel11.add(exit_menu, new TableLayoutConstraints(1, 10, 1, 10, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				panel11.add(exit_menu, new GridBagConstraints(1, 10, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 0, 5), 0, 0));
 			}
 			menuPanel.add(panel11, BorderLayout.CENTER);
 

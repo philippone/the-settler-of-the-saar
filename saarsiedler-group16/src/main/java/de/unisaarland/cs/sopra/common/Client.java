@@ -1,6 +1,7 @@
 package de.unisaarland.cs.sopra.common;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +19,8 @@ public class Client {
 //	private Connection connection;
 //	private ClientGUI clientGUI;
 	private Setting setting;
-	public static void main(String[] args) {
-		
+	public static void main(String[] args) throws UnknownHostException, IOException {
+//		GUIFrame g = new GUIFrame(Connection.establish("sopra.cs.uni-saarland.de", false));
 		GUIFrame g = new GUIFrame(new Connection() 
 		{
 			
