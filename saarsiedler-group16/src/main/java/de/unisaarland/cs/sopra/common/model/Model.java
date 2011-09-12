@@ -31,6 +31,7 @@ public class Model implements ModelReader, ModelWriter {
 	private boolean reversedPlayersList;
 	private long meID;
 	private Player me;
+	private int initPlayer;
 
 	/**
 	 * @param worldRepresentation
@@ -134,8 +135,12 @@ public class Model implements ModelReader, ModelWriter {
 	 * @return current Player
 	 */
 	public Player getCurrentPlayer() {
-		return this.players.get((this.round + this.players.size() - 1)
+		if(getRound()==0){
+			return players.get(initPlayer);
+		}else{
+			return this.players.get((this.round + this.players.size() - 1)
 				% this.players.size());
+		}
 	}
 
 	/**
@@ -421,6 +426,7 @@ public class Model implements ModelReader, ModelWriter {
 	 */
 	@Override
 	public Set<Path> buildableStreetPaths(Player player) {
+		//TODO initialPahse geht nicht beneso in streets
 		if (player == null)
 			throw new IllegalArgumentException(player + "is null");
 		Iterator<Path> it = getPathIterator();
@@ -645,8 +651,8 @@ public class Model implements ModelReader, ModelWriter {
 		Set<Intersection> si = new HashSet<Intersection>();
 		Intersection i;
 		while (ii.hasNext()) {
-			System.out.println("player ist: "+ player);
 			i = ii.next();
+			System.out.println("IOwner: "+ i.getOwner());
 			if (i.getOwner() == player && i.getBuildingType() == buildingType)
 				si.add(i);
 		}
@@ -1182,9 +1188,12 @@ public class Model implements ModelReader, ModelWriter {
 					hasLand = true;
 				}
 			}
-			if (!hasLand)
-				throw new IllegalStateException(
-						"Path ist nur von Wasser umgeben!");
+			if (!hasLand)throw new IllegalStateException("Path ist nur von Wasser umgeben!");
+			if(initPlayer==players.size()-1){
+				initPlayer=0;
+				java.util.Collections.reverse(players);
+			}
+			initPlayer++;
 		}
 		getPath(destination).createStreet(getCurrentPlayer());
 		for (ModelObserver ob : modelObserver) {
@@ -1244,8 +1253,8 @@ public class Model implements ModelReader, ModelWriter {
 			// IllegalArgumentException("Kein Dorf darf hier gebaut werden");
 		} else if (buildingType == BuildingType.Town) {
 			si = buildableTownIntersections(getCurrentPlayer());
-			System.out.println(si);
-			System.out.println(i);
+//			System.out.println(si);
+//			System.out.println(i);
 			if (si.contains(i))
 				return true;
 			return false;
