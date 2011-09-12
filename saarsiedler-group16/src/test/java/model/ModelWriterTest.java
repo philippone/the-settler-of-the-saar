@@ -56,7 +56,7 @@ public class ModelWriterTest {
 		model.buildSettlement(new Location(1,1,0), BuildingType.Village);
 		model.buildStreet(new Location(1,1,0));
 		assertTrue(model.getIntersection(new Location(1,1,0)).hasOwner());
-		assertTrue("Owner stimmt nicht ueberein",model.getIntersection(new Location(1,1,0)).getOwner().equals(model.getTableOrder().get(0)));
+		assertTrue("Village-Owner stimmt nicht ueberein",model.getIntersection(new Location(1,1,0)).getOwner().equals(model.getTableOrder().get(0)));
 		
 		assertTrue(model.getPath(new Location(1,1,0)).hasStreet());
 		assertTrue(model.getPath(new Location(1,1,0)).getStreetOwner().equals(model.getTableOrder().get(0)));
@@ -65,7 +65,7 @@ public class ModelWriterTest {
 		model.buildSettlement(new Location(1,2,2), BuildingType.Village);
 		model.buildStreet(new Location(1,2,2));
 		assertTrue(model.getIntersection(new Location(1,2,2)).hasOwner());
-		assertTrue(model.getIntersection(new Location(1,2,2)).getOwner().equals(model.getTableOrder().get(1)));
+		assertTrue("Village-Owner stimmt nicht ueberein",model.getIntersection(new Location(1,2,2)).getOwner().equals(model.getTableOrder().get(1)));
 		assertTrue(model.getPath(new Location(1,2,2)).hasStreet());
 		assertTrue(model.getPath(new Location(1,2,2)).getStreetOwner().equals(model.getTableOrder().get(1)));
 	}
@@ -122,7 +122,7 @@ public class ModelWriterTest {
 		initialize();
 		model.buildStreet(new Location(1,1,1));
 		model.buildSettlement(new Location(1,1,2), BuildingType.Village);
-		model.buildSettlement(new Location(1,1,2), BuildingType.Village);
+		model.buildSettlement(new Location(1,1,2), BuildingType.Town);
 		assertTrue(model.getIntersection(new Location(1,1,2)).getOwner().equals(model.getCurrentPlayer()));
 		assertTrue(model.getIntersection(new Location(1,2,4)).getOwner().equals(model.getCurrentPlayer()));
 		assertTrue(model.getIntersection(new Location(2,1,0)).getOwner().equals(model.getCurrentPlayer()));
