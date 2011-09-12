@@ -26,18 +26,103 @@ public class ModelWriterTest {
 	@Before
 	public void setUp() throws IOException {
 		model = TestUtil.getStandardModel1(); // One Village, Two Players
-		model.getTableOrder().get(0).modifyResources(new ResourcePackage(100,100,100,100,100));
-		model.getTableOrder().get(0).modifyResources(new ResourcePackage(-100,-100,-100,-100,-100));
+	
+//		model.getTableOrder().get(0).modifyResources(new ResourcePackage(-100,-100,-100,-100,-100));
 	}
 	
 	public void initialize(){
 		//Build inital stuff
-				model.buildSettlement(new Location(1, 1, 0), BuildingType.Village);
-				model.buildStreet(new Location(1, 1, 0));
-				model.buildSettlement(new Location(2, 1, 3), BuildingType.Village);
-				model.buildStreet(new Location(2, 1, 3));
-				model.newRound(12);
+		//1. Player
+		model.buildSettlement(new Location(1, 1, 0), BuildingType.Village);
+		model.buildStreet(new Location(1, 1, 0));
+		// 2. Payer
+		model.buildSettlement(new Location(2, 1, 3), BuildingType.Village);
+		model.buildStreet(new Location(2, 1, 3));
+		//
+		model.getTableOrder().get(0).modifyResources(new ResourcePackage(1000,1000,1000,1000,1000));
+		model.getTableOrder().get(1).modifyResources(new ResourcePackage(1000,1000,1000,1000,1000));
+
+		// new Round
+		model.newRound(12);
+		
 	}
+	
+	
+	@Test
+	// Tests wheter it is possible to build a village
+	public void buildSettlementVillageTest() {
+		initialize();
+		model.buildStreet(new Location(1,1,1));
+		model.buildSettlement(new Location(1,1,2), BuildingType.Village);
+		assertTrue(model.getIntersection(new Location(1,1,2)).getOwner().equals(model.getCurrentPlayer()));
+		assertTrue(model.getIntersection(new Location(1,2,4)).getOwner().equals(model.getCurrentPlayer()));
+		assertTrue(model.getIntersection(new Location(2,1,0)).getOwner().equals(model.getCurrentPlayer()));
+		assertTrue(model.getIntersection(new Location(1,1,2)).getBuildingType().equals(BuildingType.Village));
+	}
+	
+	
+	@Test
+	// Tests wheter it is possible to build a village
+	public void buildSettlementTownTest() {
+		initialize();
+		model.buildStreet(new Location(1,1,1));
+		model.buildSettlement(new Location(1,1,2), BuildingType.Village);
+		model.buildSettlement(new Location(1,1,2), BuildingType.Village);
+		assertTrue(model.getIntersection(new Location(1,1,2)).getOwner().equals(model.getCurrentPlayer()));
+		assertTrue(model.getIntersection(new Location(1,2,4)).getOwner().equals(model.getCurrentPlayer()));
+		assertTrue(model.getIntersection(new Location(2,1,0)).getOwner().equals(model.getCurrentPlayer()));
+		assertTrue(model.getIntersection(new Location(1,1,2)).getBuildingType().equals(BuildingType.Town));
+	}
+	
+	
+	@Test
+	public void buildSettlementOnWater() {
+		initialize();
+		// on Water
+		try {
+			model.buildSettlement(new Location(0, 0, 0), BuildingType.Village);
+			fail("Du darfst nicht ins Wasser bauen");
+		}
+		catch (IllegalStateException e) { /* everything is fine */ }
+	}
+	
+	@Test
+	public void buildSettlementOnExistingVillage() {
+		initialize();
+		// on Water
+		try {
+			model.buildSettlement(new Location(1, 1, 0), BuildingType.Village);
+			fail("Hier steht bereits ein Dorf");
+		}
+		catch (IllegalStateException e) { /* everything is fine */ }
+	}
+	
+	
+	@Test
+	public void buildSettlementOnExistingTown1() {
+		initialize();
+		// build over an existing Town
+		model.buildSettlement(new Location(1, 1, 0), BuildingType.Town);
+		try {	
+			model.buildSettlement(new Location(1,1,0), BuildingType.Village);
+			fail("Hier steht bereits ein Dorf");
+		}
+		catch (IllegalStateException e) { /* everything is fine */ }
+	}
+	
+	@Test
+	public void buildSettlementOnExistingTown2() {
+		initialize();
+		// build over an existing Town
+		model.buildSettlement(new Location(1, 1, 0), BuildingType.Town);
+		try {	
+			model.buildSettlement(new Location(1,1,0), BuildingType.Town);
+			fail("Hier steht bereits eine Stadt");
+		}
+		catch (IllegalStateException e) { /* everything is fine */ }
+	}
+	
+	
 	
 	@Test
 	// Tests wheter you are able to place a catapult next to a village (!= town).
@@ -69,6 +154,7 @@ public class ModelWriterTest {
 		initialize();
 		Player currentPlayer = model.getCurrentPlayer();
 		model.buildSettlement(new Location(1, 1, 0), BuildingType.Town);
+		model.getPath(new Location(1,1,0)).createCatapult(model.getTableOrder().get(1));
 		model.buildCatapult(new Location(1, 1, 0), false);
 		Path catapultPath = model.getPath(new Location(1, 1, 0));
 		assertTrue("There should be a catapult!", catapultPath.hasCatapult());
@@ -80,6 +166,7 @@ public class ModelWriterTest {
 	public void buildCatapult3_buildTest() {
 		initialize();
 		model.newRound(2);
+		model.getCurrentPlayer().modifyResources(new ResourcePackage(-1000,-1000,-1000,-1000,-1000));
 		try {
 			model.buildCatapult(new Location(2, 1, 3), false);
 			fail("You shouldn't have enough money to build this catapult!");
@@ -87,15 +174,37 @@ public class ModelWriterTest {
 	}
 	
 	@Test
-	// Tests wheter the currentPlayer has enough resources to move a catapult.
-	public void buildCatapult3_moveTest() {
+	// Tests catapult move
+	public void moveCatapultTrueTest() {
 		initialize();
-		model.newRound(2);
-		model.getCurrentPlayer().modifyResources(new ResourcePackage(1000, 1000, 1000, 1000, 1000));
-		model.buildCatapult(new Location(2, 1, 3), false);
+		model.buildSettlement(new Location(1,1,1), BuildingType.Town);
+		model.buildCatapult(new Location(1, 1, 0), true);
+		model.catapultMoved(new Location(1,1,0), new Location(1,1,1), true);
+		assertTrue(model.getPath(new Location(1,1,1)).hasCatapult());
+		assertTrue(model.getPath(new Location(1,1,1)).getCatapultOwner().equals(model.getCurrentPlayer()));
+	}
+	
+	
+	@Test
+	//move catapult: fightoutcome false
+	public void moveCatapultFalseTest() {
+		initialize();
+		model.buildSettlement(new Location(1,1,1), BuildingType.Town);
+		model.buildCatapult(new Location(1, 1, 0), true);
+		model.getPath(new Location(1,1,1)).createCatapult(model.getTableOrder().get(1));
+		model.catapultMoved(new Location(1,1,0), new Location(1,1,1), false);
+		assertTrue(model.getPath(new Location(1,1,1)).hasCatapult());
+		assertFalse(model.getPath(new Location(1,1,1)).getCatapultOwner().equals(model.getCurrentPlayer()));
+	}
+	
+	@Test
+	// You haven't enougth money to move your catapult
+	public void moveCatapultCostTest() {
+		initialize();
+		model.getCurrentPlayer().modifyResources(new ResourcePackage(-1000,-1000,-1000,-1000,-1000));
+		model.getPath(new Location(1,1,0)).createCatapult(model.getCurrentPlayer());
 		try {
-			model.getCurrentPlayer().modifyResources(new ResourcePackage(-1000, -1000, -1000, -1000, -1000));
-			model.catapultMoved(new Location(2, 1, 3), new Location(2, 1, 4), true);
+			model.catapultMoved(new Location(1,1,0), new Location(1,1,1), true);
 			fail("You shouldn't have enough money to build this catapult!");
 		} catch (IllegalStateException e) { /* everything is fine */ }
 	}
@@ -105,6 +214,7 @@ public class ModelWriterTest {
 	// could have destroyed the attacking catapult
 	public void catapulCatapult4_buildCatapultExceptionTest() {
 		initialize();
+		model.buildSettlement(new Location(1,1,0), BuildingType.Town);
 		try {
 			model.buildCatapult(new Location(1, 1, 0), false);
 			fail("You lost against a not existing catapult!");
@@ -113,18 +223,22 @@ public class ModelWriterTest {
 	}
 	
 	@Test
-	// Tests wheter the currentPlayer has enough resources to attack a settlement.
-	public void buildCatapult3_attackSettlementTest() {
+	// Tests not enouth money to attack
+	public void attackSettlementTest() {
 		initialize();
 		model.newRound(2);
-		Path newCatPath = model.getPath(new Location(2, 1, 4));
-		newCatPath.createCatapult(model.getCurrentPlayer());
+		model.buildSettlement(new Location(2,2,2), BuildingType.Town);
+		model.newRound(12);
+		
+		model.getPath(new Location(2,2,1)).createCatapult(model.getCurrentPlayer());
+		model.getCurrentPlayer().modifyResources(new ResourcePackage(-1000,-1000,-1000,-1000,-1000));
 		try {
-			model.attackSettlement(new Location(2, 1, 4), new Location(2, 1, 3), AttackResult.SUCCESS);
+			model.attackSettlement(new Location(2, 1, 1), new Location(2, 2, 2), AttackResult.SUCCESS);
 			fail("You shouldn't have enough money to attack the settlement!");
 		}
 		catch (IllegalStateException e) { /* everything is fine */ }
 	}
+	
 	
 	@Test
 	// Tests wheter it is possible to build more then the maximum number of catapults
@@ -139,6 +253,7 @@ public class ModelWriterTest {
 		path3.createCatapult(currentPlayer);
 		Path path4 = model.getPath(new Location(1, 1, 3));
 		path4.createCatapult(currentPlayer);
+		model.buildSettlement(new Location(1,1,0), BuildingType.Town);
 		try {
 			model.buildCatapult(new Location(1, 1, 5), true);
 		}
@@ -146,16 +261,7 @@ public class ModelWriterTest {
 	}
 	
 	
-	@Test
-	// Tests wheter it is possible to build a town in the initial phase
-	public void buildSettlementTest() {
-		
-		try {
-			model.buildSettlement(new Location(1, 1, 1), BuildingType.Town);
-			fail("You shouldn't be able to build a town in the inital phase!");
-		}
-		catch (IllegalStateException e) { /* everything is fine */ }
-	}
+
 	
 	@Test
 	// Test wheter we have got enough resources to build the specified Settlement
