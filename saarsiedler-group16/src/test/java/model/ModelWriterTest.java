@@ -81,9 +81,9 @@ public class ModelWriterTest {
 	
 	@Test
 	public void build_Init_fail2Villages2() {
-		model.buildSettlement(new Location(1,0,0), BuildingType.Village);
+		model.buildSettlement(new Location(1,1,0), BuildingType.Village);
 		try {
-			model.buildSettlement(new Location(1,0,1), BuildingType.Village);
+			model.buildSettlement(new Location(1,1,1), BuildingType.Village);
 		} catch(Exception e) {
 			// Test run
 		}
@@ -92,7 +92,7 @@ public class ModelWriterTest {
 	@Test
 	public void build_Init_failTown() {
 		try {
-			model.buildSettlement(new Location(1,0,0), BuildingType.Town);
+			model.buildSettlement(new Location(1,1,0), BuildingType.Town);
 		} catch(Exception e) {
 			// Test run
 		}
