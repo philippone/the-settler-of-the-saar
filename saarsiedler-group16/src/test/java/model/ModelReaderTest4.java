@@ -160,7 +160,8 @@ public class ModelReaderTest4 {
 		canSet.add(model1.getField(new Point(3, 2)));
 
 		Set<Field> expSet = model1.canPlaceRobber();
-		
+		System.out.println(expSet);
+		System.out.println(canSet);
 		assertTrue(canSet.containsAll(expSet));
 		assertTrue(expSet.containsAll(canSet));
 	

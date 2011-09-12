@@ -83,7 +83,7 @@ public class ModelWriterTest {
 			model.buildSettlement(new Location(0, 0, 0), BuildingType.Village);
 			fail("Du darfst nicht ins Wasser bauen");
 		}
-		catch (IllegalStateException e) { /* everything is fine */ }
+		catch (Exception e) { /* everything is fine */ }
 	}
 	
 	@Test
@@ -94,7 +94,7 @@ public class ModelWriterTest {
 			model.buildSettlement(new Location(1, 1, 0), BuildingType.Village);
 			fail("Hier steht bereits ein Dorf");
 		}
-		catch (IllegalStateException e) { /* everything is fine */ }
+		catch (Exception e) { /* everything is fine */ }
 	}
 	
 	
@@ -107,7 +107,7 @@ public class ModelWriterTest {
 			model.buildSettlement(new Location(1,1,0), BuildingType.Village);
 			fail("Hier steht bereits ein Dorf");
 		}
-		catch (IllegalStateException e) { /* everything is fine */ }
+		catch (Exception e) { /* everything is fine */ }
 	}
 	
 	@Test
@@ -119,7 +119,7 @@ public class ModelWriterTest {
 			model.buildSettlement(new Location(1,1,0), BuildingType.Town);
 			fail("Hier steht bereits eine Stadt");
 		}
-		catch (IllegalStateException e) { /* everything is fine */ }
+		catch (Exception e) { /* everything is fine */ }
 	}
 	
 	
@@ -133,7 +133,7 @@ public class ModelWriterTest {
 			model.buildCatapult(new Location(1, 1, 0), true);
 			fail("You was able to build a catapult close to a village");
 		}
-		catch (IllegalStateException e) { /* everything is fine!*/ }
+		catch (Exception e) { /* everything is fine!*/ }
 	}
 	
 	@Test
@@ -170,7 +170,7 @@ public class ModelWriterTest {
 		try {
 			model.buildCatapult(new Location(2, 1, 3), false);
 			fail("You shouldn't have enough money to build this catapult!");
-		} catch (IllegalStateException e) { /* everything is fine */ }
+		} catch (Exception e) { /* everything is fine */ }
 	}
 	
 	@Test
@@ -206,7 +206,7 @@ public class ModelWriterTest {
 		try {
 			model.catapultMoved(new Location(1,1,0), new Location(1,1,1), true);
 			fail("You shouldn't have enough money to build this catapult!");
-		} catch (IllegalStateException e) { /* everything is fine */ }
+		} catch (Exception e) { /* everything is fine */ }
 	}
 	
 	@Test
@@ -218,7 +218,7 @@ public class ModelWriterTest {
 		try {
 			model.buildCatapult(new Location(1, 1, 0), false);
 			fail("You lost against a not existing catapult!");
-		} catch (IllegalStateException e) { /* everything is fine */ }
+		} catch (Exception e) { /* everything is fine */ }
 		
 	}
 	
@@ -236,7 +236,7 @@ public class ModelWriterTest {
 			model.attackSettlement(new Location(2, 1, 1), new Location(2, 2, 2), AttackResult.SUCCESS);
 			fail("You shouldn't have enough money to attack the settlement!");
 		}
-		catch (IllegalStateException e) { /* everything is fine */ }
+		catch (Exception e) { /* everything is fine */ }
 	}
 	
 	
@@ -257,7 +257,7 @@ public class ModelWriterTest {
 		try {
 			model.buildCatapult(new Location(1, 1, 5), true);
 		}
-		catch (IllegalStateException e) { /* everything is fine */ }
+		catch (Exception e) { /* everything is fine */ }
 	}
 	
 	
@@ -270,7 +270,7 @@ public class ModelWriterTest {
 		model.buildStreet(new Location(1, 1, 1));
 		try {
 			model.buildSettlement(new Location(1, 1, 2), BuildingType.Village);
-		} catch (IllegalStateException e) {
+		} catch (Exception e) {
 			fail("You should have enough resources to build the village!");
 		}
 	}
@@ -279,12 +279,12 @@ public class ModelWriterTest {
 	// Tests wheter we have not got enough resources to build the specified Settlement
 	public void buildSettlement_costnegativeTest() {
 		initialize();
-		model.newRound(2);
 		model.getPath(new Location(2, 2, 3)).createStreet(model.getCurrentPlayer());
+		model.getCurrentPlayer().modifyResources(new ResourcePackage(-1000,-1000,-1000,-1000,-1000));
 		try {
 			model.buildSettlement(new Location(2, 2, 3), BuildingType.Village);
 			fail("You shouldn't have enough resources to build the village!");
-		} catch (IllegalStateException e) { /* everything is fine */ }
+		} catch (Exception e) { /* everything is fine */ }
 	}
 	
 	
@@ -296,7 +296,7 @@ public class ModelWriterTest {
 			model.buildSettlement(new Location(2, 2, 0), BuildingType.Village);
 			fail("There is no steet that allows you to build a new Village!");
 		}
-		catch (IllegalStateException e) { /* everything is fine */ }
+		catch (Exception e) { /* everything is fine */ }
 	}
 	
 	@Test
@@ -304,44 +304,25 @@ public class ModelWriterTest {
 	// wish to place your new village
 	public void buildSettlement_toCloseTest() {
 		initialize();
-		Player currentPlayer = model.getCurrentPlayer();
-		model.getPath(new Location(1, 1, 1)).createStreet(currentPlayer);
-		model.getPath(new Location(2, 2, 0)).createStreet(currentPlayer);
-		model.getPath(new Location(2, 2, 1)).createStreet(currentPlayer);
 		try {
-			model.buildSettlement(new Location(2, 2, 2), BuildingType.Village);
+			model.buildSettlement(new Location(1,1,1), BuildingType.Village);
 			fail("You shouldn't be able to build this village because the intersection is to close" +
 					"to a intersection that already has a settlement!");
 		}
-		catch (IllegalStateException e) { /* everything is fine */ }
+		catch (Exception e) { /* everything is fine */ }
 	}
 	
-	@Test
-	// Tests wheter there is already a settlement on the destination intersection
-	public void buildSettlement_alreadyBuiltTest() {
-		initialize();
-		Player currentPlayer = model.getCurrentPlayer();
-		model.getPath(new Location(1, 1, 1)).createStreet(currentPlayer);
-		model.getPath(new Location(2, 2, 0)).createStreet(currentPlayer);
-		model.getPath(new Location(2, 2, 1)).createStreet(currentPlayer);
-		model.getPath(new Location(2, 2, 2)).createStreet(currentPlayer);
-		try {
-			model.buildSettlement(new Location(2, 2, 3), BuildingType.Village);
-			fail("There is already a settlement on this intersection!");
-		}
-		catch (IllegalStateException e) { /* everything is fine */ }
-	}
 	
 	@Test
-	// Tests wheter you are able to upgrade your village to a town
 	public void buildSettlement_upgradePositiveTest(){
 		initialize();
-		model.getIntersection(new Location(1, 1, 3)).createBuilding(BuildingType.Village, model.getCurrentPlayer());
+		model.buildStreet(new Location(1,1,1));
+		model.getIntersection(new Location(1, 1, 1)).createBuilding(BuildingType.Village, model.getCurrentPlayer());
 		try {
-			model.buildSettlement(new Location(1, 1, 3), BuildingType.Town);
+			model.buildSettlement(new Location(1, 1, 1), BuildingType.Town);
 			// everything is fine
 		}
-		catch (IllegalStateException e){
+		catch (Exception e){
 			fail("You should be able to upgrade your town!");
 		}
 	}
@@ -350,12 +331,9 @@ public class ModelWriterTest {
 	// Tests wheter you are able to upgrade your village to a town
 	public void buildSettlement_upgradeNegativeTest(){
 		initialize();
-		Player currentPlayer = model.getCurrentPlayer();
-		model.getPath(new Location(1, 1, 1)).createStreet(currentPlayer);
-		model.getPath(new Location(1, 1, 2)).createStreet(currentPlayer);
 		try {
 			model.buildSettlement(new Location(1, 1, 3), BuildingType.Town);
-			fail("You shouldn't be able to upgrade your town!");
+			fail("You shouldn't be able to upgrade your town! (No village at this intersection)");
 		}
 		catch (IllegalStateException e){
 			// everything is fine
@@ -366,7 +344,7 @@ public class ModelWriterTest {
 	// Tests wheter you have enough resoruces to build a street.
 	public void buildStreet_resourcesTest(){
 		initialize();
-		model.newRound(2);
+		model.getCurrentPlayer().modifyResources(new ResourcePackage(-1000,-1000,-1000,-1000,-1000));
 		try {
 			model.buildStreet(new Location(2, 1, 4));
 			fail("You shouldn't have enough resources to build that street!");
@@ -400,7 +378,6 @@ public class ModelWriterTest {
 	
 	@Test
 	public void respondTradeTestPositive() {
-		//TODO: nur 3 anstatt 4 Spiler
 		Player p = model.getCurrentPlayer();
 		p.modifyResources(new ResourcePackage(3, 4, 0, 2, 1));
 		model.tradeOffer(-1, -1, 1, 0, 0);
@@ -408,7 +385,6 @@ public class ModelWriterTest {
 
 		Player p2 = model.getTableOrder().get(0);
 		Player p3 = model.getTableOrder().get(1);
-		//Player p4 = model.getTableOrder().get(2);
 
 		if (p2 != p1) {
 			Set<Long> keySet = model.getPlayerMap().keySet();
@@ -425,13 +401,6 @@ public class ModelWriterTest {
 				if (player.equals(p3))
 					model.respondTrade(l);
 			}
-//		} else if (p4 != p1) {
-//			Set<Long> keySet = model.getPlayerMap().keySet();
-//			for (Long l : keySet) {
-//				Player player = model.getPlayerMap().get(l);
-//				if (player.equals(p2))
-//					model.respondTrade(l);
-//			}
 		}
 		assertEquals("vermute equals von ResourcePAckage ist falsch (Philipp)",new ResourcePackage(3, 4, 0, 2, 1), model.getCurrentPlayer().getResources());
 	}
