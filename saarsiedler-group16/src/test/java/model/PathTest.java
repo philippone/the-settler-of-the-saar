@@ -55,13 +55,33 @@ public class PathTest {
 		assertEquals(pl,p.getStreetOwner());
 		
 		Model model = TestUtil.getStandardModel1();
-		model.buildStreet(new Location(0,0,0));
+		try {
+			model.buildStreet(new Location(0,0,0));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// on the border of the world
-		model.buildStreet(new Location(0,0,2));
+		try {
+			model.buildStreet(new Location(0,0,2));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// on the border beetween water and land
-		model.buildStreet(new Location(1,1,1));
+		try {
+			model.buildStreet(new Location(1,1,1));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// on the middle of the land
-		model.buildStreet(new Location(0,0,1));
+		try {
+			model.buildStreet(new Location(0,0,1));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// on the middle of the sea
 		assertFalse(model.getPath(new Location(0,0,0)).hasStreet());
 		assertTrue(model.getPath(new Location(0,0,2)).hasStreet());
