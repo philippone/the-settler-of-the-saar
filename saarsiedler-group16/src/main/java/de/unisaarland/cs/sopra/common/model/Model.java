@@ -1193,8 +1193,10 @@ public class Model implements ModelReader, ModelWriter {
 			}
 			if (!hasLand)throw new IllegalStateException("Path ist nur von Wasser umgeben!");
 			if(initPlayer==players.size()-1){
-				initPlayer=0;
+				initPlayer=-1;
+				
 				java.util.Collections.reverse(players);
+				reversedPlayersList=!reversedPlayersList;
 			}
 			initPlayer++;
 		}
@@ -1238,8 +1240,8 @@ public class Model implements ModelReader, ModelWriter {
 					ob.updateIntersection(i);
 				}
 			} else
-				throw new IllegalArgumentException(
-						"Das Gebaeude wurde nicht gebaut");
+				throw new IllegalArgumentException(String.format(
+						"Das Gebaeude wurde nicht gebaut. isBuildable:%b, isAffordable:%b", isBuildable(i, buildingType) , isAffordable(buildingType)));
 		}
 	}
 

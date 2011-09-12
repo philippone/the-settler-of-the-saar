@@ -57,10 +57,11 @@ public class ModelReaderTest {
 	
 	/**
 	 * Harbor with buccaneer (Seeraeuber)
+	 * TODO Warum kommt nach dem assertTrue noch Code jedoch kein assert mehr?
 	 */
 	@Test
 	public void testGetHarborTypes1() {
-		model.newRound(8); // in Runde 1
+		//model.newRound(8); // in Runde 1 // muss runde 0 sein wegen model.buildSettlement später
 		// noch kein Settlement an einem den zwei Harbors
 		Player currentPlayer = model.getCurrentPlayer();
 		Set<HarborType> currentSet = model.getHarborTypes(currentPlayer);
