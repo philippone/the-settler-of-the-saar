@@ -69,8 +69,9 @@ public class GameGUI extends View implements Runnable{
 	private static int windowWidth;
 	private static int windowHeight;
 	private static float aspectRatio;
-	private static int xOffsetUI;
+	private static int xOffsetUI, yOffsetUI, zOffsetUI;
 	private static int viewportXwidth;
+	private static float ScreenToOpenGL = 0.61392405063291139241f;
 	
 	GameGUI(long meID, ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player,String> playerNames, Setting setting) throws Exception {
 		super(meID, modelReader, controllerAdapter);
@@ -85,6 +86,8 @@ public class GameGUI extends View implements Runnable{
 		aspectRatio = ((float)windowWidth)/windowHeight;
 		viewportXwidth = (int)(870*aspectRatio);
 		xOffsetUI = (int)((366*aspectRatio)+(viewportXwidth-1075)/2);
+		yOffsetUI = 955;
+		zOffsetUI = -950;
 		//center to the area where the first field is drawn
 		this.x = (int)(812.8125f*aspectRatio);
 		this.y = 745;
@@ -187,20 +190,17 @@ public class GameGUI extends View implements Runnable{
 	}
 	
 	private void renderUI(String name, int x, int y, int z, int width, int height) {
-		 int xoffset = xOffsetUI;
-		 int yoffset = 955;
-		 int zoffset = -950;
 		 uiTextureMap.get(name).bind();
 	     GL11.glBegin(GL11.GL_POLYGON);
 	      // GL11.glColor4f(0.0f,0.0f,1.0f,1.0f); //transparenz
 	       GL11.glTexCoord2f(0,0);
-	       GL11.glVertex3i(0+xoffset+x, 0+yoffset+y, z+zoffset);
+	       GL11.glVertex3i(x, y, z);
 	       GL11.glTexCoord2f(1,0);
-	       GL11.glVertex3i(width+xoffset+x, 0+yoffset+y, z+zoffset);
+	       GL11.glVertex3i(width+x, y, z);
 	       GL11.glTexCoord2f(1,1);
-	       GL11.glVertex3i(width+xoffset+x, height+yoffset+y, z+zoffset);
+	       GL11.glVertex3i(width+x, height+y, z);
 	       GL11.glTexCoord2f(0,1);
-	       GL11.glVertex3i(0+xoffset+x, height+yoffset+y, z+zoffset);
+	       GL11.glVertex3i(x, height+y, z);
 	     GL11.glEnd();
 	}
 	
@@ -226,8 +226,8 @@ public class GameGUI extends View implements Runnable{
 		   //Markierungen
 		   renderMarks(); //TODO: implement markierungen
 		   //UI
-		   renderUI("Background", 0, 0, 0, 1500, 550);
-		   renderUI("Res", 957, 20, 1, 42, 330);
+		   renderUI("Background", xOffsetUI+0, yOffsetUI+0, +zOffsetUI+0, 1500, 550);
+		   renderUI("Res", xOffsetUI+957, yOffsetUI+20, zOffsetUI+1, 42, 330);
 		   for (Clickable act : Clickable.getList())
 			   renderUI(act);
 		   //Draw Fonts on UI
@@ -409,13 +409,13 @@ public class GameGUI extends View implements Runnable{
 			markTextureMap = new HashMap<String,Texture>();
 			markTextureMap.put("Field", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/FieldMark.png")));
 			
-			new Clickable("EndTurn", 140, 240, 2, 158, 65, true) {
+			new Clickable("EndTurn", xOffsetUI+140, yOffsetUI+240, zOffsetUI+2, 158, 65, true) {
 				@Override
 				public void execute() {
-					//TODO: implement it
+					minX = 1337;
 				}
 			};
-			new Clickable("ClaimVictory", 300, 240, 2, 302, 65, true) {
+			new Clickable("ClaimVictory", xOffsetUI+300, yOffsetUI+240, zOffsetUI+2, 302, 65, true) {
 				@Override
 				public void execute() {
 					//TODO: implement it
@@ -474,6 +474,8 @@ public class GameGUI extends View implements Runnable{
 	private void handleInput() {
 		int mx = Mouse.getX();
 		int my = Mouse.getY();
+		
+		Clickable.executeClicks(mx*ScreenToOpenGL, my*ScreenToOpenGL);
 		
 		if (Mouse.isInsideWindow()) {
 			if (mx < 50) {
@@ -624,7 +626,7 @@ public class GameGUI extends View implements Runnable{
 		//Setting setting = new Setting(new DisplayMode(1280, 1024), true);
 		//Setting setting = new Setting(new DisplayMode(800, 600), true);
 		//Setting setting = new Setting(new DisplayMode(400, 300), true);
-		Setting setting = new Setting(Display.getDesktopDisplayMode(), true);
+		Setting setting = new Setting(Display.getDesktopDisplayMode(), false);
 		
 		GameGUI gameGUI = new GameGUI(0, model, null, null, setting);
 		new Thread(gameGUI).start();

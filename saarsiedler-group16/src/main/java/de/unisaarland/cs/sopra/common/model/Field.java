@@ -13,6 +13,7 @@ public class Field {
 		this.fieldType = fieldType;
 		this.point = point;
 		this.number = -1;
+		if (fieldType == FieldType.DESERT) containsRobber = true;
 	}
 	
 	public Resource getResource(int gewuerfelteZahl) {
