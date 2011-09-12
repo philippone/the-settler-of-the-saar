@@ -62,4 +62,8 @@ public class Field {
 		return point.hashCode() * 131 + fieldType.ordinal();
 	}
 	
+	@Override
+	public String toString(){
+		return ("[x, y: " + getLocation().toString() +  "Type: " + fieldType + "]" );
+	}
 }
