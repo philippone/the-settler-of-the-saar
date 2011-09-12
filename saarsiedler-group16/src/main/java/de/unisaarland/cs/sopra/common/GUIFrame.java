@@ -69,8 +69,6 @@ public class GUIFrame extends JFrame {
 		create.addActionListener(actLis);
 		join.addActionListener(actLis);
 		back_lobby.addActionListener(actLis);
-		refresh.addActionListener(actLis);
-		toggleAI.addActionListener(actLis);
 		back_Settings.addActionListener(actLis);
 		play.addActionListener(actLis);
 		settings_menu.addActionListener(actLis);
@@ -108,8 +106,6 @@ public class GUIFrame extends JFrame {
 		create = new JButton();
 		join = new JButton();
 		back_lobby = new JButton();
-		refresh = new JButton();
-		toggleAI = new JToggleButton();
 		settingsPanel = new JPanel();
 		panel10 = new JPanel();
 		back_Settings = new JButton();
@@ -218,18 +214,6 @@ public class GUIFrame extends JFrame {
 				//---- back_lobby ----
 				back_lobby.setText("back");
 				panel9.add(back_lobby, new GridBagConstraints(10, 2, 1, 1, 0.0, 0.0,
-					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-					new Insets(0, 0, 0, 0), 0, 0));
-
-				//---- refresh ----
-				refresh.setText("refresh");
-				panel9.add(refresh, new GridBagConstraints(14, 2, 1, 1, 0.0, 0.0,
-					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-					new Insets(0, 0, 0, 0), 0, 0));
-
-				//---- toggleAI ----
-				toggleAI.setText("Join as AI");
-				panel9.add(toggleAI, new GridBagConstraints(18, 2, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 0), 0, 0));
 			}
@@ -363,8 +347,6 @@ public class GUIFrame extends JFrame {
 	JButton create;
 	JButton join;
 	JButton back_lobby;
-	JButton refresh;
-	JToggleButton toggleAI;
 	public JPanel settingsPanel;
 	private JPanel panel10;
 	public JButton back_Settings;

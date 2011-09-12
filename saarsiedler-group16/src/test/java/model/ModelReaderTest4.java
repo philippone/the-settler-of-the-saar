@@ -23,78 +23,80 @@ import de.unisaarland.cs.sopra.common.model.Point;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public class ModelReaderTest4 {
-
-	private Model model2;
 	private Model model1;
+	private Model model2;
+	private Model model3;
 	
 	@Before
 	public void setUp() throws IOException {
-		model2 = TestUtil.getStandardModel2();
 		model1 = TestUtil.getStandardModel1();
+		model2 = TestUtil.getStandardModel2();
+		model3 = TestUtil.getStandardModel3();
 	}	
 	
 	@Test
 	public void testGetCatapults() {
 		//gibt den akt. Playern alle Resourcen um Komplikationen mit build zu vermeiden.
-		model2.getTableOrder().get(0).modifyResources(new ResourcePackage(333,333,333,333,333)); 
-		model2.getTableOrder().get(1).modifyResources(new ResourcePackage(333,333,333,333,333)); 
-		model2.getTableOrder().get(2).modifyResources(new ResourcePackage(333,333,333,333,333)); 
+		model3.getTableOrder().get(0).modifyResources(new ResourcePackage(333,333,333,333,333)); 
+		model3.getTableOrder().get(1).modifyResources(new ResourcePackage(333,333,333,333,333)); 
+		model3.getTableOrder().get(2).modifyResources(new ResourcePackage(333,333,333,333,333)); 
 		//Init-round 
 			//first Player builds first Village
-		model2.buildSettlement(new Location(0,0,1) , BuildingType.Village);
-		model2.buildStreet(new Location(0,0,1));
+		model3.buildSettlement(new Location(0,0,1) , BuildingType.Village);
+		model3.buildStreet(new Location(0,0,1));
 			//second Player builds first Village
-		model2.buildSettlement(new Location(0,0,5) , BuildingType.Village);
-		model2.buildStreet(new Location(0,0,5));
+		model3.buildSettlement(new Location(0,0,5) , BuildingType.Village);
+		model3.buildStreet(new Location(0,0,5));
 			//third Player builds first Village 
-		model2.buildSettlement(new Location(3,1,0) , BuildingType.Village);
-		model2.buildStreet(new Location(3,1,0));	
+		model3.buildSettlement(new Location(3,1,0) , BuildingType.Village);
+		model3.buildStreet(new Location(3,1,0));	
 			//third Player builds second Village 
-		model2.buildSettlement(new Location(3,0,0) , BuildingType.Village);
-		model2.buildStreet(new Location(3,0,0));	
+		model3.buildSettlement(new Location(3,0,0) , BuildingType.Village);
+		model3.buildStreet(new Location(3,0,0));	
 			//second Player builds second Village
-		model2.buildSettlement(new Location(1,1,5) , BuildingType.Village);
-		model2.buildStreet(new Location(1,1,5));
+		model3.buildSettlement(new Location(1,1,5) , BuildingType.Village);
+		model3.buildStreet(new Location(1,1,5));
 			//first Player builds second Village
-		model2.buildSettlement(new Location(1,0,1) , BuildingType.Village);
-		model2.buildStreet(new Location(1,0,1));
+		model3.buildSettlement(new Location(1,0,1) , BuildingType.Village);
+		model3.buildStreet(new Location(1,0,1));
 		
 		//new round -> first player builds
-		model2.newRound(12);
+		model3.newRound(12);
 		//Bauende Towns und Catapulte bauen
-		model2.buildSettlement(new Location(0,0,1) , BuildingType.Town);
-		model2.buildSettlement(new Location(1,0,1) , BuildingType.Town);
-		model2.buildCatapult(new Location(0,0,1), true);
-		model2.buildCatapult(new Location(1,0,1), true);
+		System.out.println("InterVillage: "+ model3.getIntersection(new Location(1, 0, 1)));
+		model3.buildSettlement(new Location(0,0,1) , BuildingType.Town);
+//		model3.buildSettlement(new Location(1,0,1) , BuildingType.Town);
+		model3.buildCatapult(new Location(0,0,1), true);
+		model3.buildCatapult(new Location(1,0,1), true);
 		
 		//new round -> second player builds
-		model2.newRound(12);
+		model3.newRound(12);
 		//Bauende Towns und Catapulte bauen
-		model2.buildSettlement(new Location(0,0,5) , BuildingType.Town);
-		model2.buildSettlement(new Location(1,0,5) , BuildingType.Town);
-		model2.buildCatapult(new Location(0,0,4), true);
-		model2.buildCatapult(new Location(1,0,4), true);
-		model2.buildCatapult(new Location(1,0,5), true);
+		model3.buildSettlement(new Location(0,0,5) , BuildingType.Town);
+		model3.buildSettlement(new Location(1,0,5) , BuildingType.Town);
+		model3.buildCatapult(new Location(0,0,4), true);
+		model3.buildCatapult(new Location(1,0,4), true);
+		model3.buildCatapult(new Location(1,0,5), true);
 		
 		//Attribut-Player erstellen
-		Player p0 = model2.getTableOrder().get(0);
-		Player p1 = model2.getTableOrder().get(1);
-		Player p2 = model2.getTableOrder().get(2);
+		Player p0 = model3.getTableOrder().get(0);
+		Player p1 = model3.getTableOrder().get(1);
+		Player p2 = model3.getTableOrder().get(2);
 		
 		//"richtige" Vergleichs-Sets erstellen
 		HashSet<Path> t0 = new HashSet<Path>();
-		t0.add(model2.getPath(new Location(0,0,1)));
-		t0.add(model2.getPath(new Location(1,0,1)));
-		assertEquals(t0, model2.getCatapults(p0));
+		t0.add(model3.getPath(new Location(0,0,1)));
+		t0.add(model3.getPath(new Location(1,0,1)));
+		assertEquals(t0, model3.getCatapults(p0));
 		
 		//"richtige" Vergleichs-Sets erstellen
 		HashSet<Path> t1 = new HashSet<Path>();
-		t1.add(model2.getPath(new Location(0,0,4)));
-		t1.add(model2.getPath(new Location(1,0,4)));
-		t1.add(model2.getPath(new Location(1,0,5)));
-		assertEquals(t1, model2.getCatapults(p1));
+		t1.add(model3.getPath(new Location(0,0,4)));
+		t1.add(model3.getPath(new Location(1,0,4)));
+		t1.add(model3.getPath(new Location(1,0,5)));
+		assertEquals(t1, model3.getCatapults(p1));
 		
-		assertEquals("Methode sollte null liefern, wenn der Player keine Catapulte hat", null, model2.getCatapults(p2));
+		assertEquals("Methode sollte null liefern, wenn der Player keine Catapulte hat", null, model3.getCatapults(p2));
 	
 	}
 	
@@ -105,11 +107,11 @@ public class ModelReaderTest4 {
 		Player currentPlayer = model2.getCurrentPlayer();
 		model2.getIntersection(new Location(1,0,1)).createBuilding(BuildingType.Village, currentPlayer);
 		// longest Road bauen
-		model2.buildStreet(new Location(1,0,1));
-		model2.buildStreet(new Location(1,0,2));
-		model2.buildStreet(new Location(2,0,5));
-		model2.buildStreet(new Location(2,0,3));
-		model2.buildStreet(new Location(2,0,2));
+		model2.getPath(new Location(1,0,1)).createStreet(currentPlayer);
+		model2.getPath(new Location(1,0,2)).createStreet(currentPlayer);
+		model2.getPath(new Location(2,0,5)).createStreet(currentPlayer);
+		model2.getPath(new Location(2,0,3)).createStreet(currentPlayer);
+		model2.getPath(new Location(2,0,2)).createStreet(currentPlayer);
 		//longest Road claim
 		List<List<Path>> longestRoad = model2.calculateLongestRoads(currentPlayer);
 		model2.longestRoadClaimed(Model.getLocationList(longestRoad.get(0)));
@@ -158,7 +160,8 @@ public class ModelReaderTest4 {
 		canSet.add(model1.getField(new Point(3, 2)));
 
 		Set<Field> expSet = model1.canPlaceRobber();
-		
+		System.out.println(expSet);
+		System.out.println(canSet);
 		assertTrue(canSet.containsAll(expSet));
 		assertTrue(expSet.containsAll(canSet));
 	

@@ -28,7 +28,10 @@ public class Building {
 	public BuildingType getBuildingType() {
 		return this.buildingType;
 	}
-	
+	@Override
+	public String toString() {
+		return "{Type: "+buildingType+ "Owner: " +owner+"}";
+	}
 }
 
 
