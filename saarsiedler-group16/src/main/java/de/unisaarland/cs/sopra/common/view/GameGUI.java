@@ -204,6 +204,11 @@ public class GameGUI extends View implements Runnable{
 	     GL11.glEnd();
 	}
 	
+	private void renderUI(Clickable click) {
+		renderUI(click.getName(),click.getX(),click.getY(),click.getZ(),click.getWidth(),click.getHeight());
+		//TODO render grey for inactive clickables
+	}
+	
 	private void render() {
 		   GL11.glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
 		   GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
@@ -223,8 +228,8 @@ public class GameGUI extends View implements Runnable{
 		   //UI
 		   renderUI("Background", 0, 0, 0, 1500, 550);
 		   renderUI("Res", 957, 20, 1, 42, 330);
-		   renderUI("EndTurn", 60, 240, 2, 208, 65);
-		   renderUI("ClaimVictory", 300, 230, 2, 322, 65);
+		   for (Clickable act : Clickable.getList())
+			   renderUI(act);
 		   //Draw Fonts on UI
 		   GL11.glPushMatrix();
 		   GL11.glTranslatef((366*aspectRatio)+20, 400, -950);
@@ -371,7 +376,7 @@ public class GameGUI extends View implements Runnable{
 			Display.setDisplayMode(setting.getDisplayMode());
 			Display.setTitle("Die Siedler von der Saar");
 			Display.setVSyncEnabled(true);
-			Display.setFullscreen(setting.isFullscreen()); //setting.isFullscreen()
+			Display.setFullscreen(setting.isFullscreen());
 			Display.create();
 			
 			fieldTextureMap = new HashMap<FieldType,Texture>();
@@ -403,6 +408,19 @@ public class GameGUI extends View implements Runnable{
 			
 			markTextureMap = new HashMap<String,Texture>();
 			markTextureMap.put("Field", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/FieldMark.png")));
+			
+			new Clickable("EndTurn", 140, 240, 2, 158, 65, true) {
+				@Override
+				public void execute() {
+					//TODO: implement it
+				}
+			};
+			new Clickable("ClaimVictory", 300, 240, 2, 302, 65, true) {
+				@Override
+				public void execute() {
+					//TODO: implement it
+				}
+			};
 			
 		} catch (Exception e) {}
 		
@@ -540,7 +558,7 @@ public class GameGUI extends View implements Runnable{
 		}
 		
 		String seperator;
-		if (System.getProperty("sun.desktop").equals("windows")) seperator = ";";
+		if (System.getProperty("sun.desktop") != null && System.getProperty("sun.desktop").equals("windows")) seperator = ";";
 		else seperator = ":";
 		
 		System.setProperty("java.library.path", System.getProperty("java.library.path") + seperator + tmpdir);

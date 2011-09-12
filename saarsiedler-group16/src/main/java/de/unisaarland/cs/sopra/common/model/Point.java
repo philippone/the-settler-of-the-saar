@@ -33,5 +33,9 @@ public class Point {
 		return x * 199 + y;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return "("+y+","+x +")";
+	}
+
 }
