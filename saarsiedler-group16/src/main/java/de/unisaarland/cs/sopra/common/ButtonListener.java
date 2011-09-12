@@ -51,12 +51,6 @@ public class ButtonListener implements ActionListener {
 			}
 			if (arg0.getSource() == gui.join){
 			}
-			if (arg0.getSource() == gui.refresh){
-				
-			}
-			if (arg0.getSource() == gui.toggleAI){
-				System.exit(0);
-			}
 			if (arg0.getSource() == gui.back_lobby){
 				gui.lobbyPanel.setVisible(false);
 				gui.menuPanel.setVisible(true);
@@ -70,12 +64,7 @@ public class ButtonListener implements ActionListener {
 			}
 		//
 		
-		if (arg0.getSource() == gui.refresh){
-			
-		}
-		if (arg0.getSource() == gui.refresh){
-			
-		}
+		
 		
 		
 	}

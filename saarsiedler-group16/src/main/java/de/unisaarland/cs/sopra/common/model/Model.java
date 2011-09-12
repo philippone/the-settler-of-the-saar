@@ -961,6 +961,8 @@ public class Model implements ModelReader, ModelWriter{
 		}
 		else if (buildingType==BuildingType.Town){
 			si=buildableTownIntersections(getCurrentPlayer());
+			System.out.println(si);
+			System.out.println(i);
 			if (si.contains(i)) return true;
 			return false;
 //			throw new IllegalArgumentException("Keine Stadt darf hier gebaut werden");
