@@ -35,7 +35,7 @@ public class Intersection {
 	}
 	
 	public BuildingType getBuildingType() {
-		if (building == null) throw new IllegalStateException();
+		if (building == null) return null;
 		return this.building.getBuildingType();
 	}
 	
