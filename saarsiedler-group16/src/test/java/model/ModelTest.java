@@ -204,9 +204,15 @@ public class ModelTest {
 		 for(List<Path> l : reverseLongestRoads) {
 			 Collections.reverse(l);
 		 }
+		 
+		 assertEquals("currentLongestRoad.size()="+currentLongestRoad.size(),currentLongestRoad.size(),4);
+		 assertTrue("Pb with 0",currentLongestRoad.contains(longRoad0));
+		 assertTrue("Pb with 1",currentLongestRoad.contains(longRoad1));
+		 assertTrue("Pb with 2",currentLongestRoad.contains(longRoad2));
+		 assertTrue("Pb with 3",currentLongestRoad.contains(longRoad3));
 		 // testet ob die normale oder reverseierte Liste == der ausgerechneten ist
-		 boolean calculateExpectedLongestRoad = expectedLongestRoad.equals(currentLongestRoad) || currentLongestRoad.equals(reverseLongestRoads);
-		 assertTrue("laengste Strassen falsch berechnet (hoffentlich richitger Test)", calculateExpectedLongestRoad);
+		 //boolean calculateExpectedLongestRoad = expectedLongestRoad.containsAll(currentLongestRoad) || currentLongestRoad.containsAll(expectedLongestRoad);
+		 //assertTrue("laengste Strassen falsch berechnet (hoffentlich richitger Test)", calculateExpectedLongestRoad);
 		 // claim longest Road:Road1
 		 //model.longestRaodClaimed(Model.getLocationList(longRoad0));
 	}

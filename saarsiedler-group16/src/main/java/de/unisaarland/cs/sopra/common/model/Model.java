@@ -153,15 +153,22 @@ public class Model implements ModelReader, ModelWriter {
 			throw new IllegalArgumentException();
 		Set<Path> pathList = getStreets(player);
 		// all Paths that player owns
+		System.out.println(pathList.size());
 		List<List<Path>> roadList = new ArrayList<List<Path>>();
 		// all roads known (none)
 		for (Path p : pathList) {
 			List<Path> road = new ArrayList<Path>();
 			road.add(p);
+			roadList.add(road);
 		}
+		System.out.println(roadList.size());
 		// all roads contain only one path
 		List<List<Path>> suppressedRoadList = new ArrayList<List<Path>>();
-		for (List<Path> road : roadList) {
+		
+		Iterator<List<Path>> roadIterator = roadList.iterator();
+		List<Path> road;
+		while (roadIterator.hasNext()) {
+			road = roadIterator.next();
 			if (continueRoad(road, roadList)) {
 				suppressedRoadList.add(road);
 				// if the road has been continued, new longer road(s)'d have
@@ -169,19 +176,23 @@ public class Model implements ModelReader, ModelWriter {
 				// we'll just remove the short one
 			}
 		}
+		System.out.println(roadList.size());
+		
 		for (List<Path> suppressedRoad : suppressedRoadList)
 			roadList.remove(suppressedRoad);
 		// now there's only finished roads
+		System.out.println(roadList.size());
 		int maxsize = 5;
-		for (List<Path> road : roadList) {
-			maxsize = Math.max(maxsize, road.size());
+		for (List<Path> road1 : roadList) {
+			maxsize = Math.max(maxsize, road1.size());
 			// what's the maximum size of the roads
 		}
-		for (List<Path> road : roadList) {
-			if (road.size() < maxsize)
-				roadList.remove(road);
+		for (List<Path> road2 : roadList) {
+			if (road2.size() < maxsize)
+				roadList.remove(road2);
 			// only the longest road(s) stay here
 		}
+		System.out.println(roadList.size());
 		return roadList;
 	}
 
@@ -282,7 +293,7 @@ public class Model implements ModelReader, ModelWriter {
 	 */
 	private boolean addPathToRoad(List<Path> road, Player player, Path p,
 			List<List<Path>> roadList) {
-		if (p.getStreetOwner() == player && !(road.contains(p))) {
+		if (p.hasStreet() && p.getStreetOwner() == player && !(road.contains(p))) {
 			// meaning if this path is owned by player and not already in the
 			// road
 			// then we can continue the road while adding this path
