@@ -233,7 +233,7 @@ public class ModelReaderTest4 {
 		assertEquals(HarborType.GENERAL_HARBOR, model1.getHarborType(model1.getIntersection(new Location(1,0,1))));
 		assertEquals(HarborType.LUMBER_HARBOR, model1.getHarborType(model1.getIntersection(new Location(2,1,1))));
 		assertNotSame(HarborType.GRAIN_HARBOR, model1.getHarborType(model1.getIntersection(new Location(1,0,1))));
-		assertNotSame(HarborType.GENERAL_HARBOR, model1.getHarborType(model1.getIntersection(new Location(1,0,1))));
+		assertNotSame(HarborType.GENERAL_HARBOR, model1.getHarborType(model1.getIntersection(new Location(2,0,1))));
 	}
 	
 	@Test
