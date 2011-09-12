@@ -30,7 +30,7 @@ public class Building {
 	}
 	@Override
 	public String toString() {
-		return "{Type: "+buildingType;//+ "Owner: " +owner+"}";
+		return "{Type: "+buildingType+ "Owner: " +owner+"}";
 	}
 }
 
