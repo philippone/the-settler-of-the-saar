@@ -1,7 +1,10 @@
 package de.unisaarland.cs.sopra.common.view;
 
 import java.awt.Font;
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -11,7 +14,6 @@ import java.util.Map;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 import org.newdawn.slick.Color;
@@ -32,6 +34,7 @@ import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Point;
+import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
@@ -48,7 +51,8 @@ public class GameGUI extends View implements Runnable{
 	private int x,y,z;
 	private int maxX, maxY, maxZ;
 	private int minX, minY, minZ;
-	private UnicodeFont uniFont;
+	private UnicodeFont debugFont;
+	private UnicodeFont uiFont;
 
 	private int selectionMode;
 	private static final int NONE = 0;
@@ -61,7 +65,12 @@ public class GameGUI extends View implements Runnable{
 	private static final int RESOURCE_VIEW = 0;
 	private static final int TRADE_VIEW = 1;
 	private static final int BUILD_VIEW = 2;
-
+	
+	private static int windowWidth;
+	private static int windowHeight;
+	private static float aspectRatio;
+	private static int xOffsetUI;
+	private static int viewportXwidth;
 	
 	GameGUI(long meID, ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player,String> playerNames, Setting setting) throws Exception {
 		super(meID, modelReader, controllerAdapter);
@@ -71,12 +80,15 @@ public class GameGUI extends View implements Runnable{
 		this.controllerAdapter = controllerAdapter;
 		this.uiMode = RESOURCE_VIEW;
 		this.selectionMode = NONE;
-		
+		windowWidth = setting.getDisplayMode().getWidth();
+		windowHeight = setting.getDisplayMode().getHeight();
+		aspectRatio = ((float)windowWidth)/windowHeight;
+		viewportXwidth = (int)(870*aspectRatio);
+		xOffsetUI = (int)((366*aspectRatio)+(viewportXwidth-1075)/2);
 		//center to the area where the first field is drawn
-		this.x = (int)(812.8125f*setting.getWindowWidth()/setting.getWindowHeight());
+		this.x = (int)(812.8125f*aspectRatio);
 		this.y = 745;
 		this.z = -1450;
-		
 		//center camera on map according to map size
 		this.x += (modelReader.getBoardWidth()-1)*-106;
 		this.y += (modelReader.getBoardHeight()-1)*-170;
@@ -88,51 +100,47 @@ public class GameGUI extends View implements Runnable{
 		//TODO: set and use min,max for x,y 
 	}
 
-	private void renderFields() {
-	   Iterator<Field> iter = renderFieldList.iterator();
-	   while (iter.hasNext()) {
-			Field f = iter.next();
-			int fx = 0;
-			int fy = 0;
-			   switch(f.getLocation().getY()%2) {
-			   case 0:
-				   fx = f.getLocation().getX()*250;
-				   fy = f.getLocation().getY()*215; 
-				   break;
-			   case 1:
-				   fx = f.getLocation().getX()*250-125;
-				   fy = f.getLocation().getY()*215;
-				   break;
-			   }
-			
-			     fieldTextureMap.get(f.getFieldType()).bind();
+	private void renderField(Field f) {
+		int fx = 0;
+		int fy = 0;
+		   switch(f.getLocation().getY()%2) {
+		   case 0:
+			   fx = f.getLocation().getX()*250;
+			   fy = f.getLocation().getY()*215; 
+			   break;
+		   case 1:
+			   fx = f.getLocation().getX()*250-125;
+			   fy = f.getLocation().getY()*215;
+			   break;
+		   }
+		
+		     fieldTextureMap.get(f.getFieldType()).bind();
+		     GL11.glBegin(GL11.GL_POLYGON);
+		       //GL11.glColor4f(1.0f,1.0f,1.0f,1.0f); //transparenz
+		       GL11.glTexCoord2f(0,0);
+		       GL11.glVertex3i(-150+fx+x, -150+fy+y, 0+z);
+		       GL11.glTexCoord2f(1,0);
+		       GL11.glVertex3i(150+fx+x, -150+fy+y, 0+z);
+		       GL11.glTexCoord2f(1,1);
+		       GL11.glVertex3i(150+fx+x, 150+fy+y, 0+z);
+		       GL11.glTexCoord2f(0,1);
+		       GL11.glVertex3i(-150+fx+x, 150+fy+y, 0+z);
+		     GL11.glEnd();
+		     
+		     if (f.getFieldType() != FieldType.DESERT && f.getFieldType() != FieldType.WATER) {
+			     numberTextureMap.get(f.getNumber()).bind();
 			     GL11.glBegin(GL11.GL_POLYGON);
 			       //GL11.glColor4f(1.0f,1.0f,1.0f,1.0f); //transparenz
 			       GL11.glTexCoord2f(0,0);
-			       GL11.glVertex3i(-150+fx+x, -150+fy+y, 0+z);
+			       GL11.glVertex3i(-150+fx+x, -150+fy+y, 1+z);
 			       GL11.glTexCoord2f(1,0);
-			       GL11.glVertex3i(150+fx+x, -150+fy+y, 0+z);
+			       GL11.glVertex3i(150+fx+x, -150+fy+y, 1+z);
 			       GL11.glTexCoord2f(1,1);
-			       GL11.glVertex3i(150+fx+x, 150+fy+y, 0+z);
+			       GL11.glVertex3i(150+fx+x, 150+fy+y, 1+z);
 			       GL11.glTexCoord2f(0,1);
-			       GL11.glVertex3i(-150+fx+x, 150+fy+y, 0+z);
+			       GL11.glVertex3i(-150+fx+x, 150+fy+y, 1+z);
 			     GL11.glEnd();
-			     
-			     if (f.getFieldType() != FieldType.DESERT && f.getFieldType() != FieldType.WATER) {
-				     numberTextureMap.get(f.getNumber()).bind();
-				     GL11.glBegin(GL11.GL_POLYGON);
-				       //GL11.glColor4f(1.0f,1.0f,1.0f,1.0f); //transparenz
-				       GL11.glTexCoord2f(0,0);
-				       GL11.glVertex3i(-150+fx+x, -150+fy+y, 1+z);
-				       GL11.glTexCoord2f(1,0);
-				       GL11.glVertex3i(150+fx+x, -150+fy+y, 1+z);
-				       GL11.glTexCoord2f(1,1);
-				       GL11.glVertex3i(150+fx+x, 150+fy+y, 1+z);
-				       GL11.glTexCoord2f(0,1);
-				       GL11.glVertex3i(-150+fx+x, 150+fy+y, 1+z);
-				     GL11.glEnd();
-			     }
-	   }
+		     }
 	}
 	
 	private void renderMarks() {
@@ -178,24 +186,21 @@ public class GameGUI extends View implements Runnable{
 		
 	}
 	
-	private void renderUI(String name, int x, int y, int layer) {
-	     int width = uiTextureMap.get(name).getImageWidth();
-	     int height = uiTextureMap.get(name).getImageHeight();
-		 int xoffset = (int)(373*setting.getWindowWidth()/setting.getWindowHeight())+minX;
+	private void renderUI(String name, int x, int y, int z, int width, int height) {
+		 int xoffset = xOffsetUI;
 		 int yoffset = 955;
 		 int zoffset = -950;
-	     
 		 uiTextureMap.get(name).bind();
 	     GL11.glBegin(GL11.GL_POLYGON);
 	      // GL11.glColor4f(0.0f,0.0f,1.0f,1.0f); //transparenz
 	       GL11.glTexCoord2f(0,0);
-	       GL11.glVertex3i(0+xoffset+x, 0+yoffset+y, layer+zoffset);
+	       GL11.glVertex3i(0+xoffset+x, 0+yoffset+y, z+zoffset);
 	       GL11.glTexCoord2f(1,0);
-	       GL11.glVertex3i(width+xoffset+x, 0+yoffset+y, layer+zoffset);
+	       GL11.glVertex3i(width+xoffset+x, 0+yoffset+y, z+zoffset);
 	       GL11.glTexCoord2f(1,1);
-	       GL11.glVertex3i(width+xoffset+x, height+yoffset+y, layer+zoffset);
+	       GL11.glVertex3i(width+xoffset+x, height+yoffset+y, z+zoffset);
 	       GL11.glTexCoord2f(0,1);
-	       GL11.glVertex3i(0+xoffset+x, height+yoffset+y, layer+zoffset);
+	       GL11.glVertex3i(0+xoffset+x, height+yoffset+y, z+zoffset);
 	     GL11.glEnd();
 	}
 	
@@ -204,30 +209,42 @@ public class GameGUI extends View implements Runnable{
 		   GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		   GL11.glLoadIdentity();
 		   GL11.glPushMatrix();
-		   GL11.glTranslatef(-812.8125f*setting.getWindowWidth()/setting.getWindowHeight(),820,-2000);
+		   GL11.glTranslatef(-812.8125f*aspectRatio,820,-2000);
 		   GL11.glRotatef(180, 1, 0, 0);
 		   GL11.glColor3f(1.0f, 1.0f, 1.0f);
-		   
 		   //Spielfeld
-		   renderFields();
+		   Iterator<Field> iter = renderFieldList.iterator();
+		   while (iter.hasNext())
+				renderField(iter.next());
 		   renderIntersections();
 		   renderPaths();
-		   
 		   //Markierungen
-		   renderMarks();
-		   
+		   renderMarks(); //TODO: implement markierungen
 		   //UI
-		   renderUI("Background", 0, 0, 0);
-		   
-		   
-		   uniFont.drawString(0, 0, "Debug:", Color.white);
-		   uniFont.drawString(0, 60, "x: " + x + ", y: " + y + ", z: " + z, Color.white);
-		   uniFont.drawString(0, 120, "mx: " + Mouse.getX() + ", my: " + Mouse.getY() + ", mw: " + Mouse.getEventDWheel(), Color.white);
-		   uniFont.drawString(0, 180, "xoffset UI: " + minX, Color.white);
+		   renderUI("Background", 0, 0, 0, 1500, 550);
+		   renderUI("Res", 957, 20, 1, 42, 330);
+		   renderUI("EndTurn", 60, 240, 2, 208, 65);
+		   renderUI("ClaimVictory", 300, 230, 2, 322, 65);
+		   //Draw Fonts on UI
+		   GL11.glPushMatrix();
+		   GL11.glTranslatef((366*aspectRatio)+20, 400, -950);
+		   debugFont.drawString(300, 0, "Debug:", Color.white);
+		   debugFont.drawString(300, 30, "x: " + x + ", y: " + y + ", z: " + z, Color.white);
+		   debugFont.drawString(300, 60, "mx: " + Mouse.getX() + ", my: " + Mouse.getY() + ", mw: " + Mouse.getEventDWheel(), Color.white);
+		   debugFont.drawString(300, 90, "minX: " + minX + ", minY: " + minY , Color.white);
+		   GL11.glPopMatrix();
+		   GL11.glTranslatef(xOffsetUI, 955, -950);
+		   uiFont.drawString(1000, 20, ""+modelReader.getResources().getResource(Resource.LUMBER), Color.black);
+		   uiFont.drawString(1000, 52, ""+modelReader.getResources().getResource(Resource.BRICK), Color.black);
+		   uiFont.drawString(1000, 84, ""+modelReader.getResources().getResource(Resource.WOOL), Color.black);
+		   uiFont.drawString(1000, 116, ""+modelReader.getResources().getResource(Resource.GRAIN), Color.black);
+		   uiFont.drawString(1000, 147, ""+modelReader.getResources().getResource(Resource.ORE), Color.black);
+		   uiFont.drawString(1000, 178, ""+modelReader.getSettlements(modelReader.getMe(), BuildingType.Village).size() + "/" + modelReader.getMaxBuilding(BuildingType.Village), Color.black);
+		   uiFont.drawString(1000, 209, ""+modelReader.getSettlements(modelReader.getMe(), BuildingType.Town).size() + "/" + modelReader.getMaxBuilding(BuildingType.Town), Color.black);
+		   uiFont.drawString(1000, 240, ""+modelReader.getCatapults(modelReader.getMe()).size()+ "/" + modelReader.getMaxVictoryPoints(), Color.black);
+		   //Draw Fonts for Debugging
 
 		   GL11.glPopMatrix();
-		   
-		   
 	}
 
 	private void renderPaths() {
@@ -317,7 +334,6 @@ public class GameGUI extends View implements Runnable{
 		throw new UnsupportedOperationException();
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public void run() {
 		init();
@@ -352,10 +368,10 @@ public class GameGUI extends View implements Runnable{
 	@SuppressWarnings("unchecked")
 	private void init() {
 		try {//Display.getDesktopDisplayMode()
-			Display.setDisplayMode(new DisplayMode(setting.getWindowWidth(), setting.getWindowHeight())); //
+			Display.setDisplayMode(setting.getDisplayMode());
 			Display.setTitle("Die Siedler von der Saar");
 			Display.setVSyncEnabled(true);
-			Display.setFullscreen(true); //setting.isFullscreen()
+			Display.setFullscreen(setting.isFullscreen()); //setting.isFullscreen()
 			Display.create();
 			
 			fieldTextureMap = new HashMap<FieldType,Texture>();
@@ -381,7 +397,10 @@ public class GameGUI extends View implements Runnable{
 		
 			uiTextureMap = new HashMap<String,Texture>();
 			uiTextureMap.put("Background", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Background.png")));
-		
+			uiTextureMap.put("Res", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Res.png")));
+			uiTextureMap.put("EndTurn", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/EndTurn.png")));
+			uiTextureMap.put("ClaimVictory", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/ClaimVictory.png")));
+			
 			markTextureMap = new HashMap<String,Texture>();
 			markTextureMap.put("Field", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/FieldMark.png")));
 			
@@ -389,27 +408,33 @@ public class GameGUI extends View implements Runnable{
 		
 		GL11.glDisable(GL11.GL_DEPTH_TEST); // Enables Depth Testing
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        GL11.glTexParameterf( GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+        GL11.glTexParameterf( GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
         GL11.glClearDepth(1.0f); // Depth Buffer Setup
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
         
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
-		GLU.gluPerspective(+45.0f, ((float)setting.getWindowWidth())/setting.getWindowHeight(), 0.1f, 5000.0f); //-5000.f ist die maximale z tiefe
+		GLU.gluPerspective(+45.0f, aspectRatio, 0.1f, 5000.0f); //-5000.f ist die maximale z tiefe
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		
         Keyboard.enableRepeatEvents(true);
         Mouse.poll();
         
-        //create the font
-        Font awtFont = new Font("Arial", Font.BOLD, 48);
-        uniFont = new UnicodeFont(awtFont, 48, false, false);
-        uniFont.addAsciiGlyphs();
-        uniFont.getEffects().add(new ColorEffect(java.awt.Color.WHITE)); 
+        Font awtFont = new Font("Arial", Font.BOLD, 72);
+        debugFont = new UnicodeFont(awtFont, 22, false, false);
+        debugFont.addAsciiGlyphs();
+        debugFont.getEffects().add(new ColorEffect(java.awt.Color.WHITE)); 
         try {
-			uniFont.loadGlyphs();
+			debugFont.loadGlyphs();
+		} catch (SlickException e1) {}
+		
+        uiFont = new UnicodeFont(awtFont, 20, false, false);
+        uiFont.addAsciiGlyphs();
+        uiFont.getEffects().add(new ColorEffect(java.awt.Color.BLACK)); 
+        try {
+			uiFont.loadGlyphs();
 		} catch (SlickException e1) {}
 
         
@@ -418,8 +443,6 @@ public class GameGUI extends View implements Runnable{
         while (iter.hasNext()) {
         	renderFieldList.add(iter.next());
         }
-        
-      //TODO: center map and calculate initial zoom!!!
         
         Display.update();
         render();
@@ -438,13 +461,13 @@ public class GameGUI extends View implements Runnable{
 			if (mx < 50) {
 				x+=5;
 			}
-			else if (mx > setting.getWindowWidth()-50) {
+			else if (mx > windowWidth-50) {
 				x-=5;
 			}
 			if (my < 50) {
 				y-=5;
 			}
-			else if (my > setting.getWindowHeight()-50) {
+			else if (my > windowHeight-50) {
 				y+=5;
 			}
 		}
@@ -467,10 +490,12 @@ public class GameGUI extends View implements Runnable{
 			minX-=5;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
-			y+=5;
+			//y+=5;
+			minY+=5;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
-			y-=5;
+			//y-=5;
+			minY-=5;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_N)) {
 			if (z+50 < this.maxZ)
@@ -577,10 +602,11 @@ public class GameGUI extends View implements Runnable{
 														 9,8,6,5,
 														 2,6,9});
 		
-		//Setting setting = new Setting(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight(), true);
-		//Setting setting = new Setting(1280, 1024, true);
-		//Setting setting = new Setting(800, 600, true);
-		Setting setting = new Setting(400, 300, true);
+		//Setting setting = new Setting(new DisplayMode(1920, 1080), true);
+		//Setting setting = new Setting(new DisplayMode(1280, 1024), true);
+		//Setting setting = new Setting(new DisplayMode(800, 600), true);
+		//Setting setting = new Setting(new DisplayMode(400, 300), true);
+		Setting setting = new Setting(Display.getDesktopDisplayMode(), true);
 		
 		GameGUI gameGUI = new GameGUI(0, model, null, null, setting);
 		new Thread(gameGUI).start();
