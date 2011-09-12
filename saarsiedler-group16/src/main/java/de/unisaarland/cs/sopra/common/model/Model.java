@@ -1387,12 +1387,22 @@ public class Model implements ModelReader, ModelWriter {
 	public void robberMoved(Point sourceField, Point destinationField,
 			long victimPlayer, Resource stolenResource) {
 		// TODO (Philipp)
-		getField(sourceField).setRobber(false);
-		getField(destinationField).setRobber(true);
-		playerMap.get(victimPlayer).getResources()
-				.modifyResource(stolenResource, -1);
-		for (ModelObserver ob : modelObserver) {
-			ob.eventRobber();
+		// Wenn Wasser drumherum
+		boolean water = false;
+		for(Field f : getFieldsFromField(getField(destinationField))) {
+			if (f.getFieldType() == FieldType.WATER)
+				water = true;
+			else 
+				water = false;
+				break;
+		}
+		if (water == false) {
+			getField(sourceField).setRobber(false);
+			getField(destinationField).setRobber(true);
+			playerMap.get(victimPlayer).getResources().modifyResource(stolenResource, -1);
+			for (ModelObserver ob : modelObserver) {
+				ob.eventRobber();
+			}
 		}
 	}
 
