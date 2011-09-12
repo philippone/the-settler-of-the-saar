@@ -88,7 +88,7 @@ public class TestUtil {
 				new byte[] {1,4,
 							2,5,
 							3,6},
-				new byte[] {0,1,(1 << 4) | 0, 
+				new byte[] {1,0,(1 << 4) | 0, 
 							2,2,(4 << 4) | 1
 								});
 				

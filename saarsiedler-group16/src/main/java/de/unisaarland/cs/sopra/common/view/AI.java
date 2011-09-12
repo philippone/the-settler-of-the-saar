@@ -16,7 +16,9 @@ public class AI extends View{
 	public AI(long meID, ModelReader modelReader, ControllerAdapter controllerAdapter) {
 		super(meID, modelReader, controllerAdapter);
 		
-		throw new UnsupportedOperationException();
+		
+		// TODO: exception ausgeklammert
+		//throw new UnsupportedOperationException();
 	}
 
 	private Strategy strategy;
