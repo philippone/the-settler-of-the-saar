@@ -1055,11 +1055,22 @@ public class Model implements ModelReader, ModelWriter{
 	@Override
 	public void respondTrade(long playerID) {
 		// TODO (Philipp)
-		if (playerID < 0) throw new IllegalArgumentException();
-		getCurrentPlayer().modifyResources(lastTrade);
-		playerMap.get(playerID).modifyResources(lastTrade.neagateResourcePackage());
-		for(ModelObserver mo : modelObserver) {
-			mo.updateResources();
+		if (playerID < -2) throw new IllegalArgumentException();
+		else if(playerID == -1) {
+			return;
+		}
+		else if(playerID == -2) {
+			getCurrentPlayer().modifyResources(lastTrade);
+			for(ModelObserver mo : modelObserver) {
+				mo.updateResources();
+			}
+		}
+		else {
+			getCurrentPlayer().modifyResources(lastTrade);
+			playerMap.get(playerID).modifyResources(lastTrade.neagateResourcePackage());
+			for(ModelObserver mo : modelObserver) {
+				mo.updateResources();
+			}
 		}
 	}
 
