@@ -540,7 +540,7 @@ public class GameGUI extends View implements Runnable{
 		}
 		
 		String seperator;
-		if (System.getProperty("sun.desktop").equals("windows")) seperator = ";";
+		if (System.getProperty("sun.desktop") != null && System.getProperty("sun.desktop").equals("windows")) seperator = ";";
 		else seperator = ":";
 		
 		System.setProperty("java.library.path", System.getProperty("java.library.path") + seperator + tmpdir);
