@@ -82,7 +82,7 @@ public class FieldTest {
 	}
 	@Test
 	public void testRobber(){
-		assertFalse(f1.hasRobber());
+		assertFalse(f2.hasRobber());
 		f1.setRobber(true);
 		assertTrue(f1.hasRobber());
 		f1.setRobber(false);
