@@ -54,7 +54,7 @@ public class Intersection {
 	@Override
 	public boolean equals(Object o) {
 		if(o instanceof Intersection) {
-			return ((Intersection)o).location.equals(this.location);
+			return ((Intersection)o) == this;
 		}
 		return false;
 	}
