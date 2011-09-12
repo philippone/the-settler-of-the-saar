@@ -640,16 +640,17 @@ public class Model implements ModelReader, ModelWriter {
 	@Override
 	public Set<Intersection> getSettlements(Player player,
 			BuildingType buildingType) {
-		if (player == null | buildingType == null)
-			throw new IllegalArgumentException();
+		if (player == null | buildingType == null) throw new IllegalArgumentException();
 		Iterator<Intersection> ii = getIntersectionIterator();
 		Set<Intersection> si = new HashSet<Intersection>();
 		Intersection i;
 		while (ii.hasNext()) {
+			System.out.println("player ist: "+ player);
 			i = ii.next();
 			if (i.getOwner() == player && i.getBuildingType() == buildingType)
 				si.add(i);
 		}
+		System.out.println("Settlement0: "+si);
 		return si;
 	}
 
@@ -1203,9 +1204,9 @@ public class Model implements ModelReader, ModelWriter {
 	public void buildSettlement(Location location, BuildingType buildingType) {
 		if (location == null)
 			throw new IllegalArgumentException(location + " is null");
-		System.out.println("l: " + location);
+//		System.out.println("l: " + location);
 		Intersection i = getIntersection(location);
-		System.out.println("In: " + i);
+//		System.out.println("In: " + i);
 		if (getRound() == 0) {
 			i.createBuilding(buildingType, getCurrentPlayer());
 			for (ModelObserver ob : modelObserver) {
@@ -1234,8 +1235,8 @@ public class Model implements ModelReader, ModelWriter {
 		Set<Intersection> si;
 		if (buildingType == BuildingType.Village) {
 			si = buildableVillageIntersections(getCurrentPlayer());
-			System.out.println(si);
-			System.out.println(i);
+//			System.out.println(si);
+//			System.out.println(i);
 			if (si.contains(i))
 				return true;
 			return false;
@@ -1483,7 +1484,9 @@ public class Model implements ModelReader, ModelWriter {
 	public Set<Intersection> buildableTownIntersections(Player player) {
 		if (player == null)
 			throw new IllegalArgumentException(player + " is null");
+		System.out.println("Settlement: "+ getSettlements(player, BuildingType.Village));
 		return getSettlements(player, BuildingType.Village);
+		
 	}
 
 	@Override
