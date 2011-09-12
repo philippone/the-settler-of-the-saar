@@ -58,7 +58,8 @@ public class Controller {
 				Intersection i=((GameEvent.Attack)gameEvent).getTargetIntersection();
 				Location catapult = new Location(e.getCol(), e.getRow(), e.getDirection());
 				Location settlement = new Location(i.getCol(), i.getRow(), i.getDirection());
-				attackSettlement(catapult, settlement);
+				AttackResult r = connection.attack(e, i);
+				modelWriter.attackSettlement(catapult, settlement, r);
 			break;
 			case MATCH_START:
 				long[] players = ((GameEvent.MatchStart) gameEvent).getPlayerIds();
