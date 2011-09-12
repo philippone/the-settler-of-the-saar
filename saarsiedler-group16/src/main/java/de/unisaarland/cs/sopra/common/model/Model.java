@@ -1,6 +1,7 @@
 package de.unisaarland.cs.sopra.common.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -1011,7 +1012,7 @@ public class Model implements ModelReader, ModelWriter {
 	 */
 	@Override
 	public void newRound(int number) {
-		if (number == 1 || number > 12)
+		if (number < 2 || number > 12)
 			throw new IllegalArgumentException();
 
 		if (number == 7) {
@@ -1036,6 +1037,8 @@ public class Model implements ModelReader, ModelWriter {
 				ob.updateResources();
 			}
 		}
+		if (round == 0 && reversedPlayersList)
+			Collections.reverse(players);
 		this.round++;
 		for (ModelObserver ob : modelObserver) {
 			ob.eventNewRound(getCurrentPlayer() == me);
