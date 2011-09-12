@@ -10,9 +10,9 @@ public abstract class Clickable {
 	private boolean active;
 	private String name;
 	
-	public static void executeClicks() {
+	public static void executeClicks(float xogl, float yogl) {
 		for (Clickable act : list) {
-			if (act.checkClick())
+			if (act.checkClick(xogl, yogl))
 				act.execute();
 		}
 	}
@@ -70,8 +70,11 @@ public abstract class Clickable {
 
 	public abstract void execute();
 	
-	private boolean checkClick() {
-		return true;
+	private boolean checkClick(float xogl, float yogl) {
+		if (active) {
+			return (xogl > x && xogl < x+width && yogl > y && yogl < y+height);
+		}
+		return false;
 	}
 
 	public void setName(String name) {
