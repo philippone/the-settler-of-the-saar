@@ -668,7 +668,6 @@ public class Model implements ModelReader, ModelWriter {
 			if (p.hasStreet() && p.getStreetOwner() == player)
 				sp.add(p);
 		}
-		System.err.println("Streets: "+sp+"size: "+sp.size());
 		return sp;
 	}
 
