@@ -1329,7 +1329,7 @@ public class Model implements ModelReader, ModelWriter {
 			if(initVillageIntersection!=null)throw new IllegalStateException("in runde 0 darf kein Village direkt nach einem Village gebaut werden");
 			if(buildableVillageIntersections(getCurrentPlayer()).contains(i)){ // wenn i buildable, do it
 			i.createBuilding(buildingType, getCurrentPlayer());
-			getCurrentPlayer().setVictoryPoints(getCurrentPlayer().getVictoryPoints() + buildingType.getVictoryPoints());
+			getCurrentPlayer().setVictoryPoints(getCurrentPlayer().getVictoryPoints() + 1);
 					
 			for (ModelObserver ob : modelObserver) {
 				ob.updateSettlementCount(buildingType);
@@ -1337,13 +1337,13 @@ public class Model implements ModelReader, ModelWriter {
 				ob.updateIntersection(i);
 			}
 			initVillageIntersection=i; // setzt letzte Intersection auf der wahrend init gebaut wurde
-			}
+			}else
 			throw new IllegalStateException("geb wurde nicht gebaut, da i nicht in buildableIn...");
 		} else {
 			if (isBuildable(i, buildingType) && (isAffordable(buildingType))) {
 				getCurrentPlayer().modifyResources(buildingType.getPrice());
 				i.createBuilding(buildingType, getCurrentPlayer());
-				getCurrentPlayer().setVictoryPoints(getCurrentPlayer().getVictoryPoints() + buildingType.getVictoryPoints());
+				getCurrentPlayer().setVictoryPoints(getCurrentPlayer().getVictoryPoints() + 1);
 				for (ModelObserver ob : modelObserver) {
 					ob.updateResources();
 					ob.updateSettlementCount(buildingType);
