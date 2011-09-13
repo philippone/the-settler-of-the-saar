@@ -9,20 +9,50 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.unisaarland.cs.sopra.common.model.BuildingType;
+import de.unisaarland.cs.sopra.common.model.Field;
+import de.unisaarland.cs.sopra.common.model.FieldType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
+import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
-
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
+import java.util.HashSet;
 
 public class ModelReaderTest2 {
 
-	private Model model;
+	private Model model, model1;
 	
 	@Before
 	public void setUp() throws IOException {
 		model = TestUtil.getStandardModel2();
+		model1 = TestUtil.getStandardModel1();
 	}	
+	
+	public void initialize(){
+		//Build inital stuff
+		//1. Player
+		model.buildSettlement(new Location(0, 2, 3), BuildingType.Village);
+		model.buildStreet(new Location(0, 2, 3));
+		// 2. Payer
+		model.buildSettlement(new Location(2, 0, 1), BuildingType.Village);
+		model.buildStreet(new Location(2, 0, 1));
+		//
+		//2. Player
+		model.buildSettlement(new Location(3, 2, 0), BuildingType.Village);
+		model.buildStreet(new Location(3, 2, 0));
+		//1. Payer
+		model.buildSettlement(new Location(2, 2, 3), BuildingType.Village);
+		model.buildStreet(new Location(2, 2, 3));
+		//
+		model.getTableOrder().get(0).modifyResources(new ResourcePackage(1000,1000,1000,1000,1000));
+		model.getTableOrder().get(1).modifyResources(new ResourcePackage(1000,1000,1000,1000,1000));
+
+		// new Round
+		model.newRound(12);
+		
+	}
+	
 	
 	@Test
 	public void testGetInitVillages() {
@@ -90,24 +120,75 @@ public class ModelReaderTest2 {
 	
 	
 	@Test
-	public void testBuildableStreetPaths() {
-		Player pl=model.getCurrentPlayer();
-		Set<Path> sp=model.buildableStreetPaths(pl);
-		if (!(sp.isEmpty())){
-		for(Path p : sp){ //check for all paths
-			boolean b=false;
-			Set<Path> sp1=model.getPathsFromPath(p);
-			for(Path p1: sp1){ // check for each neighbor path
-				b=b | (p1.getStreetOwner()==pl);
-				/// check if player owns a street on this path
-			}
-			assertTrue(b);
-			//check player has a street on a neighbor path
-			assertFalse(p.hasStreet());
-			// check this path is free from street
-		}
-		}
-		else assertTrue(sp.isEmpty());
+	public void testBuildableStreetPathsInit() {
+		model.buildSettlement(new Location(1, 1, 1), BuildingType.Village);
+		model.setInitVillageIntersection(new Intersection(new Location(1, 1, 1)));
+		Player player = model.getCurrentPlayer();
+		//model.setMe(player);
+		Set<Path> buildablePaths = model.buildableStreetPaths(player);
+		Set<Path> expectedPaths = new HashSet<Path>();
+		expectedPaths.add(new Path(new Location(0, 1, 3)));
+		expectedPaths.add(new Path(new Location(0, 1, 2)));
+		expectedPaths.add(new Path(new Location(1, 1, 1)));
+		assertTrue(buildablePaths.containsAll(expectedPaths));
+		assertTrue(expectedPaths.containsAll(buildablePaths));
+		
+	}
+	
+	@Test
+	public void testBuildableStreetPathsInit2() {
+		model.buildSettlement(new Location(0, 0, 3), BuildingType.Village);
+		model.setInitVillageIntersection(new Intersection(new Location(1, 1, 4)));
+		Player player = model.getCurrentPlayer();
+		//model.setMe(player);
+		Set<Path> buildablePaths = model.buildableStreetPaths(player);
+		Set<Path> expectedPaths = new HashSet<Path>();
+		expectedPaths.add(new Path(new Location(1, 0, 2)));
+		expectedPaths.add(new Path(new Location(1, 0, 1)));
+		System.out.println(expectedPaths);
+		System.out.println(buildablePaths);
+		assertTrue(expectedPaths.containsAll(buildablePaths));
+		assertTrue(buildablePaths.containsAll(expectedPaths));
+		
+		
+	}
+	
+
+
+	@Test
+	public void testBuildableStreetPathsInit1(){
+		model.buildSettlement(new Location(1, 1, 1), BuildingType.Village);
+		model.setInitVillageIntersection(new Intersection(new Location(1, 1, 1)));
+		Player player1 = model.getCurrentPlayer();
+		model.setMe(player1);
+		Set<Path> curSet = model.buildableStreetPaths(player1);
+		assertNotSame(curSet.size(), 0);
+			for( Path p : curSet){
+				assertEquals(false, p.hasStreet());
+				Set<Intersection> Intersections = model.getIntersectionsFromPath(p);
+				boolean hasBuildingOnInters = false;
+				for (Intersection i : Intersections){
+					if(i.hasOwner()){
+						if(i.getOwner().equals(player1))
+						hasBuildingOnInters = true;
+					}
+				}
+					assertTrue(hasBuildingOnInters);
+					Set<Field> Fields = model.getFieldsFromPath(p);
+					boolean hasLand = false;
+					for (Field f: Fields){
+						if (f.getFieldType() != FieldType.WATER)
+							hasLand = true;
+					}
+						assertTrue(hasLand);
+					} 
+				
+				}
+			
+		
+	
+	public void testBuildableStreetsPaths1(){
+		
 	}
 	
 	@Test

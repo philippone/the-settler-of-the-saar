@@ -1731,4 +1731,7 @@ public class Model implements ModelReader, ModelWriter {
 		return board.getHeight();
 	}
 
+	public void setInitVillageIntersection(Intersection i){
+		this.initVillageIntersection = i;
+	}
 }
