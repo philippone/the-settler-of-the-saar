@@ -167,14 +167,13 @@ public class Model implements ModelReader, ModelWriter {
 		// we obtain all finished roads
 		
 		roadList=keepOnlyLongestRoads(roadList);
-		System.out.println(roadList.get((int) Math.random()*roadList.size()));
-		System.out.println(roadList.size());
-		
+		System.out.println(roadList.get(0));
+		System.out.println(roadList.get(1));
+		System.out.println(roadList.get(2));		
 		return roadList;
 	}
 	
 	private List<List<Path>> continueAllRoads(List<List<Path>> roadList,Player player){
-		System.out.println(roadList.size());
 		List<List<Path>> rList;
 		// the roads we'll obtain while lengthening one
 		List<List<Path>> roadList1;
@@ -230,7 +229,6 @@ public class Model implements ModelReader, ModelWriter {
 			if (road2!=null && road2.size() >= maxsize) roadList1.add(road2);
 			// we take only the longest road(s)and we return these
 		}
-		System.out.println(maxsize);
 		return roadList1;
 	}
 
@@ -1445,15 +1443,15 @@ public class Model implements ModelReader, ModelWriter {
 			long victimPlayer, Resource stolenResource) {
 		// TODO (Philipp)
 		// Wenn Wasser drumherum
-		boolean water = false;
+		boolean hasLand = false;
 		for(Field f : getFieldsFromField(getField(destinationField))) {
-			if (f.getFieldType() == FieldType.WATER)
-				water = true;
-			else 
-				water = false;
-				break;
+			if (f.getFieldType() != FieldType.WATER){
+				hasLand = true;
+			}
 		}
-		if (water == false) {
+		if (!hasLand)
+			throw new IllegalArgumentException("Can not put a robber on water");
+		else {		
 			getField(sourceField).setRobber(false);
 			getField(destinationField).setRobber(true);
 			playerMap.get(victimPlayer).getResources().modifyResource(stolenResource, -1);
