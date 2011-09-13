@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -24,12 +26,14 @@ import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
+import de.unisaarland.cs.sopra.common.PlayerColors;
 import de.unisaarland.cs.sopra.common.Setting;
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.FieldType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
+import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
@@ -45,10 +49,13 @@ public class GameGUI extends View implements Runnable{
 	private Map<Player,String> playerNames;
 	private Setting setting;
 	private Map<FieldType,Texture> fieldTextureMap;
+	private HashMap<BuildingType, Texture> intersectionTextureMap;
 	private Map<Integer,Texture> numberTextureMap;
 	private Map<String,Texture> uiTextureMap;
 	private Map<String,Texture> markTextureMap;
 	private List<Field> renderFieldList;
+	private Texture streetTexture;
+	private Texture catapultTexture;
 	private int x,y,z;
 	private int maxX, maxY, maxZ;
 	private int minX, minY, minZ;
@@ -77,9 +84,14 @@ public class GameGUI extends View implements Runnable{
 	private static float screenToOpenGLX;
 	private static float screenToOpenGLY;
 	
+	private int village;
+	private int town;
+	private int catapult;
+	
+	private Map<Player,PlayerColors> colorMap;
 	
 	GameGUI(long meID, ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player,String> playerNames, Setting setting) throws Exception {
-		super(meID, modelReader, controllerAdapter);
+		super(modelReader, controllerAdapter);
 		this.modelReader = modelReader;
 		this.setting = setting;
 		this.playerNames = playerNames;
@@ -110,6 +122,17 @@ public class GameGUI extends View implements Runnable{
 		this.maxZ = this.z;
 		this.minZ = -1500;
 		//TODO: set and use min,max for x,y 
+	}
+	
+	private static setColor(int color) {
+		switch(color) {
+		case BLUE:
+			GL11.glColor3f(0.0f,0.0f,1.0f); break;
+		case RED:
+			GL11.glColor3f(1.0f,0.0f,0.0f); break;
+		case GREEN:
+			
+		}
 	}
 
 	private void renderField(Field f) {
@@ -153,6 +176,138 @@ public class GameGUI extends View implements Runnable{
 			       GL11.glVertex3i(-150+fx+x, 150+fy+y, 1+z);
 			     GL11.glEnd();
 		     }
+	}
+	
+	private void renderIntersection(Intersection i) {
+		if (i.hasOwner()) {
+			int ix = 0;
+			int iy = 0;
+			   switch(i.getLocation().getY()%2) {
+				   case 0:
+					   ix = i.getLocation().getX()*250;
+					   iy = i.getLocation().getY()*215; 
+					   break;
+				   case 1:
+					   ix = i.getLocation().getX()*250-125;
+					   iy = i.getLocation().getY()*215;
+					   break;
+			   }
+			  switch(i.getLocation().getOrientation()) {
+				   case 0:
+					   ix+=5;
+					   iy+=-135;
+					   break;
+				   case 1:
+					   ix+=130;
+					   iy+=-70;
+					   break;
+				   case 2:
+					   ix+=130;
+					   iy+=80;
+					   break;
+				   case 3:
+					   ix+=5;
+					   iy+=140;
+					   break;
+				   case 4:
+					   ix+=-120;
+					   iy+=80;
+					   break;
+				   case 5:
+					   ix+=-120;
+					   iy+=-70;
+					   break;
+				   default:
+					   throw new IllegalArgumentException();
+			   }
+			
+			     intersectionTextureMap.get(i.getBuildingType()).bind();
+			     GL11.glBegin(GL11.GL_POLYGON);
+			       //GL11.glColor4f(1.0f,1.0f,1.0f,1.0f); //transparenz
+			       GL11.glTexCoord2f(0,0);
+			       GL11.glVertex3i(-35+ix+x+minX, -35+iy+y+minY, 1+z);
+			       GL11.glTexCoord2f(1,0);
+			       GL11.glVertex3i(35+ix+x+minX, -35+iy+y+minY, 1+z);
+			       GL11.glTexCoord2f(1,1);
+			       GL11.glVertex3i(35+ix+x+minX, 35+iy+y+minY, 1+z);
+			       GL11.glTexCoord2f(0,1);
+			       GL11.glVertex3i(-35+ix+x+minX, 35+iy+y+minY, 1+z);
+			     GL11.glEnd();
+		}
+	}
+
+	private void renderPath(Path p) {
+		int ix = 0;
+		int iy = 0;
+		int io = 0;
+		if (p.hasStreet() || p.hasCatapult()) {
+			   switch(p.getLocation().getY()%2) {
+				   case 0:
+					   ix = p.getLocation().getX()*250;
+					   iy = p.getLocation().getY()*215; 
+					   break;
+				   case 1:
+					   ix = p.getLocation().getX()*250-125;
+					   iy = p.getLocation().getY()*215;
+					   break;
+			   }
+			  switch(p.getLocation().getOrientation()) {
+				   case 0:
+					   ix+=67;
+					   iy+=-102;
+					   break;
+				   case 1:
+					   ix+=130;
+					   iy+=5;
+					   break;
+				   case 2:
+					   ix+=135;
+					   iy+=110;
+					   break;
+				   case 3:
+					   ix+=-57;
+					   iy+=110;
+					   break;
+				   case 4:
+					   ix+=-120;
+					   iy+=5;
+					   break;
+				   case 5:
+					   ix+=-77;
+					   iy+=-102;
+					   break;
+				   default:
+					   throw new IllegalArgumentException();
+			   }
+		}
+		if (p.hasStreet()) {	
+		     streetTexture.bind();
+		     GL11.glBegin(GL11.GL_POLYGON);
+		       //GL11.glColor4f(1.0f,1.0f,1.0f,1.0f); //transparenz
+		       GL11.glTexCoord2f(0,0);
+		       GL11.glVertex3i(-70+ix+x+minX, -10+iy+y+minY, 1+z);
+		       GL11.glTexCoord2f(1,0);
+		       GL11.glVertex3i(70+ix+x+minX, -10+iy+y+minY, 1+z);
+		       GL11.glTexCoord2f(1,1);
+		       GL11.glVertex3i(70+ix+x+minX, 10+iy+y+minY, 1+z);
+		       GL11.glTexCoord2f(0,1);
+		       GL11.glVertex3i(-70+ix+x+minX, 10+iy+y+minY, 1+z);
+		     GL11.glEnd();
+		}
+		if (p.hasCatapult()) {	
+		     catapultTexture.bind();
+		     GL11.glBegin(GL11.GL_POLYGON);
+		       //GL11.glColor4f(1.0f,1.0f,1.0f,1.0f); //transparenz
+		       GL11.glTexCoord2f(0,0);
+		       GL11.glVertex3i(-35+ix+x+minX, -35+iy+y+minY, 1+z);
+		       GL11.glTexCoord2f(1,0);
+		       GL11.glVertex3i(35+ix+x+minX, -35+iy+y+minY, 1+z);
+		       GL11.glTexCoord2f(1,1);
+		       GL11.glVertex3i(35+ix+x+minX, 35+iy+y+minY, 1+z);
+		       GL11.glTexCoord2f(0,1);
+		       GL11.glVertex3i(-35+ix+x+minX, 35+iy+y+minY, 1+z);
+		     GL11.glEnd();
+		}
 	}
 	
 	private void renderMarks() {
@@ -227,14 +382,17 @@ public class GameGUI extends View implements Runnable{
 		   GL11.glRotatef(180, 1, 0, 0);
 		   GL11.glColor3f(1.0f, 1.0f, 1.0f);
 		   //Spielfeld
-		   Iterator<Field> iter = renderFieldList.iterator();
-		   while (iter.hasNext())
-				renderField(iter.next());
-		   renderIntersections();
-		   renderPaths();
+		   Iterator<Field> iterF = modelReader.getFieldIterator();
+		   while (iterF.hasNext())
+			   renderField(iterF.next());
+		   Iterator<Intersection> iterI = modelReader.getIntersectionIterator();
+		   while (iterI.hasNext()) 
+			   renderIntersection(iterI.next());
+		   Iterator<Path> iterP = modelReader.getPathIterator();
+		   while (iterP.hasNext()) 
+			   renderPath(iterP.next());
 		   //Markierungen
 		   renderMarks(); //TODO: implement markierungen
-		   
 		   //UI
 		   GL11.glPushMatrix();
 		   GL11.glTranslatef(xOffset, 0, 0);
@@ -243,7 +401,6 @@ public class GameGUI extends View implements Runnable{
 		   for (Clickable act : Clickable.getList())
 			   renderUI(act);
 		   GL11.glPopMatrix();
-		   
 		   //Draw Fonts on UI
 		   GL11.glPushMatrix();
 		   GL11.glTranslatef(xOffset+20, 400, -950);
@@ -258,22 +415,11 @@ public class GameGUI extends View implements Runnable{
 		   uiFont.drawString(1000, 84, ""+modelReader.getResources().getResource(Resource.WOOL), Color.black);
 		   uiFont.drawString(1000, 116, ""+modelReader.getResources().getResource(Resource.GRAIN), Color.black);
 		   uiFont.drawString(1000, 147, ""+modelReader.getResources().getResource(Resource.ORE), Color.black);
-		   uiFont.drawString(1000, 178, ""+modelReader.getSettlements(modelReader.getMe(), BuildingType.Village).size() + "/" + modelReader.getMaxBuilding(BuildingType.Village), Color.black);
-		   uiFont.drawString(1000, 209, ""+modelReader.getSettlements(modelReader.getMe(), BuildingType.Town).size() + "/" + modelReader.getMaxBuilding(BuildingType.Town), Color.black);
-		   uiFont.drawString(1000, 240, ""+modelReader.getCatapults(modelReader.getMe()).size()+ "/" + modelReader.getMaxVictoryPoints(), Color.black);
+		   uiFont.drawString(1000, 178, ""+ village, Color.black);
+		   uiFont.drawString(1000, 209, ""+ town + "/" + modelReader.getMaxBuilding(BuildingType.Town), Color.black);
+		   uiFont.drawString(1000, 240, ""+ catapult + "/" + modelReader.getMaxVictoryPoints(), Color.black);
 		   //Draw Fonts for Debugging
-
 		   GL11.glPopMatrix();
-	}
-
-	private void renderPaths() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void renderIntersections() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void drawTradeMenu() {
@@ -320,12 +466,19 @@ public class GameGUI extends View implements Runnable{
 
 	@Override
 	public void updateCatapultCount() {
-		throw new UnsupportedOperationException();
+		this.catapult = modelReader.getCatapults(modelReader.getMe()).size();
 	}
 
 	@Override
 	public void updateSettlementCount(BuildingType buildingType) {
-		throw new UnsupportedOperationException();
+		switch(buildingType) {
+		case Village:
+			this.village = modelReader.getSettlements(modelReader.getMe(), BuildingType.Village).size(); 
+			break;
+		case Town:
+			this.town = modelReader.getSettlements(modelReader.getMe(), BuildingType.Town).size();
+			break;
+		}
 	}
 
 	@Override
@@ -339,7 +492,7 @@ public class GameGUI extends View implements Runnable{
 	}
 
 	@Override
-	public void eventNewRound(boolean itsMyTurn) {
+	public void eventNewRound() {
 		throw new UnsupportedOperationException();
 	}
 
@@ -402,6 +555,10 @@ public class GameGUI extends View implements Runnable{
 			fieldTextureMap.put(FieldType.PASTURE, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Pasture.png")));
 			fieldTextureMap.put(FieldType.WATER, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Water.png")));
 			
+			intersectionTextureMap = new HashMap<BuildingType,Texture>();
+			intersectionTextureMap.put(BuildingType.Village, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Village.png")));
+			intersectionTextureMap.put(BuildingType.Town, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Town.png")));
+			
 			numberTextureMap = new HashMap<Integer,Texture>();
 			numberTextureMap.put(2, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/2.png")));
 			numberTextureMap.put(3, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/3.png")));
@@ -414,6 +571,10 @@ public class GameGUI extends View implements Runnable{
 			numberTextureMap.put(11, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/11.png")));
 			numberTextureMap.put(12, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/12.png")));
 		
+			streetTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Streets/Street.png"));
+			catapultTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Catapults/Catapult.png"));
+			
+			
 			uiTextureMap = new HashMap<String,Texture>();
 			uiTextureMap.put("Background", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Background.png")));
 			uiTextureMap.put("Res", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Res.png")));
@@ -631,12 +792,41 @@ public class GameGUI extends View implements Runnable{
 				return new long[] {};
 			}
 		};
-		Model model = new Model(WorldRepresentation.getDefault(), matchinfo, 0);
+		WorldRepresentation worldrep = new WorldRepresentation(1, 1, 2, 9, 5, 4,  
+				new byte[] {1},
+				new byte[] {1,4,
+							2,5,    
+							3,6},
+				new byte[] {});
+		Model model = new Model(/*worldrep*/WorldRepresentation.getDefault(), matchinfo, 0);
 		model.matchStart(new long[] {0,1}, new byte[]   {2,3,4,
 														 6,8,9,10,
 														 11,12,11,10,
 														 9,8,6,5,
 														 2,6,9});
+		//model.matchStart(new long[] {0,1}, new byte[]   {2});
+		/*model.buildSettlement(new Location(3,3,0), BuildingType.Village);
+		model.buildStreet(new Location(3,3,0));
+		
+		model.buildSettlement(new Location(3,3,2), BuildingType.Village);
+		model.buildStreet(new Location(3,3,2));
+		
+		model.buildSettlement(new Location(3,3,4), BuildingType.Village);
+		model.buildStreet(new Location(3,3,4));*/
+		
+		model.getIntersection(new Location(0,0,0)).createBuilding(BuildingType.Village, new Player());
+		model.getIntersection(new Location(0,0,1)).createBuilding(BuildingType.Town, new Player());
+		model.getIntersection(new Location(0,0,2)).createBuilding(BuildingType.Village, new Player());
+		model.getIntersection(new Location(0,0,3)).createBuilding(BuildingType.Town, new Player());
+		model.getIntersection(new Location(0,0,4)).createBuilding(BuildingType.Village, new Player());
+		model.getIntersection(new Location(0,0,5)).createBuilding(BuildingType.Town, new Player());
+		
+		model.getPath(new Location(0,0,0)).createStreet(new Player());
+		model.getPath(new Location(0,0,1)).createStreet(new Player());
+		model.getPath(new Location(0,0,2)).createStreet(new Player());
+		model.getPath(new Location(0,0,3)).createStreet(new Player());
+		model.getPath(new Location(0,0,4)).createStreet(new Player());
+		model.getPath(new Location(0,0,5)).createStreet(new Player());
 		
 		//Setting setting = new Setting(new DisplayMode(1920, 1080), true);
 		//Setting setting = new Setting(new DisplayMode(1280, 1024), true);

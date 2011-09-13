@@ -1,5 +1,7 @@
 package de.unisaarland.cs.sopra.common.model;
 
+import java.util.List;
+
 public class Player {
 
 	private ResourcePackage resources;
@@ -32,6 +34,4 @@ public class Player {
 	public int getVictoryPoints() {
 		return victoryPoints;
 	}
-	
-
 }

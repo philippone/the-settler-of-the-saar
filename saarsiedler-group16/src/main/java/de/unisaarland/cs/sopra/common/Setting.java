@@ -3,13 +3,15 @@ package de.unisaarland.cs.sopra.common;
 import org.lwjgl.opengl.DisplayMode;
 
 public class Setting {
-
+	
 	private DisplayMode mode;
 	private boolean fullscreen;
+	private PlayerColors playerColor;
 	
-	public Setting(DisplayMode mode, boolean fullscreen) {
+	public Setting(DisplayMode mode, boolean fullscreen, PlayerColors playerColor) {
 		this.mode = mode;
 		this.fullscreen = fullscreen;
+		this.setPlayerColor(playerColor);
 	}
 	
 	public boolean isFullscreen() {
@@ -21,6 +23,14 @@ public class Setting {
 
 	public DisplayMode getDisplayMode() {
 		return mode;
+	}
+
+	public void setPlayerColor(PlayerColors playerColor) {
+		this.playerColor = playerColor;
+	}
+
+	public PlayerColors getPlayerColor() {
+		return playerColor;
 	}
 	
 }

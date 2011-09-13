@@ -687,7 +687,7 @@ public class Model implements ModelReader, ModelWriter {
 		Intersection i;
 		while (ii.hasNext()) {
 			i = ii.next();
-			System.out.println("IOwner: "+ i.getOwner());
+			//System.out.println("IOwner: "+ i.getOwner());
 			if (i.getOwner() == player && i.getBuildingType() == buildingType)
 				si.add(i);
 		}
@@ -1075,7 +1075,7 @@ public class Model implements ModelReader, ModelWriter {
 			Collections.reverse(players);
 		this.round++;
 		for (ModelObserver ob : modelObserver) {
-			ob.eventNewRound(getCurrentPlayer() == me);
+			ob.eventNewRound();
 		}
 	}
 
@@ -1403,7 +1403,7 @@ public class Model implements ModelReader, ModelWriter {
 		path_source.removeCatapult();
 		path_dest.createCatapult(owner);
 
-		if (owner.checkResourcesSufficient(Catapult.getAttackcatapultprice()))
+		if (!(owner.checkResourcesSufficient(Catapult.getAttackcatapultprice())))
 			throw new IllegalStateException(
 					"not enough money on the bankaccount!");
 		owner.modifyResources(Catapult.getAttackcatapultprice());
@@ -1584,6 +1584,16 @@ public class Model implements ModelReader, ModelWriter {
 		if (!me.checkResourcesSufficient(robberPackage))
 			throw new IllegalStateException(
 					"Spieler kann nicht mehr Resourcen abgeben als es hat");
+		if (me.getResources().size() % 2 == 0) {
+			// ResourcePackage gerade
+			if (robberPackage.neagateResourcePackage().size() != (me.getResources().size())/2) 
+				throw new IllegalArgumentException();
+		}
+		// ungerade
+		else {
+			if (robberPackage.neagateResourcePackage().size() != (me.getResources().size()-1)/2) 
+				throw new IllegalArgumentException();
+		}
 		me.modifyResources(robberPackage);
 
 		for (ModelObserver ob : modelObserver) {
