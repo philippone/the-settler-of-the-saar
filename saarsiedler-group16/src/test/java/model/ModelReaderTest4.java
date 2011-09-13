@@ -372,7 +372,6 @@ public class ModelReaderTest4 {
 		//gibt den akt. Playern alle Resourcen um Komplikationen mit build zu vermeiden.
 		model2.getTableOrder().get(0).modifyResources(new ResourcePackage(333,333,333,333,333)); 
 		model2.getTableOrder().get(1).modifyResources(new ResourcePackage(333,333,333,333,333)); 
-		model2.getTableOrder().get(2).modifyResources(new ResourcePackage(333,333,333,333,333));   // Welt2 hat nur 2 Spieler hier tritt der Fehler auf  (Index out of Bounds: 2) TODO
 		//Init-round 
 			//first Player builds first Village
 		model2.buildSettlement(new Location(0,0,1) , BuildingType.Village);
@@ -380,12 +379,6 @@ public class ModelReaderTest4 {
 			//second Player builds first Village
 		model2.buildSettlement(new Location(0,0,5) , BuildingType.Village);
 		model2.buildStreet(new Location(0,0,5));
-			//third Player builds first Village 
-		model2.buildSettlement(new Location(3,1,0) , BuildingType.Village);
-		model2.buildStreet(new Location(3,1,0));	
-			//third Player builds second Village 
-		model2.buildSettlement(new Location(3,0,0) , BuildingType.Village);
-		model2.buildStreet(new Location(3,0,0));	
 			//second Player builds second Village
 		model2.buildSettlement(new Location(1,1,5) , BuildingType.Village);
 		model2.buildStreet(new Location(1,1,5));
@@ -396,14 +389,14 @@ public class ModelReaderTest4 {
 		
 		//new round -> first player builds
 		model2.newRound(12);
-		//Towns
+		//Towns (1.Player)
 		model2.buildSettlement(new Location(1,0,1) , BuildingType.Town);
 		
 		//new round -> second player builds
 		model2.newRound(12);
-		//Towns
+		//Towns (2.Player)
 		// Vorschlag: model2.buildSettlement(new Location(1,0,5, BuildingType.Village);
-		model2.buildSettlement(new Location(1,0,5) , BuildingType.Town);	// geht glaube ich nicht an dieser Location, da hie noch keine Village stand (Kommentar von Philipp) TODO
+		model2.buildSettlement(new Location(1,1,5) , BuildingType.Town);	// geht glaube ich nicht an dieser Location, da hie noch keine Village stand (Kommentar von Philipp) TODO
 		
 	}
 }
