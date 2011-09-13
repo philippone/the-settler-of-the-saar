@@ -395,17 +395,18 @@ public class Model implements ModelReader, ModelWriter {
 	}
 
 	/**
-	 * @return The List of Player sorted in TableOrder
-	 */
-	public List<Player> getTableOrder() {
-		return this.players;
-	}
-
-	/**
 	 * @return The Map containing the mapping of playerID -> Player
 	 */
 	public Map<Long, Player> getPlayerMap() {
 		return this.playerMap;
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getTableOrder()
+	 */
+	public List<Player> getTableOrder() {
+		return this.players;
 	}
 
 	/*
