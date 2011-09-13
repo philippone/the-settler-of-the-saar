@@ -166,10 +166,7 @@ public class Model implements ModelReader, ModelWriter {
 		roadList=continueAllRoads(roadList,player);
 		// we obtain all finished roads
 		
-		roadList=keepOnlyLongestRoads(roadList);
-		System.out.println(roadList.get(0));
-		System.out.println(roadList.get(1));
-		System.out.println(roadList.get(2));		
+		roadList=keepOnlyLongestRoads(roadList);	
 		return roadList;
 	}
 	
