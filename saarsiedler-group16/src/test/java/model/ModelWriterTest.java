@@ -236,57 +236,6 @@ public class ModelWriterTest {
 	@Test
 	// Tests catapult move
 	public void moveCatapultTrueTest() {
-		String[] list = new String[] {
-				"jinput-dx8_64.dll", "jinput-dx8.dll", "jinput-raw_64.dll",
-				"jinput-raw.dll", "libjinput-linux.so", "libjinput-linux64.so",
-				"libjinput-osx.jnilib", "liblwjgl.jnilib", "liblwjgl.so",
-				"liblwjgl64.so", "libopenal.so", "libopenal64.so",
-				"lwjgl.dll", "lwjgl64.dll", "openal.dylib", "OpenAL32.dll", "OpenAL64.dll" };
-		String tmpdir = System.getProperty("java.io.tmpdir");
-		for (String act : list) {
-			InputStream input = ClassLoader.getSystemClassLoader().getResourceAsStream("native/" + act);
-			try {
-				GameGUI.saveFile(tmpdir + "/" + act, input);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		String seperator;
-		if (System.getProperty("sun.desktop") != null && System.getProperty("sun.desktop").equals("windows")) seperator = ";";
-		else seperator = ":";
-		System.setProperty("java.library.path", System.getProperty("java.library.path") + seperator + tmpdir);
-		java.lang.reflect.Field vvv = null;
-		try {
-			vvv = ClassLoader.class.getDeclaredField("sys_paths");
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchFieldException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		vvv.setAccessible(true); 
-		try {
-			vvv.set(null, null);
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		Setting setting = new Setting(new DisplayMode(1024,590), true, PlayerColors.RED);
-		GameGUI gameGUI = null;
-		try {
-			gameGUI = new GameGUI(model, null, null, setting);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		new Thread(gameGUI).start();
-		
 		initialize();
 		model.buildSettlement(new Location(1,1,0), BuildingType.Town);
 		model.buildCatapult(new Location(1,1,0), true);
