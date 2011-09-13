@@ -167,7 +167,9 @@ public class Model implements ModelReader, ModelWriter {
 		// we obtain all finished roads
 		
 		roadList=keepOnlyLongestRoads(roadList);
+		System.out.println(roadList.get((int) Math.random()*roadList.size()));
 		System.out.println(roadList.size());
+		
 		return roadList;
 	}
 	
@@ -183,7 +185,7 @@ public class Model implements ModelReader, ModelWriter {
 		roadList1 =new ArrayList<List<Path>>();
 		roadList2 =new ArrayList<List<Path>>();
 		for (List<Path> road : roadList) {
-		// we check for all the roads
+		// we check for all the roads 
 		// if we cannot lengthen them
 			if (road!=null){
 				rList=continueRoad(road,player);
@@ -194,9 +196,12 @@ public class Model implements ModelReader, ModelWriter {
 					// since we have at least a new longer version
 					a=false;
 					for (List<Path> r : rList){
-						for (List<Path>r1 : roadList) a=a | r1.containsAll(r);
-						if (!a) roadList1.add(r); 	
-						// if we didn't have this one, then we add it
+						if (r!=null){
+							for (List<Path>r1 : roadList) a=a | r1.containsAll(r);
+							for (List<Path>r1 : roadList1) a=a | r1.containsAll(r);		
+							if (!a) roadList1.add(r); 	
+							// if we didn't have this one, then we add it
+						}
 					}
 				}
 			}
@@ -327,10 +332,6 @@ public class Model implements ModelReader, ModelWriter {
 			// meaning if this path is owned by player and not already in the
 			// road
 			// then we can continue the road while adding this path
-			// then we add that new road in the roadList if it wasn't already
-			// here
-			// the elder one'll be removed from the roadList since it has been
-			// continued
 			road.add(p);
 			return road;
 		}
