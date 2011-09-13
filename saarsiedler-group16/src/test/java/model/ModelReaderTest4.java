@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.TreeSet;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -54,8 +55,8 @@ public class ModelReaderTest4 {
 		model3.buildSettlement(new Location(3,0,0) , BuildingType.Village);
 		model3.buildStreet(new Location(3,0,0));	
 			//second Player builds second Village
-		model3.buildSettlement(new Location(1,1,5) , BuildingType.Village);
-		model3.buildStreet(new Location(1,1,5));
+		model3.buildSettlement(new Location(1,0,5) , BuildingType.Village);
+		model3.buildStreet(new Location(1,0,5));
 			//first Player builds second Village
 		model3.buildSettlement(new Location(1,0,1) , BuildingType.Village);
 		model3.buildStreet(new Location(1,0,1));
@@ -97,7 +98,7 @@ public class ModelReaderTest4 {
 		t1.add(model3.getPath(new Location(1,0,5)));
 		assertEquals(t1, model3.getCatapults(p1));
 		
-		assertEquals("Methode sollte null liefern, wenn der Player keine Catapulte hat", null, model3.getCatapults(p2));
+		assertEquals("Methode sollte leeres Set<Intersection> liefern, wenn der Player keine Catapulte hat", new TreeSet<Intersection>(), model3.getCatapults(p2));
 	
 	}
 	
