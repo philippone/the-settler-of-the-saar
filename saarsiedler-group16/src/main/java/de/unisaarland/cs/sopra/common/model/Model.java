@@ -145,10 +145,6 @@ public class Model implements ModelReader, ModelWriter {
 		}
 	}
 
-	/**
-	 * @param player
-	 * @return List<List<Path>>
-	 */
 	public List<List<Path>> calculateLongestRoads(Player player) {
 		if (player == null)
 			throw new IllegalArgumentException();
