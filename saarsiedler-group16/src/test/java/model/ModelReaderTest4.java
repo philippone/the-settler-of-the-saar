@@ -3,6 +3,7 @@ package model;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -11,7 +12,11 @@ import java.util.TreeSet;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
 
+import de.unisaarland.cs.sopra.common.PlayerColors;
+import de.unisaarland.cs.sopra.common.Setting;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.HarborType;
@@ -22,6 +27,7 @@ import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Point;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
+import de.unisaarland.cs.sopra.common.view.GameGUI;
 
 public class ModelReaderTest4 {
 	private Model model1;
@@ -318,7 +324,7 @@ public class ModelReaderTest4 {
 	public void testGetStreets() {
 		setUp2();
 		//Player 2 noch 1 strasse dazu
-		model2.buildStreet(new Location(1,1,4));
+		model2.buildStreet(new Location(1,0,4));
 		
 		//Attribut-Player erstellen
 		Player p0 = model2.getTableOrder().get(0);
@@ -373,7 +379,7 @@ public class ModelReaderTest4 {
 		model3.getTableOrder().get(1).modifyResources(new ResourcePackage(333,333,333,333,333)); 
 		model3.getTableOrder().get(2).modifyResources(new ResourcePackage(333,333,333,333,333)); 
 		//Init-round 
-			//first Player builds first Village
+			//first Player builds first Village 
 		model3.buildSettlement(new Location(0,0,1) , BuildingType.Village);
 		model3.buildStreet(new Location(0,0,1));
 			//second Player builds first Village
@@ -381,10 +387,10 @@ public class ModelReaderTest4 {
 		model3.buildStreet(new Location(0,0,5));
 			//third Player builds first Village 
 		model3.buildSettlement(new Location(3,1,0) , BuildingType.Village);
-		model3.buildStreet(new Location(3,1,0));	
+		model3.buildStreet(new Location(3,1,0));
 			//third Player builds second Village 
 		model3.buildSettlement(new Location(3,0,0) , BuildingType.Village);
-		model3.buildStreet(new Location(3,0,0));	
+		model3.buildStreet(new Location(3,0,0));
 			//second Player builds second Village
 		model3.buildSettlement(new Location(1,0,5) , BuildingType.Village);
 		model3.buildStreet(new Location(1,0,5));

@@ -16,5 +16,6 @@ public interface ModelObserver {
 	public void eventRobber();
 	public void eventTrade(ResourcePackage resourcePackage);
 	public void eventNewRound();
+	public void initTurn();
 	
 }

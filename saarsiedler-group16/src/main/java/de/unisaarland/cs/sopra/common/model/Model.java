@@ -34,7 +34,7 @@ public class Model implements ModelReader, ModelWriter {
 	private long meID;
 	private Player me;
 	private int initPlayer = 0;						//akt player in der initPhase
-	private Intersection initVillageIntersection;	//fuer initPhase zur berechnung der erlaubeten street(welche dann den current player durchwechselt)
+	private Intersection initLastVillageIntersection;	//fuer initPhase zur berechnung der erlaubeten street(welche dann den current player durchwechselt)
 
 	/**
 	 * @param worldRepresentation
@@ -141,8 +141,7 @@ public class Model implements ModelReader, ModelWriter {
 		if (getRound() == 0) {
 			return players.get(initPlayer);
 		} else {
-			return this.players.get((this.round + this.players.size() - 1)
-					% this.players.size());
+			return this.players.get((this.round - 1) % this.players.size());
 		}
 	}
 
@@ -431,15 +430,18 @@ public class Model implements ModelReader, ModelWriter {
 	public void updateLongestRoad(Intersection intersection) {
 		if (intersection == null)
 			throw new IllegalArgumentException();
-		List<Path> tmp = new LinkedList<Path>();
-		for (Path act : this.longestClaimedRoad) {
-			if (board.getIntersectionsFromPath(act).contains(intersection)) {
+		
+		if (this.longestClaimedRoad != null) {
+			List<Path> tmp = new LinkedList<Path>();
+			for (Path act : this.longestClaimedRoad) {
+				if (board.getIntersectionsFromPath(act).contains(intersection)) {
+					tmp.add(act);
+					this.longestClaimedRoad.removeAll(tmp);
+					this.longestClaimedRoad = tmp.size() < this.longestClaimedRoad
+							.size() ? tmp : this.longestClaimedRoad;
+				}
 				tmp.add(act);
-				this.longestClaimedRoad.removeAll(tmp);
-				this.longestClaimedRoad = tmp.size() < this.longestClaimedRoad
-						.size() ? tmp : this.longestClaimedRoad;
 			}
-			tmp.add(act);
 		}
 	}
 
@@ -521,11 +523,12 @@ public class Model implements ModelReader, ModelWriter {
 		// TODO initialPahse geht evtl IMMER noch nicht ebenso in buildings
 		Set<Path> res = new HashSet<Path>();
 		
-		if(getRound()==0){
+		if (false) {
+		/*if(getRound()==0){
 			for(Path noStreet :getPathsFromIntersection(initVillageIntersection)){
 				if(!noStreet.hasStreet())
-					res.add(noStreet);
-			}
+					res.add(noStreet);*/ //TODO evtl nochmal aktivieren. kp wofür
+			//}
 		}else{
 			Iterator<Path> it = getPathIterator();
 			while (it.hasNext()) {
@@ -1272,6 +1275,9 @@ public class Model implements ModelReader, ModelWriter {
 	@Override
 	public void buildStreet(Location destination) {
 		if (destination == null)	throw new IllegalArgumentException(destination + " is null");
+		//TODO: path nur an village oder town!
+		
+		//TODO: evtl darf path in der initialisierungsphase nur an der letzten gebauten intersection gebaut werden für den fall auf angrenzen der "initLastVillageIntersection" prüfen
 		Path dest = getPath(destination);
 		if (dest.hasStreet())	throw new IllegalArgumentException(	"Strasse bereits vorhanden und gehört: "+ dest.getStreetOwner() + " und nicht: "+ getCurrentPlayer());
 		if (getRound() != 0) {
@@ -1290,7 +1296,7 @@ public class Model implements ModelReader, ModelWriter {
 			for (Field f : fieldSet) {
 				if ((f.getFieldType() != FieldType.WATER)) {
 					hasLand = true;
-				}
+				} 
 			}
 			if (!hasLand)
 				throw new IllegalStateException(
@@ -1301,14 +1307,19 @@ public class Model implements ModelReader, ModelWriter {
 			ob.updateResources();
 			ob.updatePath(dest);
 		}
-		if (initPlayer == players.size() - 1) {
-			initPlayer = -1;
-
-			java.util.Collections.reverse(players);
-			reversedPlayersList = !reversedPlayersList;
+		if (round == 0) {
+			if (initPlayer == players.size() - 1) {
+				initPlayer = -1;
+	
+				java.util.Collections.reverse(players);
+				reversedPlayersList = !reversedPlayersList;
+			}
+			initPlayer++; 
+			for (ModelObserver act : modelObserver) {
+				if (getCurrentPlayer() == getMe())
+					act.initTurn();
+			}
 		}
-		initPlayer++;
-		initVillageIntersection=null;
 	}
 
 	/*
@@ -1320,24 +1331,22 @@ public class Model implements ModelReader, ModelWriter {
 	 */
 	@Override
 	public void buildSettlement(Location location, BuildingType buildingType) {
+		//TODO: evtl "initLastVillageIntersection" setzen befalls man nur an die letzte village nen path bauen darf
 		if (location == null)
 			throw new IllegalArgumentException(location + " is null");
 		// System.out.println("l: " + location);
 		Intersection i = getIntersection(location);
 		// System.out.println("In: " + i);
 		if (getRound() == 0) {
-			if(initVillageIntersection!=null)throw new IllegalStateException("in runde 0 darf kein Village direkt nach einem Village gebaut werden");
-			if(buildableVillageIntersections(getCurrentPlayer()).contains(i)){ // wenn i buildable, do it
-			i.createBuilding(buildingType, getCurrentPlayer());
-			getCurrentPlayer().setVictoryPoints(getCurrentPlayer().getVictoryPoints() + 1);
-					
-			for (ModelObserver ob : modelObserver) {
-				ob.updateSettlementCount(buildingType);
-				ob.updateVictoryPoints();
-				ob.updateIntersection(i);
-			}
-			initVillageIntersection=i; // setzt letzte Intersection auf der wahrend init gebaut wurde
-			}else
+			if(buildableVillageIntersections(getCurrentPlayer()).contains(i)) { // wenn i buildable, do it
+				i.createBuilding(buildingType, getCurrentPlayer());
+				getCurrentPlayer().setVictoryPoints(getCurrentPlayer().getVictoryPoints() + 1);	
+				for (ModelObserver ob : modelObserver) {
+					ob.updateSettlementCount(buildingType);
+					ob.updateVictoryPoints();
+					ob.updateIntersection(i);
+				}
+			} else
 			throw new IllegalStateException("geb wurde nicht gebaut, da i nicht in buildableIn...");
 		} else {
 			if (isBuildable(i, buildingType) && (isAffordable(buildingType))) {
@@ -1350,6 +1359,7 @@ public class Model implements ModelReader, ModelWriter {
 					ob.updateVictoryPoints();
 					ob.updateIntersection(i);
 				}
+				updateLongestRoad(i); //TODO: evtl auch in initialisierungsphase
 			} else
 				throw new IllegalArgumentException(
 						String.format(
@@ -1401,8 +1411,9 @@ public class Model implements ModelReader, ModelWriter {
 	@Override
 	public void longestRoadClaimed(List<Location> road)
 			throws IllegalStateException {
+		//funktion evtl fehlerhaft!
 		// TODO (Philipp)
-		if (road.size() >= 5) {
+		if (road.size() >= 5 && ( (longestClaimedRoad != null && road.size() > longestClaimedRoad.size()) || (longestClaimedRoad == null) ) ) {
 			List<Path> lr = new LinkedList<Path>();
 			boolean rightPlayer = false;
 			int i = 1;
@@ -1413,6 +1424,17 @@ public class Model implements ModelReader, ModelWriter {
 					if (i < road.size() - 1) {
 						i++;
 					}
+					else {
+						Path tmp = getPath(road.get(i));
+						if (tmp.getStreetOwner().equals(getCurrentPlayer())) {
+							rightPlayer = true;
+						} else {
+							rightPlayer = false;
+							break;
+						}
+						lr.add(tmp);
+						break;
+					}
 					lr.add(p);
 					if (p.getStreetOwner().equals(getCurrentPlayer())) {
 						rightPlayer = true;
@@ -1421,6 +1443,7 @@ public class Model implements ModelReader, ModelWriter {
 						break;
 					}
 				}
+				else throw new IllegalArgumentException("Road is properly join"); 
 			}
 			if (rightPlayer) {
 				this.longestClaimedRoad = lr;
@@ -1428,9 +1451,8 @@ public class Model implements ModelReader, ModelWriter {
 				throw new IllegalArgumentException("not the right Player");
 
 		} else {
-			throw new IllegalArgumentException("Roadsize <5");
+			throw new IllegalArgumentException("Roadsize <5 or not longer then longestClaimedRoad");
 		}
-		// throw new UnsupportedOperationException();
 	}
 
 	/*
@@ -1446,7 +1468,9 @@ public class Model implements ModelReader, ModelWriter {
 					+ " are null");
 		setTableOrder(players);
 		setFieldNumbers(numbers);
-		// TODO evtl noch mehr zu tun als das
+		for (ModelObserver act : modelObserver) {
+			if (getCurrentPlayer() == getMe()) act.initTurn();
+		}
 	}
 
 	/*
@@ -1480,8 +1504,16 @@ public class Model implements ModelReader, ModelWriter {
 			throw new IllegalStateException(
 					"Catapult kann nicht durch feindliche Siedlungen hindurch");
 		}
-		path_source.removeCatapult();
-		path_dest.createCatapult(owner);
+		
+		if (fightOutCome) {
+			path_source.removeCatapult();
+			path_dest.createCatapult(owner);
+		}
+		else {
+			if (!path_dest.hasCatapult())
+				throw new IllegalArgumentException("No Catapult on Dest_Path");
+			path_source.removeCatapult();
+		}
 
 		if (!(owner.checkResourcesSufficient(Catapult.getAttackcatapultprice())))
 			throw new IllegalStateException(

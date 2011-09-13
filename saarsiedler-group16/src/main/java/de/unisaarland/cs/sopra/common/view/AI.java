@@ -93,5 +93,11 @@ public class AI extends View{
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void initTurn() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

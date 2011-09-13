@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -91,7 +92,7 @@ public class GameGUI extends View implements Runnable{
 	
 	private Map<Player,PlayerColors> colorMap;
 	
-	GameGUI(ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player,String> playerNames, Setting setting) throws Exception {
+	public GameGUI(ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player,String> playerNames, Setting setting) throws Exception {
 		super(modelReader, controllerAdapter);
 		this.setting = setting;
 		this.playerNames = playerNames;
@@ -555,6 +556,7 @@ public class GameGUI extends View implements Runnable{
 			Display.setFullscreen(setting.isFullscreen());
 			Display.create();
 			
+			//TODO zeit messen
 			fieldTextureMap = new HashMap<FieldType,Texture>();
 			fieldTextureMap.put(FieldType.MOUNTAINS, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Mountains.png")));
 			fieldTextureMap.put(FieldType.DESERT, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Desert.png")));
@@ -720,40 +722,21 @@ public class GameGUI extends View implements Runnable{
 	public static void main(String[] args) throws Exception {		
 				
 		String[] list = new String[] {
-				"jinput-dx8_64.dll",
-				"jinput-dx8.dll",
-				"jinput-raw_64.dll",
-				"jinput-raw.dll",
-				"libjinput-linux.so",
-				"libjinput-linux64.so",
-				"libjinput-osx.jnilib",
-				"liblwjgl.jnilib",
-				"liblwjgl.so",
-				"liblwjgl64.so",
-				"libopenal.so",
-				"libopenal64.so",
-				"lwjgl.dll",
-				"lwjgl64.dll",
-				"openal.dylib",
-				"OpenAL32.dll",
-				"OpenAL64.dll"
-		};
+				"jinput-dx8_64.dll", "jinput-dx8.dll", "jinput-raw_64.dll",
+				"jinput-raw.dll", "libjinput-linux.so", "libjinput-linux64.so",
+				"libjinput-osx.jnilib", "liblwjgl.jnilib", "liblwjgl.so",
+				"liblwjgl64.so", "libopenal.so", "libopenal64.so",
+				"lwjgl.dll", "lwjgl64.dll", "openal.dylib", "OpenAL32.dll", "OpenAL64.dll" };
 		String tmpdir = System.getProperty("java.io.tmpdir");
-		
 		for (String act : list) {
 			InputStream input = ClassLoader.getSystemClassLoader().getResourceAsStream("native/" + act);
 			saveFile(tmpdir + "/" + act, input);
 		}
-		
 		String seperator;
 		if (System.getProperty("sun.desktop") != null && System.getProperty("sun.desktop").equals("windows")) seperator = ";";
 		else seperator = ":";
-		
 		System.setProperty("java.library.path", System.getProperty("java.library.path") + seperator + tmpdir);
-
-		
 		java.lang.reflect.Field vvv = ClassLoader.class.getDeclaredField("sys_paths");
-		
 		vvv.setAccessible(true); 
 		vvv.set(null, null);
 		
@@ -836,7 +819,7 @@ public class GameGUI extends View implements Runnable{
 		new Thread(gameGUI).start();
 	}
 	
-	private static void saveFile(String filename, InputStream inputStr) throws IOException {
+	public static void saveFile(String filename, InputStream inputStr) throws IOException {
 		   FileOutputStream fos = new FileOutputStream(filename);
 		   int len = -1;
 		   byte[] buffer = new byte[1024];
@@ -845,5 +828,65 @@ public class GameGUI extends View implements Runnable{
 		   }
 		   fos.close();
 		}
+
+	@Override
+	public void initTurn() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	/*
+	 		String[] list = new String[] {
+				"jinput-dx8_64.dll", "jinput-dx8.dll", "jinput-raw_64.dll",
+				"jinput-raw.dll", "libjinput-linux.so", "libjinput-linux64.so",
+				"libjinput-osx.jnilib", "liblwjgl.jnilib", "liblwjgl.so",
+				"liblwjgl64.so", "libopenal.so", "libopenal64.so",
+				"lwjgl.dll", "lwjgl64.dll", "openal.dylib", "OpenAL32.dll", "OpenAL64.dll" };
+		String tmpdir = System.getProperty("java.io.tmpdir");
+		for (String act : list) {
+			InputStream input = ClassLoader.getSystemClassLoader().getResourceAsStream("native/" + act);
+			try {
+				GameGUI.saveFile(tmpdir + "/" + act, input);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		String seperator;
+		if (System.getProperty("sun.desktop") != null && System.getProperty("sun.desktop").equals("windows")) seperator = ";";
+		else seperator = ":";
+		System.setProperty("java.library.path", System.getProperty("java.library.path") + seperator + tmpdir);
+		java.lang.reflect.Field vvv = null;
+		try {
+			vvv = ClassLoader.class.getDeclaredField("sys_paths");
+		} catch (SecurityException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (NoSuchFieldException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		vvv.setAccessible(true); 
+		try {
+			vvv.set(null, null);
+		} catch (IllegalArgumentException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		Setting setting = new Setting(new DisplayMode(1024,580), true, PlayerColors.RED);
+		GameGUI gameGUI = null;
+		try {
+			gameGUI = new GameGUI(model, null, null, setting);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		new Thread(gameGUI).start();
+		*/
 	
 }

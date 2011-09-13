@@ -6,17 +6,22 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.lwjgl.opengl.DisplayMode;
 
+import de.unisaarland.cs.sopra.common.PlayerColors;
+import de.unisaarland.cs.sopra.common.Setting;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
+import de.unisaarland.cs.sopra.common.view.GameGUI;
 import de.unisaarland.cs.st.saarsiedler.comm.results.AttackResult;
 
 public class ModelWriterTest {	
@@ -65,9 +70,9 @@ public class ModelWriterTest {
 		model.buildSettlement(new Location(1,2,2), BuildingType.Village);
 		model.buildStreet(new Location(1,2,2));
 		assertTrue(model.getIntersection(new Location(1,2,2)).hasOwner());
-		assertTrue("Village-Owner stimmt nicht ueberein",model.getIntersection(new Location(1,2,2)).getOwner().equals(model.getTableOrder().get(1)));
+		assertTrue("Village-Owner stimmt nicht ueberein",model.getIntersection(new Location(1,2,2)).getOwner().equals(model.getTableOrder().get(0)));  //0 da reihenfolge gedreht
 		assertTrue(model.getPath(new Location(1,2,2)).hasStreet());
-		assertTrue(model.getPath(new Location(1,2,2)).getStreetOwner().equals(model.getTableOrder().get(1)));
+		assertTrue(model.getPath(new Location(1,2,2)).getStreetOwner().equals(model.getTableOrder().get(0)));
 	}
 	
 	@Test
@@ -231,9 +236,60 @@ public class ModelWriterTest {
 	@Test
 	// Tests catapult move
 	public void moveCatapultTrueTest() {
+		String[] list = new String[] {
+				"jinput-dx8_64.dll", "jinput-dx8.dll", "jinput-raw_64.dll",
+				"jinput-raw.dll", "libjinput-linux.so", "libjinput-linux64.so",
+				"libjinput-osx.jnilib", "liblwjgl.jnilib", "liblwjgl.so",
+				"liblwjgl64.so", "libopenal.so", "libopenal64.so",
+				"lwjgl.dll", "lwjgl64.dll", "openal.dylib", "OpenAL32.dll", "OpenAL64.dll" };
+		String tmpdir = System.getProperty("java.io.tmpdir");
+		for (String act : list) {
+			InputStream input = ClassLoader.getSystemClassLoader().getResourceAsStream("native/" + act);
+			try {
+				GameGUI.saveFile(tmpdir + "/" + act, input);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		String seperator;
+		if (System.getProperty("sun.desktop") != null && System.getProperty("sun.desktop").equals("windows")) seperator = ";";
+		else seperator = ":";
+		System.setProperty("java.library.path", System.getProperty("java.library.path") + seperator + tmpdir);
+		java.lang.reflect.Field vvv = null;
+		try {
+			vvv = ClassLoader.class.getDeclaredField("sys_paths");
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchFieldException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		vvv.setAccessible(true); 
+		try {
+			vvv.set(null, null);
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Setting setting = new Setting(new DisplayMode(1024,590), true, PlayerColors.RED);
+		GameGUI gameGUI = null;
+		try {
+			gameGUI = new GameGUI(model, null, null, setting);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		new Thread(gameGUI).start();
+		
 		initialize();
-		model.buildSettlement(new Location(1,1,1), BuildingType.Town);
-		model.buildCatapult(new Location(1, 1, 0), true);
+		model.buildSettlement(new Location(1,1,0), BuildingType.Town);
+		model.buildCatapult(new Location(1,1,0), true);
 		model.catapultMoved(new Location(1,1,0), new Location(1,1,1), true);
 		assertTrue(model.getPath(new Location(1,1,1)).hasCatapult());
 		assertTrue(model.getPath(new Location(1,1,1)).getCatapultOwner().equals(model.getCurrentPlayer()));
@@ -244,7 +300,7 @@ public class ModelWriterTest {
 	//move catapult: fightoutcome false
 	public void moveCatapultFalseTest() {
 		initialize();
-		model.buildSettlement(new Location(1,1,1), BuildingType.Town);
+		model.buildSettlement(new Location(1,1,0), BuildingType.Town);
 		model.buildCatapult(new Location(1, 1, 0), true);
 		model.getPath(new Location(1,1,1)).createCatapult(model.getTableOrder().get(1));
 		model.catapultMoved(new Location(1,1,0), new Location(1,1,1), false);
@@ -281,14 +337,15 @@ public class ModelWriterTest {
 	// Tests not enouth money to attack
 	public void attackSettlementTest() {
 		initialize();
+
 		model.newRound(2);
-		model.buildSettlement(new Location(2,2,2), BuildingType.Town);
+		model.buildSettlement(new Location(2,1,3), BuildingType.Town);
 		model.newRound(12);
 		
-		model.getPath(new Location(2,2,1)).createCatapult(model.getCurrentPlayer());
+		model.getPath(new Location(2,1,2)).createCatapult(model.getCurrentPlayer());
 		model.getCurrentPlayer().modifyResources(new ResourcePackage(-1000,-1000,-1000,-1000,-1000));
 		try {
-			model.attackSettlement(new Location(2, 1, 1), new Location(2, 2, 2), AttackResult.SUCCESS);
+			model.attackSettlement(new Location(2, 1, 2), new Location(2, 1, 3), AttackResult.SUCCESS);
 			fail("You shouldn't have enough money to attack the settlement!");
 		}
 		catch (Exception e) { /* everything is fine */ }
@@ -390,7 +447,7 @@ public class ModelWriterTest {
 			model.buildSettlement(new Location(1, 1, 3), BuildingType.Town);
 			fail("You shouldn't be able to upgrade your town! (No village at this intersection)");
 		}
-		catch (IllegalStateException e){
+		catch (IllegalArgumentException e){
 			// everything is fine
 		}
 	}

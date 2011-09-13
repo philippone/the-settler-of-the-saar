@@ -22,6 +22,7 @@ public class TestModelObserver implements ModelObserver {
 	public BuildingType updateSettlementCountCalled;
 	public boolean updateTradePossibilities;
 	public boolean eventPlayerLeftCalled;
+	private boolean initTurn;
 	
 		@Override
 		public void updatePath(Path path) {
@@ -81,6 +82,11 @@ public class TestModelObserver implements ModelObserver {
 		@Override
 		public void eventPlayerLeft(long playerID) {
 			this.eventPlayerLeftCalled = true;
+		}
+
+		@Override
+		public void initTurn() {
+			this.initTurn = true;
 		}
 
 	
