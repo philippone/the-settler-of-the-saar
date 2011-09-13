@@ -1328,14 +1328,21 @@ public class Model implements ModelReader, ModelWriter {
 		if (road.size() >= 5) {
 			List<Path> lr = new LinkedList<Path>();
 			boolean rightPlayer = false;
+			int i = 1;
 			for(Location l : road) {
 				Path p = getPath(l);
-				lr.add(p);
-				if (p.getStreetOwner().equals(getCurrentPlayer())) {
-					rightPlayer = true;
-				} else {
-					rightPlayer = false; 
-					break;
+				Set<Path> s = getPathsFromPath(p);
+				if (s.contains(getPath(road.get(i)))) {
+					if (i <= road.size()) {
+						i++;
+					}
+					lr.add(p);
+					if (p.getStreetOwner().equals(getCurrentPlayer())) {
+						rightPlayer = true;
+					} else {
+						rightPlayer = false; 
+						break;
+					}
 				}
 			}
 			if (rightPlayer) {
@@ -1436,15 +1443,15 @@ public class Model implements ModelReader, ModelWriter {
 			long victimPlayer, Resource stolenResource) {
 		// TODO (Philipp)
 		// Wenn Wasser drumherum
-		boolean water = false;
+		boolean hasLand = false;
 		for(Field f : getFieldsFromField(getField(destinationField))) {
-			if (f.getFieldType() == FieldType.WATER)
-				water = true;
-			else 
-				water = false;
-				break;
+			if (f.getFieldType() != FieldType.WATER){
+				hasLand = true;
+			}
 		}
-		if (water == false) {
+		if (!hasLand)
+			throw new IllegalArgumentException("Can not put a robber on water");
+		else {		
 			getField(sourceField).setRobber(false);
 			getField(destinationField).setRobber(true);
 			playerMap.get(victimPlayer).getResources().modifyResource(stolenResource, -1);
