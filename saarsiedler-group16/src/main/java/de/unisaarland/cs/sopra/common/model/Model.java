@@ -33,7 +33,8 @@ public class Model implements ModelReader, ModelWriter {
 	private boolean reversedPlayersList;
 	private long meID;
 	private Player me;
-	private int initPlayer = 0;
+	private int initPlayer = 0;						//akt player in der initPhase
+	private Intersection initVillageIntersection;	//fuer initPhase zur berechnung der erlaubeten street(welche dann den current player durchwechselt)
 
 	/**
 	 * @param worldRepresentation
@@ -137,11 +138,11 @@ public class Model implements ModelReader, ModelWriter {
 	 * @return current Player
 	 */
 	public Player getCurrentPlayer() {
-		if(getRound()==0){
+		if (getRound() == 0) {
 			return players.get(initPlayer);
-		}else{
+		} else {
 			return this.players.get((this.round + this.players.size() - 1)
-				% this.players.size());
+					% this.players.size());
 		}
 	}
 
@@ -154,7 +155,7 @@ public class Model implements ModelReader, ModelWriter {
 			throw new IllegalArgumentException();
 		Set<Path> pathList = getStreets(player);
 		// all Paths that player owns
-		List<List<Path>> roadList =new ArrayList<List<Path>>();
+		List<List<Path>> roadList = new ArrayList<List<Path>>();
 		// all roads known (none)
 		for (Path p : pathList) {
 			List<Path> road = new ArrayList<Path>();
@@ -162,15 +163,16 @@ public class Model implements ModelReader, ModelWriter {
 			roadList.add(road);
 		}
 		// all roads contain only one path
-		
-		roadList=continueAllRoads(roadList,player);
+
+		roadList = continueAllRoads(roadList, player);
 		// we obtain all finished roads
-		
-		roadList=keepOnlyLongestRoads(roadList);	
+
+		roadList = keepOnlyLongestRoads(roadList);
 		return roadList;
 	}
-	
-	private List<List<Path>> continueAllRoads(List<List<Path>> roadList,Player player){
+
+	private List<List<Path>> continueAllRoads(List<List<Path>> roadList,
+			Player player) {
 		List<List<Path>> rList;
 		// the roads we'll obtain while lengthening one
 		List<List<Path>> roadList1;
@@ -178,32 +180,36 @@ public class Model implements ModelReader, ModelWriter {
 		List<List<Path>> roadList2;
 		// the roads we'll remove from the roadList (not finished roads)
 		boolean a;
-		roadList1 =new ArrayList<List<Path>>();
-		roadList2 =new ArrayList<List<Path>>();
+		roadList1 = new ArrayList<List<Path>>();
+		roadList2 = new ArrayList<List<Path>>();
 		for (List<Path> road : roadList) {
-		// we check for all the roads 
-		// if we cannot lengthen them
-			if (road!=null){
-				rList=continueRoad(road,player);
+			// we check for all the roads
+			// if we cannot lengthen them
+			if (road != null) {
+				rList = continueRoad(road, player);
 				// returning all lengthened roads starting from this road
-				if (!rList.isEmpty()){
+				if (!rList.isEmpty()) {
 					roadList2.add(road);
 					// we'll remove this road
 					// since we have at least a new longer version
-					a=false;
-					for (List<Path> r : rList){
-						if (r!=null){
-							for (List<Path>r1 : roadList) a=a | r1.containsAll(r);
-							for (List<Path>r1 : roadList1) a=a | r1.containsAll(r);		
-							if (!a) roadList1.add(r); 	
+					a = false;
+					for (List<Path> r : rList) {
+						if (r != null) {
+							for (List<Path> r1 : roadList)
+								a = a | r1.containsAll(r);
+							for (List<Path> r1 : roadList1)
+								a = a | r1.containsAll(r);
+							if (!a)
+								roadList1.add(r);
 							// if we didn't have this one, then we add it
 						}
 					}
 				}
 			}
 		}
-			
-		if (!roadList1.isEmpty()) roadList1=continueAllRoads(roadList1,player);
+
+		if (!roadList1.isEmpty())
+			roadList1 = continueAllRoads(roadList1, player);
 		// if we haven't found any new longer road, we stop
 		// else we must see if the new ones cannot be lengthened too
 		roadList.addAll(roadList1);
@@ -211,19 +217,21 @@ public class Model implements ModelReader, ModelWriter {
 		// we update the roadList
 		// removing short roads that have been lengthened
 		// adding longer versions of these roads
-		
+
 		return roadList;
 	}
-	
-	private List<List<Path>> keepOnlyLongestRoads(List<List<Path>> roadList){
-		List<List<Path>> roadList1=new ArrayList<List<Path>>();
+
+	private List<List<Path>> keepOnlyLongestRoads(List<List<Path>> roadList) {
+		List<List<Path>> roadList1 = new ArrayList<List<Path>>();
 		int maxsize = 5;
 		for (List<Path> road1 : roadList) {
-			if (road1!=null) maxsize = Math.max(maxsize, road1.size());
+			if (road1 != null)
+				maxsize = Math.max(maxsize, road1.size());
 			// what's the maximum size of the roads
 		}
 		for (List<Path> road2 : roadList) {
-			if (road2!=null && road2.size() >= maxsize) roadList1.add(road2);
+			if (road2 != null && road2.size() >= maxsize)
+				roadList1.add(road2);
 			// we take only the longest road(s)and we return these
 		}
 		return roadList1;
@@ -235,11 +243,12 @@ public class Model implements ModelReader, ModelWriter {
 	 * @return
 	 */
 	private List<List<Path>> continueRoad(List<Path> road, Player player) {
-		List<List<Path>>rList=new ArrayList<List<Path>>();
-		List<Intersection>roadExtremities=searchRoadExtremities(road, player);
+		List<List<Path>> rList = new ArrayList<List<Path>>();
+		List<Intersection> roadExtremities = searchRoadExtremities(road, player);
 		// returning the intersections trough what we can continue the road
 		for (Intersection i : roadExtremities) {
-			if (i!=null) rList.addAll(continueRoadThroughIntersection(i,player,road));
+			if (i != null)
+				rList.addAll(continueRoadThroughIntersection(i, player, road));
 		}
 		return rList;
 		// returning all lengthened roads
@@ -251,12 +260,14 @@ public class Model implements ModelReader, ModelWriter {
 	 * @param roadList
 	 * @return
 	 */
-	private List<Intersection> searchRoadExtremities(List<Path> road, Player player) {
-		List<Intersection>si=new ArrayList<Intersection>();
-		for (Path p : road){
+	private List<Intersection> searchRoadExtremities(List<Path> road,
+			Player player) {
+		List<Intersection> si = new ArrayList<Intersection>();
+		for (Path p : road) {
 			Set<Intersection> si1 = getIntersectionsFromPath(p);
 			for (Intersection i : si1) {
-				if (i!=null && isExtremityOfRoad(i, road) && ((i.getOwner() == player) | !(i.hasOwner())))
+				if (i != null && isExtremityOfRoad(i, road)
+						&& ((i.getOwner() == player) | !(i.hasOwner())))
 					si.add(i);
 			}
 			// meaning we can continue a road through an intersection and the
@@ -274,15 +285,16 @@ public class Model implements ModelReader, ModelWriter {
 	 * @param roadList
 	 * @return
 	 */
-	private List<List<Path>> continueRoadThroughIntersection(Intersection i,Player player,
-			List<Path> road) {
+	private List<List<Path>> continueRoadThroughIntersection(Intersection i,
+			Player player, List<Path> road) {
 		Set<Path> sp = getPathsFromIntersection(i);
-		List<List<Path>>rList=new ArrayList<List<Path>>();
+		List<List<Path>> rList = new ArrayList<List<Path>>();
 		for (Path p1 : sp) {
 			// we create a new road1 containing the road
 			// we try to add the new path
 			List<Path> road1 = addPathToRoad(copy(road), player, p1);
-			if (road1!=null) rList.add(road1);
+			if (road1 != null)
+				rList.add(road1);
 		}
 		return rList;
 	}
@@ -323,7 +335,8 @@ public class Model implements ModelReader, ModelWriter {
 	 * @return
 	 */
 	private List<Path> addPathToRoad(List<Path> road, Player player, Path p) {
-		if (p.hasStreet() && p.getStreetOwner()==player && !(road.contains(p))) {
+		if (p.hasStreet() && p.getStreetOwner() == player
+				&& !(road.contains(p))) {
 			// meaning if this path is owned by player and not already in the
 			// road
 			// then we can continue the road while adding this path
@@ -461,31 +474,29 @@ public class Model implements ModelReader, ModelWriter {
 	 */
 	@Override
 	public Set<Path> buildableStreetPaths(Player player) {
-		//TODO initialPahse geht nicht beneso in streets
-		if (player == null)
-			throw new IllegalArgumentException(player + "is null");
-		Iterator<Path> it = getPathIterator();
+		if (player == null)	throw new IllegalArgumentException(player + "is null");
+		// TODO initialPahse geht evtl IMMER noch nicht ebenso in buildings
 		Set<Path> res = new HashSet<Path>();
-		while (it.hasNext()) {
-			Path p = it.next();
-			Set<Field> fieldSet = getFieldsFromPath(p);
-			boolean hasLand = false;
-			for (Field f : fieldSet) {
-				if ((f.getFieldType() != FieldType.WATER)) {
-					hasLand = true;
+		if(getRound()==0){
+			res= getPathsFromIntersection(initVillageIntersection);
+		}else{
+			Iterator<Path> it = getPathIterator();
+			while (it.hasNext()) {
+				Path p = it.next();
+				Set<Field> fieldSet = getFieldsFromPath(p);
+				boolean hasLand = false;
+				for (Field f : fieldSet) {
+					if ((f.getFieldType() != FieldType.WATER)) {
+						hasLand = true;
+					}
 				}
-
-			}
-
-			if (!p.hasStreet()) {
-				Set<Path> nachbarn = getPathsFromPath(p);
-				for (Path n : nachbarn) {
-					if (n.hasStreet() && n.getStreetOwner() == player) { // doppelte
-																			// abfrage
-																			// zur
-																			// sicherheit
-						if (hasLand)
-							res.add(p);
+				if (!p.hasStreet()) {
+					Set<Path> nachbarn = getPathsFromPath(p);
+					for (Path n : nachbarn) {
+						if (n.hasStreet() && n.getStreetOwner() == player){
+							if (hasLand)
+								res.add(p);
+						}
 					}
 				}
 			}
@@ -681,17 +692,18 @@ public class Model implements ModelReader, ModelWriter {
 	@Override
 	public Set<Intersection> getSettlements(Player player,
 			BuildingType buildingType) {
-		if (player == null | buildingType == null) throw new IllegalArgumentException();
+		if (player == null | buildingType == null)
+			throw new IllegalArgumentException();
 		Iterator<Intersection> ii = getIntersectionIterator();
 		Set<Intersection> si = new HashSet<Intersection>();
 		Intersection i;
 		while (ii.hasNext()) {
 			i = ii.next();
-			//System.out.println("IOwner: "+ i.getOwner());
+			// System.out.println("IOwner: "+ i.getOwner());
 			if (i.getOwner() == player && i.getBuildingType() == buildingType)
 				si.add(i);
 		}
-		System.out.println("Settlement0: "+si);
+		System.out.println("Settlement0: " + si);
 		return si;
 	}
 
@@ -1206,16 +1218,19 @@ public class Model implements ModelReader, ModelWriter {
 			throw new IllegalArgumentException(destination + " is null");
 		Path dest = getPath(destination);
 		if (dest.hasStreet())
-			throw new IllegalArgumentException("Strasse bereits vorhanden und gehört: "+dest.getStreetOwner()+ " und nicht: "+ getCurrentPlayer());
+			throw new IllegalArgumentException(
+					"Strasse bereits vorhanden und gehört: "
+							+ dest.getStreetOwner() + " und nicht: "
+							+ getCurrentPlayer());
 		if (getRound() != 0) {
-			if (getCurrentPlayer() == me
-					&& getCurrentPlayer().checkResourcesSufficient(
-							Street.getPrice())) {
-				me.modifyResources(Street.getPrice());
-				Set<Path> buildableStreets = buildableStreetPaths(getCurrentPlayer());
-				if (!buildableStreets.contains(dest))
-					throw new IllegalStateException(
-							"Keine Nachbarstrassen oder WasserFeld");
+			if (getCurrentPlayer() == me){
+					if(getCurrentPlayer().checkResourcesSufficient(Street.getPrice())) {
+						me.modifyResources(Street.getPrice());
+						Set<Path> buildableStreets = buildableStreetPaths(getCurrentPlayer());
+						if (!buildableStreets.contains(dest))throw new IllegalStateException("Keine Nachbarstrassen oder WasserFeld");
+					}else{
+						throw new IllegalStateException("not enough resources");
+					}
 			}
 		} else {
 			boolean hasLand = false;
@@ -1225,18 +1240,20 @@ public class Model implements ModelReader, ModelWriter {
 					hasLand = true;
 				}
 			}
-			if (!hasLand)throw new IllegalStateException("Path ist nur von Wasser umgeben!");
+			if (!hasLand)
+				throw new IllegalStateException(
+						"Path ist nur von Wasser umgeben!");
 		}
 		getPath(destination).createStreet(getCurrentPlayer());
 		for (ModelObserver ob : modelObserver) {
 			ob.updateResources();
 			ob.updatePath(dest);
 		}
-		if(initPlayer==players.size()-1){
-			initPlayer=-1;
-			
+		if (initPlayer == players.size() - 1) {
+			initPlayer = -1;
+
 			java.util.Collections.reverse(players);
-			reversedPlayersList=!reversedPlayersList;
+			reversedPlayersList = !reversedPlayersList;
 		}
 		initPlayer++;
 	}
@@ -1252,9 +1269,9 @@ public class Model implements ModelReader, ModelWriter {
 	public void buildSettlement(Location location, BuildingType buildingType) {
 		if (location == null)
 			throw new IllegalArgumentException(location + " is null");
-//		System.out.println("l: " + location);
+		// System.out.println("l: " + location);
 		Intersection i = getIntersection(location);
-//		System.out.println("In: " + i);
+		// System.out.println("In: " + i);
 		if (getRound() == 0) {
 			i.createBuilding(buildingType, getCurrentPlayer());
 			for (ModelObserver ob : modelObserver) {
@@ -1263,7 +1280,8 @@ public class Model implements ModelReader, ModelWriter {
 				ob.updateIntersection(i);
 			}
 		} else {
-//			System.out.println("Buildable: "+isBuildable(i, buildingType)+ " Affordable: " + isAffordable(buildingType));
+			// System.out.println("Buildable: "+isBuildable(i, buildingType)+
+			// " Affordable: " + isAffordable(buildingType));
 			if (isBuildable(i, buildingType) && (isAffordable(buildingType))) {
 				getCurrentPlayer().modifyResources(buildingType.getPrice());
 				i.createBuilding(buildingType, getCurrentPlayer());
@@ -1274,8 +1292,11 @@ public class Model implements ModelReader, ModelWriter {
 					ob.updateIntersection(i);
 				}
 			} else
-				throw new IllegalArgumentException(String.format(
-						"Das Gebaeude wurde nicht gebaut. isBuildable:%b, isAffordable:%b", isBuildable(i, buildingType) , isAffordable(buildingType)));
+				throw new IllegalArgumentException(
+						String.format(
+								"Das Gebaeude wurde nicht gebaut. isBuildable:%b, isAffordable:%b",
+								isBuildable(i, buildingType),
+								isAffordable(buildingType)));
 		}
 	}
 
@@ -1283,8 +1304,8 @@ public class Model implements ModelReader, ModelWriter {
 		Set<Intersection> si;
 		if (buildingType == BuildingType.Village) {
 			si = buildableVillageIntersections(getCurrentPlayer());
-//			System.out.println(si);
-//			System.out.println(i);
+			// System.out.println(si);
+			// System.out.println(i);
 			if (si.contains(i))
 				return true;
 			return false;
@@ -1292,8 +1313,8 @@ public class Model implements ModelReader, ModelWriter {
 			// IllegalArgumentException("Kein Dorf darf hier gebaut werden");
 		} else if (buildingType == BuildingType.Town) {
 			si = buildableTownIntersections(getCurrentPlayer());
-//			System.out.println(si);
-//			System.out.println(i);
+			// System.out.println(si);
+			// System.out.println(i);
 			if (si.contains(i))
 				return true;
 			return false;
@@ -1321,36 +1342,36 @@ public class Model implements ModelReader, ModelWriter {
 	@Override
 	public void longestRoadClaimed(List<Location> road)
 			throws IllegalStateException {
-		//TODO (Philipp)
+		// TODO (Philipp)
 		if (road.size() >= 5) {
 			List<Path> lr = new LinkedList<Path>();
 			boolean rightPlayer = false;
 			int i = 1;
-			for(Location l : road) {
+			for (Location l : road) {
 				Path p = getPath(l);
 				Set<Path> s = getPathsFromPath(p);
 				if (s.contains(getPath(road.get(i)))) {
-					if (i < road.size()-1) {
+					if (i < road.size() - 1) {
 						i++;
 					}
 					lr.add(p);
 					if (p.getStreetOwner().equals(getCurrentPlayer())) {
 						rightPlayer = true;
 					} else {
-						rightPlayer = false; 
+						rightPlayer = false;
 						break;
 					}
 				}
 			}
 			if (rightPlayer) {
 				this.longestClaimedRoad = lr;
-			} else throw new IllegalArgumentException("not the right Player");
-			
-		}
-		else {
+			} else
+				throw new IllegalArgumentException("not the right Player");
+
+		} else {
 			throw new IllegalArgumentException("Roadsize <5");
 		}
-		//throw new UnsupportedOperationException();
+		// throw new UnsupportedOperationException();
 	}
 
 	/*
@@ -1441,17 +1462,18 @@ public class Model implements ModelReader, ModelWriter {
 		// TODO (Philipp)
 		// Wenn Wasser drumherum
 		boolean hasLand = false;
-		for(Field f : getFieldsFromField(getField(destinationField))) {
-			if (f.getFieldType() != FieldType.WATER){
+		for (Field f : getFieldsFromField(getField(destinationField))) {
+			if (f.getFieldType() != FieldType.WATER) {
 				hasLand = true;
 			}
 		}
 		if (!hasLand)
 			throw new IllegalArgumentException("Can not put a robber on water");
-		else {		
+		else {
 			getField(sourceField).setRobber(false);
 			getField(destinationField).setRobber(true);
-			playerMap.get(victimPlayer).getResources().modifyResource(stolenResource, -1);
+			playerMap.get(victimPlayer).getResources()
+					.modifyResource(stolenResource, -1);
 			for (ModelObserver ob : modelObserver) {
 				ob.eventRobber();
 			}
@@ -1541,20 +1563,42 @@ public class Model implements ModelReader, ModelWriter {
 	 */
 	@Override
 	public Set<Intersection> buildableVillageIntersections(Player player) {
+		// TODO initial klappt evtl IMMER noch nicht
 		if (player == null)
 			throw new IllegalArgumentException(player + " is null");
-		Set<Path> streetSet = getStreets(player);
+
 		Set<Intersection> ret = new HashSet<Intersection>();
-		for (Path path : streetSet) {
-			Set<Intersection> pathInt = getIntersectionsFromPath(path);
-			for (Intersection intersection : pathInt) {
+		if (getRound() == 0) { // wenn runde 0 dann nur Nachbarn und wasser
+								// wichtig
+			for (Iterator<Intersection> iterator = getIntersectionIterator(); iterator
+					.hasNext();) {
+				Intersection intersection = iterator.next();
 				boolean buildable = true;
 				for (Intersection nachbar : getIntersectionsFromIntersection(intersection)) {
 					if (nachbar.hasOwner())
 						buildable = false;
 				}
-				if (buildable)
+				boolean hasLand = false;
+				for (Field nachbarField : getFieldsFromIntersection(intersection)) {
+					if (nachbarField.getFieldType() != FieldType.WATER)
+						hasLand = true;
+				}
+				if (buildable && hasLand)
 					ret.add(intersection);
+			}
+		} else { // wenn round!=0 nur nachbarStreet und nachbarField wichtig
+			Set<Path> streetSet = getStreets(player);
+			for (Path path : streetSet) {
+				Set<Intersection> pathInt = getIntersectionsFromPath(path);
+				for (Intersection intersection : pathInt) {
+					boolean buildable = true;
+					for (Intersection nachbar : getIntersectionsFromIntersection(intersection)) {
+						if (nachbar.hasOwner())
+							buildable = false;
+					}
+					if (buildable)
+						ret.add(intersection);
+				}
 			}
 		}
 		return ret;
@@ -1571,9 +1615,10 @@ public class Model implements ModelReader, ModelWriter {
 	public Set<Intersection> buildableTownIntersections(Player player) {
 		if (player == null)
 			throw new IllegalArgumentException(player + " is null");
-		System.out.println("Settlement: "+ getSettlements(player, BuildingType.Village));
+		System.out.println("Settlement: "
+				+ getSettlements(player, BuildingType.Village));
 		return getSettlements(player, BuildingType.Village);
-		
+
 	}
 
 	@Override
@@ -1586,12 +1631,14 @@ public class Model implements ModelReader, ModelWriter {
 					"Spieler kann nicht mehr Resourcen abgeben als es hat");
 		if (me.getResources().size() % 2 == 0) {
 			// ResourcePackage gerade
-			if (robberPackage.neagateResourcePackage().size() != (me.getResources().size())/2) 
+			if (robberPackage.neagateResourcePackage().size() != (me
+					.getResources().size()) / 2)
 				throw new IllegalArgumentException();
 		}
 		// ungerade
 		else {
-			if (robberPackage.neagateResourcePackage().size() != (me.getResources().size()-1)/2) 
+			if (robberPackage.neagateResourcePackage().size() != (me
+					.getResources().size() - 1) / 2)
 				throw new IllegalArgumentException();
 		}
 		me.modifyResources(robberPackage);
