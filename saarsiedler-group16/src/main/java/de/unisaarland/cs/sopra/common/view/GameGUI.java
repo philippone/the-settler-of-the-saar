@@ -43,6 +43,7 @@ import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
+import static de.unisaarland.cs.sopra.common.PlayerColors.*;
 
 public class GameGUI extends View implements Runnable{
 
@@ -90,12 +91,10 @@ public class GameGUI extends View implements Runnable{
 	
 	private Map<Player,PlayerColors> colorMap;
 	
-	GameGUI(long meID, ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player,String> playerNames, Setting setting) throws Exception {
+	GameGUI(ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player,String> playerNames, Setting setting) throws Exception {
 		super(modelReader, controllerAdapter);
-		this.modelReader = modelReader;
 		this.setting = setting;
 		this.playerNames = playerNames;
-		this.controllerAdapter = controllerAdapter;
 		this.uiMode = RESOURCE_VIEW;
 		this.selectionMode = NONE;
 		windowWidth = setting.getDisplayMode().getWidth();
@@ -122,16 +121,34 @@ public class GameGUI extends View implements Runnable{
 		this.maxZ = this.z;
 		this.minZ = -1500;
 		//TODO: set and use min,max for x,y 
+		
+		List<PlayerColors> tmp = Arrays.asList(new PlayerColors[] {RED,BLUE,GREEN,YELLOW,ORANGE,BROWN,WHITE,PURPLE,BLACK});
+		tmp.remove(setting.getPlayerColor());
+		
+		//TODO for (modelReader.)
+		//colorMap.put(key, value)
 	}
 	
-	private static setColor(int color) {
-		switch(color) {
+	private static void setColor(PlayerColors playerColor) {
+		switch(playerColor) {
 		case BLUE:
 			GL11.glColor3f(0.0f,0.0f,1.0f); break;
 		case RED:
 			GL11.glColor3f(1.0f,0.0f,0.0f); break;
 		case GREEN:
-			
+			GL11.glColor3f(0.0f,1.0f,0.0f); break;
+		case YELLOW:
+			GL11.glColor3f(1.0f,1.0f,0.0f); break;
+		case ORANGE:
+			GL11.glColor3f(1.0f,0.5f,0.0f); break;
+		case BROWN:
+			GL11.glColor3f(0.5f,0.25f,0.05f); break;
+		case WHITE:
+			GL11.glColor3f(1.0f,1.0f,1.0f); break;
+		case PURPLE:
+			GL11.glColor3f(0.5f,0.25f,0.5f); break;
+		case BLACK:
+			GL11.glColor3f(1.0f,1.0f,1.0f); break;
 		}
 	}
 
@@ -832,9 +849,9 @@ public class GameGUI extends View implements Runnable{
 		//Setting setting = new Setting(new DisplayMode(1280, 1024), true);
 		//Setting setting = new Setting(new DisplayMode(800, 600), true);
 		//Setting setting = new Setting(new DisplayMode(400, 300), true);
-		Setting setting = new Setting(Display.getDesktopDisplayMode(), true);
+		Setting setting = new Setting(Display.getDesktopDisplayMode(), true, PlayerColors.RED);
 		
-		GameGUI gameGUI = new GameGUI(0, model, null, null, setting);
+		GameGUI gameGUI = new GameGUI(model, null, null, setting);
 		new Thread(gameGUI).start();
 	}
 	
