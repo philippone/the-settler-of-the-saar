@@ -1257,6 +1257,7 @@ public class Model implements ModelReader, ModelWriter {
 //		System.out.println("In: " + i);
 		if (getRound() == 0) {
 			i.createBuilding(buildingType, getCurrentPlayer());
+			getCurrentPlayer().setVictoryPoints(getCurrentPlayer().getVictoryPoints()+buildingType.getVictoryPoints());
 			for (ModelObserver ob : modelObserver) {
 				ob.updateSettlementCount(buildingType);
 				ob.updateVictoryPoints();
@@ -1267,6 +1268,7 @@ public class Model implements ModelReader, ModelWriter {
 			if (isBuildable(i, buildingType) && (isAffordable(buildingType))) {
 				getCurrentPlayer().modifyResources(buildingType.getPrice());
 				i.createBuilding(buildingType, getCurrentPlayer());
+				getCurrentPlayer().setVictoryPoints(getCurrentPlayer().getVictoryPoints()+buildingType.getVictoryPoints());
 				for (ModelObserver ob : modelObserver) {
 					ob.updateResources();
 					ob.updateSettlementCount(buildingType);

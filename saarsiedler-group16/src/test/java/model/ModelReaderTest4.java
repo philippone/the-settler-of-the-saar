@@ -130,7 +130,7 @@ public class ModelReaderTest4 {
 	public void testGetCurrentVictoryPoints() {
 		assertEquals(0,model2.getCurrentVictoryPoints(model2.getTableOrder().get(0)));
 		// in Runde 1 gehen
-		model2.newRound(8);
+		//model2.newRound(8);
 		// current Player genug Resourcen geben
 		Player currentPlayer = model2.getCurrentPlayer();
 		currentPlayer.modifyResources(new ResourcePackage(10000,10000,10000,10000,10000));
