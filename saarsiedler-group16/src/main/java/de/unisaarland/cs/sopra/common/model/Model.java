@@ -436,12 +436,13 @@ public class Model implements ModelReader, ModelWriter {
 			for (Path act : this.longestClaimedRoad) {
 				if (board.getIntersectionsFromPath(act).contains(intersection)) {
 					tmp.add(act);
-					this.longestClaimedRoad.removeAll(tmp);
-					this.longestClaimedRoad = tmp.size() < this.longestClaimedRoad
-							.size() ? tmp : this.longestClaimedRoad;
+					break;
 				}
 				tmp.add(act);
 			}
+			this.longestClaimedRoad.removeAll(tmp);
+			this.longestClaimedRoad = tmp.size() < this.longestClaimedRoad
+					.size() ? tmp : this.longestClaimedRoad;
 		}
 	}
 
@@ -523,12 +524,11 @@ public class Model implements ModelReader, ModelWriter {
 		// TODO initialPahse geht evtl IMMER noch nicht ebenso in buildings
 		Set<Path> res = new HashSet<Path>();
 		
-		if (false) {
-		/*if(getRound()==0){
-			for(Path noStreet :getPathsFromIntersection(initVillageIntersection)){
+		if(getRound()==0){
+			for(Path noStreet :getPathsFromIntersection(initLastVillageIntersection)){
 				if(!noStreet.hasStreet())
-					res.add(noStreet);*/ //TODO evtl nochmal aktivieren. kp wofür
-			//}
+					res.add(noStreet);
+			}
 		}else{
 			Iterator<Path> it = getPathIterator();
 			while (it.hasNext()) {
@@ -1346,6 +1346,7 @@ public class Model implements ModelReader, ModelWriter {
 					ob.updateVictoryPoints();
 					ob.updateIntersection(i);
 				}
+				initLastVillageIntersection = i;
 			} else
 			throw new IllegalStateException("geb wurde nicht gebaut, da i nicht in buildableIn...");
 		} else {
@@ -1432,6 +1433,7 @@ public class Model implements ModelReader, ModelWriter {
 							rightPlayer = false;
 							break;
 						}
+						lr.add(p);
 						lr.add(tmp);
 						break;
 					}
@@ -1443,7 +1445,7 @@ public class Model implements ModelReader, ModelWriter {
 						break;
 					}
 				}
-				else throw new IllegalArgumentException("Road is properly join"); 
+				else throw new IllegalArgumentException("Road is not properly join"); 
 			}
 			if (rightPlayer) {
 				this.longestClaimedRoad = lr;

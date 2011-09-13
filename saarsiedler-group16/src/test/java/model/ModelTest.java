@@ -3,6 +3,7 @@ package model;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -11,8 +12,11 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.lwjgl.opengl.DisplayMode;
 
 import de.unisaarland.cs.sopra.common.ModelObserver;
+import de.unisaarland.cs.sopra.common.PlayerColors;
+import de.unisaarland.cs.sopra.common.Setting;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.Intersection;
@@ -22,6 +26,7 @@ import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Point;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
+import de.unisaarland.cs.sopra.common.view.GameGUI;
 import de.unisaarland.cs.st.saarsiedler.comm.results.AttackResult;
 
 
@@ -264,44 +269,47 @@ public class ModelTest {
 	}
 	
 	
-	
-	/**
-	 * Handelststrasse geanu in der Mitte geteilt
-	 */
 	@Test
 	public void testUpdateLongestRoad2() {
+
+		
+		model.buildSettlement(new Location(1,0,1), BuildingType.Village);
+		model.buildStreet(new Location(1,0,1));
+		
+		model.buildSettlement(new Location(3,2,2), BuildingType.Village);
+		model.buildStreet(new Location(3,2,1));
 		// in Runde 1 gehen
 		model.newRound(8);
 		// current Player genug Resourcen geben
-		Player currentPlayer = model.getCurrentPlayer();
-		currentPlayer.modifyResources(new ResourcePackage(10000,10000,10000,10000,10000));
-		// eigenes Haus
-		model.buildSettlement(new Location(1,0,1), BuildingType.Village);
-		// longest Road bauen (strasse 6 lang)
-		model.buildStreet(new Location(1,0,1));
+		model.getCurrentPlayer().modifyResources(new ResourcePackage(10000,10000,10000,10000,10000));
+		// longest Road bauen
 		model.buildStreet(new Location(1,0,2));
-		model.buildStreet(new Location(2,0,5));
+		model.buildStreet(new Location(2,0,4));
 		model.buildStreet(new Location(2,0,3));
 		model.buildStreet(new Location(2,0,2));
 		model.buildStreet(new Location(2,0,1));
+		model.buildStreet(new Location(2,1,5));
+		model.buildStreet(new Location(2,1,0));
+		model.buildStreet(new Location(2,1,1));
+		model.buildStreet(new Location(2,1,2));
 		//longest Road claim
-		List<List<Path>> longestRoad = model.calculateLongestRoads(currentPlayer);
+		List<List<Path>> longestRoad = model.calculateLongestRoads(model.getCurrentPlayer());
 		model.longestRoadClaimed(Model.getLocationList(longestRoad.get(0)));
 		
 		// neue Runde (Gegner an der Reihe)
 		model.newRound(6);
+		model.getCurrentPlayer().modifyResources(new ResourcePackage(10000,10000,10000,10000,10000));
 		// Gegner: Village auf longestClaimedRoad bauen
-		model.buildSettlement(new Location(2,0,4), BuildingType.Village);
-		// updateLongestRoad aufrufen
-		model.updateLongestRoad(model.getIntersection(new Location(2,0,4)));
+		model.buildStreet(new Location(3,2,0));
+		model.buildSettlement(new Location(3,2,0), BuildingType.Village);
 		// erwartete Liste
-		List<Path> expectedLongestRoad = new LinkedList<Path>();
-		expectedLongestRoad.add(model.getPath(new Location(1,0,1)));
-		expectedLongestRoad.add(model.getPath(new Location(1,0,2)));
-		expectedLongestRoad.add(model.getPath(new Location(2,0,5)));
-		
-		assertTrue("updateLongestRoad fehlgeschlagen", model.getLongestClaimedRoad().size() == 3);
-		assertEquals("nicht die richige LongestRoad geupdatet", model.getLongestClaimedRoad(), expectedLongestRoad);
+		List<Path> expected = new LinkedList<Path>();
+		for (int i = 0; i < 9; i++) {
+			expected.add(model.getLongestClaimedRoad().get(i));
+		}
+
+		assertTrue("updateLongestRoad fehlgeschlagen", model.getLongestClaimedRoad().size() == 5);
+		assertEquals("nicht die richige LongestRoad geupdatet", model.getLongestClaimedRoad(), expected);
 	}
 	
 	@Test
