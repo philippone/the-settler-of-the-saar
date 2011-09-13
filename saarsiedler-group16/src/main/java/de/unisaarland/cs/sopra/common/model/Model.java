@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import de.unisaarland.cs.sopra.common.ModelObserver;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
@@ -153,47 +154,79 @@ public class Model implements ModelReader, ModelWriter {
 			throw new IllegalArgumentException();
 		Set<Path> pathList = getStreets(player);
 		// all Paths that player owns
-		System.out.println(pathList.size());
-		List<List<Path>> roadList = new ArrayList<List<Path>>();
+		List<List<Path>> roadList =new ArrayList<List<Path>>();
 		// all roads known (none)
 		for (Path p : pathList) {
 			List<Path> road = new ArrayList<Path>();
 			road.add(p);
 			roadList.add(road);
 		}
-		System.out.println(roadList.size());
 		// all roads contain only one path
-		List<List<Path>> suppressedRoadList = new ArrayList<List<Path>>();
 		
-		Iterator<List<Path>> roadIterator = roadList.iterator();
-		List<Path> road;
-		while (roadIterator.hasNext()) {
-			road = roadIterator.next();
-			if (continueRoad(road, roadList)) {
-				suppressedRoadList.add(road);
-				// if the road has been continued, new longer road(s)'d have
-				// been put in roadlist
-				// we'll just remove the short one
+		roadList=continueAllRoads(roadList,player);
+		// we obtain all finished roads
+		
+		roadList=keepOnlyLongestRoads(roadList);
+		System.out.println(roadList.size());
+		return roadList;
+	}
+	
+	private List<List<Path>> continueAllRoads(List<List<Path>> roadList,Player player){
+		System.out.println(roadList.size());
+		List<List<Path>> rList;
+		// the roads we'll obtain while lengthening one
+		List<List<Path>> roadList1;
+		// the roads we'll add to the roadList (lengthened roads)
+		List<List<Path>> roadList2;
+		// the roads we'll remove from the roadList (not finished roads)
+		boolean a;
+		roadList1 =new ArrayList<List<Path>>();
+		roadList2 =new ArrayList<List<Path>>();
+		for (List<Path> road : roadList) {
+		// we check for all the roads
+		// if we cannot lengthen them
+			if (road!=null){
+				rList=continueRoad(road,player);
+				// returning all lengthened roads starting from this road
+				if (!rList.isEmpty()){
+					roadList2.add(road);
+					// we'll remove this road
+					// since we have at least a new longer version
+					a=false;
+					for (List<Path> r : rList){
+						for (List<Path>r1 : roadList) a=a | r1.containsAll(r);
+						if (!a) roadList1.add(r); 	
+						// if we didn't have this one, then we add it
+					}
+				}
 			}
 		}
-		System.out.println(roadList.size());
+			
+		if (!roadList1.isEmpty()) roadList1=continueAllRoads(roadList1,player);
+		// if we haven't found any new longer road, we stop
+		// else we must see if the new ones cannot be lengthened too
+		roadList.addAll(roadList1);
+		roadList.remove(roadList2);
+		// we update the roadList
+		// removing short roads that have been lengthened
+		// adding longer versions of these roads
 		
-		for (List<Path> suppressedRoad : suppressedRoadList)
-			roadList.remove(suppressedRoad);
-		// now there's only finished roads
-		System.out.println(roadList.size());
+		return roadList;
+	}
+	
+	private List<List<Path>> keepOnlyLongestRoads(List<List<Path>> roadList){
+		List<List<Path>> roadList1=new ArrayList<List<Path>>();
 		int maxsize = 5;
 		for (List<Path> road1 : roadList) {
-			maxsize = Math.max(maxsize, road1.size());
+			if (road1!=null) maxsize = Math.max(maxsize, road1.size());
 			// what's the maximum size of the roads
 		}
 		for (List<Path> road2 : roadList) {
-			if (road2.size() < maxsize)
-				roadList.remove(road2);
-			// only the longest road(s) stay here
+			if (road2!=null && road2.size() >= maxsize) roadList1.add(road2);
+			// we take only the longest road(s)and we return these
 		}
-		System.out.println(roadList.size());
-		return roadList;
+		System.out.println(maxsize);
+		return roadList1;
 	}
 
 	/**
@@ -201,13 +234,15 @@ public class Model implements ModelReader, ModelWriter {
 	 * @param roadList
 	 * @return
 	 */
-	private boolean continueRoad(List<Path> road, List<List<Path>> roadList) {
-		boolean b = false;
-		for (Path p : road) {
-			b = b | continueRoadFromPath(p, road, roadList);
+	private List<List<Path>> continueRoad(List<Path> road, Player player) {
+		List<List<Path>>rList=new ArrayList<List<Path>>();
+		List<Intersection>roadExtremities=searchRoadExtremities(road, player);
+		// returning the intersections trough what we can continue the road
+		for (Intersection i : roadExtremities) {
+			if (i!=null) rList.addAll(continueRoadThroughIntersection(i,player,road));
 		}
-		return b;
-		// has the road been continued?
+		return rList;
+		// returning all lengthened roads
 	}
 
 	/**
@@ -216,21 +251,20 @@ public class Model implements ModelReader, ModelWriter {
 	 * @param roadList
 	 * @return
 	 */
-	private boolean continueRoadFromPath(Path p, List<Path> road,
-			List<List<Path>> roadList) {
-		Set<Intersection> si = getIntersectionsFromPath(p);
-		Player player = p.getStreetOwner();
-		boolean b = false;
-		for (Intersection i : si) {
-			if (isExtremityOfRoad(i, road)
-					&& ((i.getOwner() == player) | !(i.hasOwner())))
-				b = b | continueRoadTroughIntersection(i, p, road, roadList);
+	private List<Intersection> searchRoadExtremities(List<Path> road, Player player) {
+		List<Intersection>si=new ArrayList<Intersection>();
+		for (Path p : road){
+			Set<Intersection> si1 = getIntersectionsFromPath(p);
+			for (Intersection i : si1) {
+				if (i!=null && isExtremityOfRoad(i, road) && ((i.getOwner() == player) | !(i.hasOwner())))
+					si.add(i);
+			}
 			// meaning we can continue a road through an intersection and the
 			// paths it leads to
 			// only when this intersection is already the extremity of the road
 			// and only when it is free or owned by the player itself
 		}
-		return b;
+		return si;
 	}
 
 	/**
@@ -240,20 +274,17 @@ public class Model implements ModelReader, ModelWriter {
 	 * @param roadList
 	 * @return
 	 */
-	private boolean continueRoadTroughIntersection(Intersection i, Path p,
-			List<Path> road, List<List<Path>> roadList) {
-		Player player = p.getStreetOwner();
+	private List<List<Path>> continueRoadThroughIntersection(Intersection i,Player player,
+			List<Path> road) {
 		Set<Path> sp = getPathsFromIntersection(i);
-		sp.remove(p);
-		// we don't want to go back
-		boolean b = false;
+		List<List<Path>>rList=new ArrayList<List<Path>>();
 		for (Path p1 : sp) {
 			// we create a new road1 containing the road
 			// we try to add the new path
-			List<Path> road1 = copy(road);
-			b = b | addPathToRoad(road1, player, p1, roadList);
+			List<Path> road1 = addPathToRoad(copy(road), player, p1);
+			if (road1!=null) rList.add(road1);
 		}
-		return b;
+		return rList;
 	}
 
 	/**
@@ -291,9 +322,8 @@ public class Model implements ModelReader, ModelWriter {
 	 * @param roadList
 	 * @return
 	 */
-	private boolean addPathToRoad(List<Path> road, Player player, Path p,
-			List<List<Path>> roadList) {
-		if (p.hasStreet() && p.getStreetOwner() == player && !(road.contains(p))) {
+	private List<Path> addPathToRoad(List<Path> road, Player player, Path p) {
+		if (p.hasStreet() && p.getStreetOwner()==player && !(road.contains(p))) {
 			// meaning if this path is owned by player and not already in the
 			// road
 			// then we can continue the road while adding this path
@@ -302,12 +332,9 @@ public class Model implements ModelReader, ModelWriter {
 			// the elder one'll be removed from the roadList since it has been
 			// continued
 			road.add(p);
-			if (!(roadList.contains(road)))
-				roadList.add(road);
-			// no doubloons
-			return true;
+			return road;
 		}
-		return false;
+		return null;
 	}
 
 	/**
