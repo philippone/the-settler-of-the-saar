@@ -181,6 +181,7 @@ public class ModelWriterTest2 {
 	public void catapultMovedTestPositive() {
 		Location l1 = new Location(1,1,0);
 		Location l2 = new Location(1,1,1);
+		//model.getCurrentPlayer().modifyResources(new ResourcePackage(1000,1000,1000,1000,1000));
 		model.buildSettlement(l1, BuildingType.Town);
 		model.buildCatapult(l1, true);
 		model.catapultMoved(l1, l2, true);
