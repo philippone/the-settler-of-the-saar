@@ -69,9 +69,8 @@ public class TestModelObserver implements ModelObserver {
 		}
 
 		@Override
-		public void eventNewRound(boolean itsMyTurn) {
+		public void eventNewRound() {
 			this.eventNewRoundCalled = true;
-			this.eventNewRoundItsMyTurn = itsMyTurn;
 		}
 
 		@Override

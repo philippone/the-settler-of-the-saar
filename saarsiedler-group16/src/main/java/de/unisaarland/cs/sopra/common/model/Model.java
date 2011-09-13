@@ -1075,7 +1075,7 @@ public class Model implements ModelReader, ModelWriter {
 			Collections.reverse(players);
 		this.round++;
 		for (ModelObserver ob : modelObserver) {
-			ob.eventNewRound(getCurrentPlayer() == me);
+			ob.eventNewRound();
 		}
 	}
 
