@@ -1329,14 +1329,21 @@ public class Model implements ModelReader, ModelWriter {
 		if (road.size() >= 5) {
 			List<Path> lr = new LinkedList<Path>();
 			boolean rightPlayer = false;
+			int i = 1;
 			for(Location l : road) {
 				Path p = getPath(l);
-				lr.add(p);
-				if (p.getStreetOwner().equals(getCurrentPlayer())) {
-					rightPlayer = true;
-				} else {
-					rightPlayer = false; 
-					break;
+				Set<Path> s = getPathsFromPath(p);
+				if (s.contains(getPath(road.get(i)))) {
+					if (i <= road.size()) {
+						i++;
+					}
+					lr.add(p);
+					if (p.getStreetOwner().equals(getCurrentPlayer())) {
+						rightPlayer = true;
+					} else {
+						rightPlayer = false; 
+						break;
+					}
 				}
 			}
 			if (rightPlayer) {
