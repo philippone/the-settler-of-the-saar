@@ -520,6 +520,7 @@ public class Model implements ModelReader, ModelWriter {
 		if (player == null)	throw new IllegalArgumentException(player + "is null");
 		// TODO initialPahse geht evtl IMMER noch nicht ebenso in buildings
 		Set<Path> res = new HashSet<Path>();
+		
 		if(getRound()==0){
 			for(Path noStreet :getPathsFromIntersection(initVillageIntersection)){
 				if(!noStreet.hasStreet())
@@ -536,10 +537,20 @@ public class Model implements ModelReader, ModelWriter {
 						hasLand = true;
 					}
 				}
+				
 				if (!p.hasStreet()) {
 					Set<Path> nachbarn = getPathsFromPath(p);
 					for (Path n : nachbarn) {
-						if (n.hasStreet() && n.getStreetOwner() == player){
+						Intersection betweenBothPathsIntersection=null;
+						// to find the intersection between the 2 path
+						for(Intersection k :getIntersectionsFromPath(p)){
+							for(Intersection m :getIntersectionsFromPath(n)){
+								if(k.equals(m)) betweenBothPathsIntersection = k;
+							}
+						}
+						if (n.hasStreet() && n.getStreetOwner() == player
+								&& (betweenBothPathsIntersection.getOwner()== player 
+								|| betweenBothPathsIntersection.getOwner()== null)){
 							if (hasLand)
 								res.add(p);
 						}
@@ -1260,14 +1271,9 @@ public class Model implements ModelReader, ModelWriter {
 	 */
 	@Override
 	public void buildStreet(Location destination) {
-		if (destination == null)
-			throw new IllegalArgumentException(destination + " is null");
+		if (destination == null)	throw new IllegalArgumentException(destination + " is null");
 		Path dest = getPath(destination);
-		if (dest.hasStreet())
-			throw new IllegalArgumentException(
-					"Strasse bereits vorhanden und gehört: "
-							+ dest.getStreetOwner() + " und nicht: "
-							+ getCurrentPlayer());
+		if (dest.hasStreet())	throw new IllegalArgumentException(	"Strasse bereits vorhanden und gehört: "+ dest.getStreetOwner() + " und nicht: "+ getCurrentPlayer());
 		if (getRound() != 0) {
 			if (getCurrentPlayer() == me){
 					if(getCurrentPlayer().checkResourcesSufficient(Street.getPrice())) {
@@ -1332,10 +1338,12 @@ public class Model implements ModelReader, ModelWriter {
 			}
 			initVillageIntersection=i; // setzt letzte Intersection auf der wahrend init gebaut wurde
 			}
+			throw new IllegalStateException("geb wurde nicht gebaut, da i nicht in buildableIn...");
 		} else {
 			if (isBuildable(i, buildingType) && (isAffordable(buildingType))) {
 				getCurrentPlayer().modifyResources(buildingType.getPrice());
 				i.createBuilding(buildingType, getCurrentPlayer());
+				getCurrentPlayer().setVictoryPoints(getCurrentPlayer().getVictoryPoints() + buildingType.getVictoryPoints());
 				for (ModelObserver ob : modelObserver) {
 					ob.updateResources();
 					ob.updateSettlementCount(buildingType);
@@ -1649,6 +1657,7 @@ public class Model implements ModelReader, ModelWriter {
 						if (nachbar.hasOwner())
 							buildable = false;
 					}
+					//falls bereits village vorhanden
 					if(intersection.hasOwner()) buildable=false;
 					if (buildable)
 						ret.add(intersection);
