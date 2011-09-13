@@ -1403,7 +1403,7 @@ public class Model implements ModelReader, ModelWriter {
 		path_source.removeCatapult();
 		path_dest.createCatapult(owner);
 
-		if (owner.checkResourcesSufficient(Catapult.getAttackcatapultprice()))
+		if (!(owner.checkResourcesSufficient(Catapult.getAttackcatapultprice())))
 			throw new IllegalStateException(
 					"not enough money on the bankaccount!");
 		owner.modifyResources(Catapult.getAttackcatapultprice());
