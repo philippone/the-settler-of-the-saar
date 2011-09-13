@@ -165,7 +165,7 @@ public class GameGUI extends View implements Runnable{
 		}
 	}
 	
-	private void drawSquare(int width, int height) {
+	private void drawSquareMid(int width, int height) {
 	     GL11.glBegin(GL11.GL_POLYGON);
 	       GL11.glTexCoord2f(0,0);
 	       GL11.glVertex3i(-width/2, -height/2, 0);
@@ -175,6 +175,19 @@ public class GameGUI extends View implements Runnable{
 	       GL11.glVertex3i(width/2, height/2, 0);
 	       GL11.glTexCoord2f(0,1);
 	       GL11.glVertex3i(-width/2, height/2, 0);
+	     GL11.glEnd();
+	}
+	
+	private void drawSquareLeftTop(int width, int height) {
+	     GL11.glBegin(GL11.GL_POLYGON);
+	       GL11.glTexCoord2f(0,0);
+	       GL11.glVertex3i(0, 0, 0);
+	       GL11.glTexCoord2f(1,0);
+	       GL11.glVertex3i(width, 0, 0);
+	       GL11.glTexCoord2f(1,1);
+	       GL11.glVertex3i(width, height, 0);
+	       GL11.glTexCoord2f(0,1);
+	       GL11.glVertex3i(0, height, 0);
 	     GL11.glEnd();
 	}
 
@@ -195,10 +208,10 @@ public class GameGUI extends View implements Runnable{
 		   fieldTextureMap.get(f.getFieldType()).bind();  
 		   setColor(BLACK);
 		   GL11.glTranslatef(fx+x, fy+y, 0+z);
-		   drawSquare(300, 300);
+		   drawSquareMid(300, 300);
 		   if (f.getFieldType() != FieldType.DESERT && f.getFieldType() != FieldType.WATER) { 
 			   numberTextureMap.get(f.getNumber()).bind();
-			   drawSquare(300, 300);
+			   drawSquareMid(300, 300);
 		   }
 		   GL11.glPopMatrix();
 	}
@@ -247,7 +260,7 @@ public class GameGUI extends View implements Runnable{
 			   intersectionTextureMap.get(i.getBuildingType()).bind();
 			   setColor(colorMap.get(i.getOwner()));
 			   GL11.glTranslatef(ix+x, iy+y, 1+z);
-			   drawSquare(70, 70);
+			   drawSquareMid(70, 70);
 			   GL11.glPopMatrix();
 		}
 	}
@@ -270,33 +283,33 @@ public class GameGUI extends View implements Runnable{
 			  switch(p.getLocation().getOrientation()) {
 				   case 0:
 					   px+=67;
-					   py+=-102;
-					   po+=25;
+					   py+=-107;
+					   po+=30;
 					   break;
 				   case 1:
-					   px+=130;
-					   py+=5;
+					   px+=120;
+					   py+=14;
 					   po+=90;
 					   break;
 				   case 2:
-					   px+=135;
-					   py+=110;
-					   po+=115;
+					   px+=40;
+					   py+=118;
+					   po+=150;
 					   break;
 				   case 3:
-					   px+=-57;
-					   py+=110;
-					   po+=205;
+					   px+=-82;
+					   py+=95;
+					   po+=210;
 					   break;
 				   case 4:
-					   px+=-120;
-					   py+=5;
-					   po+=280;
+					   px+=-128;
+					   py+=-21;
+					   po+=270;
 					   break;
 				   case 5:
-					   px+=-77;
-					   py+=-102;
-					   po+=335;
+					   px+=-52;
+					   py+=-115;
+					   po+=330;
 					   break;
 				   default:
 					   throw new IllegalArgumentException();
@@ -305,10 +318,10 @@ public class GameGUI extends View implements Runnable{
 		if (p.hasStreet()) {	
 			GL11.glPushMatrix();
 			GL11.glTranslatef(px+x, py+y, 1+z);
-			GL11.glRotatef(po+minX, 0, 0, 1);
+			GL11.glRotatef(po, 0, 0, 1);
 		    streetTexture.bind();
 		    setColor(colorMap.get(p.getStreetOwner()));
-		    drawSquare(140,20);
+		    drawSquareMid(140,20);
 		    GL11.glPopMatrix();
 		}
 		if (p.hasCatapult()) {	
@@ -316,7 +329,7 @@ public class GameGUI extends View implements Runnable{
 			GL11.glTranslatef(px+x, py+y, 1+z);
 		    catapultTexture.bind();
 		    setColor(colorMap.get(p.getCatapultOwner()));
-		    drawSquare(70, 70);
+		    drawSquareMid(70, 70);
 		    GL11.glPopMatrix();
 		}
 	}
@@ -343,7 +356,7 @@ public class GameGUI extends View implements Runnable{
 			    markTextureMap.get("Field").bind();
 			    setColor(BLACK);
 			    GL11.glTranslatef(fx+x, fy+y, 2+z);
-			    drawSquare(300, 300);
+			    drawSquareMid(300, 300);
 			    GL11.glPopMatrix();
 			}
 
@@ -363,7 +376,7 @@ public class GameGUI extends View implements Runnable{
 		uiTextureMap.get(name).bind();
 		setColor(BLACK);
 	    GL11.glTranslatef(x, y, z);
-		drawSquare(width, height);
+		drawSquareLeftTop(width, height);
 		GL11.glPopMatrix();
 	}
 	
@@ -383,12 +396,12 @@ public class GameGUI extends View implements Runnable{
 		   Iterator<Field> iterF = modelReader.getFieldIterator();
 		   while (iterF.hasNext())
 			   renderField(iterF.next());
-		   Iterator<Intersection> iterI = modelReader.getIntersectionIterator();
-		   while (iterI.hasNext()) 
-			   renderIntersection(iterI.next());
 		   Iterator<Path> iterP = modelReader.getPathIterator();
 		   while (iterP.hasNext()) 
 			   renderPath(iterP.next());
+		   Iterator<Intersection> iterI = modelReader.getIntersectionIterator();
+		   while (iterI.hasNext()) 
+			   renderIntersection(iterI.next());
 		   //Render Selections
 		   renderMarks(); //TODO: implement markierungen
 		   //Render UI
@@ -705,7 +718,7 @@ public class GameGUI extends View implements Runnable{
 	}
 
 	public static void main(String[] args) throws Exception {		
-		
+				
 		String[] list = new String[] {
 				"jinput-dx8_64.dll",
 				"jinput-dx8.dll",
@@ -744,7 +757,6 @@ public class GameGUI extends View implements Runnable{
 		vvv.setAccessible(true); 
 		vvv.set(null, null);
 		
-				
 		MatchInformation matchinfo = new MatchInformation() 
 		{
 			
@@ -800,30 +812,19 @@ public class GameGUI extends View implements Runnable{
 														 11,12,11,10,
 														 9,8,6,5,
 														 2,6,9});
-		//model.matchStart(new long[] {0,1}, new byte[]   {2});
-		/*model.buildSettlement(new Location(3,3,0), BuildingType.Village);
+		model.buildSettlement(new Location(3,3,0), BuildingType.Village);
 		model.buildStreet(new Location(3,3,0));
 		
 		model.buildSettlement(new Location(3,3,2), BuildingType.Village);
 		model.buildStreet(new Location(3,3,2));
 		
 		model.buildSettlement(new Location(3,3,4), BuildingType.Village);
-		model.buildStreet(new Location(3,3,4));*/
+		model.buildStreet(new Location(3,3,4));
 		
-		Player me = model.getMe();
-		model.getIntersection(new Location(0,0,0)).createBuilding(BuildingType.Village, me);
-		model.getIntersection(new Location(0,0,1)).createBuilding(BuildingType.Town, me);
-		model.getIntersection(new Location(0,0,2)).createBuilding(BuildingType.Village, me);
-		model.getIntersection(new Location(0,0,3)).createBuilding(BuildingType.Town, me);
-		model.getIntersection(new Location(0,0,4)).createBuilding(BuildingType.Village, me);
-		model.getIntersection(new Location(0,0,5)).createBuilding(BuildingType.Town, me);
+		model.buildSettlement(new Location(2,2,0), BuildingType.Village);
+		model.buildStreet(new Location(2,2,0));
 		
-		model.getPath(new Location(0,0,0)).createStreet(me);
-		model.getPath(new Location(0,0,1)).createStreet(me);
-		model.getPath(new Location(0,0,2)).createStreet(me);
-		model.getPath(new Location(0,0,3)).createStreet(me);
-		model.getPath(new Location(0,0,4)).createStreet(me);
-		model.getPath(new Location(0,0,5)).createStreet(me);
+		model.newRound(3);
 		
 		//Setting setting = new Setting(new DisplayMode(1920, 1080), true);
 		//Setting setting = new Setting(new DisplayMode(1280, 1024), true);
