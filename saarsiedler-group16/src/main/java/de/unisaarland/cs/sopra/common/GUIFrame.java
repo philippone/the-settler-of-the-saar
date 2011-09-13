@@ -22,11 +22,14 @@ import java.util.List;
 public class GUIFrame extends JFrame {
 	private ButtonListener actLis;
 	private Connection connect;
-	private Long focusedGameID;
+	private long focusedGameID;
+	public long focusedWordID;
+	public boolean joinAsObserver;
 	
 	public GUIFrame(Connection connection) {
 		this.connect =connection;
 		actLis = new ButtonListener(this, connect);
+		joinAsObserver=false;
 		this.setLocation(150, 30);
 //		this.setPreferredSize(new Dimension(900,600));
 //		this.pack();
@@ -35,10 +38,10 @@ public class GUIFrame extends JFrame {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		initComponents();
 		setActionListner();
-		refreshGameList();
+		
 	}
 
-	private void refreshGameList(){
+	public void refreshGameList(){
 //		gameTable.getCellEditor().
 		List<MatchInformation> matchList=null;
 		try {
@@ -73,10 +76,21 @@ public class GUIFrame extends JFrame {
 		play.addActionListener(actLis);
 		settings_menu.addActionListener(actLis);
 		exit_menu.addActionListener(actLis);
+		observerToggle.addActionListener(actLis);
+		back_Create.addActionListener(actLis);
+		createMatch.addActionListener(actLis);
+		worldRepoBox.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				focusedWordID = -1L;
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				focusedWordID = worldRepoBox.getSelectedIndex();
+			}
+		});
 		gameTable.addFocusListener(new FocusListener() {
-			
-			
-
 			@Override
 			public void focusLost(FocusEvent e) {
 				focusedGameID =-1L;
@@ -116,6 +130,18 @@ public class GUIFrame extends JFrame {
 		exit_menu = new JButton();
 		panel12 = new JPanel();
 		label1 = new JLabel();
+		createPanel = new JPanel();
+		panel13 = new JPanel();
+		label2 = new JLabel();
+		gameTitleField = new JTextField();
+		label3 = new JLabel();
+		numPlayersField = new JTextField();
+		label4 = new JLabel();
+		worldRepoBox = new JComboBox();
+		label5 = new JLabel();
+		observerToggle = new JToggleButton();
+		createMatch = new JButton();
+		back_Create = new JButton();
 
 		//======== this ========
 		Container contentPane = getContentPane();
@@ -142,6 +168,7 @@ public class GUIFrame extends JFrame {
 
 		//======== lobbyPanel ========
 		{
+			lobbyPanel.setVisible(false);
 
 			// JFormDesigner evaluation mark
 			lobbyPanel.setBorder(new javax.swing.border.CompoundBorder(
@@ -315,6 +342,80 @@ public class GUIFrame extends JFrame {
 		contentPane.add(menuPanel);
 		menuPanel.setBounds(0, 0, 1000, 665);
 
+		//======== createPanel ========
+		{
+			createPanel.setLayout(new GridBagLayout());
+			((GridBagLayout)createPanel.getLayout()).columnWidths = new int[] {730, 0, 0};
+			((GridBagLayout)createPanel.getLayout()).rowHeights = new int[] {0, 0};
+			((GridBagLayout)createPanel.getLayout()).columnWeights = new double[] {0.5, 1.0, 1.0E-4};
+			((GridBagLayout)createPanel.getLayout()).rowWeights = new double[] {1.0, 1.0E-4};
+
+			//======== panel13 ========
+			{
+				panel13.setLayout(new GridBagLayout());
+				((GridBagLayout)panel13.getLayout()).columnWidths = new int[] {168, 145, 237, 13, 0};
+				((GridBagLayout)panel13.getLayout()).rowHeights = new int[] {175, 0, 0, 0, 32, 0, 227, 0, 23, 0, 0};
+				((GridBagLayout)panel13.getLayout()).columnWeights = new double[] {0.0, 0.0, 0.0, 0.36, 1.0E-4};
+				((GridBagLayout)panel13.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+
+				//---- label2 ----
+				label2.setText("Gametitle: ");
+				panel13.add(label2, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+				panel13.add(gameTitleField, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- label3 ----
+				label3.setText("Number of Players:");
+				panel13.add(label3, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+				panel13.add(numPlayersField, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- label4 ----
+				label4.setText("World: ");
+				panel13.add(label4, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+				panel13.add(worldRepoBox, new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- label5 ----
+				label5.setText("Join as: ");
+				panel13.add(label5, new GridBagConstraints(1, 4, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- observerToggle ----
+				observerToggle.setText("Player");
+				panel13.add(observerToggle, new GridBagConstraints(2, 4, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- createMatch ----
+				createMatch.setText("create Match");
+				panel13.add(createMatch, new GridBagConstraints(2, 7, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- back_Create ----
+				back_Create.setText("back to Lobby");
+				panel13.add(back_Create, new GridBagConstraints(2, 9, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 0, 5), 0, 0));
+			}
+			createPanel.add(panel13, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+				new Insets(0, 0, 0, 0), 0, 0));
+		}
+		contentPane.add(createPanel);
+		createPanel.setBounds(0, 0, 1000, 675);
+
 		{ // compute preferred size
 			Dimension preferredSize = new Dimension();
 			for(int i = 0; i < contentPane.getComponentCount(); i++) {
@@ -357,5 +458,18 @@ public class GUIFrame extends JFrame {
 	public JButton exit_menu;
 	private JPanel panel12;
 	private JLabel label1;
+	public JPanel createPanel;
+	private JPanel panel13;
+	private JLabel label2;
+	public JTextField gameTitleField;
+	private JLabel label3;
+	public JTextField numPlayersField;
+	private JLabel label4;
+	public JComboBox worldRepoBox;
+	private JLabel label5;
+	public JToggleButton observerToggle;
+	public JButton createMatch;
+	public JButton back_Create;
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
+	
 }

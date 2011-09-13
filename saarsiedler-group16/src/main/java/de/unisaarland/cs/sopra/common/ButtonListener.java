@@ -2,6 +2,7 @@ package de.unisaarland.cs.sopra.common;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import de.unisaarland.cs.st.saarsiedler.comm.Connection;
 
@@ -37,6 +38,8 @@ public class ButtonListener implements ActionListener {
 				gui.settingsPanel.setVisible(true);
 			}
 			if (arg0.getSource() == gui.play){
+				//TODO as AI joinen Connection-init hierher verlagern!!
+				gui.refreshGameList();
 				gui.menuPanel.setVisible(false);
 				gui.lobbyPanel.setVisible(true);
 			}
@@ -47,7 +50,8 @@ public class ButtonListener implements ActionListener {
 		
 		//Lobby
 			if (arg0.getSource() == gui.create){
-				
+				gui.lobbyPanel.setVisible(false);
+				gui.createPanel.setVisible(true);
 			}
 			if (arg0.getSource() == gui.join){
 			}
@@ -64,6 +68,23 @@ public class ButtonListener implements ActionListener {
 			}
 		//
 		
+		//CreatePanel
+			if (arg0.getSource() == gui.createMatch){
+				
+			}
+			if (arg0.getSource() == gui.observerToggle){
+				gui.joinAsObserver=!gui.joinAsObserver;
+				if(gui.joinAsObserver)
+					gui.observerToggle.setText("Observer");
+				else
+					gui.observerToggle.setText("Player");
+			}
+			if (arg0.getSource() == gui.back_Create){
+				try {connect.leaveMatch();} catch (Exception e) {e.printStackTrace();}
+				gui.createPanel.setVisible(false);
+				gui.lobbyPanel.setVisible(true);
+			}
+		//
 		
 		
 		
