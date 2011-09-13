@@ -433,10 +433,11 @@ public class ModelWriterTest {
 	
 	@Test
 	public void respondTradeTestPositive() {
-		Player p = model.getCurrentPlayer();
-		p.modifyResources(new ResourcePackage(3, 4, 0, 2, 1));
+		initialize();
+
+		Player p1 = model.getCurrentPlayer();
+		p1.modifyResources(new ResourcePackage(5, 5, 5, 5, 5));
 		model.tradeOffer(-1, -1, 1, 0, 0);
-		Player p1 = model.getMe();
 
 		Player p2 = model.getTableOrder().get(0);
 		Player p3 = model.getTableOrder().get(1);
@@ -457,7 +458,10 @@ public class ModelWriterTest {
 					model.respondTrade(l);
 			}
 		}
-		assertEquals("vermute equals von ResourcePAckage ist falsch (Philipp)",new ResourcePackage(3, 4, 0, 2, 1), model.getCurrentPlayer().getResources());
+		System.out.println(model.getMe());
+		System.out.println(model.getCurrentPlayer());
+		assertTrue(new ResourcePackage(1004, 1004, 1006, 1005, 1005).equals(model.getCurrentPlayer().getResources()));
+		//assertEquals("vermute equals von ResourcePAckage ist falsch (Philipp)",new ResourcePackage(3, 4, 0, 2, 1), model.getCurrentPlayer().getResources());
 	}
 	
 	

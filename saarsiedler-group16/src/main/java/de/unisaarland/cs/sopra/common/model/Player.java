@@ -18,7 +18,7 @@ public class Player {
 	public void modifyResources(ResourcePackage resourcePackage) {
 		if (resourcePackage == null) throw new IllegalArgumentException();
 		resources.add(resourcePackage);
-		if (this.resources.hasNegativeResources()) throw new IllegalArgumentException();
+		if (this.resources.hasNegativeResources()) throw new IllegalArgumentException("zu viel abgezogen");
 	}
 	
 	public boolean checkResourcesSufficient(ResourcePackage resourcePackage) {

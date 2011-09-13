@@ -1250,7 +1250,7 @@ public class Model implements ModelReader, ModelWriter {
 			throw new IllegalArgumentException(destination + " is null");
 		Path dest = getPath(destination);
 		if (dest.hasStreet())
-			throw new IllegalArgumentException("Strasse bereits vorhanden");
+			throw new IllegalArgumentException("Strasse bereits vorhanden und gehört: "+dest.getStreetOwner()+ " und nicht: "+ getCurrentPlayer());
 		if (getRound() != 0) {
 			if (getCurrentPlayer() == me
 					&& getCurrentPlayer().checkResourcesSufficient(

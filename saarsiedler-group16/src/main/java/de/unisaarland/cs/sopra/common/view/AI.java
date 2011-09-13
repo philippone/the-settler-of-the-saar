@@ -22,7 +22,7 @@ public class AI extends View{
 	}
 	
 	public void executeBestStrategy(){
-		s.compute();
+		s.execute(modelReader, controllerAdapter);
 	}
 
 	@Override
@@ -71,12 +71,12 @@ public class AI extends View{
 	@Override
 	// a seven was diced
 	public void eventRobber() {
-		s = RobberStrategy(controllerAdapter);
+		s = new RobberStrategy();
 	}
 
 	@Override
 	public void eventTrade(ResourcePackage resourcePackage) {
-		s = new TradeStrategy(controllerAdapter);
+		s = new TradeStrategy();
 	}
 
 	@Override
