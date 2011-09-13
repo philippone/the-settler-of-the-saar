@@ -182,12 +182,6 @@ public class ModelTest {
 		 
 		 assertEquals(currentLongestRoad.size(),expectedLongestRoad.size());
 		 //assertTrue(expectedLongestRoad.containsAll(currentLongestRoad));
-		 for (List<Path> road: currentLongestRoad){
-			 System.out.println(road);
-		 }
-		 for (List<Path> road: expectedLongestRoad){
-			 System.out.println(road);
-		 }
 		 assertTrue(currentLongestRoad.containsAll(expectedLongestRoad) && expectedLongestRoad.containsAll(currentLongestRoad));
 		 
 		 // claim longest Road:Road1
