@@ -1,9 +1,13 @@
 package de.unisaarland.cs.sopra.common.model;
 
+import java.util.List;
+
 public class Player {
 
 	private ResourcePackage resources;
 	private int victoryPoints;
+	private List<List<Path>> lrlist;
+	private List<Building> blist;
 	
 	public Player() {
 		this.resources = new ResourcePackage(0,0,0,0,0);
@@ -31,6 +35,22 @@ public class Player {
 
 	public int getVictoryPoints() {
 		return victoryPoints;
+	}
+	
+	public List<List<Path>> getLrlist() {
+		return lrlist;
+	}
+
+	public void setLrlist(List<List<Path>> lrlist) {
+		this.lrlist = lrlist;
+	}
+
+	public List<Building> getBlist() {
+		return blist;
+	}
+
+	public void setBlist(List<Building> blist) {
+		this.blist = blist;
 	}
 	
 }

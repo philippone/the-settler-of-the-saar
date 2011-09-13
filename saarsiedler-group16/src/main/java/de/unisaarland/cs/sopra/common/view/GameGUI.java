@@ -79,7 +79,7 @@ public class GameGUI extends View implements Runnable{
 	
 	
 	GameGUI(long meID, ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player,String> playerNames, Setting setting) throws Exception {
-		super(meID, modelReader, controllerAdapter);
+		super(modelReader, controllerAdapter);
 		this.modelReader = modelReader;
 		this.setting = setting;
 		this.playerNames = playerNames;
@@ -339,7 +339,7 @@ public class GameGUI extends View implements Runnable{
 	}
 
 	@Override
-	public void eventNewRound(boolean itsMyTurn) {
+	public void eventNewRound() {
 		throw new UnsupportedOperationException();
 	}
 
