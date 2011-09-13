@@ -521,7 +521,10 @@ public class Model implements ModelReader, ModelWriter {
 		// TODO initialPahse geht evtl IMMER noch nicht ebenso in buildings
 		Set<Path> res = new HashSet<Path>();
 		if(getRound()==0){
-			res= getPathsFromIntersection(initVillageIntersection);
+			for(Path noStreet :getPathsFromIntersection(initVillageIntersection)){
+				if(!noStreet.hasStreet())
+					res.add(noStreet);
+			}
 		}else{
 			Iterator<Path> it = getPathIterator();
 			while (it.hasNext()) {
@@ -1621,6 +1624,7 @@ public class Model implements ModelReader, ModelWriter {
 					if (nachbar.hasOwner())
 						buildable = false;
 				}
+				if(intersection.hasOwner()) buildable=false;
 				boolean hasLand = false;
 				for (Field nachbarField : getFieldsFromIntersection(intersection)) {
 					if (nachbarField.getFieldType() != FieldType.WATER)
@@ -1639,6 +1643,7 @@ public class Model implements ModelReader, ModelWriter {
 						if (nachbar.hasOwner())
 							buildable = false;
 					}
+					if(intersection.hasOwner()) buildable=false;
 					if (buildable)
 						ret.add(intersection);
 				}
