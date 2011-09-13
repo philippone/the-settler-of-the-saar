@@ -113,7 +113,7 @@ public class ModelTest {
 		 longRoad1.add(model.getPath(new Location(1,1,4)));
 		 longRoad2.add(model.getPath(new Location(1,1,4)));
 		 longRoad3.add(model.getPath(new Location(1,1,4)));
-		 
+		
 		 //model.buildStreet(new Location(1,1,3));
 		 model.getPath(new Location(1,1,3)).createStreet(owner);
 		 //model.buildStreet(new Location(2,0,5));
@@ -180,7 +180,7 @@ public class ModelTest {
 		 longRoad1.add(model.getPath(new Location(2,1,2)));
 		 longRoad1.add(model.getPath(new Location(2,2,3)));
 		 // 1 fertig
-		 
+		
 		 // gegnerisches Dorf
 		 //model.buildSettlement(new Location(2,2,3), BuildingType.Village);
 		 model.getIntersection(new Location(2,2,3)).createBuilding(BuildingType.Village,gegner);
