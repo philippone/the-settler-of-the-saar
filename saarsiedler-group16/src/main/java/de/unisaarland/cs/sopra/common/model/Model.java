@@ -167,7 +167,55 @@ public class Model implements ModelReader, ModelWriter {
 		// we obtain all finished roads
 		
 		roadList=keepOnlyLongestRoads(roadList);	
+		roadList=rankRoads(roadList,player);
+		
+		List<List<Path>> reversedRoadList =new ArrayList<List<Path>>();
+		for(List<Path> road: roadList){
+			reversedRoadList.add(reverseRoad(road));
+		}
+		roadList.addAll(reversedRoadList);
 		return roadList;
+	}
+	
+	private List<Path> reverseRoad(List<Path> road){
+		List<Path> reversedRoad =new ArrayList<Path>();
+		reversedRoad.addAll(road);
+		Collections.reverse(reversedRoad);
+		return reversedRoad;
+	}
+	
+	private List<List<Path>> rankRoads(List<List<Path>> roadList,Player player){
+		List<List<Path>> roadList1=new ArrayList<List<Path>>();
+		for (List<Path>road: roadList){
+			road=rankRoad(road, player);
+			roadList1.add(road);
+		}
+		return roadList1;
+	}
+	
+	private List<Path> rankRoad(List<Path> road,Player player){
+		List<Path> road1=new ArrayList<Path>();
+		List<Intersection>roadExtremities=searchRoadExtremities(road, player);
+		// returning the intersections trough what we can continue the road
+		Intersection i=roadExtremities.get(0);
+		// we'll rank the road from this extremity
+		Set<Path>sp=getPathsFromIntersection(i);
+		Path p1=road.get(0);
+		for (Path p2:sp){
+			if (road.contains(p2)) p1=p2;
+		}
+		road1.add(p1);
+		// we'll rank the road from this path p1
+		while (road1.size()<road.size()){
+			
+			for (Path p:road){
+				if (p!=null && getPathsFromPath(p1).contains(p) && !road1.contains(p)) {
+					road1.add(p);
+					p1=p;
+				}
+			}
+		}
+		return road1;
 	}
 	
 	private List<List<Path>> continueAllRoads(List<List<Path>> roadList,Player player){
