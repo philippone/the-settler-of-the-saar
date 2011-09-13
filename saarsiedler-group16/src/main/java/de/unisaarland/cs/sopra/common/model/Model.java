@@ -1302,6 +1302,7 @@ public class Model implements ModelReader, ModelWriter {
 			reversedPlayersList = !reversedPlayersList;
 		}
 		initPlayer++;
+		initVillageIntersection=null;
 	}
 
 	/*
@@ -1319,11 +1320,15 @@ public class Model implements ModelReader, ModelWriter {
 		Intersection i = getIntersection(location);
 		// System.out.println("In: " + i);
 		if (getRound() == 0) {
+			if(initVillageIntersection!=null)throw new IllegalStateException("in runde 0 darf kein Village direkt nach einem Village gebaut werden");
+			if(buildableVillageIntersections(getCurrentPlayer()).contains(i)){ // wenn i buildable, do it
 			i.createBuilding(buildingType, getCurrentPlayer());
-			for (ModelObserver ob : modelObserver) {
-				ob.updateSettlementCount(buildingType);
-				ob.updateVictoryPoints();
-				ob.updateIntersection(i);
+				for (ModelObserver ob : modelObserver) {
+					ob.updateSettlementCount(buildingType);
+					ob.updateVictoryPoints();
+					ob.updateIntersection(i);
+				}
+			initVillageIntersection=i; // setzt letzte Intersection auf der wahrend init gebaut wurde
 			}
 		} else {
 			// System.out.println("Buildable: "+isBuildable(i, buildingType)+
@@ -1624,6 +1629,7 @@ public class Model implements ModelReader, ModelWriter {
 					if (nachbar.hasOwner())
 						buildable = false;
 				}
+				// ist intersection bereits bebaut?
 				if(intersection.hasOwner()) buildable=false;
 				boolean hasLand = false;
 				for (Field nachbarField : getFieldsFromIntersection(intersection)) {
