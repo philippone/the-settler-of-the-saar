@@ -166,15 +166,11 @@ public class Model implements ModelReader, ModelWriter {
 		roadList=continueAllRoads(roadList,player);
 		// we obtain all finished roads
 		
-		roadList=keepOnlyLongestRoads(roadList);
-		System.out.println(roadList.get((int) Math.random()*roadList.size()));
-		System.out.println(roadList.size());
-		
+		roadList=keepOnlyLongestRoads(roadList);	
 		return roadList;
 	}
 	
 	private List<List<Path>> continueAllRoads(List<List<Path>> roadList,Player player){
-		System.out.println(roadList.size());
 		List<List<Path>> rList;
 		// the roads we'll obtain while lengthening one
 		List<List<Path>> roadList1;
@@ -230,7 +226,6 @@ public class Model implements ModelReader, ModelWriter {
 			if (road2!=null && road2.size() >= maxsize) roadList1.add(road2);
 			// we take only the longest road(s)and we return these
 		}
-		System.out.println(maxsize);
 		return roadList1;
 	}
 
@@ -1330,14 +1325,21 @@ public class Model implements ModelReader, ModelWriter {
 		if (road.size() >= 5) {
 			List<Path> lr = new LinkedList<Path>();
 			boolean rightPlayer = false;
+			int i = 1;
 			for(Location l : road) {
 				Path p = getPath(l);
-				lr.add(p);
-				if (p.getStreetOwner().equals(getCurrentPlayer())) {
-					rightPlayer = true;
-				} else {
-					rightPlayer = false; 
-					break;
+				Set<Path> s = getPathsFromPath(p);
+				if (s.contains(getPath(road.get(i)))) {
+					if (i <= road.size()) {
+						i++;
+					}
+					lr.add(p);
+					if (p.getStreetOwner().equals(getCurrentPlayer())) {
+						rightPlayer = true;
+					} else {
+						rightPlayer = false; 
+						break;
+					}
 				}
 			}
 			if (rightPlayer) {
@@ -1401,7 +1403,7 @@ public class Model implements ModelReader, ModelWriter {
 		path_source.removeCatapult();
 		path_dest.createCatapult(owner);
 
-		if (owner.checkResourcesSufficient(Catapult.getAttackcatapultprice()))
+		if (!(owner.checkResourcesSufficient(Catapult.getAttackcatapultprice())))
 			throw new IllegalStateException(
 					"not enough money on the bankaccount!");
 		owner.modifyResources(Catapult.getAttackcatapultprice());
@@ -1438,15 +1440,15 @@ public class Model implements ModelReader, ModelWriter {
 			long victimPlayer, Resource stolenResource) {
 		// TODO (Philipp)
 		// Wenn Wasser drumherum
-		boolean water = false;
+		boolean hasLand = false;
 		for(Field f : getFieldsFromField(getField(destinationField))) {
-			if (f.getFieldType() == FieldType.WATER)
-				water = true;
-			else 
-				water = false;
-				break;
+			if (f.getFieldType() != FieldType.WATER){
+				hasLand = true;
+			}
 		}
-		if (water == false) {
+		if (!hasLand)
+			throw new IllegalArgumentException("Can not put a robber on water");
+		else {		
 			getField(sourceField).setRobber(false);
 			getField(destinationField).setRobber(true);
 			playerMap.get(victimPlayer).getResources().modifyResource(stolenResource, -1);
