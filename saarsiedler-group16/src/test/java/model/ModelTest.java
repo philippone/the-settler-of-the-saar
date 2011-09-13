@@ -90,10 +90,10 @@ public class ModelTest {
 		 List< List<Path> > expectedLongestRoad = new ArrayList<List<Path>>();
 		 List<Path> longRoad0 = new LinkedList<Path>();
 		 List<Path> longRoad1 = new LinkedList<Path>();
-		 List<Path> longRoad3 = new LinkedList<Path>();
-		 expectedLongestRoad.add(longRoad0);
-		 expectedLongestRoad.add(longRoad1);
-		 expectedLongestRoad.add(longRoad3);
+		 List<Path> longRoad2 = new LinkedList<Path>();		
+		 List<Path> reversedLongRoad0 = new LinkedList<Path>();
+		 List<Path> reversedLongRoad1 = new LinkedList<Path>();
+		 List<Path> reversedLongRoad2 = new LinkedList<Path>();
 		 
 		 model.getIntersection(new Location(1,1,0)).createBuilding(BuildingType.Village, owner); 
 		 model.getIntersection(new Location(2,0,3)).createBuilding(BuildingType.Village, owner); 
@@ -132,6 +132,8 @@ public class ModelTest {
 		 longRoad0.add(model.getPath(new Location(1,2,3)));
 		 longRoad0.add(model.getPath(new Location(1,2,2)));
 		 longRoad0.add(model.getPath(new Location(1,2,1)));
+		 reversedLongRoad0.addAll(longRoad0);
+		 Collections.reverse(reversedLongRoad0);
 		 
 		 longRoad1.add(model.getPath(new Location(3,2,3)));
 		 longRoad1.add(model.getPath(new Location(3,1,2)));
@@ -145,19 +147,23 @@ public class ModelTest {
 		 longRoad1.add(model.getPath(new Location(2,1,3)));
 		 longRoad1.add(model.getPath(new Location(2,1,2)));
 		 longRoad1.add(model.getPath(new Location(2,2,3)));
+		 reversedLongRoad1.addAll(longRoad1);
+		 Collections.reverse(reversedLongRoad1);
 		 
-		 longRoad3.add(model.getPath(new Location(2,2,3)));
-		 longRoad3.add(model.getPath(new Location(2,1,2)));
-		 longRoad3.add(model.getPath(new Location(2,1,3)));
-		 longRoad3.add(model.getPath(new Location(2,0,2)));
-		 longRoad3.add(model.getPath(new Location(2,0,3)));
-		 longRoad3.add(model.getPath(new Location(2,0,4)));
-		 longRoad3.add(model.getPath(new Location(2,0,5)));
-		 longRoad3.add(model.getPath(new Location(1,1,3)));
-		 longRoad3.add(model.getPath(new Location(1,1,2)));
-		 longRoad3.add(model.getPath(new Location(1,2,3)));
-		 longRoad3.add(model.getPath(new Location(1,2,2)));
-		 longRoad3.add(model.getPath(new Location(1,2,1)));
+		 longRoad2.add(model.getPath(new Location(2,2,3)));
+		 longRoad2.add(model.getPath(new Location(2,1,2)));
+		 longRoad2.add(model.getPath(new Location(2,1,3)));
+		 longRoad2.add(model.getPath(new Location(2,0,2)));
+		 longRoad2.add(model.getPath(new Location(2,0,3)));
+		 longRoad2.add(model.getPath(new Location(2,0,4)));
+		 longRoad2.add(model.getPath(new Location(2,0,5)));
+		 longRoad2.add(model.getPath(new Location(1,1,3)));
+		 longRoad2.add(model.getPath(new Location(1,1,2)));
+		 longRoad2.add(model.getPath(new Location(1,2,3)));
+		 longRoad2.add(model.getPath(new Location(1,2,2)));
+		 longRoad2.add(model.getPath(new Location(1,2,1)));
+		 reversedLongRoad2.addAll(longRoad2);
+		 Collections.reverse(reversedLongRoad2);
 		 
 		 // gegnerisches Dorf und Strassen
 		 model.getIntersection(new Location(2,2,3)).createBuilding(BuildingType.Village,gegner);
@@ -165,31 +171,18 @@ public class ModelTest {
 		 model.getPath(new Location(2,2,1)).createStreet(gegner);
 		 model.getPath(new Location(2,2,0)).createStreet(gegner);
 		 
+		 expectedLongestRoad.add(longRoad0);
+		 expectedLongestRoad.add(longRoad1);
+		 expectedLongestRoad.add(longRoad2);
+		 expectedLongestRoad.add(reversedLongRoad0);
+		 expectedLongestRoad.add(reversedLongRoad1);
+		 expectedLongestRoad.add(reversedLongRoad2);
+		 
 		 List<List<Path>> currentLongestRoad = model.calculateLongestRoads(owner);
 		 
 		 assertEquals(currentLongestRoad.size(),expectedLongestRoad.size());
-		 boolean b=true;
-		 boolean a;
-		 for (List<Path> road1: expectedLongestRoad){
-			 a=false;
-			 for (List<Path> road2: currentLongestRoad){
-				 a=a | (road1.containsAll(road2));
-				 // one road2 must respond to road1
-			 }
-			 b=b && a;
-			 // each road1 must have its road2
-		 }
-		 assertTrue("expextedLongestRoad contains currentLongestRoad",b);
-		 
-		 b=true;
-		 for (List<Path> road1: currentLongestRoad){
-			 a=false;
-			 for (List<Path> road2: expectedLongestRoad){
-				 a=a | (road1.containsAll(road2));
-			 }
-			 b=b && a;
-		 }
-		 assertTrue("currentLongestRoad contains expectedLongestRoad",b);
+		 //assertTrue(expectedLongestRoad.containsAll(currentLongestRoad));
+		 assertTrue(currentLongestRoad.containsAll(expectedLongestRoad) && expectedLongestRoad.containsAll(currentLongestRoad));
 		 
 		 // claim longest Road:Road1
 		 //model.longestRaodClaimed(Model.getLocationList(longRoad0));
