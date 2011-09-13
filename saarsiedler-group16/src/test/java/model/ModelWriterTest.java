@@ -400,8 +400,12 @@ public class ModelWriterTest {
 	public void buildStreet_resourcesTest(){
 		initialize();
 		model.getCurrentPlayer().modifyResources(new ResourcePackage(-1000,-1000,-1000,-1000,-1000));
+		assertEquals(new ResourcePackage(0, 0, 0, 0, 0), model.getCurrentPlayer().getResources());
+		assertEquals(model.getCurrentPlayer(), model.getMe());
 		try {
 			model.buildStreet(new Location(2, 1, 4));
+			//assertEquals(new ResourcePackage (-1,-1, 0, 0, 0), model.getCurrentPlayer().getResources());
+			assertEquals(new ResourcePackage(0, 0, 0, 0, 0), model.getCurrentPlayer().getResources());
 			fail("You shouldn't have enough resources to build that street!");
 		}
 		catch (IllegalStateException e) { /* everything is fine */ }
@@ -436,7 +440,6 @@ public class ModelWriterTest {
 		initialize();
 
 		Player p1 = model.getCurrentPlayer();
-		p1.modifyResources(new ResourcePackage(5, 5, 5, 5, 5));
 		model.tradeOffer(-1, -1, 1, 0, 0);
 
 		Player p2 = model.getTableOrder().get(0);
@@ -460,7 +463,7 @@ public class ModelWriterTest {
 		}
 		System.out.println(model.getMe());
 		System.out.println(model.getCurrentPlayer());
-		assertTrue(new ResourcePackage(1004, 1004, 1006, 1005, 1005).equals(model.getCurrentPlayer().getResources()));
+		assertTrue(new ResourcePackage(999, 999, 1001, 1000, 1000).equals(model.getCurrentPlayer().getResources()));
 		//assertEquals("vermute equals von ResourcePAckage ist falsch (Philipp)",new ResourcePackage(3, 4, 0, 2, 1), model.getCurrentPlayer().getResources());
 	}
 	
