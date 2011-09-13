@@ -22,7 +22,7 @@ public class AI extends View{
 	}
 	
 	public void executeBestStrategy(){
-		s.compute();
+		s.execute(modelReader, controllerAdapter);
 	}
 
 	@Override
