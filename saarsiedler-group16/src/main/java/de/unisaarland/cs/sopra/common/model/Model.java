@@ -1584,6 +1584,16 @@ public class Model implements ModelReader, ModelWriter {
 		if (!me.checkResourcesSufficient(robberPackage))
 			throw new IllegalStateException(
 					"Spieler kann nicht mehr Resourcen abgeben als es hat");
+		if (me.getResources().size() % 2 == 0) {
+			// ResourcePackage gerade
+			if (robberPackage.neagateResourcePackage().size() != (me.getResources().size())/2) 
+				throw new IllegalArgumentException();
+		}
+		// ungerade
+		else {
+			if (robberPackage.neagateResourcePackage().size() != (me.getResources().size()-1)/2) 
+				throw new IllegalArgumentException();
+		}
 		me.modifyResources(robberPackage);
 
 		for (ModelObserver ob : modelObserver) {
