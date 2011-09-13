@@ -272,6 +272,14 @@ public interface ModelReader {
 	 */
 	public int getBoardHeight();
 	
+	/**
+	 * @return
+	 */
 	public Player getCurrentPlayer();
+	
+	/**
+	 * @return The List of Player sorted in TableOrder
+	 */
+	public List<Player> getTableOrder();
 	
 }

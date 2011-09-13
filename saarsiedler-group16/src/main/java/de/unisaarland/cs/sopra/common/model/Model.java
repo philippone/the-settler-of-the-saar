@@ -395,17 +395,18 @@ public class Model implements ModelReader, ModelWriter {
 	}
 
 	/**
-	 * @return The List of Player sorted in TableOrder
-	 */
-	public List<Player> getTableOrder() {
-		return this.players;
-	}
-
-	/**
 	 * @return The Map containing the mapping of playerID -> Player
 	 */
 	public Map<Long, Player> getPlayerMap() {
 		return this.playerMap;
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getTableOrder()
+	 */
+	public List<Player> getTableOrder() {
+		return this.players;
 	}
 
 	/*
@@ -1257,6 +1258,7 @@ public class Model implements ModelReader, ModelWriter {
 //		System.out.println("In: " + i);
 		if (getRound() == 0) {
 			i.createBuilding(buildingType, getCurrentPlayer());
+			getCurrentPlayer().setVictoryPoints(getCurrentPlayer().getVictoryPoints()+buildingType.getVictoryPoints());
 			for (ModelObserver ob : modelObserver) {
 				ob.updateSettlementCount(buildingType);
 				ob.updateVictoryPoints();
@@ -1267,6 +1269,7 @@ public class Model implements ModelReader, ModelWriter {
 			if (isBuildable(i, buildingType) && (isAffordable(buildingType))) {
 				getCurrentPlayer().modifyResources(buildingType.getPrice());
 				i.createBuilding(buildingType, getCurrentPlayer());
+				getCurrentPlayer().setVictoryPoints(getCurrentPlayer().getVictoryPoints()+buildingType.getVictoryPoints());
 				for (ModelObserver ob : modelObserver) {
 					ob.updateResources();
 					ob.updateSettlementCount(buildingType);
