@@ -1325,7 +1325,29 @@ public class Model implements ModelReader, ModelWriter {
 	@Override
 	public void longestRoadClaimed(List<Location> road)
 			throws IllegalStateException {
-		throw new UnsupportedOperationException();
+		//TODO (Philipp)
+		if (road.size() >= 5) {
+			List<Path> lr = new LinkedList<Path>();
+			boolean rightPlayer = false;
+			for(Location l : road) {
+				Path p = getPath(l);
+				lr.add(p);
+				if (p.getStreetOwner().equals(getCurrentPlayer())) {
+					rightPlayer = true;
+				} else {
+					rightPlayer = false; 
+					break;
+				}
+			}
+			if (rightPlayer) {
+				this.longestClaimedRoad = lr;
+			} else throw new IllegalArgumentException("not the right Player");
+			
+		}
+		else {
+			throw new IllegalArgumentException("Roadsize <5");
+		}
+		//throw new UnsupportedOperationException();
 	}
 
 	/*
@@ -1414,12 +1436,22 @@ public class Model implements ModelReader, ModelWriter {
 	public void robberMoved(Point sourceField, Point destinationField,
 			long victimPlayer, Resource stolenResource) {
 		// TODO (Philipp)
-		getField(sourceField).setRobber(false);
-		getField(destinationField).setRobber(true);
-		playerMap.get(victimPlayer).getResources()
-				.modifyResource(stolenResource, -1);
-		for (ModelObserver ob : modelObserver) {
-			ob.eventRobber();
+		// Wenn Wasser drumherum
+		boolean water = false;
+		for(Field f : getFieldsFromField(getField(destinationField))) {
+			if (f.getFieldType() == FieldType.WATER)
+				water = true;
+			else 
+				water = false;
+				break;
+		}
+		if (water == false) {
+			getField(sourceField).setRobber(false);
+			getField(destinationField).setRobber(true);
+			playerMap.get(victimPlayer).getResources().modifyResource(stolenResource, -1);
+			for (ModelObserver ob : modelObserver) {
+				ob.eventRobber();
+			}
 		}
 	}
 
