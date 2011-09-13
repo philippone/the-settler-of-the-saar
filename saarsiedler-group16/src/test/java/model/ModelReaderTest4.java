@@ -287,7 +287,6 @@ public class ModelReaderTest4 {
 		Player p0 = model2.getTableOrder().get(0);
 		Player p1 = model2.getTableOrder().get(1);
 		Player p2 = model2.getTableOrder().get(2);
-		Player p3 = model2.getTableOrder().get(3);
 		
 		//set Catapults
 		model2.getPath(new Location (1,2,0)).createCatapult(p0);
@@ -307,7 +306,6 @@ public class ModelReaderTest4 {
 		assertEquals(p1Attack, model2.attackableCatapults(p1));
 		
 		assertEquals(null , model2.attackableCatapults(p2));
-		assertEquals(null , model2.attackableCatapults(p3));
 		
 		// durch eigene villages angreifen
 		model2.getIntersection(new Location(2,2,0)).createBuilding(BuildingType.Village, p0);
@@ -371,6 +369,43 @@ public class ModelReaderTest4 {
 	}
 	
 	private void setUp2() {
+		model3.getTableOrder().get(0).modifyResources(new ResourcePackage(333,333,333,333,333)); 
+		model3.getTableOrder().get(1).modifyResources(new ResourcePackage(333,333,333,333,333)); 
+		model3.getTableOrder().get(2).modifyResources(new ResourcePackage(333,333,333,333,333)); 
+		//Init-round 
+			//first Player builds first Village
+		model3.buildSettlement(new Location(0,0,1) , BuildingType.Village);
+		model3.buildStreet(new Location(0,0,1));
+			//second Player builds first Village
+		model3.buildSettlement(new Location(0,0,5) , BuildingType.Village);
+		model3.buildStreet(new Location(0,0,5));
+			//third Player builds first Village 
+		model3.buildSettlement(new Location(3,1,0) , BuildingType.Village);
+		model3.buildStreet(new Location(3,1,0));	
+			//third Player builds second Village 
+		model3.buildSettlement(new Location(3,0,0) , BuildingType.Village);
+		model3.buildStreet(new Location(3,0,0));	
+			//second Player builds second Village
+		model3.buildSettlement(new Location(1,0,5) , BuildingType.Village);
+		model3.buildStreet(new Location(1,0,5));
+			//first Player builds second Village
+		model3.buildSettlement(new Location(1,0,1) , BuildingType.Village);
+		model3.buildStreet(new Location(1,0,1));
+		
+		//new round -> first player builds
+		model3.newRound(12);
+		//BaueTowns 
+		model3.buildSettlement(new Location(1,0,1) , BuildingType.Town);
+		
+		//new round -> second player builds
+		model3.newRound(12);
+		//Bauende Towns und Catapulte bauen
+		model3.buildSettlement(new Location(1,0,5) , BuildingType.Town);
+		
+		//um model2-Variable in Testmethoden nicht ändern zu müssen:
+		model2=model3;
+		
+		/*
 		//gibt den akt. Playern alle Resourcen um Komplikationen mit build zu vermeiden.
 		model2.getTableOrder().get(0).modifyResources(new ResourcePackage(333,333,333,333,333)); 
 		model2.getTableOrder().get(1).modifyResources(new ResourcePackage(333,333,333,333,333)); 
@@ -382,8 +417,8 @@ public class ModelReaderTest4 {
 		model2.buildSettlement(new Location(0,0,5) , BuildingType.Village);
 		model2.buildStreet(new Location(0,0,5));
 			//second Player builds second Village
-		model2.buildSettlement(new Location(1,1,5) , BuildingType.Village);
-		model2.buildStreet(new Location(1,1,5));
+		model2.buildSettlement(new Location(1,0,5) , BuildingType.Village);
+		model2.buildStreet(new Location(1,0,5));
 			//first Player builds second Village
 		model2.buildSettlement(new Location(1,0,1) , BuildingType.Village);
 		model2.buildStreet(new Location(1,0,1));
@@ -398,7 +433,7 @@ public class ModelReaderTest4 {
 		model2.newRound(12);
 		//Towns (2.Player)
 		// Vorschlag: model2.buildSettlement(new Location(1,0,5, BuildingType.Village);
-		model2.buildSettlement(new Location(1,1,5) , BuildingType.Town);	// geht glaube ich nicht an dieser Location, da hie noch keine Village stand (Kommentar von Philipp) TODO
-		
+		model2.buildSettlement(new Location(1,0,5) , BuildingType.Town);	// geht glaube ich nicht an dieser Location, da hie noch keine Village stand (Kommentar von Philipp) TODO
+		*/
 	}
 }
