@@ -668,6 +668,7 @@ public class Model implements ModelReader, ModelWriter {
 			if (p.hasStreet() && p.getStreetOwner() == player)
 				sp.add(p);
 		}
+		System.err.println("Streets: "+sp+"size: "+sp.size());
 		return sp;
 	}
 
@@ -1330,7 +1331,7 @@ public class Model implements ModelReader, ModelWriter {
 				Path p = getPath(l);
 				Set<Path> s = getPathsFromPath(p);
 				if (s.contains(getPath(road.get(i)))) {
-					if (i <= road.size()) {
+					if (i < road.size()-1) {
 						i++;
 					}
 					lr.add(p);

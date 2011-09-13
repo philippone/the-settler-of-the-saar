@@ -109,10 +109,10 @@ public class ModelReaderTest4 {
 		Player currentPlayer = model2.getCurrentPlayer();
 		model2.getIntersection(new Location(1,0,1)).createBuilding(BuildingType.Village, currentPlayer);
 		// longest Road bauen
+		model2.getPath(new Location(1,0,0)).createStreet(currentPlayer);
 		model2.getPath(new Location(1,0,1)).createStreet(currentPlayer);
-		model2.getPath(new Location(1,0,2)).createStreet(currentPlayer);
-		model2.getPath(new Location(2,0,5)).createStreet(currentPlayer);
-		model2.getPath(new Location(2,0,3)).createStreet(currentPlayer);
+		model2.getPath(new Location(2,0,0)).createStreet(currentPlayer);
+		model2.getPath(new Location(2,0,1)).createStreet(currentPlayer);
 		model2.getPath(new Location(2,0,2)).createStreet(currentPlayer);
 		//longest Road claim
 		List<List<Path>> longestRoad = model2.calculateLongestRoads(currentPlayer);
