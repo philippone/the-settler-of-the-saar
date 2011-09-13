@@ -56,7 +56,7 @@ public class ResourcePackage {
 	}
 	
 	public void modifyResource(Resource resource, int modifyCount) {
-		if (resource == null) throw new IllegalArgumentException();
+		if (resource == null) return;
 		resources.put(resource, resources.get(resource)+modifyCount);
 	}
 	
