@@ -1445,15 +1445,15 @@ public class Model implements ModelReader, ModelWriter {
 			long victimPlayer, Resource stolenResource) {
 		// TODO (Philipp)
 		// Wenn Wasser drumherum
-		boolean water = false;
+		boolean hasLand = false;
 		for(Field f : getFieldsFromField(getField(destinationField))) {
-			if (f.getFieldType() == FieldType.WATER)
-				water = true;
-			else 
-				water = false;
-				break;
+			if (f.getFieldType() != FieldType.WATER){
+				hasLand = true;
+			}
 		}
-		if (water == false) {
+		if (!hasLand)
+			throw new IllegalArgumentException("Can not put a robber on water");
+		else {		
 			getField(sourceField).setRobber(false);
 			getField(destinationField).setRobber(true);
 			playerMap.get(victimPlayer).getResources().modifyResource(stolenResource, -1);
