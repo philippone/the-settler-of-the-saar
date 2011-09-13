@@ -150,7 +150,7 @@ public class ModelReaderTest4 {
 		
 		canSet.add(model1.getField(new Point(1, 0)));
 		canSet.add(model1.getField(new Point(1, 1)));
-		canSet.add(model1.getField(new Point(1, 2)));
+//		canSet.add(model1.getField(new Point(1, 2)));  //desert-> robber = true;
 	
 		canSet.add(model1.getField(new Point(2, 0)));
 		canSet.add(model1.getField(new Point(2, 1)));
