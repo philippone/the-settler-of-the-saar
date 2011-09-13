@@ -10,7 +10,8 @@ public abstract class View implements ModelObserver{
 	protected ControllerAdapter controllerAdapter;
 	
 	View(ModelReader modelReader, ControllerAdapter controllerAdapter) {
-		//TODO: implement it!
+		this.modelReader = modelReader;
+		this.controllerAdapter = controllerAdapter;
 	}
 	
 }
