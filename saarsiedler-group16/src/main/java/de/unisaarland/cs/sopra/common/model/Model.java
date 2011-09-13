@@ -653,7 +653,7 @@ public class Model implements ModelReader, ModelWriter {
 		Intersection i;
 		while (ii.hasNext()) {
 			i = ii.next();
-			System.out.println("IOwner: "+ i.getOwner());
+			//System.out.println("IOwner: "+ i.getOwner());
 			if (i.getOwner() == player && i.getBuildingType() == buildingType)
 				si.add(i);
 		}
