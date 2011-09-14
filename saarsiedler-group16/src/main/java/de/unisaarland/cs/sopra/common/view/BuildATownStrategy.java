@@ -1,8 +1,5 @@
 package de.unisaarland.cs.sopra.common.view;
 
-import java.io.IOException;
-
-import java.util.HashSet;
 import java.util.Set;
 
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
@@ -11,33 +8,31 @@ import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.FieldType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
-import de.unisaarland.cs.sopra.common.model.Path;
 
-public class InitializeStrategy implements Strategy {
+public class BuildATownStrategy implements Strategy {
 
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
-		if (mr.getMe() == mr.getCurrentPlayer()){
-		Set<Intersection> intersections =mr.buildableVillageIntersections(mr.getMe());
-		
+		// TODO Auto-generated method stub
+		if (mr.affordableSettlements(BuildingType.Town)>0){
+			Intersection bestIntersection=chooseBestIntersection(mr);
+			ca.buildSettlement(bestIntersection, BuildingType.Town);
+		}
+	}
+
+	private Intersection chooseBestIntersection(ModelReader mr){
 		Intersection bestIntersection=null;
+		Set<Intersection> intersections=mr.buildableTownIntersections(mr.getCurrentPlayer());
 		float bestValue=0;
 		float value;
-		for (Intersection i : intersections){
+		for (Intersection i: intersections){
 			value=evaluateIntersection(mr,i);
 			if (value>=bestValue){
-				bestIntersection=i;
 				bestValue=value;
+				bestIntersection=i;
 			}
 		}
-		
-		ca.buildSettlement(bestIntersection, BuildingType.Village);
-		Set<Path> neighbourPaths = mr.buildableStreetPaths(mr.getMe());
-		
-		Path path = neighbourPaths.iterator().next();	
-		ca.buildStreet(path);
-		}
-		
+		return bestIntersection;
 	}
 	
 	private float evaluateIntersection(ModelReader mr,Intersection i){
@@ -55,31 +50,11 @@ public class InitializeStrategy implements Strategy {
 			else if (n==5 || n==9) numberValue=(float)(numberValue+0.110);
 			else if (n==6 || n==8) numberValue=(float)(numberValue+0.140);
 			type=field.getFieldType();
-			if (type==FieldType.FOREST || type==FieldType.HILLS)resourceValue=(float)(resourceValue+0.19);
-			else if (type==FieldType.PASTURE || type==FieldType.FIELDS) resourceValue=(float)(resourceValue+0.95);
-			else if (type==FieldType.MOUNTAINS) resourceValue=(float)(resourceValue+0.0475);
+			if (type==FieldType.DESERT || type==FieldType.WATER)resourceValue=(float)(resourceValue+0.00);
+			else resourceValue=(float)(resourceValue+0.19);
 		}
 		intersectionValue=resourceValue+numberValue;
 		return intersectionValue;
 	}
-//	
-//	private float evaluatePath(ModelReader mr,Path p){
-//	
-//		Set<Path> neighbourPaths = mr.getPathsFromPath(p);
-//		Set<Path> buildablePaths = new HashSet<Path>();
-//		for (Path p1 : neighbourPaths){
-//			if (mr.buildableStreetPaths(mr.getMe()).contains(p1)) {
-//				buildablePaths.add(p1);
-//			}
-//			Path path = buildablePaths.iterator().next();	
-//			}
-//		}
-//		return pathValue;
-//	}
 	
-	
-	public int evaluate(){
-		// TODO implement this method
-		return 0;
-	}
 }

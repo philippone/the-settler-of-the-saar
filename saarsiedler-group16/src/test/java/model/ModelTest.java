@@ -389,8 +389,8 @@ public class ModelTest {
 		model.newRound(12);
 		assertEquals(1, model.getRound());
 		assertNotSame(0, model.getRound());
-		
 	}
+	
 	/**
 	 * Angriff gegen gegnerische Village und Town - erfolgreich (beide male)
 	 */
