@@ -13,20 +13,20 @@ public class GameListUpdater implements MatchListUpdater {
 
 	@Override
 	public void newMatch(MatchInformation info) {
-		// TODO Auto-generated method stub
-//		table.
+		buttonlistener.refreshGameList();
 	}
 
 	@Override
 	public void removedMatch(long matchId) {
-		// TODO Auto-generated method stub
+		buttonlistener.refreshGameList();
 		
 
 	}
 
 	@Override
 	public void matchUpdate(MatchInformation info) {
-		// TODO Auto-generated method stub
+		buttonlistener.refreshGameList();
+		buttonlistener.refreshPlayerList();
 
 	}
 
