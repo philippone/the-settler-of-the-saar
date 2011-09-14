@@ -166,7 +166,7 @@ public class AI extends View{
 	@Override
 	// a seven was diced
 	public void eventRobber() {
-		s = new RobberStrategy();
+		s = new MoveRobberStrategy();
 		executeBestStrategy();
 	}
 
