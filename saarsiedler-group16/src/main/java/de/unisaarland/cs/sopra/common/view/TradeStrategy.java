@@ -22,5 +22,8 @@ public class TradeStrategy implements Strategy {
 			e.printStackTrace();
 		}
 	}
-
+	public int evaluate(){
+		// TODO implement this method
+		return 0;
+	}
 }
