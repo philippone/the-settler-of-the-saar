@@ -1,16 +1,14 @@
 package de.unisaarland.cs.sopra.common;
 
-import javax.swing.JTable;
-
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchListUpdater;
 
 public class GameListUpdater implements MatchListUpdater {
 	
-	private JTable table;
+	private ButtonListener buttonlistener;
 
-	public GameListUpdater(JTable table) {
-		this.table = table;
+	public GameListUpdater(ButtonListener buttonlistener) {
+		this.buttonlistener = buttonlistener;
 	}
 
 	@Override
@@ -22,6 +20,7 @@ public class GameListUpdater implements MatchListUpdater {
 	@Override
 	public void removedMatch(long matchId) {
 		// TODO Auto-generated method stub
+		
 
 	}
 
