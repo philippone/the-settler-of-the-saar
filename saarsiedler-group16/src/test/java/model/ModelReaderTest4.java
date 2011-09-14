@@ -1,22 +1,19 @@
 package model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
 import java.util.TreeSet;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
 
-import de.unisaarland.cs.sopra.common.PlayerColors;
-import de.unisaarland.cs.sopra.common.Setting;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.HarborType;
@@ -27,7 +24,6 @@ import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Point;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
-import de.unisaarland.cs.sopra.common.view.GameGUI;
 
 public class ModelReaderTest4 {
 	private Model model1;
@@ -135,12 +131,7 @@ public class ModelReaderTest4 {
 	@Test
 	public void testGetCurrentVictoryPoints() {
 		assertEquals(0,model2.getCurrentVictoryPoints(model2.getTableOrder().get(0)));
-		// in Runde 1 gehen
-//		model2.newRound(8);
 
-		// current Player genug Resourcen geben
-		Player currentPlayer = model2.getCurrentPlayer();
-//		currentPlayer.modifyResources(new ResourcePackage(10000,10000,10000,10000,10000));
 		// eigenes Haus um Victory-P zu erhoehen
 		model2.buildSettlement(new Location(1,0,1), BuildingType.Village);
 		
@@ -210,7 +201,7 @@ public class ModelReaderTest4 {
 	
 	@Test
 	public void testGetFieldIterator() {
-		Iterator it = model1.getFieldIterator();
+		Iterator<Field> it = model1.getFieldIterator();
 		assertEquals(model1.getField(new Point(0, 0)), it.next());
 		assertEquals(model1.getField(new Point(0, 1)), it.next());
 		assertEquals(model1.getField(new Point(0, 2)), it.next());
@@ -218,16 +209,6 @@ public class ModelReaderTest4 {
 		assertEquals(model1.getField(new Point(1, 1)), it.next());
 		assertEquals(model1.getField(new Point(1, 2)), it.next());	
 	}
-	
-//	@Test
-//	public void testGetPathIterator() {
-//		
-//	}
-	
-//	@Test
-//	public void testGetIntersectionIterator() {
-//		
-//	}
 	
 	@Test
 	public void testGetHarborIntersections() {
@@ -307,13 +288,13 @@ public class ModelReaderTest4 {
 		p1Attack.add(model2.getPath(new Location(1,3,4)));
 		assertEquals(p1Attack, model2.attackableCatapults(p1));
 		
-		assertEquals(null , model2.attackableCatapults(p2));
+		assertEquals(new HashSet<Path>() , model2.attackableCatapults(p2));
 		
 		// durch eigene villages angreifen
 		model2.getIntersection(new Location(2,2,0)).createBuilding(BuildingType.Village, p0);
 		assertEquals(p0Attack, model2.attackableCatapults(p0));
 		// durch fremde villages angreifen
-		assertEquals(null , model2.attackableCatapults(p1));
+		assertEquals(new HashSet<Path>() , model2.attackableCatapults(p1));
 	}
 	
 	@Test

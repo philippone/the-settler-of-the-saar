@@ -64,7 +64,7 @@ public class ModelTest2 {
 	@Test
 	public void testMaxVillages(){
 		 int currentMV = model.getMaxBuilding(BuildingType.Village);
-		 int expectedMV =  9;
+		 int expectedMV =  5;
 		 assertEquals("MaxVillages did not match those given in the WorldRepresentation ",
 				 currentMV, expectedMV);
 		

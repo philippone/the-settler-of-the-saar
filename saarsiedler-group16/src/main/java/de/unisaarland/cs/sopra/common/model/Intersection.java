@@ -21,7 +21,7 @@ public class Intersection {
 	}
 	
 	public Player getOwner() {
-		if (building == null) return null;
+		if (building == null) throw new IllegalArgumentException();
 		return this.building.getOwner();
 	}
 	

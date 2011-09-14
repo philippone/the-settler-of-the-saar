@@ -94,6 +94,7 @@ public class GameGUI extends View implements Runnable{
 	
 	public GameGUI(ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player,String> playerNames, Setting setting) throws Exception {
 		super(modelReader, controllerAdapter);
+		this.modelReader.addModelObserver(this);
 		this.setting = setting;
 		this.playerNames = playerNames;
 		this.uiMode = RESOURCE_VIEW;
@@ -427,21 +428,21 @@ public class GameGUI extends View implements Runnable{
 		   uiFont.drawString(1000, 84, ""+modelReader.getResources().getResource(Resource.WOOL), Color.black);
 		   uiFont.drawString(1000, 116, ""+modelReader.getResources().getResource(Resource.GRAIN), Color.black);
 		   uiFont.drawString(1000, 147, ""+modelReader.getResources().getResource(Resource.ORE), Color.black);
-		   uiFont.drawString(1000, 178, ""+ village, Color.black);
+		   uiFont.drawString(1000, 178, ""+ village + "/" + modelReader.getMaxBuilding(BuildingType.Village), Color.black);
 		   uiFont.drawString(1000, 209, ""+ town + "/" + modelReader.getMaxBuilding(BuildingType.Town), Color.black);
 		   uiFont.drawString(1000, 240, ""+ catapult + "/" + modelReader.getMaxVictoryPoints(), Color.black);
 	}
 
 	public void drawTradeMenu() {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 	
 	public void drawBuildMenu() {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 	
 	public void drawResource() {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 	
 	public String getName(Player player) {
@@ -451,27 +452,27 @@ public class GameGUI extends View implements Runnable{
 
 	@Override
 	public void updatePath(Path path) {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 
 	@Override
 	public void updateIntersection(Intersection intersection) {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 
 	@Override
 	public void updateField(Field field) {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 
 	@Override
 	public void updateResources() {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 
 	@Override
 	public void updateVictoryPoints() {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 
 	@Override
@@ -493,27 +494,27 @@ public class GameGUI extends View implements Runnable{
 
 	@Override
 	public void eventRobber() {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 
 	@Override
 	public void eventTrade(ResourcePackage resourcePackage) {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 
 	@Override
 	public void eventNewRound() {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 
 	@Override
 	public void updateTradePossibilities() {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 
 	@Override
 	public void eventPlayerLeft(long playerID) {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 	
 	@Override
@@ -822,7 +823,7 @@ public class GameGUI extends View implements Runnable{
 	public static void saveFile(String filename, InputStream inputStr) throws IOException {
 		   FileOutputStream fos = new FileOutputStream(filename);
 		   int len = -1;
-		   byte[] buffer = new byte[1024];
+		   byte[] buffer = new byte[4096];
 		   while ((len = inputStr.read(buffer)) != -1) {
 		      fos.write(buffer,0,len);
 		   }
@@ -831,8 +832,7 @@ public class GameGUI extends View implements Runnable{
 
 	@Override
 	public void initTurn() {
-		// TODO Auto-generated method stub
-		
+		//TODO: implement it!
 	}
 	
 	

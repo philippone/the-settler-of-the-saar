@@ -69,7 +69,7 @@ public class ModelReaderTest2 {
 		int maxTowns=model.getMaxBuilding(BuildingType.Town);
 		assertTrue(maxTowns==5);
 		int maxVillages=model.getMaxBuilding(BuildingType.Village);
-		assertTrue(maxVillages==9);
+		assertTrue(maxVillages==5);
 	}
 	
 	@Test
