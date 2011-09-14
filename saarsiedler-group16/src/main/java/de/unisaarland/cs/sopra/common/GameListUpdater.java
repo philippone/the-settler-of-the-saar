@@ -26,7 +26,7 @@ public class GameListUpdater implements MatchListUpdater {
 	@Override
 	public void matchUpdate(MatchInformation info) {
 		buttonlistener.refreshGameList();
-		if (Client.matchInfo != null) {
+		if (Client.matchInfo != null) { 
 			buttonlistener.refreshPlayerList();
 		}
 	}
