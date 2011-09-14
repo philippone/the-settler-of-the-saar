@@ -10,15 +10,16 @@ import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 
 public class BuildATownStrategy implements Strategy {
-
+Strategy s;
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
 		// TODO Auto-generated method stub
 		if (mr.affordableSettlements(BuildingType.Town)>0){
 			Intersection bestIntersection=chooseBestIntersection(mr);
 			ca.buildSettlement(bestIntersection, BuildingType.Town);
-		}
-	}
+		} else 
+			 s = new TradeStrategy();
+	}	
 	
 	private Intersection chooseBestIntersection(ModelReader mr){
 		Intersection bestIntersection=null;
