@@ -22,9 +22,10 @@ public class BuildVillage implements Strategy {
 
 	}
 	public int evaluate(){
+		// TODO implement this method
 		return 0;
 	}
-
+	
 	private float evaluateIntersectionValue(ModelReader mr, Intersection i) {
 		float intersectionValue = (float)(0.0);
 		float fieldNumberValue = (float)(0.0);
@@ -48,7 +49,7 @@ public class BuildVillage implements Strategy {
 				else if (n==6 || n==8) 
 					fieldNumberValue= (float) (fieldNumberValue + 0.140);
 				type=field.getFieldType();
-				if (type==FieldType.FOREST || type==FieldType.HILLS || type==FieldType.PASTURE || type==FieldType.FIELDS || type==FieldType.MOUNTAINS) fieldTypeValue =(float)(fieldTypeValue+0.19);
+				if (type==FieldType.FOREST || type==FieldType.HILLS || type==FieldType.PASTURE || type==FieldType.FIELDS || type==FieldType.MOUNTAINS) fieldTypeValue =(float)(fieldTypeValue+0.10);
 
 			intersectionValue=fieldTypeValue+fieldNumberValue;
 		}
@@ -69,4 +70,6 @@ public class BuildVillage implements Strategy {
 		}
 		return bestIntersection;
 	}
+	
+	
 }
