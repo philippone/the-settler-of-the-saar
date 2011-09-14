@@ -12,7 +12,7 @@ public class Path {
 	}
 	
 	public Player getCatapultOwner() {
-		if (this.catapult == null) throw new IllegalArgumentException(); //TODO evtl null zurueckgeben
+		if (this.catapult == null) throw new IllegalArgumentException();
 		return this.catapult.getOwner();
 	}
 	

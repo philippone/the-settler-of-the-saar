@@ -1,14 +1,22 @@
 package de.unisaarland.cs.sopra.common.view;
 
+import static de.unisaarland.cs.sopra.common.PlayerColors.BLACK;
+import static de.unisaarland.cs.sopra.common.PlayerColors.BLUE;
+import static de.unisaarland.cs.sopra.common.PlayerColors.BROWN;
+import static de.unisaarland.cs.sopra.common.PlayerColors.GREEN;
+import static de.unisaarland.cs.sopra.common.PlayerColors.ORANGE;
+import static de.unisaarland.cs.sopra.common.PlayerColors.PURPLE;
+import static de.unisaarland.cs.sopra.common.PlayerColors.RED;
+import static de.unisaarland.cs.sopra.common.PlayerColors.WHITE;
+import static de.unisaarland.cs.sopra.common.PlayerColors.YELLOW;
+
 import java.awt.Font;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,7 +25,6 @@ import java.util.Map;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 import org.newdawn.slick.Color;
@@ -44,7 +51,6 @@ import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
-import static de.unisaarland.cs.sopra.common.PlayerColors.*;
 
 public class GameGUI extends View implements Runnable{
 
@@ -784,12 +790,12 @@ public class GameGUI extends View implements Runnable{
 				return new long[] {};
 			}
 		};
-		WorldRepresentation worldrep = new WorldRepresentation(1, 1, 2, 9, 5, 4,  
+		/*WorldRepresentation worldrep = new WorldRepresentation(1, 1, 2, 9, 5, 4,  
 				new byte[] {1},
 				new byte[] {1,4,
 							2,5,    
 							3,6},
-				new byte[] {});
+				new byte[] {});*/
 		Model model = new Model(/*worldrep*/WorldRepresentation.getDefault(), matchinfo, 0);
 		model.matchStart(new long[] {0,1}, new byte[]   {2,3,4,
 														 6,8,9,10,
@@ -837,7 +843,7 @@ public class GameGUI extends View implements Runnable{
 	
 	
 	/*
-	 		String[] list = new String[] {
+	 	String[] list = new String[] {
 				"jinput-dx8_64.dll", "jinput-dx8.dll", "jinput-raw_64.dll",
 				"jinput-raw.dll", "libjinput-linux.so", "libjinput-linux64.so",
 				"libjinput-osx.jnilib", "liblwjgl.jnilib", "liblwjgl.so",

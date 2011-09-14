@@ -1,19 +1,20 @@
 package model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import java.awt.Point;
 import java.io.IOException;
 import java.util.Random;
-import java.util.Set;
 
 import org.junit.Test;
 
+import de.unisaarland.cs.sopra.common.model.HarborType;
 import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
-import de.unisaarland.cs.sopra.common.model.HarborType;
 
 public class PathTest {
 
@@ -40,6 +41,7 @@ public class PathTest {
 		assertFalse(p.hasCatapult());
 	}
 	
+	//Testet init phase //TODO: teste normale runde
 	@Test
 	public void testStreet() throws IOException {
 		Random r = new Random();
@@ -54,32 +56,39 @@ public class PathTest {
 		assertTrue(p.hasStreet());
 		assertEquals(pl,p.getStreetOwner());
 		
+		
+		
 		Model model = TestUtil.getStandardModel1();
 		
+		
 		(model.getPath(new Location(1,1,2))).createStreet(pl);
-		try {
-			model.buildStreet(new Location(0,0,1));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 		// on the middle of the sea
 		try {
-			model.buildStreet(new Location(0,0,2));
+			model.buildStreet(new Location(0,0,1));
+			fail("No Street on Water");
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//Expect this
 		}
+		
 		// on the border beetween water and land
 		try {
-			model.buildStreet(new Location(1,1,1));
+			model.buildStreet(new Location(0,1,2));
+			//Expect this
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail("Street can be build here");
 		}
+		
 		// on the middle of the land
+		try {
+			model.buildStreet(new Location(1,1,1));
+			//Expect this
+		} catch (Exception e) {
+			fail("Street can be build here");
+		}
+		
 		assertFalse(model.getPath(new Location(0,0,1)).hasStreet());
-		assertTrue(model.getPath(new Location(0,0,2)).hasStreet());
+		assertTrue(model.getPath(new Location(0,1,2)).hasStreet());
 		assertTrue(model.getPath(new Location(1,1,1)).hasStreet());
 	}
 	
