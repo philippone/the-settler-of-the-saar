@@ -1,6 +1,7 @@
 package de.unisaarland.cs.sopra.common.view;
 
 import java.awt.Point;
+import java.io.IOException;
 import java.util.Set;
 
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
@@ -8,15 +9,45 @@ import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Intersection;
+import de.unisaarland.cs.sopra.common.model.Resource;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public class MoveRobberStrategy implements Strategy{
 
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
+		ResourcePackage myrp = mr.getMe().getResources().copy();
+		if (myrp.size() > 7){
+			int give = myrp.size()/2;
+			Resource max = Resource.LUMBER;
+			ResourcePackage tmp = new ResourcePackage();
+			while (give > 0){
+				// find the resource that you have most
+				for (Resource r : Resource.values())
+					max = myrp.getResource(r)>myrp.getResource(max)?r:max;
+				myrp.modifyResource(max, -1);
+				tmp.modifyResource(max, 1);
+				give--;
+			}
+			// return the resources
+			try {
+				ca.returnResources(tmp);
+			} catch (IllegalStateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		// TODO Auto-generated method stub
 		Player player=mr.getCurrentPlayer();
 		Field sourceField =chooseBestSource(player, mr);
 		Field destinationField=chooseBestDestination(player, mr);
+		
 		ca.moveRobber(sourceField, destinationField,chooseVictim(player, destinationField, mr));
 	}
 	

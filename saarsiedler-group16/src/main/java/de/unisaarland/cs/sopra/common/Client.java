@@ -26,12 +26,20 @@ public class Client {
 	}
 	
 	
-	public JoinResult joinMatch(int matchID, boolean asObserver) {
-		throw new UnsupportedOperationException();
+	public void joinMatch(long matchID, boolean asObserver) {
+		try {
+			JoinResult res=Client.connection.joinMatch(Client.matchInfo.getId(), asObserver);
+			if(res==JoinResult.ALREADY_RUNNING
+					|| res==JoinResult.CLOSED
+					|| res==JoinResult.FULL
+					|| res==JoinResult.NOT_EXISTING)
+				throw new IllegalStateException("Running/closed/full/not_existing");
+			} catch (Exception e) {e.printStackTrace();}
 	}
 	
-	public MatchInformation createMatch(String title, int numPlayer, WorldRepresentation world, boolean asObserver) {
-		throw new UnsupportedOperationException();
+	public void createMatch(String title, int numPlayer, WorldRepresentation world, boolean asObserver) {
+		try {	//erstellt Match udn setzt aktuelle Matchinfo auf das erstellste spiel
+			matchInfo = connection.newMatch(title, numPlayer,world, asObserver);	} catch (Exception e) {	e.printStackTrace();}
 	}
 	
 	public void ready(boolean ready) {
@@ -77,8 +85,9 @@ public class Client {
 		return this.connection;
 	}
 	
-	public void changeName(String name){
-		throw new UnsupportedOperationException();
+	public static void changeName(String name){
+		try {
+			Client.connection.changeName(name);} catch (Exception e) {e.printStackTrace();	}
 	}
 	
 }
