@@ -1686,7 +1686,7 @@ public class Model implements ModelReader, ModelWriter {
 	 * (de.unisaarland.cs.sopra.common.model.Player)
 	 */
 	@Override
-	public Set<Intersection> buildableVillageIntersections(Player player) {
+	public Set<Intersection> buildableVillageIntersections(Player player){
 		// TODO initial klappt evtl IMMER noch nicht
 		if (player == null)
 			throw new IllegalArgumentException(player + " is null");
