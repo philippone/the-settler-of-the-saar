@@ -1,6 +1,10 @@
 package de.unisaarland.cs.sopra.common;
 
-import de.unisaarland.cs.sopra.common.model.*;
+import de.unisaarland.cs.sopra.common.model.BuildingType;
+import de.unisaarland.cs.sopra.common.model.Field;
+import de.unisaarland.cs.sopra.common.model.Intersection;
+import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public interface ModelObserver {
 

@@ -54,7 +54,8 @@ import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 
 public class GameGUI extends View implements Runnable{
 
-	private Map<Player,String> playerNames;
+	private Map<Long, String> playerNames;
+	private String gameTitle;
 	private Setting setting;
 	private Map<FieldType,Texture> fieldTextureMap;
 	private HashMap<BuildingType, Texture> intersectionTextureMap;
@@ -64,6 +65,7 @@ public class GameGUI extends View implements Runnable{
 	private List<Field> renderFieldList;
 	private Texture streetTexture;
 	private Texture catapultTexture;
+	private Texture robberTexture;
 	private int x,y,z;
 	private int maxX, maxY, maxZ;
 	private int minX, minY, minZ;
@@ -98,13 +100,14 @@ public class GameGUI extends View implements Runnable{
 	
 	private Map<Player,PlayerColors> colorMap;
 	
-	public GameGUI(ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player,String> playerNames, Setting setting) throws Exception {
+	public GameGUI(ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Long, String> names, Setting setting, String gameTitle) throws Exception {
 		super(modelReader, controllerAdapter);
 		this.modelReader.addModelObserver(this);
+		this.playerNames = names;
 		this.setting = setting;
-		this.playerNames = playerNames;
 		this.uiMode = RESOURCE_VIEW;
 		this.selectionMode = NONE;
+		this.gameTitle = gameTitle;
 		windowWidth = setting.getDisplayMode().getWidth();
 		windowHeight = setting.getDisplayMode().getHeight();
 		aspectRatio = ((float)windowWidth)/windowHeight;
@@ -212,11 +215,21 @@ public class GameGUI extends View implements Runnable{
 			   fy = f.getLocation().getY()*215;
 			   break;
 		   }
-		   GL11.glPushMatrix();
-		   fieldTextureMap.get(f.getFieldType()).bind();  
+		   GL11.glPushMatrix(); 
 		   setColor(BLACK);
 		   GL11.glTranslatef(fx+x, fy+y, 0+z);
-		   drawSquareMid(300, 300);
+		   fieldTextureMap.get(f.getFieldType()).bind(); 
+		   if (f.hasRobber()) {
+			   drawSquareMid(300, 300);
+			   GL11.glTranslatef(-50, 0, 0);
+			   robberTexture.bind();
+			   drawSquareMid(60, 60);
+			   GL11.glTranslatef(100, 0, 0);
+		   }
+		   else {
+			   drawSquareMid(300, 300);
+		   }
+		   
 		   if (f.getFieldType() != FieldType.DESERT && f.getFieldType() != FieldType.WATER) { 
 			   numberTextureMap.get(f.getNumber()).bind();
 			   drawSquareMid(300, 300);
@@ -374,9 +387,6 @@ public class GameGUI extends View implements Runnable{
 		case PATHS:
 			break;
 		}
-		
-		     
-		
 	}
 	
 	private void renderUI(String name, int x, int y, int z, int width, int height) {
@@ -558,7 +568,7 @@ public class GameGUI extends View implements Runnable{
 	private void init() {
 		try {//Display.getDesktopDisplayMode()
 			Display.setDisplayMode(setting.getDisplayMode());
-			Display.setTitle("Die Siedler von der Saar");
+			Display.setTitle("Die Siedler von der Saar @ " + gameTitle);
 			Display.setVSyncEnabled(true);
 			Display.setFullscreen(setting.isFullscreen());
 			Display.create();
@@ -591,7 +601,7 @@ public class GameGUI extends View implements Runnable{
 		
 			streetTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Street.png"));
 			catapultTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Catapult.png"));
-			
+			robberTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Robber.png"));
 			
 			uiTextureMap = new HashMap<String,Texture>();
 			uiTextureMap.put("Background", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Background.png")));
@@ -796,12 +806,18 @@ public class GameGUI extends View implements Runnable{
 							2,5,    
 							3,6},
 				new byte[] {});*/
+		Map<Long,String> names = new HashMap<Long,String>();
+		names.put(0L, "Ichbinkeinreh");
+		names.put(1L, "Herbert");
 		Model model = new Model(/*worldrep*/WorldRepresentation.getDefault(), matchinfo, 0);
 		model.matchStart(new long[] {0,1}, new byte[]   {2,3,4,
 														 6,8,9,10,
 														 11,12,11,10,
 														 9,8,6,5,
 														 2,6,9});
+		
+		model.getTableOrder().get(0).modifyResources(new ResourcePackage(100,200,140,130,120));
+		
 		model.buildSettlement(new Location(3,3,0), BuildingType.Village);
 		model.buildStreet(new Location(3,3,0));
 		
@@ -816,13 +832,16 @@ public class GameGUI extends View implements Runnable{
 		
 		model.newRound(3);
 		
+		model.buildSettlement(new Location(3,3,0), BuildingType.Town);
+		model.buildCatapult(new Location(3,3,0), true);
+		
 		//Setting setting = new Setting(new DisplayMode(1920, 1080), true);
 		//Setting setting = new Setting(new DisplayMode(1280, 1024), true);
 		//Setting setting = new Setting(new DisplayMode(800, 600), true);
 		//Setting setting = new Setting(new DisplayMode(400, 300), true);
 		Setting setting = new Setting(Display.getDesktopDisplayMode(), true, PlayerColors.RED);
 		
-		GameGUI gameGUI = new GameGUI(model, null, null, setting);
+		GameGUI gameGUI = new GameGUI(model, null, names, setting, "TestSpiel");
 		new Thread(gameGUI).start();
 	}
 	
@@ -840,8 +859,8 @@ public class GameGUI extends View implements Runnable{
 	public void initTurn() {
 		//TODO: implement it!
 	}
-	
-	
+
+		
 	/*
 	 	String[] list = new String[] {
 				"jinput-dx8_64.dll", "jinput-dx8.dll", "jinput-raw_64.dll",

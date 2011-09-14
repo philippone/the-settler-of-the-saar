@@ -152,7 +152,6 @@ public class ModelReaderTest2 {
 	
 	@Test
 	public void testBuildableStreetPaths() {
-
 		
 		model.buildSettlement(new Location(0,0,0), BuildingType.Village);
 		model.buildStreet(new Location(0,0,0));

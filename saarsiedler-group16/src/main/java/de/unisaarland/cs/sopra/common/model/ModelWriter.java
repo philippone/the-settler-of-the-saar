@@ -49,6 +49,7 @@ public interface ModelWriter {
 	/**
 	 * @param players
 	 * @param number
+	 * @param names 
 	 */
 	public void matchStart(long[] players, byte[] number);
 	

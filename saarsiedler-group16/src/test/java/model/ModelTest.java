@@ -8,7 +8,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -17,11 +16,8 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.lwjgl.opengl.DisplayMode;
 
 import de.unisaarland.cs.sopra.common.ModelObserver;
-import de.unisaarland.cs.sopra.common.PlayerColors;
-import de.unisaarland.cs.sopra.common.Setting;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.Intersection;
@@ -31,7 +27,6 @@ import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Point;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
-import de.unisaarland.cs.sopra.common.view.GameGUI;
 import de.unisaarland.cs.st.saarsiedler.comm.results.AttackResult;
 
 
@@ -394,8 +389,8 @@ public class ModelTest {
 		model.newRound(12);
 		assertEquals(1, model.getRound());
 		assertNotSame(0, model.getRound());
-		
 	}
+	
 	/**
 	 * Angriff gegen gegnerische Village und Town - erfolgreich (beide male)
 	 */
@@ -909,7 +904,7 @@ public class ModelTest {
 	 * Angriff gegen eigene Village und Town - erfolgreich (beide male), aber habe selbst genug Villages
 	 */
 	@Test
-	public void testAttackOwnSettlement8(){	
+	public void testAttackOwnSettlement8(){		
 		//gibt den akt. Playern alle Resourcen um Komplikationen mit build zu vermeiden.
 		model.getTableOrder().get(0).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 
 		model.getTableOrder().get(1).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 

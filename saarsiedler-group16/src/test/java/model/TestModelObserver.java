@@ -23,6 +23,7 @@ public class TestModelObserver implements ModelObserver {
 	public boolean updateTradePossibilities;
 	public boolean eventPlayerLeftCalled;
 	private boolean initTurn;
+	private boolean receiveNames;
 	
 		@Override
 		public void updatePath(Path path) {
@@ -95,6 +96,14 @@ public class TestModelObserver implements ModelObserver {
 
 		public boolean isInitTurn() {
 			return initTurn;
+		}
+
+		public void setReceiveNames(boolean receiveNames) {
+			this.receiveNames = receiveNames;
+		}
+
+		public boolean isReceiveNames() {
+			return receiveNames;
 		}
 
 	

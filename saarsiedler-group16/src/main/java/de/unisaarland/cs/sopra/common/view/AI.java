@@ -1,14 +1,44 @@
 package de.unisaarland.cs.sopra.common.view;
 
+import de.unisaarland.cs.sopra.common.controller.Controller;
+import java.util.Map;
+
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.Intersection;
+import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
+import de.unisaarland.cs.st.saarsiedler.comm.Connection;
+import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
+import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 
 public class AI extends View{
+	
+	public static void main(String[] args){
+		
+		
+		
+		try {
+			Connection c = Connection.establish("sopra.cs.uni-saarland.de", true);
+			WorldRepresentation wr = WorldRepresentation.getDefault();
+			MatchInformation mi = c.newMatch("K(a)I!", 1, wr, false);
+			Model m = new Model(wr, mi, c.getClientId());
+			Controller cont = new Controller(c, m);
+			ControllerAdapter contAdap = new ControllerAdapter(cont, m);
+			AI ai = new AI(m, contAdap);
+			m.addModelObserver(ai);
+			c.changeReadyStatus(true);
+			cont.mainLoop();
+			System.out.println("Das Spiel war erfolgreich! =)");
+		} catch (Exception e){
+			System.out.println("Das Spiel war nicht erflogreich!");
+			e.printStackTrace();
+		}
+	}
 
 	Strategy s;
 	
@@ -21,10 +51,12 @@ public class AI extends View{
 		s = new DoNothingStrategy();
 	}
 	
-	public void executeBestStrategy(){
+	public void executeBestStrategy() {
+		try{
 		s.execute(modelReader, controllerAdapter);
+		}
+	catch (Exception e){ e.printStackTrace(); }
 	}
-
 	@Override
 	public void updatePath(Path path) {
 		// TODO
@@ -65,18 +97,20 @@ public class AI extends View{
 
 	@Override
 	public void eventPlayerLeft(long playerID) {
-		// TODO Auto-generated method stub
+		 controllerAdapter.setEndOfGame(modelReader.getMe() == modelReader.getPlayerMap().get(playerID));
 	}
 
 	@Override
 	// a seven was diced
 	public void eventRobber() {
 		s = new RobberStrategy();
+		executeBestStrategy();
 	}
 
 	@Override
 	public void eventTrade(ResourcePackage resourcePackage) {
 		s = new TradeStrategy();
+		executeBestStrategy();
 	}
 
 	@Override
@@ -95,8 +129,9 @@ public class AI extends View{
 	}
 
 	@Override
-	public void initTurn() {
-		// TODO Auto-generated method stub
+	public void initTurn() { 
+		s = new InitializeStrategy();
+		executeBestStrategy();
 		
 	}
 	
