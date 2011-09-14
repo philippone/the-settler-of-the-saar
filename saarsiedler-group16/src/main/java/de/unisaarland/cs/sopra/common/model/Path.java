@@ -71,7 +71,7 @@ public class Path {
 	
 	@Override
 	public String toString() {
-		return String.format("Loc:%s; HarbourType:%s; Street:%s; Catapult:%s", location, street, catapult, harborType);
+		return String.format("Loc:%s; Street:%s; Catapult:%s; HarbourType:%s;", location, street, catapult, harborType);
 	}
 	
 }

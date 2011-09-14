@@ -24,10 +24,13 @@ public class AI extends View{
 		s = new DoNothingStrategy();
 	}
 	
-	public void executeBestStrategy(){
+	public void executeBestStrategy() {
+		try{
 		s.execute(modelReader, controllerAdapter);
+		
+		}
+	catch (Exception e){}
 	}
-
 	@Override
 	public void updatePath(Path path) {
 		// TODO
@@ -99,7 +102,8 @@ public class AI extends View{
 
 	@Override
 	public void initTurn() {
-		// TODO Auto-generated method stub
+		s = new InitializeStrategy();
+		executeBestStrategy();
 		
 	}
 

@@ -957,20 +957,24 @@ public class Model implements ModelReader, ModelWriter {
 	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getHarborTypes(de.
 	 * unisaarland.cs.sopra.common.model.Player)
 	 */
-	@Override
+	@Override //TODO evtl ueberarbeiten da langsam
 	public Set<HarborType> getHarborTypes(Player player) {
 		Set<HarborType> sht = new HashSet<HarborType>();
 		Iterator<Path> iter = getPathIterator();
 		while (iter.hasNext()) {
 			Path p = iter.next();
 			if (p.getHarborType() != null) {
-				for (Field f : getFieldsFromPath(iter.next())) {
+				for (Field f : getFieldsFromPath(p)) {
 					if (f.hasRobber()) {
 						sht.remove(p);
 						break;
 					}
 					else {
-						sht.add(p.getHarborType());
+						for (Intersection i : getIntersectionsFromPath(p)) {
+							if (i.hasOwner() && i.getOwner() == getCurrentPlayer())
+								sht.add(p.getHarborType());
+						}
+						
 					}
 				}
 			}
@@ -1573,10 +1577,12 @@ public class Model implements ModelReader, ModelWriter {
 		else {
 			getField(sourceField).setRobber(false);
 			getField(destinationField).setRobber(true);
-			playerMap.get(victimPlayer).getResources()
-					.modifyResource(stolenResource, -1);
-			for (ModelObserver ob : modelObserver) {
-				ob.eventRobber();
+			if (playerMap.containsKey(victimPlayer)) {
+				playerMap.get(victimPlayer).getResources()
+						.modifyResource(stolenResource, -1);
+				for (ModelObserver ob : modelObserver) {
+					ob.eventRobber();
+				}
 			}
 		}
 	}
