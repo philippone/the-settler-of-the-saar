@@ -113,7 +113,8 @@ public class AI extends View{
 	}
 	
 	public void evaluateBestStrategy(){
-		s = new DoNothingStrategy();
+		s = new BuildStreetStrategy();
+	//	s = new DoNothingStrategy();
 	}
 	
 	public void executeBestStrategy() {
