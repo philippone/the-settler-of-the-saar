@@ -150,7 +150,8 @@ public class ModelReaderTest2 {
 	
 	@Test
 	public void testBuildableStreetPaths() {
- 		String[] list = new String[] {
+ 		/*
+		String[] list = new String[] {
 				"jinput-dx8_64.dll", "jinput-dx8.dll", "jinput-raw_64.dll",
 				"jinput-raw.dll", "libjinput-linux.so", "libjinput-linux64.so",
 				"libjinput-osx.jnilib", "liblwjgl.jnilib", "liblwjgl.so",
@@ -199,7 +200,7 @@ public class ModelReaderTest2 {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		new Thread(gameGUI).start();
+		new Thread(gameGUI).start(); */
 		
 		model.buildSettlement(new Location(0,0,0), BuildingType.Village);
 		model.buildStreet(new Location(0,0,0));
