@@ -19,7 +19,7 @@ public class BuildATownStrategy implements Strategy {
 			ca.buildSettlement(bestIntersection, BuildingType.Town);
 		}
 	}
-
+	
 	private Intersection chooseBestIntersection(ModelReader mr){
 		Intersection bestIntersection=null;
 		Set<Intersection> intersections=mr.buildableTownIntersections(mr.getCurrentPlayer());
