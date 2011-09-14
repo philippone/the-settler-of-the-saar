@@ -19,13 +19,12 @@ public class InitializeStrategy implements Strategy {
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
 		if (mr.getMe() == mr.getCurrentPlayer()){
 		Set<Intersection> intersections =mr.buildableVillageIntersections(mr.getMe());
-			Intersection i = intersections.iterator().next();
+		/*	Intersection i = intersections.iterator().next();
 			ca.buildSettlement(i, BuildingType.Village);
 			Set<Path> paths = mr.buildableStreetPaths(mr.getMe());
 			Path p = paths.iterator().next();
-			ca.buildStreet(p);
-		/*	
-=======
+			ca.buildStreet(p);*/
+	
 		
 		Intersection bestIntersection=null;
 		float bestValue=0;
@@ -36,7 +35,7 @@ public class InitializeStrategy implements Strategy {
 				bestIntersection=i;
 				bestValue=value;
 			}
->>>>>>> branch 'master' of sopra:gruppe16.git
+
 		}
 		
 		ca.buildSettlement(bestIntersection, BuildingType.Village);
@@ -44,7 +43,7 @@ public class InitializeStrategy implements Strategy {
 		
 		Path path = neighbourPaths.iterator().next();	
 		ca.buildStreet(path);
-		*/
+		
 		}
 	}
 	
@@ -63,9 +62,9 @@ public class InitializeStrategy implements Strategy {
 			else if (n==5 || n==9) numberValue=(float)(numberValue+0.110);
 			else if (n==6 || n==8) numberValue=(float)(numberValue+0.140);
 			type=field.getFieldType();
-			if (type==FieldType.FOREST || type==FieldType.HILLS)resourceValue=(float)(resourceValue+0.19);
-			else if (type==FieldType.PASTURE || type==FieldType.FIELDS) resourceValue=(float)(resourceValue+0.95);
-			else if (type==FieldType.MOUNTAINS) resourceValue=(float)(resourceValue+0.0475);
+			if (type==FieldType.FOREST || type==FieldType.HILLS || type==FieldType.PASTURE ||
+					type==FieldType.FIELDS || type==FieldType.MOUNTAINS)
+							resourceValue =(float)(resourceValue+0.10);
 		}
 		intersectionValue=resourceValue+numberValue;
 		return intersectionValue;

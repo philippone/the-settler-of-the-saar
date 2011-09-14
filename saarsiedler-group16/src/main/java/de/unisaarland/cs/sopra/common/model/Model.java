@@ -1357,6 +1357,11 @@ public class Model implements ModelReader, ModelWriter {
 						act.initTurn();
 				}
 			}
+			else {
+				for (Field f : getFieldsFromIntersection(initLastVillageIntersection)) {
+					initLastVillageIntersection.generateGain(f.getResource());
+				}
+			}
 		}
 	}
 
@@ -1734,8 +1739,8 @@ public class Model implements ModelReader, ModelWriter {
 	@Override
 	public void returnResources(int lumber, int brick, int wool, int grain,
 			int ore) {
-		ResourcePackage robberPackage = new ResourcePackage(lumber, brick,
-				wool, grain, ore);
+		ResourcePackage robberPackage = new ResourcePackage(-lumber, -brick,
+				-wool, -grain, -ore);
 		if (!me.checkResourcesSufficient(robberPackage))
 			throw new IllegalStateException(
 					"Spieler kann nicht mehr Resourcen abgeben als es hat");

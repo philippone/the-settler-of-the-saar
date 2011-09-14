@@ -143,11 +143,15 @@ public class ControllerAdapter {
 		Point p = Model.getLocation(sourceField);
 		Point p2 = Model.getLocation(destinationField);
 		Set<Long> keySet = model.getPlayerMap().keySet();
-		for (Long l : keySet) {
-			Player player = model.getPlayerMap().get(l);
-			if (player.equals(victimPlayer))
-				controller.moveRobber(p, p2, l);
-		}
+		if (victimPlayer != null){
+			for (Long l : keySet) {
+				Player player = model.getPlayerMap().get(l);
+				if (player.equals(victimPlayer)){
+					controller.moveRobber(p, p2, l);
+					break;
+				}
+			}
+		} else controller.moveRobber(p, p2, -1);
 	}
 	
 	/**
