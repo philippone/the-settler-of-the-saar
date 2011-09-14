@@ -1,6 +1,7 @@
 package de.unisaarland.cs.sopra.common.model;
 
 import java.util.List;
+import java.util.Map;
 
 import de.unisaarland.cs.st.saarsiedler.comm.results.AttackResult;
 
@@ -49,8 +50,9 @@ public interface ModelWriter {
 	/**
 	 * @param players
 	 * @param number
+	 * @param names 
 	 */
-	public void matchStart(long[] players, byte[] number);
+	public void matchStart(long[] players, byte[] number, Map<Long, String> names);
 	
 	
 	/**

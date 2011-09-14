@@ -8,7 +8,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -17,11 +16,8 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.lwjgl.opengl.DisplayMode;
 
 import de.unisaarland.cs.sopra.common.ModelObserver;
-import de.unisaarland.cs.sopra.common.PlayerColors;
-import de.unisaarland.cs.sopra.common.Setting;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.Intersection;
@@ -31,7 +27,6 @@ import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Point;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
-import de.unisaarland.cs.sopra.common.view.GameGUI;
 import de.unisaarland.cs.st.saarsiedler.comm.results.AttackResult;
 
 
@@ -909,58 +904,7 @@ public class ModelTest {
 	 * Angriff gegen eigene Village und Town - erfolgreich (beide male), aber habe selbst genug Villages
 	 */
 	@Test
-	public void testAttackOwnSettlement8(){
-	 	String[] list = new String[] {
-				"jinput-dx8_64.dll", "jinput-dx8.dll", "jinput-raw_64.dll",
-				"jinput-raw.dll", "libjinput-linux.so", "libjinput-linux64.so",
-				"libjinput-osx.jnilib", "liblwjgl.jnilib", "liblwjgl.so",
-				"liblwjgl64.so", "libopenal.so", "libopenal64.so",
-				"lwjgl.dll", "lwjgl64.dll", "openal.dylib", "OpenAL32.dll", "OpenAL64.dll" };
-		String tmpdir = System.getProperty("java.io.tmpdir");
-		for (String act : list) {
-			InputStream input = ClassLoader.getSystemClassLoader().getResourceAsStream("native/" + act);
-			try {
-				GameGUI.saveFile(tmpdir + "/" + act, input);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		String seperator;
-		if (System.getProperty("sun.desktop") != null && System.getProperty("sun.desktop").equals("windows")) seperator = ";";
-		else seperator = ":";
-		System.setProperty("java.library.path", System.getProperty("java.library.path") + seperator + tmpdir);
-		java.lang.reflect.Field vvv = null;
-		try {
-			vvv = ClassLoader.class.getDeclaredField("sys_paths");
-		} catch (SecurityException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (NoSuchFieldException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		vvv.setAccessible(true); 
-		try {
-			vvv.set(null, null);
-		} catch (IllegalArgumentException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IllegalAccessException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		Setting setting = new Setting(new DisplayMode(1024,580), true, PlayerColors.RED);
-		GameGUI gameGUI = null;
-		try {
-			gameGUI = new GameGUI(model, null, null, setting);
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		new Thread(gameGUI).start();
-		
+	public void testAttackOwnSettlement8(){		
 		//gibt den akt. Playern alle Resourcen um Komplikationen mit build zu vermeiden.
 		model.getTableOrder().get(0).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 
 		model.getTableOrder().get(1).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 
