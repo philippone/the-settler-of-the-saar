@@ -5,6 +5,8 @@ import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.lwjgl.opengl.DisplayMode;
+
 import de.unisaarland.cs.sopra.common.controller.Controller;
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.Model;
@@ -14,6 +16,8 @@ import de.unisaarland.cs.sopra.common.view.AI;
 import de.unisaarland.cs.sopra.common.view.GameGUI;
 import de.unisaarland.cs.sopra.common.view.View;
 import de.unisaarland.cs.st.saarsiedler.comm.*;
+import de.unisaarland.cs.st.saarsiedler.comm.GameEvent.EventType;
+import de.unisaarland.cs.st.saarsiedler.comm.GameEvent.MatchStart;
 import de.unisaarland.cs.st.saarsiedler.comm.results.*;
 
 public class Client {
@@ -21,7 +25,7 @@ public class Client {
 	public static Connection connection;
 	public static MatchInformation matchInfo;
 	private static GUIFrame clientGUI;
-	private Setting setting;
+	private static Setting setting;
 	private static WorldRepresentation worldRepo;
 	public static boolean joinAsAI;
 	
@@ -51,6 +55,7 @@ public class Client {
 	
 	public static void ready(boolean ready) {
 		ChangeReadyResult result = null;
+		
 		try {
 			result = connection.changeReadyStatus(ready);
 		} catch(Exception e) {
@@ -84,22 +89,22 @@ public class Client {
 			Client.connection.changeName(name);} catch (Exception e) {e.printStackTrace();	}
 	}
 
-	public Model buildModel() {
+	public static Model buildModel() {
 		try {
 			return new Model(worldRepo,matchInfo, connection.getClientId());
 		} catch (IOException e) {e.printStackTrace();}
 		throw new IllegalStateException("couldnt build model");
 	}
 	
-	public Controller buildController(ModelWriter modelWriter) {
+	public static Controller buildController(ModelWriter modelWriter) {
 		return new Controller(connection, modelWriter);
 	}
 	
-	public View buildAI(Controller controller, Model model) {
+	public AI buildAI(Controller controller, Model model) {
 		return new AI(model, new ControllerAdapter(controller, model));
 	}
 	
-	public View buildGameGUI(Controller controller, Model model, long[] playerIds) {
+	public static GameGUI buildGameGUI(Controller controller, Model model, long[] playerIds) {
 		Map<Long, String> iDsToNames = new TreeMap<Long, String>();
 		for (long l : playerIds) {  // erstellt long-> names map
 			try {
@@ -112,15 +117,40 @@ public class Client {
 		throw new IllegalStateException("couldnt build GameGui");
 	}
 	
-	public void initializeMatch() {
+	public static void initializeMatch() {
 		Model m = buildModel();
 		Controller c = buildController(m);
 		
 		if(joinAsAI){
 			//TODO kb drauf
 		}else{
+			GameEvent event = null;
 			
-			View v = buildGameGUI(c, m, playerIds);
+			setting = new Setting(new DisplayMode(1024,580), true, PlayerColors.RED); //TODO change this!
+			
+			try {
+				event = connection.getNextEvent(10000);
+			} catch (Exception e) {e.printStackTrace();	}
+			//wenn event hier noch null ist, dann wurde kein event geliefert
+			if(event==null) throw new IllegalStateException("kein event erhalten");
+			
+			if(!(event.getType()!=EventType.MATCH_END)) throw new IllegalArgumentException("sollte ein MatchStart liefert");
+			MatchStart startEvent = ((MatchStart)event);
+			GameGUI gui = buildGameGUI(c, m, startEvent.getPlayerIds());
+			m.addModelObserver(gui);
+			
+			long[] players = startEvent.getPlayerIds();
+			byte[] number = startEvent.getNumbers();
+			m.matchStart(players, number);
+			
+			System.out.println("Das Spiel war erfolgreich! =)");
+			new Thread(gui).start();
+			try {
+				Thread.sleep(5000);
+				c.mainLoop();
+			} catch (Exception e) {e.printStackTrace();
+			}
+			
 		}
 	}
 	
