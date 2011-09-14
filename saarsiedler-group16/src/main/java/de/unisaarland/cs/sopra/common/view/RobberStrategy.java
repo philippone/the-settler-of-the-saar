@@ -12,13 +12,13 @@ public class RobberStrategy implements Strategy {
 
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) {
-		ResourcePackage myrp = mr.getMe().getResources();
+		ResourcePackage myrp = mr.getMe().getResources().copy();
 		if (myrp.size() > 7){
 			int give = myrp.size()/2;
+			Resource max = Resource.LUMBER;
 			ResourcePackage tmp = new ResourcePackage();
 			while (give > 0){
 				// find the resource that you have most
-				Resource max = null;
 				for (Resource r : Resource.values())
 					max = myrp.getResource(r)>myrp.getResource(max)?r:max;
 				myrp.modifyResource(max, -1);

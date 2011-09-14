@@ -24,6 +24,10 @@ public class Field {
 		}
 	}
 	
+	public Resource getResource() {
+		return fieldType.getResource();
+	}
+	
 	public boolean hasRobber() {
 		return this.containsRobber;
 	}

@@ -5,6 +5,7 @@ public enum Resource {
 	LUMBER, BRICK, WOOL, GRAIN, ORE;
 
 	public static Resource convert (de.unisaarland.cs.st.saarsiedler.comm.Resource resource) {
+		if (resource == null) return null;
 		switch(resource) {
 			case Lumber:
 				return LUMBER;
