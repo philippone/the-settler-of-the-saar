@@ -249,7 +249,7 @@ public class ModelReaderTest4 {
 	}
 	
 	@Test
-	public void testAttackableSettlements() {
+	public void testAttackableSettlements() {	
 		setUp2();
 		
 		//Attribut-Player erstellen
@@ -259,7 +259,7 @@ public class ModelReaderTest4 {
 		
 		//set Catapults
 		model2.getPath(new Location (0,0,5)).createCatapult(p0);
-		model2.getPath(new Location (1,1,5)).createCatapult(p0);
+		model2.getPath(new Location (1,0,5)).createCatapult(p0);
 		model2.getPath(new Location (1,1,0)).createCatapult(p1);
 		model2.getPath(new Location (0,0,1)).createCatapult(p2);
 		model2.getPath(new Location (0,0,4)).createCatapult(p2);
@@ -271,17 +271,13 @@ public class ModelReaderTest4 {
 		assertEquals(p0AttackableVillageSet ,model2.attackableSettlements(p0, BuildingType.Village)); 
 		
 		Set<Intersection> p0AttackableTownsSet = new HashSet<Intersection>();
-		p0AttackableTownsSet.add(model2.getIntersection(new Location(1, 1, 5)));
+		p0AttackableTownsSet.add(model2.getIntersection(new Location(1, 0, 5)));
 		assertEquals(p0AttackableTownsSet ,model2.attackableSettlements(p0, BuildingType.Town)); 
-		
-		Set<Intersection> p1AttackableTownsSet = new HashSet<Intersection>();
-		p1AttackableTownsSet.add(model2.getIntersection(new Location(1, 0, 1)));
-		assertEquals(p1AttackableTownsSet ,model2.attackableSettlements(p0, BuildingType.Town)); 
 		
 		Set<Intersection> p2AttackableVillageSet = new HashSet<Intersection>();
 		p2AttackableVillageSet.add(model2.getIntersection(new Location(0, 0, 1)));
 		p2AttackableVillageSet.add(model2.getIntersection(new Location(0, 0, 5)));
-		assertEquals(p2AttackableVillageSet ,model2.attackableSettlements(p0, BuildingType.Village)); 
+		assertEquals(p2AttackableVillageSet ,model2.attackableSettlements(p2, BuildingType.Village)); 
 	}
 	
 	
