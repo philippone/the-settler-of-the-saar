@@ -41,20 +41,17 @@ public class BuildACatapultStrategy implements Strategy {
 		float pathValue=0;
 		Player player=mr.getCurrentPlayer();
 		// checking if we can attack a catapult immediately
-		if (p.hasCatapult() && p.getCatapultOwner()!=player) pathValue=(float)0.4;
+		if (p.hasCatapult() && p.getCatapultOwner()!=player) pathValue=(float)0.3;
 		Set<Path> neighborPaths=mr.getPathsFromPath(p);
-		// checking if we can attack a catapult soon
 		for(Path p1 : neighborPaths){
+			// checking if we can attack a catapult soon
 			if (p1.hasCatapult() && p1.getCatapultOwner()!=player) {
 				pathValue=(float)(pathValue+0.15);
 			}
-		}
-		Set<Intersection> neighborIntersections=mr.getIntersectionsFromPath(p);
-		// checking if we can attack a building soon
-		for(Intersection i : neighborIntersections){
-			if (i.hasOwner() && i.getOwner()!=player) {
-				if (i.getBuildingType()==BuildingType.Town) pathValue=(float)(pathValue+0.15);
-				else if (i.getBuildingType()==BuildingType.Village) pathValue=(float)(pathValue+0.1);
+			Set<Intersection> neighborIntersections=mr.getIntersectionsFromPath(p1);
+			// checking if we can attack a building soon
+			for(Intersection i : neighborIntersections){
+				if (i.hasOwner() && i.getOwner()!=player) pathValue=(float)(pathValue+0.1);
 			}
 		}
 		return pathValue;
