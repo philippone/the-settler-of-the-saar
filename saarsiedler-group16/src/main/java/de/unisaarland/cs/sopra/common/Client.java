@@ -34,8 +34,17 @@ public class Client {
 		throw new UnsupportedOperationException();
 	}
 	
-	public ChangeReadyResult ready(boolean ready) {
-		throw new UnsupportedOperationException();
+	public void ready(boolean ready) {
+		ChangeReadyResult result = null;
+		try {
+			result = connection.changeReadyStatus(ready);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		if (result == ChangeReadyResult.MATCH_STARTED || result == ChangeReadyResult.UNCHANGED) {
+			throw new IllegalStateException();
+		}
+		
 	}
 	
 	public Model buildModel(MatchInformation matchInfo) {
