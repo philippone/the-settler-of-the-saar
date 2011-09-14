@@ -53,12 +53,17 @@ public class ButtonListener implements ActionListener {
 				refreshGameList();
 				gui.menuPanel.setVisible(false);
 				gui.lobbyPanel.setVisible(true);
+				setUpListUpdater();
+				changeName("Player-Gruppe-16");
+				
 			}
 			if (arg0.getSource() == gui.playAsAI){
 				client.createConnection("sopra.cs.uni-saarland.de", true);
 				refreshGameList();
 				gui.menuPanel.setVisible(false);
 				gui.lobbyPanel.setVisible(true);
+				setUpListUpdater();
+				changeName("AI-Gruppe-16");
 			}
 			if (arg0.getSource() == gui.exit_menu){
 				System.exit(0);
@@ -138,21 +143,28 @@ public class ButtonListener implements ActionListener {
 		
 		
 	}
+	private void setUpListUpdater(){
+		try {
+			Client.connection.registerMatchListUpdater(new GameListUpdater(this));	}catch(IOException e){throw new IllegalStateException("iwas mit Matchlistupdater faul!!!");}
+	
+	}
+	private void changeName(String s){
+		try {
+			Client.connection.changeName(s);} catch (Exception e) {e.printStackTrace();	}
+	}
 
-	private void refreshGameList(){
+	public void refreshGameList(){
 //		gameTable.getCellEditor().
 		List<MatchInformation> matchList=null;
 		try {
 			matchList =Client.connection.listMatches();		} catch (IOException e1) {	e1.printStackTrace();		}
-		try {
-			Client.connection.registerMatchListUpdater(new GameListUpdater(gui.gameTable));		}catch(IOException e){throw new IllegalStateException("iwas mit Matchlistupdater faul!!!");}
 			
 			gui.gameTable.setModel(new DefaultTableModel(
 					parseMatchList(matchList),
 					new String[] {"MatchID", "Name", "Players", "WorldID"	}));
 	}
 	
-	private void refreshPlayerList(){
+	public void refreshPlayerList(){
 //		gameTable.getCellEditor().
 		long[] players;
 		boolean[]readyPlayers;

@@ -31,7 +31,6 @@ public class GUIFrame extends JFrame {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		initComponents();
 		setActionListner();
-		
 	}
 	private void setActionListner() {
 		menuItemSettings.addActionListener(actLis);
