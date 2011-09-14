@@ -19,17 +19,19 @@ import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 public class AI extends View{
 	
 	public static void main(String[] args){
+		
+		
+		
 		try {
 			Connection c = Connection.establish("sopra.cs.uni-saarland.de", true);
 			WorldRepresentation wr = WorldRepresentation.getDefault();
-			MatchInformation mi = c.newMatch("The best KI ever!", 1, wr, false);
+			MatchInformation mi = c.newMatch("K(a)I!", 1, wr, false);
 			Model m = new Model(wr, mi, c.getClientId());
 			Controller cont = new Controller(c, m);
 			ControllerAdapter contAdap = new ControllerAdapter(cont, m);
 			AI ai = new AI(m, contAdap);
 			m.addModelObserver(ai);
 			c.changeReadyStatus(true);
-			System.out.println("Initalisierung hat funktioniert!");
 			cont.mainLoop();
 			System.out.println("Das Spiel war erfolgreich! =)");
 		} catch (Exception e){
@@ -52,9 +54,8 @@ public class AI extends View{
 	public void executeBestStrategy() {
 		try{
 		s.execute(modelReader, controllerAdapter);
-		
 		}
-	catch (Exception e){}
+	catch (Exception e){ e.printStackTrace(); }
 	}
 	@Override
 	public void updatePath(Path path) {
@@ -96,18 +97,20 @@ public class AI extends View{
 
 	@Override
 	public void eventPlayerLeft(long playerID) {
-		// TODO Auto-generated method stub
+		 controllerAdapter.setEndOfGame(modelReader.getMe() == modelReader.getPlayerMap().get(playerID));
 	}
 
 	@Override
 	// a seven was diced
 	public void eventRobber() {
 		s = new RobberStrategy();
+		executeBestStrategy();
 	}
 
 	@Override
 	public void eventTrade(ResourcePackage resourcePackage) {
 		s = new TradeStrategy();
+		executeBestStrategy();
 	}
 
 	@Override
@@ -126,14 +129,10 @@ public class AI extends View{
 	}
 
 	@Override
-	public void initTurn() {
+	public void initTurn() { 
 		s = new InitializeStrategy();
 		executeBestStrategy();
 		
-	}
-
-	@Override
-	public void receiveNames(Map<Player, String> names) {
 	}
 	
 }

@@ -1,8 +1,10 @@
 package de.unisaarland.cs.sopra.common;
 
-import java.util.Map;
-
-import de.unisaarland.cs.sopra.common.model.*;
+import de.unisaarland.cs.sopra.common.model.BuildingType;
+import de.unisaarland.cs.sopra.common.model.Field;
+import de.unisaarland.cs.sopra.common.model.Intersection;
+import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public interface ModelObserver {
 
@@ -19,6 +21,5 @@ public interface ModelObserver {
 	public void eventTrade(ResourcePackage resourcePackage);
 	public void eventNewRound();
 	public void initTurn();
-	public void receiveNames(Map<Player,String> names);
 	
 }

@@ -19,6 +19,13 @@ public class InitializeStrategy implements Strategy {
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
 		if (mr.getMe() == mr.getCurrentPlayer()){
 		Set<Intersection> intersections =mr.buildableVillageIntersections(mr.getMe());
+			Intersection i = intersections.iterator().next();
+			ca.buildSettlement(i, BuildingType.Village);
+			Set<Path> paths = mr.buildableStreetPaths(mr.getMe());
+			Path p = paths.iterator().next();
+			ca.buildStreet(p);
+		/*	
+=======
 		
 		Intersection bestIntersection=null;
 		float bestValue=0;
@@ -29,6 +36,7 @@ public class InitializeStrategy implements Strategy {
 				bestIntersection=i;
 				bestValue=value;
 			}
+>>>>>>> branch 'master' of sopra:gruppe16.git
 		}
 		
 		ca.buildSettlement(bestIntersection, BuildingType.Village);
@@ -36,8 +44,8 @@ public class InitializeStrategy implements Strategy {
 		
 		Path path = neighbourPaths.iterator().next();	
 		ca.buildStreet(path);
+		*/
 		}
-		
 	}
 	
 	private float evaluateIntersection(ModelReader mr,Intersection i){

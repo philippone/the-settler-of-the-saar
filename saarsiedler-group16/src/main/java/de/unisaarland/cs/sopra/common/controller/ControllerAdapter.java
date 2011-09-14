@@ -189,5 +189,11 @@ public class ControllerAdapter {
 		int ore =   resourcePackage.getResource(ORE);
 		controller.returnResources(lumber, brick, wool, grain, ore);
 	}
+
+
+
+	public void setEndOfGame(boolean b) {
+		controller.setEndOfGame(b);
+	}
 	
 }

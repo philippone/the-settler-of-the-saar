@@ -10,26 +10,19 @@ import java.awt.event.FocusListener;
 import java.io.IOException;
 
 import javax.swing.*;
+import javax.swing.event.ListDataListener;
 import javax.swing.table.*;
-
-import de.unisaarland.cs.st.saarsiedler.comm.Connection;
-import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
-import java.util.List;
 
 /**
  * @author Hans Lange der
  */
 public class GUIFrame extends JFrame {
 	private ButtonListener actLis;
-	private Connection connect;
-	private long focusedGameID;
 	public long focusedWordID;
-	public boolean joinAsObserver;
 	
-	public GUIFrame(Connection connection) {
-		this.connect =connection;
-		actLis = new ButtonListener(this, connect);
-		joinAsObserver=false;
+	
+	public GUIFrame(Client client) {
+		actLis = new ButtonListener(this, client);
 		this.setLocation(150, 30);
 //		this.setPreferredSize(new Dimension(900,600));
 //		this.pack();
@@ -39,32 +32,6 @@ public class GUIFrame extends JFrame {
 		initComponents();
 		setActionListner();
 		
-	}
-
-	public void refreshGameList(){
-//		gameTable.getCellEditor().
-		List<MatchInformation> matchList=null;
-		try {
-			matchList =connect.listMatches();		} catch (IOException e1) {			e1.printStackTrace();		}
-		try {
-			connect.registerMatchListUpdater(new GameListUpdater(gameTable));		}catch(IOException e){throw new IllegalStateException("iwas mit Matchlistupdater faul!!!");}
-			
-			gameTable.setModel(new DefaultTableModel(
-					parseMatchList(matchList),
-					new String[] {"MatchID", "Name", "Players", "WorldID"	}));
-	}
-	public static Object[][] parseMatchList(List<MatchInformation> matchList){
-		if (matchList == null)	throw new IllegalArgumentException("matchList is null");
-		Object[][] ret = new Object[matchList.size()][4];
-		int i =0;
-		for (MatchInformation m : matchList) {
-			ret[i][0]=m.getId();
-			ret[i][1]=m.getTitle();
-			ret[i][2]=m.getCurrentPlayers().length+"/"+m.getNumPlayers();
-			ret[i][3]=m.getWorldId();
-			i++;
-		}
-		return ret;
 	}
 	private void setActionListner() {
 		menuItemSettings.addActionListener(actLis);
@@ -79,6 +46,9 @@ public class GUIFrame extends JFrame {
 		observerToggle.addActionListener(actLis);
 		back_Create.addActionListener(actLis);
 		createMatch.addActionListener(actLis);
+		playAsAI.addActionListener(actLis);
+		readyToggle.addActionListener(actLis);
+		back_join.addActionListener(actLis);
 		worldRepoBox.addFocusListener(new FocusListener() {
 			@Override
 			public void focusLost(FocusEvent e) {
@@ -93,14 +63,56 @@ public class GUIFrame extends JFrame {
 		gameTable.addFocusListener(new FocusListener() {
 			@Override
 			public void focusLost(FocusEvent e) {
-				focusedGameID =-1L;
+//				Client.matchInfo = null;
 			}
 			
 			@Override
 			public void focusGained(FocusEvent e) {
-				int colm = gameTable.getSelectedColumn();
-				focusedGameID= (Long)gameTable.getModel().getValueAt(colm, 0);
-				System.out.println("Table focused");
+				int row = gameTable.getSelectedRow();
+				long focusedGameID= (Long)gameTable.getModel().getValueAt(row, 0);
+				try { //set focused Matchinfo as actual Client.matchInfo
+					Client.matchInfo= Client.connection.getMatchInfo(focusedGameID);	} catch (IOException e1) {e1.printStackTrace();	}
+					System.out.println("row: "+row+"listID: "+focusedGameID+ "matchinfo: "+ Client.matchInfo.getId());
+			}
+		});
+	}
+	public void worldRepoChooser(){
+		worldRepoBox.setModel(new ComboBoxModel() {
+			
+			@Override
+			public void removeListDataListener(ListDataListener arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public int getSize() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+			
+			@Override
+			public Object getElementAt(int arg0) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public void addListDataListener(ListDataListener arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void setSelectedItem(Object anItem) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public Object getSelectedItem() {
+				// TODO Auto-generated method stub
+				return null;
 			}
 		});
 	}
@@ -126,6 +138,7 @@ public class GUIFrame extends JFrame {
 		menuPanel = new JPanel();
 		panel11 = new JPanel();
 		play = new JButton();
+		playAsAI = new JButton();
 		settings_menu = new JButton();
 		exit_menu = new JButton();
 		panel12 = new JPanel();
@@ -142,6 +155,13 @@ public class GUIFrame extends JFrame {
 		observerToggle = new JToggleButton();
 		createMatch = new JButton();
 		back_Create = new JButton();
+		joinPanel = new JPanel();
+		panel14 = new JPanel();
+		scrollPane5 = new JScrollPane();
+		playerTable = new JTable();
+		panel15 = new JPanel();
+		readyToggle = new JToggleButton();
+		back_join = new JButton();
 
 		//======== this ========
 		Container contentPane = getContentPane();
@@ -300,6 +320,12 @@ public class GUIFrame extends JFrame {
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
+				//---- playAsAI ----
+				playAsAI.setText("Play as AI");
+				panel11.add(playAsAI, new GridBagConstraints(1, 6, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
 				//---- settings_menu ----
 				settings_menu.setText("Settings");
 				panel11.add(settings_menu, new GridBagConstraints(1, 7, 1, 1, 0.0, 0.0,
@@ -344,6 +370,7 @@ public class GUIFrame extends JFrame {
 
 		//======== createPanel ========
 		{
+			createPanel.setVisible(false);
 			createPanel.setLayout(new GridBagLayout());
 			((GridBagLayout)createPanel.getLayout()).columnWidths = new int[] {730, 0, 0};
 			((GridBagLayout)createPanel.getLayout()).rowHeights = new int[] {0, 0};
@@ -416,6 +443,76 @@ public class GUIFrame extends JFrame {
 		contentPane.add(createPanel);
 		createPanel.setBounds(0, 0, 1000, 675);
 
+		//======== joinPanel ========
+		{
+			joinPanel.setLayout(new GridBagLayout());
+			((GridBagLayout)joinPanel.getLayout()).columnWidths = new int[] {999, 0};
+			((GridBagLayout)joinPanel.getLayout()).rowHeights = new int[] {597, 91, 0};
+			((GridBagLayout)joinPanel.getLayout()).columnWeights = new double[] {0.0, 1.0E-4};
+			((GridBagLayout)joinPanel.getLayout()).rowWeights = new double[] {0.0, 0.0, 1.0E-4};
+
+			//======== panel14 ========
+			{
+				panel14.setLayout(new GridBagLayout());
+				((GridBagLayout)panel14.getLayout()).columnWidths = new int[] {752, 245, 0};
+				((GridBagLayout)panel14.getLayout()).rowHeights = new int[] {589, 0};
+				((GridBagLayout)panel14.getLayout()).columnWeights = new double[] {0.0, 0.0, 1.0E-4};
+				((GridBagLayout)panel14.getLayout()).rowWeights = new double[] {0.0, 1.0E-4};
+
+				//======== scrollPane5 ========
+				{
+
+					//---- playerTable ----
+					playerTable.setAutoCreateRowSorter(true);
+					playerTable.setFont(playerTable.getFont().deriveFont(Font.BOLD, playerTable.getFont().getSize() + 2f));
+					playerTable.setModel(new DefaultTableModel(
+						new Object[][] {
+							{null, null, null, null},
+							{null, null, null, null},
+							{null, null, null, null},
+						},
+						new String[] {
+							"MatchID", "Name", "Players", "WorldID"
+						}
+					));
+					playerTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+					scrollPane5.setViewportView(playerTable);
+				}
+				panel14.add(scrollPane5, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 0, 5), 0, 0));
+			}
+			joinPanel.add(panel14, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+				new Insets(0, 0, 5, 0), 0, 0));
+
+			//======== panel15 ========
+			{
+				panel15.setLayout(new GridBagLayout());
+				((GridBagLayout)panel15.getLayout()).columnWidths = new int[] {0, 5, 75, 5, 0, 5, 75, 5, 0, 5, 75, 5, 195, 5, 75, 5, 101, 5, 75, 5, 0, 0};
+				((GridBagLayout)panel15.getLayout()).rowHeights = new int[] {0, 5, 0, 5, 0, 0};
+				((GridBagLayout)panel15.getLayout()).columnWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+				((GridBagLayout)panel15.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+
+				//---- readyToggle ----
+				readyToggle.setText("Set Ready!");
+				panel15.add(readyToggle, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 0, 0), 0, 0));
+
+				//---- back_join ----
+				back_join.setText("back to Lobby");
+				panel15.add(back_join, new GridBagConstraints(10, 2, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 0, 0), 0, 0));
+			}
+			joinPanel.add(panel15, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+				new Insets(0, 0, 0, 0), 0, 0));
+		}
+		contentPane.add(joinPanel);
+		joinPanel.setBounds(0, 0, 1000, 665);
+
 		{ // compute preferred size
 			Dimension preferredSize = new Dimension();
 			for(int i = 0; i < contentPane.getComponentCount(); i++) {
@@ -454,6 +551,7 @@ public class GUIFrame extends JFrame {
 	public JPanel menuPanel;
 	private JPanel panel11;
 	public JButton play;
+	public JButton playAsAI;
 	public JButton settings_menu;
 	public JButton exit_menu;
 	private JPanel panel12;
@@ -470,6 +568,13 @@ public class GUIFrame extends JFrame {
 	public JToggleButton observerToggle;
 	public JButton createMatch;
 	public JButton back_Create;
+	public JPanel joinPanel;
+	private JPanel panel14;
+	private JScrollPane scrollPane5;
+	public JTable playerTable;
+	private JPanel panel15;
+	public JToggleButton readyToggle;
+	JButton back_join;
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
 	
 }
