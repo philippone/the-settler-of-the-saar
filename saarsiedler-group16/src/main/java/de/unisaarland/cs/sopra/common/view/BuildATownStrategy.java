@@ -14,12 +14,15 @@ Strategy s;
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
 		// TODO Auto-generated method stub
-		Set<Intersection> intersections=mr.buildableTownIntersections(mr.getCurrentPlayer());
-		if (mr.affordableSettlements(BuildingType.Town)>0 && intersections!=null){
+		
+		if (mr.affordableSettlements(BuildingType.Town)>0 && mr.buildableTownIntersections(mr.getMe()).size() > 0
+				&& mr.buildableTownIntersections(mr.getMe()).size() <= mr.getMaxBuilding(BuildingType.Town))
+		{
 			Intersection bestIntersection=chooseBestIntersection(mr);
 			ca.buildSettlement(bestIntersection, BuildingType.Town);
+			 ca.endTurn();
 		} else 
-			 s = new TradeStrategy();
+			 ca.endTurn();
 	}	
 	
 	private Intersection chooseBestIntersection(ModelReader mr){

@@ -105,7 +105,7 @@ public class AI extends View{
 		}
 	}
 
-	Strategy s;
+	Strategy s,s1;
 	
 	public AI(ModelReader modelReader, ControllerAdapter controllerAdapter){
 		super(modelReader, controllerAdapter);
@@ -115,11 +115,13 @@ public class AI extends View{
 	public void evaluateBestStrategy(){
 		//s = new BuildStreetStrategy();
 		s = new DoNothingStrategy();
+		//s= new BuildATownStrategy();
 	}
 	
 	public void executeBestStrategy() {
 		try{
 		s.execute(modelReader, controllerAdapter);
+		//s1 = new BuildTownStrategy();
 		}
 	catch (Exception e){ e.printStackTrace(); }
 	}
