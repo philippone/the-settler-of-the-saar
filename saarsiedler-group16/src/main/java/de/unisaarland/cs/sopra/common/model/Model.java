@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -1778,7 +1777,7 @@ public class Model implements ModelReader, ModelWriter {
 	}
 
 	@Override
-	public void matchStart(long[] players, byte[] number, Map<Long, String> names) {
+	public void matchStart(long[] players, byte[] number) {
 		if (players == null || number == null)
 			throw new IllegalArgumentException(players + " or " + number
 					+ " are null");
@@ -1786,15 +1785,6 @@ public class Model implements ModelReader, ModelWriter {
 		setFieldNumbers(number);
 		for (ModelObserver act : modelObserver) {
 			if (getCurrentPlayer() == getMe()) act.initTurn();
-		}
-		Map<Player,String> tmp = new HashMap<Player,String>();
-		Iterator<Entry<Long,String>> iter = names.entrySet().iterator();
-		while (iter.hasNext()) {
-			Entry<Long,String> act = iter.next();
-			tmp.put(playerMap.get(act.getKey()), act.getValue());
-		}
-		for (ModelObserver act : modelObserver) {
-			act.receiveNames(tmp);
 		}
 	}
 

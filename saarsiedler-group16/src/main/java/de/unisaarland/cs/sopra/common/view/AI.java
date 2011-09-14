@@ -106,11 +106,5 @@ public class AI extends View{
 		executeBestStrategy();
 		
 	}
-
-	@Override
-	public void receiveNames(Map<Player, String> names) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 }
