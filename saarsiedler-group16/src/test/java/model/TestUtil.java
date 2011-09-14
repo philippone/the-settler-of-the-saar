@@ -2,6 +2,8 @@ package model;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.unisaarland.cs.sopra.common.ModelObserver;
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
@@ -71,11 +73,15 @@ public class TestUtil {
 				return new long[] {};
 			}
 		};
+		Map<Long,String> names = new HashMap<Long,String>();
+		names.put(0L, "Ichbinkeinreh");
+		names.put(1L, "Herbert");
+		names.put(2L, "Kevin-Jason");
 		Model model = new Model(worldrep, matchinfo, 1);
 		model.matchStart(new long[] {2,1,0}, new byte[] {2,3,4,5,
 														 6,8,9,10,
 														 11,12,11,10,
-														 9,8,6,5});
+														 9,8,6,5},names);
 		return model;
 	}
 	
@@ -133,11 +139,14 @@ public class TestUtil {
 				return new long[] {};
 			}
 		};
+		Map<Long,String> names = new HashMap<Long,String>();
+		names.put(0L, "Ichbinkeinreh");
+		names.put(1L, "Herbert");
 		Model model = new Model(worldrep, matchinfo, 1);
 		model.matchStart(new long[] {1,0}, new byte[] {2,3,4,5,
 														 6,8,9,10,
 														 11,12,11,10,
-														 9,8,6,5});
+														 9,8,6,5},names);
 		return model;
 	}
 	
@@ -197,8 +206,11 @@ public class TestUtil {
 				return new long[] {};
 			}
 		};
+		Map<Long,String> names = new HashMap<Long,String>();
+		names.put(0L, "Ichbinkeinreh");
+		names.put(1L, "Herbert");
 		Model model = new Model(worldrep, matchinfo, 0);
-		model.matchStart(new long[] {0,2}, new byte[] {8,6});
+		model.matchStart(new long[] {0,2}, new byte[] {8,6},names);
 		return model;
 	}
 	

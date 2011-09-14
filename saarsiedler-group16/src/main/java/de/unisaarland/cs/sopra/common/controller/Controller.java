@@ -2,8 +2,10 @@ package de.unisaarland.cs.sopra.common.controller;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Location;
@@ -51,102 +53,93 @@ public class Controller {
 			AttackResult r = connection.attack(e, i);
 			modelWriter.attackSettlement(catapult, settlement, r);
 			break;
-		case MATCH_START:
-			long[] players = ((GameEvent.MatchStart) gameEvent).getPlayerIds();
-			byte[] number = ((GameEvent.MatchStart) gameEvent).getNumbers();
-			modelWriter.matchStart(players, number);
-			break;
-		case BUILT_CATAPULT:
-			Edge ed = ((GameEvent.BuiltCatapult) gameEvent).getLocation();
-			Location location = new Location(ed.getCol(), ed.getRow(),
-					ed.getDirection());
-			boolean fightOutcome = ((GameEvent.BuiltCatapult) gameEvent)
-					.fightOutcome();
-			modelWriter.buildCatapult(location, fightOutcome);
-			break;
-		case BUILT_ROAD:
-			Edge edg = ((GameEvent.BuiltRoad) gameEvent).getLocation();
-			Location locatio = new Location(edg.getCol(), edg.getRow(),
-					edg.getDirection());
-			modelWriter.buildStreet(locatio);
-			break;
-		case BUILT_SETTLEMENT:
-			Intersection in = ((GameEvent.BuiltSettlement) gameEvent)
-					.getLocation();
-			Location locati = new Location(in.getCol(), in.getRow(),
-					in.getDirection());
-			boolean isUpgradeToTown = ((GameEvent.BuiltSettlement) gameEvent)
-					.isUpgradeToTown();
-			if (isUpgradeToTown) {
-				modelWriter.buildSettlement(locati, BuildingType.Village);
-			} else {
-				modelWriter.buildSettlement(locati, BuildingType.Town);
-			}
-			break;
-		case MOVED_CATAPULT:
-			Edge edge = ((GameEvent.MovedCatapult) gameEvent)
-					.getSourceLocation();
-			Location source = new Location(edge.getCol(), edge.getRow(),
-					edge.getDirection());
-			Edge e1 = ((GameEvent.MovedCatapult) gameEvent)
-					.getDestinationLocation();
-			Location destination = new Location(e1.getCol(), e1.getRow(),
-					e1.getDirection());
-			boolean fightOutcome1 = ((GameEvent.MovedCatapult) gameEvent)
-					.fightOutcome();
-			modelWriter.catapultMoved(source, destination, fightOutcome1);
-			break;
-		case MATCH_END:
-			((GameEvent.MatchEnd) gameEvent).getWinnerClientId();
-			// TODO
-			// modelObserver.MatchEnd
-			break;
-		case NEW_ROUND:
-			byte num = ((GameEvent.NewRound) gameEvent).getSpotSum();
-			modelWriter.newRound(num);
-			break;
-		case PLAYER_LEFT:
-			long id = ((GameEvent.PlayerLeft) gameEvent).getClientId();
-			modelWriter.playerLeft(id);
-			break;
-		case ROBBER_MOVED:
-			int y = ((GameEvent.RobberMoved) gameEvent).getSrcRow();
-			int x = ((GameEvent.RobberMoved) gameEvent).getSrcCol();
-			Point sourceField = new Point(x, y);
-			int y1 = ((GameEvent.RobberMoved) gameEvent).getDstRow();
-			int x1 = ((GameEvent.RobberMoved) gameEvent).getDstCol();
-			Point destinationField = new Point(x1, y1);
-			long victimPlayer = ((GameEvent.RobberMoved) gameEvent)
-					.getVictimClientId();
-			de.unisaarland.cs.st.saarsiedler.comm.Resource r1 = ((GameEvent.RobberMoved) gameEvent)
-					.getStolenResource();
-			Resource stolenResource = Resource.convert(r1);
-			modelWriter.robberMoved(sourceField, destinationField,
-					victimPlayer, stolenResource);
-			break;
-		case TRADE:
-			long id2 = ((GameEvent.Trade) gameEvent).getAcceptedPlayerId();
-			modelWriter.respondTrade(id2);
-			break;
-		case TRADE_OFFER:
-			int lumber = ((GameEvent.TradeOffer) gameEvent).getLumber();
-			int brick = ((GameEvent.TradeOffer) gameEvent).getBrick();
-			int wool = ((GameEvent.TradeOffer) gameEvent).getWool();
-			int grain = ((GameEvent.TradeOffer) gameEvent).getGrain();
-			int ore = ((GameEvent.TradeOffer) gameEvent).getOre();
-			modelWriter.tradeOffer(lumber, brick, wool, grain, ore);
-			break;
-		case LONGEST_ROAD:
-			Edge[] edge1 = ((GameEvent.LongestRoad) gameEvent).getEdges();
-			List<Location> road = new LinkedList<Location>();
-			for (Edge e12 : edge1) {
-				Location l = new Location(e12.getCol(), e12.getRow(),
-						e12.getDirection());
-				road.add(l);
-			}
-			modelWriter.longestRoadClaimed(road);
-			break;
-		}
+			case MATCH_START:
+				long[] players = ((GameEvent.MatchStart) gameEvent).getPlayerIds();
+				byte[] number = ((GameEvent.MatchStart) gameEvent).getNumbers();
+				Map<Long,String> names = new HashMap<Long,String>();
+				for (long player : players) {
+					names.put(player,connection.getPlayerInfo(player).getName());
+				}
+				modelWriter.matchStart(players, number, names);
+				break;
+			case BUILT_CATAPULT:
+				Edge ed = ((GameEvent.BuiltCatapult) gameEvent).getLocation();
+				Location location = new Location(ed.getCol(), ed.getRow(), ed.getDirection());
+				boolean fightOutcome = ((GameEvent.BuiltCatapult) gameEvent).fightOutcome();
+				modelWriter.buildCatapult(location, fightOutcome);
+				break;
+			case BUILT_ROAD:
+				Edge edg = ((GameEvent.BuiltRoad)gameEvent).getLocation();
+				Location locatio = new Location(edg.getCol(), edg.getRow(), edg.getDirection());
+				modelWriter.buildStreet(locatio);
+				break;
+			case BUILT_SETTLEMENT:
+				Intersection in = ((GameEvent.BuiltSettlement)gameEvent).getLocation();
+				Location locati = new Location(in.getCol(), in.getRow(), in.getDirection());
+				boolean isUpgradeToTown = ((GameEvent.BuiltSettlement)gameEvent).isUpgradeToTown();
+				if (isUpgradeToTown){
+					modelWriter.buildSettlement(locati, BuildingType.Village);
+				} 
+				else {
+					modelWriter.buildSettlement(locati, BuildingType.Town);
+				}
+				break;
+			case MOVED_CATAPULT:
+				Edge edge = ((GameEvent.MovedCatapult)gameEvent).getSourceLocation();
+				Location source = new Location(edge.getCol(), edge.getRow(), edge.getDirection());
+				Edge e1 = ((GameEvent.MovedCatapult)gameEvent).getDestinationLocation();
+				Location destination = new Location(e1.getCol(), e1.getRow(), e1.getDirection());
+				boolean fightOutcome1 = ((GameEvent.MovedCatapult)gameEvent).fightOutcome(); 
+				modelWriter.catapultMoved(source, destination, fightOutcome1);
+				break;
+			case MATCH_END:
+				((GameEvent.MatchEnd)gameEvent).getWinnerClientId();
+				// TODO
+				//modelObserver.MatchEnd
+				break;
+			case NEW_ROUND:
+				byte num = ((GameEvent.NewRound)gameEvent).getSpotSum();
+				modelWriter.newRound(num);
+				break;
+			case PLAYER_LEFT:
+				long id = ((GameEvent.PlayerLeft)gameEvent).getClientId();
+				modelWriter.playerLeft(id);
+				break;
+			case ROBBER_MOVED:
+				int y = ((GameEvent.RobberMoved)gameEvent).getSrcRow(); 
+				int x = ((GameEvent.RobberMoved)gameEvent).getSrcCol();
+				Point sourceField = new Point(x,y);
+				int y1 = ((GameEvent.RobberMoved)gameEvent).getDstRow();
+				int x1 = ((GameEvent.RobberMoved)gameEvent).getDstCol();
+				Point destinationField = new Point(x1,y1);
+				long victimPlayer = ((GameEvent.RobberMoved)gameEvent).getVictimClientId();
+				de.unisaarland.cs.st.saarsiedler.comm.Resource r1 = ((GameEvent.RobberMoved)
+						gameEvent).getStolenResource();
+				Resource stolenResource = Resource.convert(r1);
+				modelWriter.robberMoved(sourceField, destinationField, victimPlayer, stolenResource);
+				break;
+			case TRADE:
+				long id2 = ((GameEvent.Trade)gameEvent).getAcceptedPlayerId();
+				modelWriter.respondTrade(id2);
+				break;
+			case TRADE_OFFER:
+				int lumber = ((GameEvent.TradeOffer) gameEvent).getLumber();
+				int brick = ((GameEvent.TradeOffer) gameEvent).getBrick();
+				int wool = ((GameEvent.TradeOffer) gameEvent).getWool();
+				int grain = ((GameEvent.TradeOffer) gameEvent).getGrain();
+				int ore = ((GameEvent.TradeOffer) gameEvent).getOre();
+				modelWriter.tradeOffer(lumber, brick, wool, grain, ore);
+				break;
+			case LONGEST_ROAD:
+				Edge[] edge1 = ((GameEvent.LongestRoad) gameEvent).getEdges();
+				List<Location> road = new LinkedList<Location>();
+				for (Edge e12 : edge1){
+					Location l = new Location(e12.getCol(), e12.getRow(), e12.getDirection());
+					road.add(l);
+				}
+				modelWriter.longestRoadClaimed(road);
+				break;	
+ 		}
 	}
 
 	/**

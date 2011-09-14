@@ -1,10 +1,13 @@
 package model;
 
+import java.util.Map;
+
 import de.unisaarland.cs.sopra.common.ModelObserver;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public class TestModelObserver implements ModelObserver {
@@ -23,6 +26,7 @@ public class TestModelObserver implements ModelObserver {
 	public boolean updateTradePossibilities;
 	public boolean eventPlayerLeftCalled;
 	private boolean initTurn;
+	private boolean receiveNames;
 	
 		@Override
 		public void updatePath(Path path) {
@@ -95,6 +99,19 @@ public class TestModelObserver implements ModelObserver {
 
 		public boolean isInitTurn() {
 			return initTurn;
+		}
+
+		@Override
+		public void receiveNames(Map<Player, String> names) {
+			this.setReceiveNames(true);
+		}
+
+		public void setReceiveNames(boolean receiveNames) {
+			this.receiveNames = receiveNames;
+		}
+
+		public boolean isReceiveNames() {
+			return receiveNames;
 		}
 
 	

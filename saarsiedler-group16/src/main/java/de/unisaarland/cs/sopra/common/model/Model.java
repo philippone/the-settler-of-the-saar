@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -1489,24 +1490,6 @@ public class Model implements ModelReader, ModelWriter {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see de.unisaarland.cs.sopra.common.model.ModelWriter#matchStart(long[],
-	 * byte[])
-	 */
-	@Override
-	public void matchStart(long[] players, byte[] numbers) {
-		if (players == null || numbers == null)
-			throw new IllegalArgumentException(players + " or " + numbers
-					+ " are null");
-		setTableOrder(players);
-		setFieldNumbers(numbers);
-		for (ModelObserver act : modelObserver) {
-			if (getCurrentPlayer() == getMe()) act.initTurn();
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see
 	 * de.unisaarland.cs.sopra.common.model.ModelWriter#catapultMoved(de.unisaarland
 	 * .cs.sopra.common.model.Location,
@@ -1792,6 +1775,27 @@ public class Model implements ModelReader, ModelWriter {
 	@Override
 	public int getBoardHeight() {
 		return board.getHeight();
+	}
+
+	@Override
+	public void matchStart(long[] players, byte[] number, Map<Long, String> names) {
+		if (players == null || number == null)
+			throw new IllegalArgumentException(players + " or " + number
+					+ " are null");
+		setTableOrder(players);
+		setFieldNumbers(number);
+		for (ModelObserver act : modelObserver) {
+			if (getCurrentPlayer() == getMe()) act.initTurn();
+		}
+		Map<Player,String> tmp = new HashMap<Player,String>();
+		Iterator<Entry<Long,String>> iter = names.entrySet().iterator();
+		while (iter.hasNext()) {
+			Entry<Long,String> act = iter.next();
+			tmp.put(playerMap.get(act.getKey()), act.getValue());
+		}
+		for (ModelObserver act : modelObserver) {
+			act.receiveNames(tmp);
+		}
 	}
 
 }

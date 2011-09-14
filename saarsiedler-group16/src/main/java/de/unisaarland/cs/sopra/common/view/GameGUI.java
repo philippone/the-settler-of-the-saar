@@ -98,11 +98,10 @@ public class GameGUI extends View implements Runnable{
 	
 	private Map<Player,PlayerColors> colorMap;
 	
-	public GameGUI(ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player,String> playerNames, Setting setting) throws Exception {
+	public GameGUI(ModelReader modelReader, ControllerAdapter controllerAdapter, Setting setting) throws Exception {
 		super(modelReader, controllerAdapter);
 		this.modelReader.addModelObserver(this);
 		this.setting = setting;
-		this.playerNames = playerNames;
 		this.uiMode = RESOURCE_VIEW;
 		this.selectionMode = NONE;
 		windowWidth = setting.getDisplayMode().getWidth();
@@ -796,12 +795,18 @@ public class GameGUI extends View implements Runnable{
 							2,5,    
 							3,6},
 				new byte[] {});*/
+		Map<Long,String> names = new HashMap<Long,String>();
+		names.put(0L, "Ichbinkeinreh");
+		names.put(1L, "Herbert");
 		Model model = new Model(/*worldrep*/WorldRepresentation.getDefault(), matchinfo, 0);
 		model.matchStart(new long[] {0,1}, new byte[]   {2,3,4,
 														 6,8,9,10,
 														 11,12,11,10,
 														 9,8,6,5,
-														 2,6,9});
+														 2,6,9},names);
+		
+		model.getTableOrder().get(0).modifyResources(new ResourcePackage(100,200,140,130,120));
+		
 		model.buildSettlement(new Location(3,3,0), BuildingType.Village);
 		model.buildStreet(new Location(3,3,0));
 		
@@ -816,13 +821,16 @@ public class GameGUI extends View implements Runnable{
 		
 		model.newRound(3);
 		
+		model.buildSettlement(new Location(3,3,0), BuildingType.Town);
+		model.buildCatapult(new Location(3,3,0), true);
+		
 		//Setting setting = new Setting(new DisplayMode(1920, 1080), true);
 		//Setting setting = new Setting(new DisplayMode(1280, 1024), true);
 		//Setting setting = new Setting(new DisplayMode(800, 600), true);
 		//Setting setting = new Setting(new DisplayMode(400, 300), true);
 		Setting setting = new Setting(Display.getDesktopDisplayMode(), true, PlayerColors.RED);
 		
-		GameGUI gameGUI = new GameGUI(model, null, null, setting);
+		GameGUI gameGUI = new GameGUI(model, null, setting);
 		new Thread(gameGUI).start();
 	}
 	
@@ -839,6 +847,11 @@ public class GameGUI extends View implements Runnable{
 	@Override
 	public void initTurn() {
 		//TODO: implement it!
+	}
+
+	@Override
+	public void receiveNames(Map<Player, String> names) {
+		this.playerNames = names;
 	}
 	
 	

@@ -1,6 +1,8 @@
 package de.unisaarland.cs.sopra.common.view;
 
 import de.unisaarland.cs.sopra.common.controller.Controller;
+import java.util.Map;
+
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
@@ -8,6 +10,7 @@ import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 import de.unisaarland.cs.st.saarsiedler.comm.Connection;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
@@ -127,6 +130,10 @@ public class AI extends View{
 		s = new InitializeStrategy();
 		executeBestStrategy();
 		
+	}
+
+	@Override
+	public void receiveNames(Map<Player, String> names) {
 	}
 	
 }

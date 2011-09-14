@@ -904,7 +904,7 @@ public class ModelTest {
 	 * Angriff gegen eigene Village und Town - erfolgreich (beide male), aber habe selbst genug Villages
 	 */
 	@Test
-	public void testAttackOwnSettlement8(){	
+	public void testAttackOwnSettlement8(){		
 		//gibt den akt. Playern alle Resourcen um Komplikationen mit build zu vermeiden.
 		model.getTableOrder().get(0).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 
 		model.getTableOrder().get(1).modifyResources(new ResourcePackage(10000,10000,10000,10000,10000)); 
