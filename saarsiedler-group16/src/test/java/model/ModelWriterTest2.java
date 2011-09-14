@@ -264,7 +264,7 @@ public class ModelWriterTest2 {
 		TestModelObserver modelObserver = new TestModelObserver();
 		model.addModelObserver(modelObserver);
 		try {
-			model.returnResources(-49, -50, -50, -50, -50);
+			model.returnResources(49, 50, 50, 50, 50);
 			fail("Wrong count of Resources returned, expected 250 but was only 249");
 		}
 		catch (Exception e) {
@@ -276,7 +276,7 @@ public class ModelWriterTest2 {
 	public void returnResources2() {
 		TestModelObserver modelObserver = new TestModelObserver();
 		model.addModelObserver(modelObserver);
-		model.returnResources(-50, -50, -75, -25, -50);
+		model.returnResources(50, 50, 75, 25, 50);
 		//Expect this
 	}
 	
@@ -285,7 +285,7 @@ public class ModelWriterTest2 {
 		TestModelObserver modelObserver = new TestModelObserver();
 		model.addModelObserver(modelObserver);
 		try {
-			model.returnResources(-250, 0, 0, 0, 0);
+			model.returnResources(250, 0, 0, 0, 0);
 			fail("returned more of one resource then available");
 		}
 		catch (Exception e) {

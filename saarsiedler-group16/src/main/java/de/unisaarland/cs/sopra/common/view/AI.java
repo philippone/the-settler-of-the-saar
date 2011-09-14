@@ -96,7 +96,7 @@ public class AI extends View{
 				e1.printStackTrace();
 			}
 			new Thread(gameGUI).start();
-			
+			Thread.sleep(5000);
 			cont.mainLoop();
 			System.out.println("Das Spiel war erfolgreich! =)");
 		} catch (Exception e){
