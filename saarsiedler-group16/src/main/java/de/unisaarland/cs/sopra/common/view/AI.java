@@ -129,14 +129,10 @@ public class AI extends View{
 	}
 
 	@Override
-	public void initTurn() {
+	public void initTurn() { 
 		s = new InitializeStrategy();
 		executeBestStrategy();
 		
-	}
-
-	@Override
-	public void receiveNames(Map<Player, String> names) {
 	}
 	
 }

@@ -1,10 +1,8 @@
 package de.unisaarland.cs.sopra.common.controller;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Location;
@@ -56,11 +54,7 @@ public class Controller {
 			case MATCH_START:
 				long[] players = ((GameEvent.MatchStart) gameEvent).getPlayerIds();
 				byte[] number = ((GameEvent.MatchStart) gameEvent).getNumbers();
-				Map<Long,String> names = new HashMap<Long,String>();
-				for (long player : players) {
-					names.put(player,connection.getPlayerInfo(player).getName());
-				}
-				modelWriter.matchStart(players, number, names);
+				modelWriter.matchStart(players, number);
 				break;
 			case BUILT_CATAPULT:
 				Edge ed = ((GameEvent.BuiltCatapult) gameEvent).getLocation();

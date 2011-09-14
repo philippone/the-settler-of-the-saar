@@ -81,7 +81,7 @@ public class TestUtil {
 		model.matchStart(new long[] {2,1,0}, new byte[] {2,3,4,5,
 														 6,8,9,10,
 														 11,12,11,10,
-														 9,8,6,5},names);
+														 9,8,6,5});
 		return model;
 	}
 	
@@ -146,7 +146,7 @@ public class TestUtil {
 		model.matchStart(new long[] {1,0}, new byte[] {2,3,4,5,
 														 6,8,9,10,
 														 11,12,11,10,
-														 9,8,6,5},names);
+														 9,8,6,5});
 		return model;
 	}
 	
@@ -210,7 +210,7 @@ public class TestUtil {
 		names.put(0L, "Ichbinkeinreh");
 		names.put(1L, "Herbert");
 		Model model = new Model(worldrep, matchinfo, 0);
-		model.matchStart(new long[] {0,2}, new byte[] {8,6},names);
+		model.matchStart(new long[] {0,2}, new byte[] {8,6});
 		return model;
 	}
 	
