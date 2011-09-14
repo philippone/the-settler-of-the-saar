@@ -62,9 +62,9 @@ public class InitializeStrategy implements Strategy {
 			else if (n==5 || n==9) numberValue=(float)(numberValue+0.110);
 			else if (n==6 || n==8) numberValue=(float)(numberValue+0.140);
 			type=field.getFieldType();
-			if (type==FieldType.FOREST || type==FieldType.HILLS)resourceValue=(float)(resourceValue+0.19);
-			else if (type==FieldType.PASTURE || type==FieldType.FIELDS) resourceValue=(float)(resourceValue+0.95);
-			else if (type==FieldType.MOUNTAINS) resourceValue=(float)(resourceValue+0.0475);
+			if (type==FieldType.FOREST || type==FieldType.HILLS || type==FieldType.PASTURE ||
+					type==FieldType.FIELDS || type==FieldType.MOUNTAINS)
+							resourceValue =(float)(resourceValue+0.10);
 		}
 		intersectionValue=resourceValue+numberValue;
 		return intersectionValue;
