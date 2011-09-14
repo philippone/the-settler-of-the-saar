@@ -17,7 +17,7 @@ public class InitializeStrategy implements Strategy {
 		Set<Intersection> intersections =mr.buildableVillageIntersections(mr.getMe());
 			Intersection i = intersections.iterator().next();
 			ca.buildSettlement(i, BuildingType.Village);
-			Set<Path> paths = mr.getPathsFromIntersection(i);
+			Set<Path> paths = mr.buildableStreetPaths(mr.getMe());
 			Path p = paths.iterator().next();
 			ca.buildStreet(p);
 			

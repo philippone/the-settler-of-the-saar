@@ -459,9 +459,7 @@ public class Model implements ModelReader, ModelWriter {
 		return this.players;
 	}
 
-	/**
-	 * @return The Map containing the mapping of playerID -> Player
-	 */
+	@Override
 	public Map<Long, Player> getPlayerMap() {
 		return this.playerMap;
 	}
@@ -525,7 +523,9 @@ public class Model implements ModelReader, ModelWriter {
 		if(getRound()==0){
 			for(Path noStreet :getPathsFromIntersection(initLastVillageIntersection)){
 				if(!noStreet.hasStreet())
-					res.add(noStreet);
+					for (Field f : board.getFieldsFromPath(noStreet)){
+						if (f.getFieldType() != FieldType.WATER) res.add(noStreet);
+					}
 			}
 		}else{
 			Iterator<Path> it = getPathIterator();
@@ -1348,14 +1348,15 @@ public class Model implements ModelReader, ModelWriter {
 		if (round == 0) {
 			if (initPlayer == players.size() - 1) {
 				initPlayer = -1;
-	
 				java.util.Collections.reverse(players);
 				reversedPlayersList = !reversedPlayersList;
 			}
-			initPlayer++; 
-			for (ModelObserver act : modelObserver) {
-				if (getCurrentPlayer() == getMe())
-					act.initTurn();
+			initPlayer++;
+			if (!(getCurrentPlayer() == players.get(players.size()-1) && getStreets(getCurrentPlayer()).size() == initVillages)){
+				for (ModelObserver act : modelObserver) {
+					if (getCurrentPlayer() == getMe())
+						act.initTurn();
+				}
 			}
 		}
 	}
@@ -1373,7 +1374,8 @@ public class Model implements ModelReader, ModelWriter {
 			throw new IllegalArgumentException(location + " is null");
 		Intersection i = getIntersection(location);
 		if (getRound() == 0) {
-			if(buildableVillageIntersections(getCurrentPlayer()).contains(i)) { // wenn i buildable, do it
+			Set<Intersection> s = buildableVillageIntersections(getCurrentPlayer());
+			if(s.contains(i)) { // wenn i buildable, do it
 				i.createBuilding(buildingType, getCurrentPlayer());
 				getCurrentPlayer().setVictoryPoints(getCurrentPlayer().getVictoryPoints() + 1);	
 				for (ModelObserver ob : modelObserver) {
