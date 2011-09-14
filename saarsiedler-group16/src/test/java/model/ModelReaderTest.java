@@ -47,33 +47,38 @@ public class ModelReaderTest {
 		currentSet = model.getHarborTypes(currentPlayer);
 		assertTrue("Contains one element : LUMBER_HARBOR TYPE", currentSet.size() == 1);
 		//test if both sets have identical content
-		System.out.println("curSet:" + currentSet );
-		System.out.println("expSet" + expectedSet);
 		assertTrue(currentSet.containsAll(expectedSet));
 		assertTrue(expectedSet.containsAll(currentSet));
 		
 	}
 	
 	
-	/**
-	 * Harbor with buccaneer (Seeraeuber)
-	 * TODO Warum kommt nach dem assertTrue noch Code jedoch kein assert mehr?
-	 */
 	@Test
 	public void testGetHarborTypes1() {
-		//model.newRound(8); // in Runde 1 // muss runde 0 sein wegen model.buildSettlement später
-		// noch kein Settlement an einem den zwei Harbors
 		Player currentPlayer = model.getCurrentPlayer();
 		Set<HarborType> currentSet = model.getHarborTypes(currentPlayer);
 		assertTrue("es gibt eig. keine HarborTypes", currentSet.size() == 0);
 		// Village at LumberHarbor (Spezialhafen)
 		currentPlayer.modifyResources(new ResourcePackage(10000,10000,10000,10000,10000));
-		model.buildSettlement(new Location(2,1,0), BuildingType.Village);
-		// buccaneer at LumberHarbor
-		Field robberField = model.getField(new Point(2,1));
-		Field neighborWaterField = model.getField(new Point(2,1));
-		
-		
+		model.buildSettlement(new Location(2,1,1), BuildingType.Village);
+		currentSet = model.getHarborTypes(currentPlayer);
+		assertTrue("es gibt einen HarborType", currentSet.size() == 1);
+	}
+	
+	/**
+	 * Harbor with buccaneer (Seeraeuber)
+	 */
+	@Test
+	public void testGetHarborTypes2() {
+		Player currentPlayer = model.getCurrentPlayer();
+		Set<HarborType> currentSet = model.getHarborTypes(currentPlayer);
+		assertTrue("es gibt eig. keine HarborTypes", currentSet.size() == 0);
+		// Village at LumberHarbor (Spezialhafen)
+		currentPlayer.modifyResources(new ResourcePackage(10000,10000,10000,10000,10000));
+		model.buildSettlement(new Location(2,1,1), BuildingType.Village);
+		model.robberMoved(new Point(1,2), new Point(2,2), -1, Resource.BRICK);
+		currentSet = model.getHarborTypes(currentPlayer);
+		assertTrue("es gibt keinen HarborType, wegen dem buccaneer", currentSet.size() == 0);
 	}
 	
 	@Test

@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import de.unisaarland.cs.sopra.common.ModelObserver;
+
 public interface ModelReader {
 
 	/**
@@ -281,5 +283,15 @@ public interface ModelReader {
 	 * @return The List of Player sorted in TableOrder
 	 */
 	public List<Player> getTableOrder();
+	
+	/**
+	 * @param modelObserver
+	 */
+	public void removeModelObserver(ModelObserver modelObserver);
+	
+	/**
+	 * @param modelObserver
+	 */
+	public void addModelObserver(ModelObserver modelObserver);
 	
 }

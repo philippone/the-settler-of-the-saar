@@ -1,14 +1,22 @@
 package de.unisaarland.cs.sopra.common.view;
 
+import static de.unisaarland.cs.sopra.common.PlayerColors.BLACK;
+import static de.unisaarland.cs.sopra.common.PlayerColors.BLUE;
+import static de.unisaarland.cs.sopra.common.PlayerColors.BROWN;
+import static de.unisaarland.cs.sopra.common.PlayerColors.GREEN;
+import static de.unisaarland.cs.sopra.common.PlayerColors.ORANGE;
+import static de.unisaarland.cs.sopra.common.PlayerColors.PURPLE;
+import static de.unisaarland.cs.sopra.common.PlayerColors.RED;
+import static de.unisaarland.cs.sopra.common.PlayerColors.WHITE;
+import static de.unisaarland.cs.sopra.common.PlayerColors.YELLOW;
+
 import java.awt.Font;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,7 +25,6 @@ import java.util.Map;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 import org.newdawn.slick.Color;
@@ -44,7 +51,6 @@ import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
-import static de.unisaarland.cs.sopra.common.PlayerColors.*;
 
 public class GameGUI extends View implements Runnable{
 
@@ -94,6 +100,7 @@ public class GameGUI extends View implements Runnable{
 	
 	public GameGUI(ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player,String> playerNames, Setting setting) throws Exception {
 		super(modelReader, controllerAdapter);
+		this.modelReader.addModelObserver(this);
 		this.setting = setting;
 		this.playerNames = playerNames;
 		this.uiMode = RESOURCE_VIEW;
@@ -427,21 +434,21 @@ public class GameGUI extends View implements Runnable{
 		   uiFont.drawString(1000, 84, ""+modelReader.getResources().getResource(Resource.WOOL), Color.black);
 		   uiFont.drawString(1000, 116, ""+modelReader.getResources().getResource(Resource.GRAIN), Color.black);
 		   uiFont.drawString(1000, 147, ""+modelReader.getResources().getResource(Resource.ORE), Color.black);
-		   uiFont.drawString(1000, 178, ""+ village, Color.black);
+		   uiFont.drawString(1000, 178, ""+ village + "/" + modelReader.getMaxBuilding(BuildingType.Village), Color.black);
 		   uiFont.drawString(1000, 209, ""+ town + "/" + modelReader.getMaxBuilding(BuildingType.Town), Color.black);
 		   uiFont.drawString(1000, 240, ""+ catapult + "/" + modelReader.getMaxVictoryPoints(), Color.black);
 	}
 
 	public void drawTradeMenu() {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 	
 	public void drawBuildMenu() {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 	
 	public void drawResource() {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 	
 	public String getName(Player player) {
@@ -451,27 +458,27 @@ public class GameGUI extends View implements Runnable{
 
 	@Override
 	public void updatePath(Path path) {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 
 	@Override
 	public void updateIntersection(Intersection intersection) {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 
 	@Override
 	public void updateField(Field field) {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 
 	@Override
 	public void updateResources() {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 
 	@Override
 	public void updateVictoryPoints() {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 
 	@Override
@@ -493,27 +500,27 @@ public class GameGUI extends View implements Runnable{
 
 	@Override
 	public void eventRobber() {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 
 	@Override
 	public void eventTrade(ResourcePackage resourcePackage) {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 
 	@Override
 	public void eventNewRound() {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 
 	@Override
 	public void updateTradePossibilities() {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 
 	@Override
 	public void eventPlayerLeft(long playerID) {
-		throw new UnsupportedOperationException();
+		//TODO: implement it!
 	}
 	
 	@Override
@@ -783,12 +790,12 @@ public class GameGUI extends View implements Runnable{
 				return new long[] {};
 			}
 		};
-		WorldRepresentation worldrep = new WorldRepresentation(1, 1, 2, 9, 5, 4,  
+		/*WorldRepresentation worldrep = new WorldRepresentation(1, 1, 2, 9, 5, 4,  
 				new byte[] {1},
 				new byte[] {1,4,
 							2,5,    
 							3,6},
-				new byte[] {});
+				new byte[] {});*/
 		Model model = new Model(/*worldrep*/WorldRepresentation.getDefault(), matchinfo, 0);
 		model.matchStart(new long[] {0,1}, new byte[]   {2,3,4,
 														 6,8,9,10,
@@ -822,7 +829,7 @@ public class GameGUI extends View implements Runnable{
 	public static void saveFile(String filename, InputStream inputStr) throws IOException {
 		   FileOutputStream fos = new FileOutputStream(filename);
 		   int len = -1;
-		   byte[] buffer = new byte[1024];
+		   byte[] buffer = new byte[4096];
 		   while ((len = inputStr.read(buffer)) != -1) {
 		      fos.write(buffer,0,len);
 		   }
@@ -831,13 +838,12 @@ public class GameGUI extends View implements Runnable{
 
 	@Override
 	public void initTurn() {
-		// TODO Auto-generated method stub
-		
+		//TODO: implement it!
 	}
 	
 	
 	/*
-	 		String[] list = new String[] {
+	 	String[] list = new String[] {
 				"jinput-dx8_64.dll", "jinput-dx8.dll", "jinput-raw_64.dll",
 				"jinput-raw.dll", "libjinput-linux.so", "libjinput-linux64.so",
 				"libjinput-osx.jnilib", "liblwjgl.jnilib", "liblwjgl.so",

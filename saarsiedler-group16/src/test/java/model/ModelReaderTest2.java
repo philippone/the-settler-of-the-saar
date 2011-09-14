@@ -1,17 +1,17 @@
 package model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.lwjgl.opengl.DisplayMode;
 
-import de.unisaarland.cs.sopra.common.PlayerColors;
-import de.unisaarland.cs.sopra.common.Setting;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.FieldType;
@@ -20,9 +20,7 @@ import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
-import de.unisaarland.cs.sopra.common.view.GameGUI;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
-import java.util.HashSet;
 
 public class ModelReaderTest2 {
 
@@ -69,7 +67,7 @@ public class ModelReaderTest2 {
 		int maxTowns=model.getMaxBuilding(BuildingType.Town);
 		assertTrue(maxTowns==5);
 		int maxVillages=model.getMaxBuilding(BuildingType.Village);
-		assertTrue(maxVillages==9);
+		assertTrue(maxVillages==5);
 	}
 	
 	@Test
@@ -92,6 +90,8 @@ public class ModelReaderTest2 {
 		
 		model.buildSettlement(new Location(3,0,0), BuildingType.Village);
 		model.buildStreet(new Location(3,0,0));
+		
+		model.newRound(9);
 		
 		Player pl=model.getCurrentPlayer();
 		Set<Intersection> si=model.buildableVillageIntersections(pl);
@@ -135,6 +135,8 @@ public class ModelReaderTest2 {
 		model.buildSettlement(new Location(3,0,0), BuildingType.Village);
 		model.buildStreet(new Location(3,0,0));
 		
+		model.newRound(9);
+		
 		Player pl=model.getCurrentPlayer();
 		Set<Intersection> si=model.buildableTownIntersections(pl);
 		if (!(si.isEmpty())){
@@ -150,57 +152,6 @@ public class ModelReaderTest2 {
 	
 	@Test
 	public void testBuildableStreetPaths() {
- 		/*
-		String[] list = new String[] {
-				"jinput-dx8_64.dll", "jinput-dx8.dll", "jinput-raw_64.dll",
-				"jinput-raw.dll", "libjinput-linux.so", "libjinput-linux64.so",
-				"libjinput-osx.jnilib", "liblwjgl.jnilib", "liblwjgl.so",
-				"liblwjgl64.so", "libopenal.so", "libopenal64.so",
-				"lwjgl.dll", "lwjgl64.dll", "openal.dylib", "OpenAL32.dll", "OpenAL64.dll" };
-		String tmpdir = System.getProperty("java.io.tmpdir");
-		for (String act : list) {
-			InputStream input = ClassLoader.getSystemClassLoader().getResourceAsStream("native/" + act);
-			try {
-				GameGUI.saveFile(tmpdir + "/" + act, input);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		String seperator;
-		if (System.getProperty("sun.desktop") != null && System.getProperty("sun.desktop").equals("windows")) seperator = ";";
-		else seperator = ":";
-		System.setProperty("java.library.path", System.getProperty("java.library.path") + seperator + tmpdir);
-		java.lang.reflect.Field vvv = null;
-		try {
-			vvv = ClassLoader.class.getDeclaredField("sys_paths");
-		} catch (SecurityException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (NoSuchFieldException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		vvv.setAccessible(true); 
-		try {
-			vvv.set(null, null);
-		} catch (IllegalArgumentException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IllegalAccessException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		Setting setting = new Setting(new DisplayMode(1024,580), true, PlayerColors.RED);
-		GameGUI gameGUI = null;
-		try {
-			gameGUI = new GameGUI(model, null, null, setting);
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		new Thread(gameGUI).start(); */
 		
 		model.buildSettlement(new Location(0,0,0), BuildingType.Village);
 		model.buildStreet(new Location(0,0,0));
@@ -214,6 +165,8 @@ public class ModelReaderTest2 {
 		model.buildSettlement(new Location(3,0,0), BuildingType.Village);
 		model.buildStreet(new Location(3,0,0));
 		
+		model.newRound(9);
+		
 		Player pl=model.getCurrentPlayer();
 		Set<Path> sp=model.buildableStreetPaths(pl);
 		if (!(sp.isEmpty())){
@@ -221,7 +174,7 @@ public class ModelReaderTest2 {
 				boolean b=false;
 				Set<Path> sp1=model.getPathsFromPath(p);
 				for(Path p1: sp1){ // check for each neighbor path
-					b=b | (p1.getStreetOwner()==pl);
+					b = b || (p1.hasStreet() && p1.getStreetOwner()==pl);
 					// check if player owns a street on this path
 				}
 				assertTrue(b);
@@ -249,19 +202,17 @@ public class ModelReaderTest2 {
 	}
 	
 	@Test
-	public void testBuildableStreetPathsInit2() {
+	public void testBuildableStreetPathsInit2() {	
 		model.buildSettlement(new Location(0, 0, 3), BuildingType.Village);
 		//model.setInitVillageIntersection(new Intersection(new Location(1, 1, 4)));
 		Player player = model.getCurrentPlayer();
 		//model.setMe(player);
 		Set<Path> buildablePaths = model.buildableStreetPaths(player);
 		Set<Path> expectedPaths = new HashSet<Path>();
-		expectedPaths.add(new Path(new Location(1, 0, 2)));
-		expectedPaths.add(new Path(new Location(1, 0, 1)));
-		System.out.println(expectedPaths);
-		System.out.println(buildablePaths);
-		assertTrue(expectedPaths.containsAll(buildablePaths));
-		assertTrue(buildablePaths.containsAll(expectedPaths));
+		expectedPaths.add(model.getPath(new Location(1, 0, 0)));
+		expectedPaths.add(model.getPath(new Location(1, 0, 1)));
+		expectedPaths.add(model.getPath(new Location(1, 1, 5)));
+		assertEquals(buildablePaths,expectedPaths);
 	}
 	
 	@Test

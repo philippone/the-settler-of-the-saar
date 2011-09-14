@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import de.unisaarland.cs.sopra.common.ModelObserver;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
@@ -70,8 +69,8 @@ public class Model implements ModelReader, ModelWriter {
 		this.meID = meID;
 	}
 
-	/**
-	 * @param modelObserver
+	/* (non-Javadoc)
+	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#addModelObserver(de.unisaarland.cs.sopra.common.ModelObserver)
 	 */
 	public void addModelObserver(ModelObserver modelObserver) {
 		if (modelObserver == null)
@@ -82,8 +81,8 @@ public class Model implements ModelReader, ModelWriter {
 			this.modelObserver.add(modelObserver);
 	}
 
-	/**
-	 * @param modelObserver
+	/* (non-Javadoc)
+	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#removeModelObserver(de.unisaarland.cs.sopra.common.ModelObserver)
 	 */
 	public void removeModelObserver(ModelObserver modelObserver) {
 		if (modelObserver == null)
@@ -309,7 +308,7 @@ public class Model implements ModelReader, ModelWriter {
 			Set<Intersection> si1 = getIntersectionsFromPath(p);
 			for (Intersection i : si1) {
 				if (i != null && isExtremityOfRoad(i, road)
-						&& ((i.getOwner() == player) | !(i.hasOwner())))
+						&& (!(i.hasOwner()) || (i.getOwner() == player)))
 					si.add(i);
 			}
 			// meaning we can continue a road through an intersection and the
@@ -441,8 +440,7 @@ public class Model implements ModelReader, ModelWriter {
 				tmp.add(act);
 			}
 			this.longestClaimedRoad.removeAll(tmp);
-			this.longestClaimedRoad = tmp.size() < this.longestClaimedRoad
-					.size() ? tmp : this.longestClaimedRoad;
+			this.longestClaimedRoad = tmp.size() > this.longestClaimedRoad.size() ? tmp : this.longestClaimedRoad;
 		}
 	}
 
@@ -521,7 +519,6 @@ public class Model implements ModelReader, ModelWriter {
 	@Override
 	public Set<Path> buildableStreetPaths(Player player) {
 		if (player == null)	throw new IllegalArgumentException(player + "is null");
-		// TODO initialPahse geht evtl IMMER noch nicht ebenso in buildings
 		Set<Path> res = new HashSet<Path>();
 		
 		if(getRound()==0){
@@ -552,8 +549,7 @@ public class Model implements ModelReader, ModelWriter {
 							}
 						}
 						if (n.hasStreet() && n.getStreetOwner() == player
-								&& (betweenBothPathsIntersection.getOwner()== player 
-								|| betweenBothPathsIntersection.getOwner()== null)){
+								&& (!betweenBothPathsIntersection.hasOwner() || betweenBothPathsIntersection.getOwner()== player)){
 							if (hasLand)
 								res.add(p);
 						}
@@ -712,8 +708,21 @@ public class Model implements ModelReader, ModelWriter {
 		for (Path p : sp) {
 			Set<Path> sp1 = getPathsFromPath(p);
 			for (Path p1 : sp1) {
-				if (p.hasCatapult() && p.getCatapultOwner() != player) {
-					attackableCatapults.add(p1);
+				if (p1.hasCatapult() && p1.getCatapultOwner() != player) {
+					Set<Intersection> iset1 = getIntersectionsFromPath(p);
+					Set<Intersection> iset2 = getIntersectionsFromPath(p1);
+					Intersection interBetweenPaths = null;
+					// finds the intersection between both paths
+					for (Intersection inter1 : iset1) {
+						for (Intersection inter2 : iset2) {
+							if (inter1 == inter2)
+								interBetweenPaths = inter1;
+						}
+					}
+					if (!interBetweenPaths.hasOwner() || interBetweenPaths.getOwner() == player) {
+						attackableCatapults.add(p1);
+					}
+					
 				}
 			}
 		}
@@ -759,11 +768,9 @@ public class Model implements ModelReader, ModelWriter {
 		Intersection i;
 		while (ii.hasNext()) {
 			i = ii.next();
-			// System.out.println("IOwner: "+ i.getOwner());
-			if (i.getOwner() == player && i.getBuildingType() == buildingType)
+			if (i.hasOwner() && i.getOwner() == player && i.getBuildingType() == buildingType)
 				si.add(i);
 		}
-		System.out.println("Settlement0: " + si);
 		return si;
 	}
 
@@ -783,7 +790,7 @@ public class Model implements ModelReader, ModelWriter {
 		Path p;
 		while (ip.hasNext()) {
 			p = ip.next();
-			if (p.getCatapultOwner() == player)
+			if (p.hasCatapult() && p.getCatapultOwner() == player)
 				sp.add(p);
 		}
 		return sp;
@@ -949,13 +956,27 @@ public class Model implements ModelReader, ModelWriter {
 	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getHarborTypes(de.
 	 * unisaarland.cs.sopra.common.model.Player)
 	 */
-	@Override
+	@Override //TODO evtl ueberarbeiten da langsam
 	public Set<HarborType> getHarborTypes(Player player) {
-		Set<Intersection> si = getHarborIntersections();
 		Set<HarborType> sht = new HashSet<HarborType>();
-		for (Intersection i : si) {
-			if (i.getOwner() == player)
-				sht.add(getHarborType(i));
+		Iterator<Path> iter = getPathIterator();
+		while (iter.hasNext()) {
+			Path p = iter.next();
+			if (p.getHarborType() != null) {
+				for (Field f : getFieldsFromPath(p)) {
+					if (f.hasRobber()) {
+						sht.remove(p);
+						break;
+					}
+					else {
+						for (Intersection i : getIntersectionsFromPath(p)) {
+							if (i.hasOwner() && i.getOwner() == getCurrentPlayer())
+								sht.add(p.getHarborType());
+						}
+						
+					}
+				}
+			}
 		}
 		return sht;
 	}
@@ -1193,22 +1214,38 @@ public class Model implements ModelReader, ModelWriter {
 			Player owner = path_catapult.getCatapultOwner();
 			Player ownerBuilding = inter_settlement.getOwner();
 			if (inter_settlement.getBuildingType() == BuildingType.Village) {
-				if (owner.getVictoryPoints() < getMaxVictoryPoints()) {
+				if ( (getSettlements(owner, BuildingType.Village).size() < getMaxBuilding(BuildingType.Village)) ||
+					 ((getSettlements(owner, BuildingType.Village).size() >= getMaxBuilding(BuildingType.Village)) && owner == ownerBuilding) ) {
+					//Village and attacker < maxVillages or
+					//Village and attacker = maxVillages but attacker = defender
+					inter_settlement.getOwner().setVictoryPoints(inter_settlement.getOwner().getVictoryPoints()-1);
 					inter_settlement.removeBuilding();
-					inter_settlement
-							.createBuilding(BuildingType.Village, owner);
+					inter_settlement.createBuilding(BuildingType.Village, owner);
+					inter_settlement.getOwner().setVictoryPoints(inter_settlement.getOwner().getVictoryPoints()+1);
 				} else {
+					//Village and attacker > maxVillage
+					inter_settlement.getOwner().setVictoryPoints(inter_settlement.getOwner().getVictoryPoints()-1);
 					inter_settlement.removeBuilding();
 				}
 			} else {
-				if (ownerBuilding.getVictoryPoints() < getMaxVictoryPoints()) {
+				if (getSettlements(ownerBuilding, BuildingType.Village).size() < getMaxBuilding(BuildingType.Village)) {
+					//Town and defender < maxVillage
+					inter_settlement.getOwner().setVictoryPoints(inter_settlement.getOwner().getVictoryPoints()-1);
 					inter_settlement.removeBuilding();
-					inter_settlement.createBuilding(BuildingType.Village,
-							ownerBuilding);
+					inter_settlement.createBuilding(BuildingType.Village, ownerBuilding);
 				} else {
-					inter_settlement.removeBuilding();
-					inter_settlement
-							.createBuilding(BuildingType.Village, owner);
+					if (getSettlements(owner, BuildingType.Village).size() < getMaxBuilding(BuildingType.Village)) {
+						//Town and defender > maxVillages && attacker < maxVillages 
+						inter_settlement.getOwner().setVictoryPoints(inter_settlement.getOwner().getVictoryPoints()-2);
+						inter_settlement.removeBuilding();
+						inter_settlement.createBuilding(BuildingType.Village, ownerBuilding);
+						inter_settlement.getOwner().setVictoryPoints(inter_settlement.getOwner().getVictoryPoints()+1);
+					}
+					else {
+						//Town and defender > maxVillages && attacker > maxVillages 
+						inter_settlement.getOwner().setVictoryPoints(inter_settlement.getOwner().getVictoryPoints()-2);
+						inter_settlement.removeBuilding();
+					}
 				}
 			}
 			owner.modifyResources(Catapult.getAttackbuildingprice());
@@ -1331,12 +1368,9 @@ public class Model implements ModelReader, ModelWriter {
 	 */
 	@Override
 	public void buildSettlement(Location location, BuildingType buildingType) {
-		//TODO: evtl "initLastVillageIntersection" setzen befalls man nur an die letzte village nen path bauen darf
 		if (location == null)
 			throw new IllegalArgumentException(location + " is null");
-		// System.out.println("l: " + location);
 		Intersection i = getIntersection(location);
-		// System.out.println("In: " + i);
 		if (getRound() == 0) {
 			if(buildableVillageIntersections(getCurrentPlayer()).contains(i)) { // wenn i buildable, do it
 				i.createBuilding(buildingType, getCurrentPlayer());
@@ -1350,12 +1384,14 @@ public class Model implements ModelReader, ModelWriter {
 			} else
 			throw new IllegalStateException("geb wurde nicht gebaut, da i nicht in buildableIn...");
 		} else {
-			if (isBuildable(i, buildingType) && (isAffordable(buildingType))) {
+			if (isBuildable(i, buildingType) && (isAffordable(buildingType)) && getSettlements(getCurrentPlayer(), buildingType).size() < getMaxBuilding(buildingType)) {
 				getCurrentPlayer().modifyResources(buildingType.getPrice());
 				i.createBuilding(buildingType, getCurrentPlayer());
 				getCurrentPlayer().setVictoryPoints(getCurrentPlayer().getVictoryPoints() + 1);
 				for (ModelObserver ob : modelObserver) {
 					ob.updateResources();
+					if (buildingType == BuildingType.Town)
+						ob.updateSettlementCount(BuildingType.Village);
 					ob.updateSettlementCount(buildingType);
 					ob.updateVictoryPoints();
 					ob.updateIntersection(i);
@@ -1364,9 +1400,10 @@ public class Model implements ModelReader, ModelWriter {
 			} else
 				throw new IllegalArgumentException(
 						String.format(
-								"Das Gebaeude wurde nicht gebaut. isBuildable:%b, isAffordable:%b",
+								"Das Gebaeude wurde nicht gebaut. isBuildable:%b, isAffordable:%b, hasNotMaxBuildingType:%b",
 								isBuildable(i, buildingType),
-								isAffordable(buildingType)));
+								isAffordable(buildingType),
+								(getSettlements(getCurrentPlayer(), buildingType).size() < getMaxBuilding(buildingType))));
 		}
 	}
 
@@ -1374,22 +1411,14 @@ public class Model implements ModelReader, ModelWriter {
 		Set<Intersection> si;
 		if (buildingType == BuildingType.Village) {
 			si = buildableVillageIntersections(getCurrentPlayer());
-			// System.out.println(si);
-			// System.out.println(i);
 			if (si.contains(i))
 				return true;
 			return false;
-			// throw new
-			// IllegalArgumentException("Kein Dorf darf hier gebaut werden");
 		} else if (buildingType == BuildingType.Town) {
 			si = buildableTownIntersections(getCurrentPlayer());
-			// System.out.println(si);
-			// System.out.println(i);
 			if (si.contains(i))
 				return true;
 			return false;
-			// throw new
-			// IllegalArgumentException("Keine Stadt darf hier gebaut werden");
 		}
 		throw new IllegalArgumentException("Es fehlt den BuildingType");
 	}
@@ -1565,10 +1594,12 @@ public class Model implements ModelReader, ModelWriter {
 		else {
 			getField(sourceField).setRobber(false);
 			getField(destinationField).setRobber(true);
-			playerMap.get(victimPlayer).getResources()
-					.modifyResource(stolenResource, -1);
-			for (ModelObserver ob : modelObserver) {
-				ob.eventRobber();
+			if (playerMap.containsKey(victimPlayer)) {
+				playerMap.get(victimPlayer).getResources()
+						.modifyResource(stolenResource, -1);
+				for (ModelObserver ob : modelObserver) {
+					ob.eventRobber();
+				}
 			}
 		}
 	}
@@ -1712,8 +1743,6 @@ public class Model implements ModelReader, ModelWriter {
 	public Set<Intersection> buildableTownIntersections(Player player) {
 		if (player == null)
 			throw new IllegalArgumentException(player + " is null");
-		System.out.println("Settlement: "
-				+ getSettlements(player, BuildingType.Village));
 		return getSettlements(player, BuildingType.Village);
 
 	}

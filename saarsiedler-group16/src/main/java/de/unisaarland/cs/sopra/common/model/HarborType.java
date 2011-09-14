@@ -1,6 +1,5 @@
 package de.unisaarland.cs.sopra.common.model;
 
-import javax.swing.text.html.CSS;
 
 public enum HarborType {
 

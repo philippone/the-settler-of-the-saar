@@ -489,7 +489,6 @@ public class Board {
 		return s;
 	}
 	
-	//TODO
 	public Set<Path> getPathsFromPath(Path path) {
 		int x = path.getLocation().getX();
 		int y = path.getLocation().getY();

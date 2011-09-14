@@ -392,7 +392,6 @@ public class BoardTest {
 	@Test
 	public void testGetFieldsFromPath2(){
 		//one neighbor field
-		Field fi = b.getField(new Point(3, 2));
 		Set<Field> cSet = b.getFieldsFromPath(b.getPath(new Location(3, 2, 3)));
 		Set<Field> eSet = new HashSet<Field>();
 		eSet.add(b.getField(new Point(3,2)));

@@ -86,7 +86,15 @@ public class TestModelObserver implements ModelObserver {
 
 		@Override
 		public void initTurn() {
-			this.initTurn = true;
+			this.setInitTurn(true);
+		}
+
+		public void setInitTurn(boolean initTurn) {
+			this.initTurn = initTurn;
+		}
+
+		public boolean isInitTurn() {
+			return initTurn;
 		}
 
 	

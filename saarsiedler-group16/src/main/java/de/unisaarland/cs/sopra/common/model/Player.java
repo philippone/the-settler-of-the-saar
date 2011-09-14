@@ -1,6 +1,5 @@
 package de.unisaarland.cs.sopra.common.model;
 
-import java.util.List;
 
 public class Player {
 
