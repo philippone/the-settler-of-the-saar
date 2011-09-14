@@ -16,7 +16,8 @@ public class BuildACatapultStrategy implements Strategy {
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
 		// TODO Auto-generated method stub
-		if (mr.affordableCatapultBuild()>0){
+		Set<Path> paths=mr.buildableCatapultPaths(mr.getCurrentPlayer());
+		if (mr.affordableCatapultBuild()>0 && paths!=null){
 			Path bestPath=chooseBestPath(mr);
 			ca.buildCatapult(bestPath);
 		}

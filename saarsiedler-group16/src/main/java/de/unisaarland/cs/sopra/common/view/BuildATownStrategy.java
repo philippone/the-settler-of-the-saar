@@ -10,15 +10,17 @@ import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 
 public class BuildATownStrategy implements Strategy {
-
+Strategy s;
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
 		// TODO Auto-generated method stub
-		if (mr.affordableSettlements(BuildingType.Town)>0){
+		Set<Intersection> intersections=mr.buildableTownIntersections(mr.getCurrentPlayer());
+		if (mr.affordableSettlements(BuildingType.Town)>0 && intersections!=null){
 			Intersection bestIntersection=chooseBestIntersection(mr);
 			ca.buildSettlement(bestIntersection, BuildingType.Town);
-		}
-	}
+		} else 
+			 s = new TradeStrategy();
+	}	
 	
 	private Intersection chooseBestIntersection(ModelReader mr){
 		Intersection bestIntersection=null;
@@ -51,7 +53,7 @@ public class BuildATownStrategy implements Strategy {
 			else if (n==6 || n==8) numberValue=(float)(numberValue+0.140);
 			type=field.getFieldType();
 			if (type==FieldType.DESERT || type==FieldType.WATER)resourceValue=(float)(resourceValue+0.00);
-			else resourceValue=(float)(resourceValue+0.19);
+			else resourceValue=(float)(resourceValue+0.11);
 		}
 		intersectionValue=resourceValue+numberValue;
 		return intersectionValue;
