@@ -74,10 +74,12 @@ public class AI extends View{
 			WorldRepresentation wr = WorldRepresentation.getDefault();
 			MatchInformation mi = c.newMatch("K(a)I!", 1, wr, false);
 			Model m = new Model(wr, mi, c.getClientId());
+			//System.out.printf("MatchID: %s", mi.getId());
 			Controller cont = new Controller(c, m);
 			ControllerAdapter contAdap = new ControllerAdapter(cont, m);
 			AI ai = new AI(m, contAdap);
 			m.addModelObserver(ai);
+			//Thread.sleep(15000);
 			c.changeReadyStatus(true);
 			GameEvent ge = c.getNextEvent(0);
 			if (ge.getType() != EventType.MATCH_START)
@@ -94,7 +96,7 @@ public class AI extends View{
 				e1.printStackTrace();
 			}
 			new Thread(gameGUI).start();
-			
+			Thread.sleep(5000);
 			cont.mainLoop();
 			System.out.println("Das Spiel war erfolgreich! =)");
 		} catch (Exception e){
@@ -166,7 +168,7 @@ public class AI extends View{
 	@Override
 	// a seven was diced
 	public void eventRobber() {
-		s = new RobberStrategy();
+		s = new MoveRobberStrategy();
 		executeBestStrategy();
 	}
 
