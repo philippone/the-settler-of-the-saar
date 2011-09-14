@@ -12,6 +12,7 @@ import de.unisaarland.cs.st.saarsiedler.comm.Connection;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 import de.unisaarland.cs.st.saarsiedler.comm.exceptions.IllegalMatchSpecificationException;
+import de.unisaarland.cs.st.saarsiedler.comm.results.JoinResult;
 
 public class ButtonListener implements ActionListener {
 
@@ -54,7 +55,7 @@ public class ButtonListener implements ActionListener {
 				gui.menuPanel.setVisible(false);
 				gui.lobbyPanel.setVisible(true);
 				setUpListUpdater();
-				changeName("Player-Gruppe-16");
+				Client.changeName("Player-Gruppe-16");
 				
 			}
 			if (arg0.getSource() == gui.playAsAI){
@@ -63,7 +64,7 @@ public class ButtonListener implements ActionListener {
 				gui.menuPanel.setVisible(false);
 				gui.lobbyPanel.setVisible(true);
 				setUpListUpdater();
-				changeName("AI-Gruppe-16");
+				Client.changeName("AI-Gruppe-16");
 			}
 			if (arg0.getSource() == gui.exit_menu){
 				System.exit(0);
@@ -76,9 +77,7 @@ public class ButtonListener implements ActionListener {
 				gui.createPanel.setVisible(true);
 			}
 			if (arg0.getSource() == gui.join){
-				try {
-					System.out.println(Client.matchInfo);
-					System.out.println(Client.connection.joinMatch(Client.matchInfo.getId(), joinAsObserver));} catch (Exception e) {e.printStackTrace();}
+				client.joinMatch(Client.matchInfo.getId(), joinAsObserver);
 				gui.lobbyPanel.setVisible(false);
 				gui.joinPanel.setVisible(true);
 				refreshPlayerList();
@@ -98,9 +97,9 @@ public class ButtonListener implements ActionListener {
 		
 		//CreatePanel
 			if (arg0.getSource() == gui.createMatch){
-				try {	//erstellt Match udn setzt aktuelle Matchinfo auf das erstellste spiel
-					Client.matchInfo = Client.connection.newMatch(gui.gameTitleField.getText(), Integer.valueOf(gui.numPlayersField.getText())
-						,/*TODO mehr auswahl schaffen*/WorldRepresentation.getDefault(), joinAsObserver);	} catch (Exception e) {	e.printStackTrace();				}
+				try {
+					client.createMatch(gui.gameTitleField.getText(), Integer.valueOf(gui.numPlayersField.getText())
+					,/*TODO mehr auswahl schaffen*/WorldRepresentation.getDefault(), joinAsObserver);} catch (Exception e) {e.printStackTrace();}
 				gui.createPanel.setVisible(false);
 				gui.joinPanel.setVisible(true);
 				refreshPlayerList();
@@ -148,10 +147,7 @@ public class ButtonListener implements ActionListener {
 			Client.connection.registerMatchListUpdater(new GameListUpdater(this));	}catch(IOException e){throw new IllegalStateException("iwas mit Matchlistupdater faul!!!");}
 	
 	}
-	private void changeName(String s){
-		try {
-			Client.connection.changeName(s);} catch (Exception e) {e.printStackTrace();	}
-	}
+	
 
 	public void refreshGameList(){
 //		gameTable.getCellEditor().
@@ -161,39 +157,34 @@ public class ButtonListener implements ActionListener {
 			
 			gui.gameTable.setModel(new DefaultTableModel(
 					parseMatchList(matchList),
-					new String[] {"MatchID", "Name", "Players", "WorldID"	}));
+					new String[] {"MatchID", "Name", "Players", "WorldID", "Already started"	}));
 	}
 	
 	public void refreshPlayerList(){
-//		gameTable.getCellEditor().
 		long[] players;
 		boolean[]readyPlayers;
-//		try {Client.matchInfo = Client.connection.getMatchInfo(gui.focusedGameID);} catch (IOException e) {e.printStackTrace();}
 		if(Client.matchInfo==null) throw new IllegalStateException("Tries to setUp PlayersList, but actual machtlist is null");
+		
 		players = Client.matchInfo.getCurrentPlayers();
 		readyPlayers = Client.matchInfo.getReadyPlayers();
-		Long[] playersObj = new Long[players.length];		// alles fuer table noetig 
-		Boolean[] readyPlayersObj = new Boolean[readyPlayers.length];
-		for (int i = 0; i < players.length; i++) {
-			playersObj[i] = players[i];
-			readyPlayersObj[i] = readyPlayers[i];
-		}													//
-			
-		//TODO verbinde updater mit playersLIst !!!
-			gui.playerTable.setModel(new DefaultTableModel(
-					new Object[][]{playersObj,readyPlayersObj},
-					new String[] {"Players", "ready-Status"	}));
+		Object[][] table = new Object[players.length][2];
+		for (int i = 0; i < table.length; i++) {
+			table[i][0]= players[i];
+			table[i][1]= readyPlayers[i];
+		}												
+		gui.playerTable.setModel(new DefaultTableModel( table ,new String[] {"Players", "ready-Status"	}));
 	}
 	
 	private static Object[][] parseMatchList(List<MatchInformation> matchList1){
 		if (matchList1 == null)	throw new IllegalArgumentException("matchList is null");
-		Object[][] ret = new Object[matchList1.size()][4];
+		Object[][] ret = new Object[matchList1.size()][5];
 		int i =0;
 		for (MatchInformation m : matchList1) {
 			ret[i][0]=m.getId();
 			ret[i][1]=m.getTitle();
 			ret[i][2]=m.getCurrentPlayers().length+"/"+m.getNumPlayers();
 			ret[i][3]=m.getWorldId();
+			ret[i][4]=m.isStarted();
 			i++;
 		}
 		return ret;

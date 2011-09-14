@@ -62,7 +62,7 @@ public class GUIFrame extends JFrame {
 		gameTable.addFocusListener(new FocusListener() {
 			@Override
 			public void focusLost(FocusEvent e) {
-//				Client.matchInfo = null;
+				Client.matchInfo = null;
 			}
 			
 			@Override
