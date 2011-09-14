@@ -5,6 +5,6 @@ import de.unisaarland.cs.sopra.common.model.ModelReader;
 
 public interface Strategy {
 
-	public void execute(ModelReader mr, ControllerAdapter ca);
+	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception;
 	
 }
