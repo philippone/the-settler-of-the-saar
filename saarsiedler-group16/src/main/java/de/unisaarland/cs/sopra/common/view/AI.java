@@ -114,14 +114,15 @@ public class AI extends View{
 	
 	public void evaluateBestStrategy(){
 		//s = new BuildStreetStrategy();
-		s = new DoNothingStrategy();
-		//s= new BuildATownStrategy();
+		//s = new DoNothingStrategy();
+		s= new BuildATownStrategy();
+		//s1 = new BuildACatapultStrategy();
 	}
 	
 	public void executeBestStrategy() {
 		try{
 		s.execute(modelReader, controllerAdapter);
-		//s1 = new BuildTownStrategy();
+		//s1.execute(modelReader, controllerAdapter);
 		}
 	catch (Exception e){ e.printStackTrace(); }
 	}
