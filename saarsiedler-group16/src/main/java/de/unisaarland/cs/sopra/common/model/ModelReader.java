@@ -2,6 +2,7 @@ package de.unisaarland.cs.sopra.common.model;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import de.unisaarland.cs.sopra.common.ModelObserver;
@@ -293,5 +294,7 @@ public interface ModelReader {
 	 * @param modelObserver
 	 */
 	public void addModelObserver(ModelObserver modelObserver);
+
+	public Map<Long, Player> getPlayerMap();
 	
 }

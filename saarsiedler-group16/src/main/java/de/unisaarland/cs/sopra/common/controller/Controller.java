@@ -1,7 +1,6 @@
 package de.unisaarland.cs.sopra.common.controller;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,6 +20,7 @@ public class Controller {
 	private Connection connection;
 	private ModelWriter modelWriter;;
 	private Resource r;
+	private boolean endOfGame;
 
 	/**
 	 * @param connection
@@ -184,11 +184,12 @@ public class Controller {
 				intersection.getX(), intersection.getOrientation());
 
 		if (buildingType.equals(BuildingType.Village)) {
+			connection.buildSettlement(i, false);
+			modelWriter.buildSettlement(intersection, buildingType);
+		} else {
 			connection.buildSettlement(i, true);
 			modelWriter.buildSettlement(intersection, buildingType);
-		} else
-			connection.buildSettlement(i, false);
-		modelWriter.buildSettlement(intersection, buildingType);
+		}
 	}
 
 	/**
@@ -200,8 +201,8 @@ public class Controller {
 	public void buildStreet(Location path) throws IllegalStateException,
 			IllegalArgumentException, IOException {
 		Edge e = new Edge(path.getY(), path.getX(), path.getOrientation());
-		modelWriter.buildStreet(path);
 		connection.buildRoad(e);
+		modelWriter.buildStreet(path);
 	}
 
 	/**
@@ -333,9 +334,15 @@ public class Controller {
 	 * @throws IOException
 	 */
 	public void mainLoop() throws IllegalStateException, IOException {
-		GameEvent e = connection.getNextEvent(0);
-		System.out.println(e);
-		handleEvent(e);
+		while(!endOfGame){
+			GameEvent e = connection.getNextEvent(0);
+			System.out.println(e);
+			handleEvent(e);
+		}
+	}
+	
+	public void setEndOfGame(boolean b){
+		endOfGame = b;
 	}
 
 }
