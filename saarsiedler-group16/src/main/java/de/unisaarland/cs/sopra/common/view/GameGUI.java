@@ -151,6 +151,9 @@ public class GameGUI extends View implements Runnable{
 			}
 		}
 		
+		this.village = modelReader.getSettlements(modelReader.getMe(), BuildingType.Village).size();
+		this.town = modelReader.getSettlements(modelReader.getMe(), BuildingType.Town).size();
+		this.catapult = modelReader.getCatapults(modelReader.getMe()).size();
 	}
 	
 	private void setColor(PlayerColors playerColor) {
