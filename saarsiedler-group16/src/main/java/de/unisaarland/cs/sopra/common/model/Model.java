@@ -1342,10 +1342,6 @@ public class Model implements ModelReader, ModelWriter {
 						"Path ist nur von Wasser umgeben!");
 		}
 		getPath(destination).createStreet(getCurrentPlayer());
-		for (ModelObserver ob : modelObserver) {
-			ob.updateResources();
-			ob.updatePath(dest);
-		}
 		if (round == 0) {
 			if (initPlayer == players.size() - 1) {
 				initPlayer = -1;
@@ -1368,6 +1364,10 @@ public class Model implements ModelReader, ModelWriter {
 					reversedPlayersList = false;
 				}
 			}
+		}
+		for (ModelObserver ob : modelObserver) {
+			ob.updateResources();
+			ob.updatePath(dest);
 		}
 	}
 
