@@ -72,12 +72,14 @@ public class ButtonListener implements ActionListener {
 				gui.createPanel.setVisible(true);
 			}
 			if (arg0.getSource() == gui.join){
-//				if(Client.matchInfo!=null){
+				if(Client.matchInfo!=null 
+						&& !Client.matchInfo.isStarted() 
+						&& !(Client.matchInfo.getNumPlayers()==Client.matchInfo.getCurrentPlayers().length)){
 					Client.joinMatch(joinAsObserver);
 					gui.lobbyPanel.setVisible(false);
 					gui.joinPanel.setVisible(true);
 					Client.refreshPlayerList();
-//				}
+				}
 			}
 			if (arg0.getSource() == gui.back_lobby){
 				gui.lobbyPanel.setVisible(false);

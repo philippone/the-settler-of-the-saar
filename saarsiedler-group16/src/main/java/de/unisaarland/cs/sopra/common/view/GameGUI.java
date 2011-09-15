@@ -293,7 +293,7 @@ public class GameGUI extends View implements Runnable{
 			   intersectionTextureMap.get(i.getBuildingType()).bind();
 			   setColor(colorMap.get(i.getOwner()));
 			   GL11.glTranslatef(ix+x, iy+y, 1+z);
-			   drawSquareMid(70, 70);
+			   drawSquareMid(170, 170);
 			   GL11.glPopMatrix();
 		}
 	}
@@ -438,7 +438,6 @@ public class GameGUI extends View implements Runnable{
 		   GL11.glPushMatrix();
 		   GL11.glTranslatef(xOffset, 0, 0);
 		   renderUI("Background", xOffsetUI, yOffsetUI, zOffsetUI, 1500, 305);
-		   //renderUI("Res", xOffsetUI+957, yOffsetUI+20, zOffsetUI+1, 42, 330);
 		   renderUI("Console", xOffsetUI+630, yOffsetUI+65, zOffsetUI+1, 730, 300);
 		   renderUI("LumberScore", xOffsetUI+345, yOffsetUI+65, zOffsetUI+1, 95, 77);
 		   renderUI("BrickScore", xOffsetUI+345, yOffsetUI+110, zOffsetUI+1, 95, 77);
@@ -632,7 +631,7 @@ public class GameGUI extends View implements Runnable{
 			uiTextureMap.put("ClaimVictory", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_claimVictory.png")));
 			uiTextureMap.put("ClaimLongestRoad", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_claimLongestRoad.png")));
 			uiTextureMap.put("offerTrade", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_offerTrade.png")));
-			uiTextureMap.put("respondTrade", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_respondTrade.png")));
+			uiTextureMap.put("BuildStreet", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_BuildStreet.png")));
 			uiTextureMap.put("BuildVillage", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_BuildVillage.png")));
 			uiTextureMap.put("BuildTown", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_BuildTown.png")));
 			uiTextureMap.put("BuildCatapult", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_BuildCatapult.png")));
@@ -671,7 +670,7 @@ public class GameGUI extends View implements Runnable{
 				}
 			};
 			
-			Clickable buildStreet = new Clickable("buildStreet", xOffsetUI+450, yOffsetUI+110, zOffsetUI+2, 185, 77, true, true) {
+			Clickable buildStreet = new Clickable("BuildStreet", xOffsetUI+450, yOffsetUI+110, zOffsetUI+2, 185, 77, true, true) {
 				@Override
 				public void execute() {
 					minX = 42;
@@ -699,7 +698,7 @@ public class GameGUI extends View implements Runnable{
 				}
 			};
 			
-		} catch (Exception e) {}
+		} catch (Exception e) {e.printStackTrace();}
 		
 		GL11.glDisable(GL11.GL_DEPTH_TEST); // Enables Depth Testing
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
