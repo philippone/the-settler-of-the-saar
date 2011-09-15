@@ -8,7 +8,7 @@ public abstract class Clickable {
 	private static List<Clickable> ui = new LinkedList<Clickable>();
 
 	private int x, y, z, width, height;
-	private boolean active;
+	private boolean active, visible;
 	private String name;
 	
 	public static List<Clickable> executeModelClicks(float xogl, float yogl) {
@@ -29,7 +29,7 @@ public abstract class Clickable {
 		return liste;
 	}
 	
-	public Clickable(String name, int x, int y, int z, int width, int height, boolean active, boolean isGUIonly) {
+	public Clickable(String name, int x, int y, int z, int width, int height, boolean active, boolean isGUIonly, boolean visible) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -113,6 +113,14 @@ public abstract class Clickable {
 		tmp.addAll(model);
 		tmp.addAll(ui);
 		return tmp;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+
+	public boolean isVisible() {
+		return visible;
 	}
 	
 }

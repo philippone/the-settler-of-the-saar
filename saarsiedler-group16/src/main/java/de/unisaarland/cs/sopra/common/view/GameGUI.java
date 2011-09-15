@@ -161,7 +161,7 @@ public class GameGUI extends View implements Runnable{
 	private void setColor(PlayerColors playerColor) {
 		switch(playerColor) {
 		case BLUE:
-			GL11.glColor4f(0.51f,0.51f,1.0f,1.0f); break;
+			GL11.glColor4f(0.30f,0.30f,1.0f,1.0f); break;
 		case RED:
 			GL11.glColor4f(1.0f,0.0f,0.0f,1.0f); break;
 		case GREEN:
@@ -354,7 +354,7 @@ public class GameGUI extends View implements Runnable{
 			GL11.glRotatef(po, 0, 0, 1);
 		    streetTexture.bind();
 		    setColor(colorMap.get(p.getStreetOwner()));
-		    drawSquareMid(140,20);
+		    drawSquareMid(170,20);
 		    GL11.glPopMatrix();
 		}
 		if (p.hasCatapult()) {	
@@ -362,7 +362,7 @@ public class GameGUI extends View implements Runnable{
 			GL11.glTranslatef(px+x, py+y, 1+z);
 		    catapultTexture.bind();
 		    setColor(colorMap.get(p.getCatapultOwner()));
-		    drawSquareMid(70, 70);
+		    drawSquareMid(140, 140);
 		    GL11.glPopMatrix();
 		}
 	}
@@ -446,7 +446,7 @@ public class GameGUI extends View implements Runnable{
 		   renderUI("OreScore", xOffsetUI+345, yOffsetUI+245, zOffsetUI+1, 95, 77);
 
 		   for (Clickable act : Clickable.getRenderList()) {
-			   renderUI(act);
+			   if (act.isVisible()) renderUI(act);
 		   }
 		   
 		   GL11.glPopMatrix();
@@ -458,7 +458,8 @@ public class GameGUI extends View implements Runnable{
 		   debugFont.drawString(300, 60, "mx: " + Mouse.getX() + ", my: " + Mouse.getY() + ", mw: " + Mouse.getEventDWheel(), Color.white);
 		   debugFont.drawString(300, 90, "minX: " + minX + ", minY: " + minY , Color.white);
 		   GL11.glPopMatrix();
-		   GL11.glTranslatef(xOffset+xOffsetUI, 955, -949);
+		   GL11.glPushMatrix();
+		   GL11.glTranslatef(xOffset+xOffsetUI, yOffsetUI, zOffsetUI+1);
 		   uiFont.drawString(396, 72, ""+modelReader.getResources().getResource(Resource.LUMBER), Color.black);
 		   uiFont.drawString(396, 117, ""+modelReader.getResources().getResource(Resource.BRICK), Color.black);
 		   uiFont.drawString(396, 162, ""+modelReader.getResources().getResource(Resource.WOOL), Color.black);
@@ -468,6 +469,7 @@ public class GameGUI extends View implements Runnable{
 		   uiFont.drawString(100, 209, ""+ town + "/" + modelReader.getMaxBuilding(BuildingType.Town), Color.black);
 		   uiFont.drawString(100, 240, ""+ catapult + "/" + modelReader.getMaxVictoryPoints(), Color.black);
 		   uiFont.drawString(640, 75, "Round "+modelReader.getRound(), Color.black);
+		   GL11.glPopMatrix();
 	}
 
 	public void drawTradeMenu() {
@@ -583,6 +585,7 @@ public class GameGUI extends View implements Runnable{
 		      }
 		}
 		Display.destroy();
+		System.exit(0);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -643,56 +646,56 @@ public class GameGUI extends View implements Runnable{
 			uiTextureMap.put("OreScore", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Ore_Score.png")));
 			uiTextureMap.put("Console", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/console.png")));
 			
-			Clickable claimLongestRoad = new Clickable("ClaimLongestRoad", xOffsetUI+542, yOffsetUI+22, zOffsetUI+2, 373, 77, true, true) {
+			Clickable claimLongestRoad = new Clickable("ClaimLongestRoad", xOffsetUI+542, yOffsetUI+22, zOffsetUI+2, 373, 77, true, true, true) {
 				@Override
 				public void execute() {
 					minX = 42;
 				}
 			};
 
-			Clickable claimVictory = new Clickable("ClaimVictory", xOffsetUI+775, yOffsetUI+22, zOffsetUI+2, 185, 77, true, false) {
+			Clickable claimVictory = new Clickable("ClaimVictory", xOffsetUI+775, yOffsetUI+22, zOffsetUI+2, 185, 77, true, false, true) {
 				@Override
 				public void execute() {
 					minX = 42;
 				}
 			};
 			
-			Clickable endTurn = new Clickable("EndTurn", xOffsetUI+930, yOffsetUI+22, zOffsetUI+2, 185, 77, true, false) {
+			Clickable endTurn = new Clickable("EndTurn", xOffsetUI+930, yOffsetUI+22, zOffsetUI+2, 185, 77, true, false, true) {
 				@Override
 				public void execute() {
 					controllerAdapter.endTurn();
 				}
 			};
 			
-			Clickable offerTrade = new Clickable("offerTrade", xOffsetUI+450, yOffsetUI+65, zOffsetUI+2, 185, 77, true, true) {
+			Clickable offerTrade = new Clickable("offerTrade", xOffsetUI+450, yOffsetUI+65, zOffsetUI+2, 185, 77, true, true, true) {
 				@Override
 				public void execute() {
 					minX = 42;
 				}
 			};
 			
-			Clickable buildStreet = new Clickable("BuildStreet", xOffsetUI+450, yOffsetUI+110, zOffsetUI+2, 185, 77, true, true) {
+			Clickable buildStreet = new Clickable("BuildStreet", xOffsetUI+450, yOffsetUI+110, zOffsetUI+2, 185, 77, true, true, true) {
 				@Override
 				public void execute() {
 					minX = 42;
 				}
 			};
 			
-			Clickable buildVillage = new Clickable("BuildVillage", xOffsetUI+450, yOffsetUI+155, zOffsetUI+2, 185, 77, true, true) {
+			Clickable buildVillage = new Clickable("BuildVillage", xOffsetUI+450, yOffsetUI+155, zOffsetUI+2, 185, 77, true, true, true) {
 				@Override
 				public void execute() {
 					minX = 42;
 				}
 			};
 			
-			Clickable buildTown = new Clickable("BuildTown", xOffsetUI+450, yOffsetUI+200, zOffsetUI+2, 185, 77, true, true) {
+			Clickable buildTown = new Clickable("BuildTown", xOffsetUI+450, yOffsetUI+200, zOffsetUI+2, 185, 77, true, true, true) {
 				@Override
 				public void execute() {
 					minX = 42;
 				}
 			};
 						
-			Clickable buildCatapult = new Clickable("BuildCatapult", xOffsetUI+450, yOffsetUI+245, zOffsetUI+2, 185, 77, true, true) {
+			Clickable buildCatapult = new Clickable("BuildCatapult", xOffsetUI+450, yOffsetUI+245, zOffsetUI+2, 185, 77, true, true, true) {
 				@Override
 				public void execute() {
 					minX = 42;
