@@ -371,8 +371,11 @@ public class GameGUI extends View implements Runnable{
 	private void renderPlayerInfo(Player player, long pos) {
 		int px = 10;
 		int py = 10+(int)pos*76;
-		String name = getName(modelReader.getTableOrder().get((int)pos));
-		uiFont40.drawString(xOffsetUI+px+10, yOffsetUI+py, name);
+		String name = getName(player);
+		GL11.glTranslatef(0, 0, zOffsetUI);
+		uiFont20.drawString(xOffsetUI+px+30, yOffsetUI+py-3, name);
+		GL11.glTranslatef(0, 0, -zOffsetUI);
+		setColor(colorMap.get(player));
 		renderUI("PlayerColor", xOffsetUI+px, yOffsetUI+px, zOffsetUI+1, 30, 30);
 		
 		
@@ -416,7 +419,6 @@ public class GameGUI extends View implements Runnable{
 	private void renderUI(String name, int x, int y, int z, int width, int height) {
 		GL11.glPushMatrix(); 
 		uiTextureMap.get(name).bind();
-		setColor(BLACK);
 	    GL11.glTranslatef(x, y, z);
 		drawSquareLeftTop(width, height);
 		GL11.glPopMatrix();
@@ -449,6 +451,7 @@ public class GameGUI extends View implements Runnable{
 		   //Render UI
 		   GL11.glPushMatrix();
 		   GL11.glTranslatef(xOffset, 0, 0);
+		   setColor(BLACK);
 		   renderUI("Background", xOffsetUI, yOffsetUI, zOffsetUI, 1500, 305);
 		   renderUI("Console", xOffsetUI+630, yOffsetUI+65, zOffsetUI+1, 730, 300);
 		   renderUI("LumberScore", xOffsetUI+345, yOffsetUI+65, zOffsetUI+1, 95, 77);

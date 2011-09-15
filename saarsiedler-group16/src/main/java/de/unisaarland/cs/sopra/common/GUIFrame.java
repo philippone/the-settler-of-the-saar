@@ -60,6 +60,7 @@ public class GUIFrame extends JFrame {
 			@Override
 			public void focusLost(FocusEvent e) {
 				//TODO evtl noch was zu tun
+				System.out.println("DESELECTED GameList");
 			}
 			
 			@Override
@@ -132,6 +133,8 @@ public class GUIFrame extends JFrame {
 		panel8 = new JPanel();
 		scrollPane4 = new JScrollPane();
 		gameTable = new JTable();
+		scrollPane1 = new JScrollPane();
+		matchTable = new JTable();
 		panel9 = new JPanel();
 		create = new JButton();
 		join = new JButton();
@@ -186,6 +189,7 @@ public class GUIFrame extends JFrame {
 
 		//======== menuPanel ========
 		{
+			menuPanel.setVisible(false);
 
 			// JFormDesigner evaluation mark
 			menuPanel.setBorder(new javax.swing.border.CompoundBorder(
@@ -260,7 +264,6 @@ public class GUIFrame extends JFrame {
 
 		//======== lobbyPanel ========
 		{
-			lobbyPanel.setVisible(false);
 			lobbyPanel.setLayout(new GridBagLayout());
 			((GridBagLayout)lobbyPanel.getLayout()).columnWidths = new int[] {999, 0};
 			((GridBagLayout)lobbyPanel.getLayout()).rowHeights = new int[] {338, 80, 0};
@@ -292,11 +295,20 @@ public class GUIFrame extends JFrame {
 						}
 					));
 					gameTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+					gameTable.setDoubleBuffered(true);
 					scrollPane4.setViewportView(gameTable);
 				}
 				panel8.add(scrollPane4, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 5), 0, 0));
+
+				//======== scrollPane1 ========
+				{
+					scrollPane1.setViewportView(matchTable);
+				}
+				panel8.add(scrollPane1, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 0, 0), 0, 0));
 			}
 			lobbyPanel.add(panel8, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -547,6 +559,8 @@ public class GUIFrame extends JFrame {
 	private JPanel panel8;
 	private JScrollPane scrollPane4;
 	public JTable gameTable;
+	private JScrollPane scrollPane1;
+	public JTable matchTable;
 	private JPanel panel9;
 	JButton create;
 	JButton join;
