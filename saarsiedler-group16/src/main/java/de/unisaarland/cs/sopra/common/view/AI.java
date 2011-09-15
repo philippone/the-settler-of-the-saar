@@ -72,7 +72,7 @@ public class AI extends View{
 		try {
 			Connection c = Connection.establish("sopra.cs.uni-saarland.de", true);
 			WorldRepresentation wr = WorldRepresentation.getDefault();
-			MatchInformation mi = c.newMatch("K(a)I!", 2, wr, false);
+			MatchInformation mi = c.newMatch("K(a)I!", 1, wr, false);
 			Model m = new Model(wr, mi, c.getClientId());
 			System.out.printf("MatchID: %s", mi.getId());
 			Controller cont = new Controller(c, m);
@@ -113,11 +113,12 @@ public class AI extends View{
 	}
 	
 	public void evaluateBestStrategy(){
-		float strategyValue=(float) Math.random()*3;
+		float strategyValue=(float) Math.random()*4;
 		if (strategyValue<1) s=new BuildStreetStrategy();
-		if (strategyValue>2) s=new BuildATownStrategy();
-		//if (strategyValue==2) s=new BuildACatapultStrategy();
 		if (strategyValue>1 && strategyValue<2) s=new BuildVillage();
+		if (strategyValue>2 && strategyValue<3) s=new BuildATownStrategy();
+		if (strategyValue>3) s=new BuildACatapultStrategy();
+		
 		//s = new BuildStreetStrategy();
 		//s = new DoNothingStrategy();
 		//s= new BuildATownStrategy();
