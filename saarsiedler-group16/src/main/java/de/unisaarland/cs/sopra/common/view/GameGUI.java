@@ -111,8 +111,8 @@ public class GameGUI extends View implements Runnable{
 		this.uiMode = RESOURCE_VIEW;
 		this.selectionMode = NONE;
 		this.gameTitle = gameTitle;
-		windowWidth = setting.getDisplayMode().getWidth();
-		windowHeight = setting.getDisplayMode().getHeight();
+		windowWidth = Setting.getDisplayMode().getWidth();
+		windowHeight = Setting.getDisplayMode().getHeight();
 		aspectRatio = ((float)windowWidth)/windowHeight;
 		viewportXwidth = (int)(870*aspectRatio);
 		viewportYwidth = 870;
@@ -138,7 +138,7 @@ public class GameGUI extends View implements Runnable{
 		
 		List<PlayerColors> tmp = new LinkedList<PlayerColors>();
 		tmp.addAll(Arrays.asList(new PlayerColors[] {RED,BLUE,GREEN,YELLOW,ORANGE,BROWN,WHITE,PURPLE,BLACK}));
-		tmp.remove(setting.getPlayerColor());
+		tmp.remove(Setting.getPlayerColor());
 		
 		//set color of players
 		colorMap = new HashMap<Player,PlayerColors>();
@@ -147,7 +147,7 @@ public class GameGUI extends View implements Runnable{
 		while (iterP.hasNext()) {
 			Player act = iterP.next();
 			if (act == modelReader.getMe()) {
-				colorMap.put(act, setting.getPlayerColor());
+				colorMap.put(act, Setting.getPlayerColor());
 			}
 			else {
 				colorMap.put(act, iterC.next());
@@ -451,6 +451,7 @@ public class GameGUI extends View implements Runnable{
 		   //Render UI
 		   GL11.glPushMatrix();
 		   GL11.glTranslatef(xOffset, 0, 0);
+		   renderPlayerInfo(modelReader.getMe(), 0);
 		   setColor(BLACK);
 		   renderUI("Background", xOffsetUI, yOffsetUI, zOffsetUI, 1500, 305);
 		   renderUI("Console", xOffsetUI+630, yOffsetUI+65, zOffsetUI+1, 730, 300);
@@ -608,10 +609,10 @@ public class GameGUI extends View implements Runnable{
 	@SuppressWarnings("unchecked")
 	private void init() {
 		try {//Display.getDesktopDisplayMode()
-			Display.setDisplayMode(setting.getDisplayMode());
+			Display.setDisplayMode(Setting.getDisplayMode());
 			Display.setTitle("Die Siedler von der Saar @ " + gameTitle);
 			Display.setVSyncEnabled(true);
-			Display.setFullscreen(setting.isFullscreen());
+			Display.setFullscreen(Setting.isFullscreen());
 			Display.create();
 			
 			//TODO zeit messen
