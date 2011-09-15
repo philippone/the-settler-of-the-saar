@@ -72,6 +72,7 @@ public class AI extends View{
 		try {
 			Connection c = Connection.establish("sopra.cs.uni-saarland.de", true);
 			WorldRepresentation wr = WorldRepresentation.getDefault();
+
 			//---------Create Code-----------
 			//MatchInformation mi = c.newMatch("K(a)I!", 2, wr, false);
 			//-------------------------------
@@ -82,6 +83,8 @@ public class AI extends View{
 			MatchInformation mi = c.getMatchInfo(matchId);
 			//---------------------------
 			 
+
+			//MatchInformation mi = c.newMatch("K(a)I!", 1, wr, false);
 			Model m = new Model(wr, mi, c.getClientId());
 			System.out.printf("MatchID: %s", mi.getId());
 			Controller cont = new Controller(c, m);
@@ -122,27 +125,30 @@ public class AI extends View{
 	}
 	
 	public void evaluateBestStrategy(){
+
 		//float strategyValue=(float) Math.random()*3;
 		//if (strategyValue<1) s=new BuildStreetStrategy();
 		//if (strategyValue>2) s=new BuildATownStrategy();
-
 		//if (strategyValue==2) s=new BuildACatapultStrategy();
-
 		//if (strategyValue>1 && strategyValue<2) s=new BuildVillage();
-		
-
 		//if (strategyValue>1 && strategyValue<2) s=new BuildVillage();
+
+		float strategyValue=(float) Math.random()*4;
+		if (strategyValue<1) s=new BuildStreetStrategy();
+		if (strategyValue>1 && strategyValue<2) s=new BuildVillage();
+		if (strategyValue>2 && strategyValue<3) s=new BuildATownStrategy();
+		if (strategyValue>3) s=new BuildACatapultStrategy();
 
 		//s = new BuildStreetStrategy();
-		s = new DoNothingStrategy();
+		//s = new DoNothingStrategy();
 		//s= new BuildATownStrategy();
 		//s1 = new BuildACatapultStrategy();
 	}
 	
 	public void executeBestStrategy() {
 		try{
-
 			Thread.sleep(3000);
+
 		s.execute(modelReader, controllerAdapter);
 		//s1.execute(modelReader, controllerAdapter);
 		}
