@@ -32,7 +32,7 @@ public class Location extends Point {
 	
 	@Override
 	public int hashCode() {
-		return x * 271 + y * 199 + orientation;
+		return y * 271 + x * 199 + orientation;
 	}
 	@Override
 	public String toString() {

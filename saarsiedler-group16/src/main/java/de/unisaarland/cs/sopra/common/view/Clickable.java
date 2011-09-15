@@ -36,6 +36,7 @@ public abstract class Clickable {
 		this.width = width;
 		this.height = height;
 		this.active = active;
+		this.visible = visible;
 		this.setName(name);
 		if (isGUIonly)
 			ui.add(this);

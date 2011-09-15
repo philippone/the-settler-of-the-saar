@@ -22,9 +22,9 @@ public class Board {
 		this.fields = new HashMap<Point, Field>();
 		this.paths = new HashMap<Location, Path>();
 		this.intersections = new HashMap<Location, Intersection>();
-		for (int i = 0; i < width*height; i++) {
-			Point p = new Point(i/width,i%width);
-			FieldType fieldType = FieldType.convert( worldRepresentation.getFieldType(i/width,i%width) );
+		for (int i = 0; i < (width+2)*(height+2); i++) {
+			Point p = new Point((i/(width+2))-1,(i%(width+2))-1);
+			FieldType fieldType = FieldType.convert( worldRepresentation.getFieldType((i/(width+2))-1,(i%(width+2))-1) );
 			this.fields.put(p, new Field(fieldType, p));
 		}
 		initPaths();
@@ -33,8 +33,8 @@ public class Board {
 	 
 	// Done
 	private void initPaths() {
-		for (int y = 0; y < height; y++){
-			for (int x = 0; x < width; x++){
+		for (int y = -1; y < height+1; y++){
+			for (int x = -1; x < width+1; x++){
 				for (int o = 0; o < 6; o++){
 					Path p = new Path(new Location(y, x, o));
 					if (!paths.containsKey(new Location(y, x, o))){
@@ -90,8 +90,8 @@ public class Board {
 	
 	//Done
 	private void initIntersections() {
-		for (int y = 0; y < height; y++){
-			for (int x = 0; x < width; x++){
+		for (int y = -1; y < height+1; y++){
+			for (int x = -1; x < width+1; x++){
 				for (int o = 0; o < 6; o++){
 					Intersection i = new Intersection(new Location(y, x, o));
 					if (!intersections.containsKey(new Location(y, x, o))){
@@ -160,8 +160,7 @@ public class Board {
 	//Done
 	public Field getField(Point point) {
 		//assert(fields.containsKey(point));
-		if (point.getX() < 0 || point.getX() > this.width || 
-				point.getY() < 0 || point.getY() > this.height) 
+		if (!isValid(point.getY(), point.getX())) 
 			throw new IllegalArgumentException();
 		return this.fields.get(point);
 	}
@@ -169,9 +168,7 @@ public class Board {
 	//Done
 	public Intersection getIntersection(Location location) {
 		//assert(intersections.containsKey(location));
-		if (location.getX() < 0 || location.getX() > this.width || 
-				location.getY() < 0 || location.getY() > this.height ||
-				location.getOrientation() < 0 || location.getOrientation() > 5) 
+		if (!isValid(location.getY(), location.getX(), location.getOrientation())) 
 			throw new IllegalArgumentException();
 		return this.intersections.get(location);
 	}
@@ -179,9 +176,7 @@ public class Board {
 	//Done
 	public Path getPath(Location location) {
 		//assert(paths.containsKey(location));
-		if (location.getX() < 0 || location.getX() > this.width || 
-				location.getY() < 0 || location.getY() > this.height ||
-				location.getOrientation() < 0 || location.getOrientation() > 5) 
+		if (!isValid(location.getY(), location.getX(), location.getOrientation())) 
 			throw new IllegalArgumentException();
 		return this.paths.get(location);
 	}
@@ -581,18 +576,19 @@ public class Board {
 	
 	//Done
 	public Iterator<Field> getFieldIterator() {
+//		return fields.values().iterator();
 		return new Iterator<Field>() {
 
 			private int i = 0;
 			
 			@Override
 			public boolean hasNext() {
-				return i < (width)*(height);
+				return i < (width+2)*(height+2);
 			}
 
 			@Override
 			public Field next() {
-				Point p = new Point(i/width,i%width);
+				Point p = new Point((i/(width+2))-1,(i%(width+2))-1);
 				i++;
 				return fields.get(p);
 			}
@@ -617,7 +613,11 @@ public class Board {
 	
 	//Done
 	private boolean isValid(int y, int x){
-		return x >= 0 && x < width && y >= 0 && y < height;
+		return x >= -1 && x < width+1 && y >= -1 && y < height+1;
+	}
+	
+	private boolean isValid(int y, int x, int o) {
+		return isValid(y,x) && o >= 0 && o < 6;
 	}
 
 	public int getWidth() {

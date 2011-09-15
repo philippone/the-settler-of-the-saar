@@ -323,7 +323,7 @@ public class ModelTest {
 			// Test sollte durchlaufen
 		}
 		try {
-			model.getField(new Point(-1,-1));
+			model.getField(new Point(-2,-2));
 			fail("Point ausserhalb des Spielfeldes, sollte IllegalArgumentException werfen");
 		} catch(IllegalArgumentException e) {
 			// Test sollte durchlaufen

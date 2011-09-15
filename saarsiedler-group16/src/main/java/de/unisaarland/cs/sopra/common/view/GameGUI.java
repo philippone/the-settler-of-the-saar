@@ -217,6 +217,7 @@ public class GameGUI extends View implements Runnable{
 			   fy = f.getLocation().getY()*215; 
 			   break;
 		   case 1:
+		   case -1:
 			   fx = f.getLocation().getX()*250-125;
 			   fy = f.getLocation().getY()*215;
 			   break;
@@ -450,17 +451,27 @@ public class GameGUI extends View implements Runnable{
 		   renderMarks(); //TODO: implement markierungen
 		   //Render UI
 		   GL11.glPushMatrix();
-		   GL11.glTranslatef(xOffset, 0, 0);
+		   GL11.glTranslatef(xOffset, 0, zOffsetUI+1);
 		   renderPlayerInfo(modelReader.getMe(), 0);
 		   setColor(BLACK);
-		   renderUI("Background", xOffsetUI, yOffsetUI, zOffsetUI, 1500, 305);
-		   renderUI("Console", xOffsetUI+630, yOffsetUI+65, zOffsetUI+1, 730, 300);
-		   renderUI("LumberScore", xOffsetUI+345, yOffsetUI+65, zOffsetUI+1, 95, 77);
-		   renderUI("BrickScore", xOffsetUI+345, yOffsetUI+110, zOffsetUI+1, 95, 77);
-		   renderUI("GrainScore", xOffsetUI+345, yOffsetUI+155, zOffsetUI+1, 95, 77);
-		   renderUI("WoolScore", xOffsetUI+345, yOffsetUI+200, zOffsetUI+1, 95, 77);
-		   renderUI("OreScore", xOffsetUI+345, yOffsetUI+245, zOffsetUI+1, 95, 77);
-
+		   renderUI("Background", xOffsetUI, yOffsetUI, 0, 1500, 305);
+		   renderUI("Console", xOffsetUI+630, yOffsetUI+65, 1, 730, 300);
+		   setColor(BLACK);
+		   renderUI("LumberScore", xOffsetUI+345, yOffsetUI+65, 1, 95, 77);
+		   uiFont20.drawString(xOffsetUI+396+minX, 72+xOffsetUI+minY, ""+modelReader.getResources().getResource(Resource.LUMBER), Color.black);
+		   setColor(BLACK);
+		   renderUI("BrickScore", xOffsetUI+345, yOffsetUI+110, 1, 95, 77);
+		   uiFont20.drawString(xOffsetUI+396, 117, ""+modelReader.getResources().getResource(Resource.BRICK));
+		   setColor(BLACK);
+		   renderUI("GrainScore", xOffsetUI+345, yOffsetUI+155, 1, 95, 77);
+		   uiFont20.drawString(xOffsetUI+396, 162, ""+modelReader.getResources().getResource(Resource.WOOL));
+		   setColor(BLACK);
+		   renderUI("WoolScore", xOffsetUI+345, yOffsetUI+200, 1, 95, 77);
+		   uiFont20.drawString(xOffsetUI+396, 207, ""+modelReader.getResources().getResource(Resource.GRAIN));
+		   setColor(BLACK);
+		   renderUI("OreScore", xOffsetUI+345, yOffsetUI+245, 1, 95, 77);
+		   uiFont20.drawString(xOffsetUI+396, 252, ""+modelReader.getResources().getResource(Resource.ORE));
+		   setColor(BLACK);
 		   for (Clickable act : Clickable.getRenderList()) {
 			   if (act.isVisible()) renderUI(act);
 		   }
@@ -476,19 +487,16 @@ public class GameGUI extends View implements Runnable{
 		   GL11.glPopMatrix();
 
 		   GL11.glPushMatrix();
-		   GL11.glTranslatef(xOffset+xOffsetUI, 955, -949);
-		   uiFont20.drawString(396, 72, ""+modelReader.getResources().getResource(Resource.LUMBER), Color.black);
-		   uiFont20.drawString(396, 117, ""+modelReader.getResources().getResource(Resource.BRICK), Color.black);
-		   uiFont20.drawString(396, 162, ""+modelReader.getResources().getResource(Resource.WOOL), Color.black);
-		   uiFont20.drawString(396, 207, ""+modelReader.getResources().getResource(Resource.GRAIN), Color.black);
-		   uiFont20.drawString(396, 252, ""+modelReader.getResources().getResource(Resource.ORE), Color.black);
+		   GL11.glTranslatef(xOffset+xOffsetUI, yOffsetUI, zOffsetUI);
+//		   uiFont20.drawString(396, 162, ""+modelReader.getResources().getResource(Resource.WOOL));
+//		   uiFont20.drawString(396, 207, ""+modelReader.getResources().getResource(Resource.GRAIN));
+//		   uiFont20.drawString(396, 252, ""+modelReader.getResources().getResource(Resource.ORE));
 		   uiFont20.drawString(100, 178, ""+ village + "/" + modelReader.getMaxBuilding(BuildingType.Village), Color.black);
 		   uiFont20.drawString(100, 209, ""+ town + "/" + modelReader.getMaxBuilding(BuildingType.Town), Color.black);
 		   uiFont20.drawString(100, 240, ""+ catapult + "/" + modelReader.getMaxVictoryPoints(), Color.black);
 		   uiFont20.drawString(640, 75, "Round "+modelReader.getRound(), Color.black);
 		   GL11.glPopMatrix();
 		   }
-
 
 	public void drawTradeMenu() {
 		//TODO: implement it!

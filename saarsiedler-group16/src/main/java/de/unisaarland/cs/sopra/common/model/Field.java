@@ -69,6 +69,6 @@ public class Field {
 	
 	@Override
 	public String toString(){
-		return ("[x, y: " + getLocation().toString() +  "Type: " + fieldType + "]" );
+		return ("[y, x: " + getLocation().toString() +  "Type: " + fieldType + "]" );
 	}
 }
