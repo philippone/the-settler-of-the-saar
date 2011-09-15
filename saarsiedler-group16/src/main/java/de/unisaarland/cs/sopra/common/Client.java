@@ -120,8 +120,8 @@ public class Client {
 	}
 	
 	public static void initializeMatch() {
-//		clientGUI.setVisible(false);
-		clientGUI.setEnabled(false);
+		clientGUI.setVisible(false);
+//		clientGUI.
 		Model m = buildModel();
 		Controller c = buildController(m);
 		AI ai;
@@ -184,7 +184,7 @@ public class Client {
 		m.matchStart(players, number);
 		
 		
-		Setting setting = new Setting(Display.getDesktopDisplayMode(), true, PlayerColors.RED);
+		Setting setting = new Setting(new DisplayMode(1024, 600), true, PlayerColors.RED);
 		GameGUI gameGUI = null;
 		try {
 			gameGUI = buildGameGUI(c, m, startEvent.getPlayerIds());
