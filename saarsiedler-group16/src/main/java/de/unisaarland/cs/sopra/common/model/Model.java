@@ -1342,17 +1342,17 @@ public class Model implements ModelReader, ModelWriter {
 		}
 		getPath(destination).createStreet(getCurrentPlayer());
 		if (round == 0) {
-			if (!(getCurrentPlayer() == players.get(players.size()-1) && getStreets(getCurrentPlayer()).size() == initVillages)){
+			if (initPlayer == players.size() - 1) {
+				initPlayer = -1;
+				java.util.Collections.reverse(players);
+				reversedPlayersList = !reversedPlayersList;
+			}
+			initPlayer++;
+			if (getStreets(getCurrentPlayer()).size() == initVillages) {
 				for (ModelObserver act : modelObserver) {
 					if (getCurrentPlayer() == getMe())
 						act.initTurn();
 				}
-				if (initPlayer == players.size() - 1) {
-					initPlayer = 0;
-					java.util.Collections.reverse(players);
-					reversedPlayersList = !reversedPlayersList;
-				}
-				initPlayer++;
 			}
 			else {
 				for (Field f : getFieldsFromIntersection(initLastVillageIntersection)) {
