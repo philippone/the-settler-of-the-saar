@@ -77,11 +77,15 @@ public class AI extends View{
 			//MatchInformation mi = c.newMatch("K(a)I!", 2, wr, false);
 			//-------------------------------
 			
+
 			// --------Join Code---------
 
 			long matchId = 3325;
 			c.joinMatch(matchId, false);
 			MatchInformation mi = c.getMatchInfo(matchId);
+
+
+			// --------Join Code--------
 
 			//long matchId = 2734 ;
 			//c.joinMatch(matchId, false);
