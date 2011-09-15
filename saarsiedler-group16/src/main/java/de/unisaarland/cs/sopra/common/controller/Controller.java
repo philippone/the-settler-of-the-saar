@@ -70,12 +70,12 @@ public class Controller {
 				break;
 			case BUILT_ROAD:
 				Edge edg = ((GameEvent.BuiltRoad)gameEvent).getLocation();
-				Location locatio = new Location(edg.getCol(), edg.getRow(), edg.getDirection());
+				Location locatio = new Location(edg.getRow(), edg.getCol(), edg.getDirection());
 				modelWriter.buildStreet(locatio);
 				break;
 			case BUILT_SETTLEMENT:
 				Intersection in = ((GameEvent.BuiltSettlement)gameEvent).getLocation();
-				Location locati = new Location(in.getCol(), in.getRow(), in.getDirection());
+				Location locati = new Location(in.getRow(), in.getCol(), in.getDirection());
 				boolean isUpgradeToTown = ((GameEvent.BuiltSettlement)gameEvent).isUpgradeToTown();
 				if (isUpgradeToTown){
 					modelWriter.buildSettlement(locati, BuildingType.Village);
@@ -186,8 +186,8 @@ public class Controller {
 	 */
 	public void buildSettlement(Location intersection, BuildingType buildingType)
 			throws IllegalStateException, IllegalArgumentException, IOException {
-		Intersection i = new Intersection(intersection.getX(),
-				intersection.getY(), intersection.getOrientation());
+		Intersection i = new Intersection(intersection.getY(),
+				intersection.getX(), intersection.getOrientation());
 
 		if (buildingType.equals(BuildingType.Village)) {
 			connection.buildSettlement(i, false);
@@ -206,7 +206,7 @@ public class Controller {
 	 */
 	public void buildStreet(Location path) throws IllegalStateException,
 			IllegalArgumentException, IOException {
-		Edge e = new Edge(path.getX(), path.getY(), path.getOrientation());
+		Edge e = new Edge(path.getY(), path.getX(), path.getOrientation());
 		connection.buildRoad(e);
 		modelWriter.buildStreet(path);
 	}
