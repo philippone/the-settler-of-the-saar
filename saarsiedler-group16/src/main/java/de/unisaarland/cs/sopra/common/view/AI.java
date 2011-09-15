@@ -163,6 +163,7 @@ public class AI extends View{
 		strategies.add(new BuildACatapultStrategy());
 		strategies.add(new BuildStreetStrategy());
 		strategies.add(new MoveCatapultStrategy());
+		strategies.add(new AttackSettlementStrategy());
 		
 		float bestValue=0;
 		float strategyValue;

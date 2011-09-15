@@ -3,6 +3,8 @@ package de.unisaarland.cs.sopra.common;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -15,6 +17,7 @@ import de.unisaarland.cs.sopra.common.controller.Controller;
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.ModelWriter;
+import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.view.AI;
 import de.unisaarland.cs.sopra.common.view.GameGUI;
 import de.unisaarland.cs.st.saarsiedler.comm.*;
@@ -32,14 +35,13 @@ public class Client {
 	public static boolean joinAsAI;
 	
 	public static void main(String[] args) throws UnknownHostException, IOException {
-//		Client me = new Client();
 		clientGUI = new GUIFrame();
 	}
 	
 	
 	public static void joinMatch(boolean asObserver) {
 		try {
-			System.out.println(matchInfo);
+			worldRepo=connection.getWorld(matchInfo.getWorldId());
 			JoinResult res=connection.joinMatch(matchInfo.getId(), asObserver);
 			if(res==JoinResult.ALREADY_RUNNING
 					|| res==JoinResult.CLOSED
@@ -93,7 +95,7 @@ public class Client {
 
 	public static Model buildModel() {
 		try {
-			return new Model(worldRepo,matchInfo, connection.getClientId());
+			return new Model(worldRepo, matchInfo, connection.getClientId());
 		} catch (IOException e) {e.printStackTrace();}
 		throw new IllegalStateException("couldnt build model");
 	}
@@ -106,15 +108,16 @@ public class Client {
 		return new AI(model, new ControllerAdapter(controller, model));
 	}
 	
-	public static GameGUI buildGameGUI(Controller controller, Model model, long[] playerIds) {
-		Map<Long, String> iDsToNames = new TreeMap<Long, String>();
-		for (long l : playerIds) {  // erstellt long-> names map
+	public static GameGUI buildGameGUI(Controller controller, Model model, long[] playerIDs) {
+		Map<Player, String> plToNames = new HashMap<Player, String>();
+		Iterator<Player> iterPl = model.getTableOrder().iterator();
+		for (long l : playerIDs) {  // erstellt Player-> names map
 			try {
-				iDsToNames.put(l, connection.getPlayerInfo(l).getName());
+				plToNames.put(iterPl.next(), connection.getPlayerInfo(l).getName());
 			} catch (IOException e) {e.printStackTrace();}
 		}
 		try {
-			return new GameGUI(model, new ControllerAdapter(controller, model), iDsToNames , setting, matchInfo.getTitle());
+			return new GameGUI(model, new ControllerAdapter(controller, model), plToNames , setting, matchInfo.getTitle());
 		} catch (Exception e) {e.printStackTrace();	}
 		throw new IllegalStateException("couldnt build GameGui");
 	}
@@ -167,8 +170,9 @@ public class Client {
 		
 		Setting setting = new Setting(new DisplayMode(1024, 600), true, PlayerColors.RED);
 		GameGUI gameGUI = null;
+		
 		try {
-			gameGUI = buildGameGUI(c, m, startEvent.getPlayerIds());
+			gameGUI = buildGameGUI(c, m, players);
 		} catch (Exception e1) {e1.printStackTrace();
 		}
 		
