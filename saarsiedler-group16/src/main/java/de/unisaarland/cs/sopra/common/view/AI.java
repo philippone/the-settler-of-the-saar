@@ -161,7 +161,7 @@ public class AI extends View{
 		float bestValue=0;
 		float strategyValue;
 		for (Strategy strat: strategies){
-			strategyValue=strat.evaluate;
+			strategyValue=strat.evaluate(modelReader, controllerAdapter);
 			if (strategyValue>bestValue){
 				bestValue=value;
 				s=strat;
