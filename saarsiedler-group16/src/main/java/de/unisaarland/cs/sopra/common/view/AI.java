@@ -79,7 +79,7 @@ public class AI extends View{
 			
 			// --------Join Code---------
 
-			long matchId = 435 ;
+			long matchId = 3325;
 			c.joinMatch(matchId, false);
 			MatchInformation mi = c.getMatchInfo(matchId);
 
@@ -253,7 +253,7 @@ public class AI extends View{
 	@Override
 	// a seven was diced
 	public void eventRobber() {
-		s = new MoveRobberStrategy();
+		s = new RobberStrategy();
 		executeBestStrategy();
 	}
 
