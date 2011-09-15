@@ -293,7 +293,7 @@ public class GameGUI extends View implements Runnable{
 			   intersectionTextureMap.get(i.getBuildingType()).bind();
 			   setColor(colorMap.get(i.getOwner()));
 			   GL11.glTranslatef(ix+x, iy+y, 1+z);
-			   drawSquareMid(70, 70);
+			   drawSquareMid(170, 170);
 			   GL11.glPopMatrix();
 		}
 	}
