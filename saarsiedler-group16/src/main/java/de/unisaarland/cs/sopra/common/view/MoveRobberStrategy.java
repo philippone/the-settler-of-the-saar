@@ -43,7 +43,7 @@ public class MoveRobberStrategy implements Strategy{
 			
 
 		}
-		// TODO Auto-generated method stub
+		
 		Player player=mr.getCurrentPlayer();
 		Field sourceField =chooseBestSource(player, mr);
 		Field destinationField=chooseBestDestination(player, mr);

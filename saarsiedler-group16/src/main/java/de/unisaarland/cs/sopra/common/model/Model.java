@@ -1162,6 +1162,11 @@ public class Model implements ModelReader, ModelWriter {
 				ob.updateResources();
 			}
 		}
+
+		if (round == 0 && reversedPlayersList) {
+			Collections.reverse(players);
+			reversedPlayersList = false;
+		}
 		this.round++;
 		for (ModelObserver ob : modelObserver) {
 			ob.eventNewRound();
@@ -1359,6 +1364,7 @@ public class Model implements ModelReader, ModelWriter {
 				}
 				if (reversedPlayersList){
 					java.util.Collections.reverse(players);
+					reversedPlayersList = false;
 				}
 			}
 		}
