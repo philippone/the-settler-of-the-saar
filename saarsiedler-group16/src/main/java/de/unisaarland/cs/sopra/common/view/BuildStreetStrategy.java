@@ -26,8 +26,8 @@ Strategy s;
 		if (!(mr.affordableStreets() > 0 
 			&& mr.buildableStreetPaths(mr.getMe()).size() > 0)) return -1;
 		float value=0;
-		
-		return value;
+		value=evaluateStreetValue(mr,evaluateStreet(mr));
+		return value/4;
 	}
 	
 	public Path evaluateStreet(ModelReader mr){
@@ -47,8 +47,4 @@ Strategy s;
 		return 1;
 	}
 	
-	public int evaluate(){
-		// TODO implement this method
-		return 0;
-	}
 }

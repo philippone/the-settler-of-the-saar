@@ -34,7 +34,7 @@ public class BuildACatapultStrategy implements Strategy {
 				&& mr.getCatapults(mr.getMe()).size() < mr.getMaxCatapult())) return -1;
 		// meaning we cannot apply this strategy
 		float value=0;
-		
+		value=evaluatePath(mr,chooseBestPath(mr));
 		return value;
 	}
 	
@@ -57,17 +57,17 @@ public class BuildACatapultStrategy implements Strategy {
 		float pathValue=0;
 		Player player=mr.getCurrentPlayer();
 		// checking if we can attack a catapult immediately
-		if (p.hasCatapult() && p.getCatapultOwner()!=player) pathValue=(float)0.3;
+		if (p.hasCatapult() && p.getCatapultOwner()!=player) pathValue=(float) 1;
 		Set<Path> neighborPaths=mr.getPathsFromPath(p);
 		for(Path p1 : neighborPaths){
 			// checking if we can attack a catapult soon
 			if (p1.hasCatapult() && p1.getCatapultOwner()!=player) {
-				pathValue=(float)(pathValue+0.15);
+				pathValue=(float)(pathValue+0.7);
 			}
 			Set<Intersection> neighborIntersections=mr.getIntersectionsFromPath(p1);
 			// checking if we can attack a building soon
 			for(Intersection i : neighborIntersections){
-				if (i.hasOwner() && i.getOwner()!=player) pathValue=(float)(pathValue+0.1);
+				if (i.hasOwner() && i.getOwner()!=player) pathValue=(float)(pathValue+0.5);
 			}
 		}
 		return pathValue;
