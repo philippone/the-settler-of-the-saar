@@ -438,7 +438,6 @@ public class GameGUI extends View implements Runnable{
 		   GL11.glPushMatrix();
 		   GL11.glTranslatef(xOffset, 0, 0);
 		   renderUI("Background", xOffsetUI, yOffsetUI, zOffsetUI, 1500, 305);
-		   //renderUI("Res", xOffsetUI+957, yOffsetUI+20, zOffsetUI+1, 42, 330);
 		   renderUI("Console", xOffsetUI+630, yOffsetUI+65, zOffsetUI+1, 730, 300);
 		   renderUI("LumberScore", xOffsetUI+345, yOffsetUI+65, zOffsetUI+1, 95, 77);
 		   renderUI("BrickScore", xOffsetUI+345, yOffsetUI+110, zOffsetUI+1, 95, 77);
@@ -699,7 +698,7 @@ public class GameGUI extends View implements Runnable{
 				}
 			};
 			
-		} catch (Exception e) {}
+		} catch (Exception e) {e.printStackTrace();}
 		
 		GL11.glDisable(GL11.GL_DEPTH_TEST); // Enables Depth Testing
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
