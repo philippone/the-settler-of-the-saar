@@ -74,13 +74,19 @@ public class AI extends View{
 			WorldRepresentation wr = WorldRepresentation.getDefault();
 
 			//---------Create Code-----------
-			//MatchInformation mi = c.newMatch("K(a)I!", 1, wr, false);
+			//MatchInformation mi = c.newMatch("K(a)I!", 2, wr, false);
 			//-------------------------------
 			
 			// --------Join Code---------
-			long matchId = 2734 ;
+
+			long matchId = 435 ;
 			c.joinMatch(matchId, false);
 			MatchInformation mi = c.getMatchInfo(matchId);
+
+			//long matchId = 2734 ;
+			//c.joinMatch(matchId, false);
+			//MatchInformation mi = c.getMatchInfo(matchId);
+
 			//---------------------------
 			 
 
@@ -133,6 +139,11 @@ public class AI extends View{
 		//if (strategyValue>1 && strategyValue<2) s=new BuildVillage();
 		//if (strategyValue>1 && strategyValue<2) s=new BuildVillage();
 
+		//float strategyValue=(float) Math.random()*4;
+		//if (strategyValue<1) s=new BuildStreetStrategy();
+		//if (strategyValue>1 && strategyValue<2) s=new BuildVillage();
+		//if (strategyValue>2 && strategyValue<3) s=new BuildATownStrategy();
+		//if (strategyValue>3) s=new BuildACatapultStrategy();
 //		float strategyValue = (float) Math.random() * 4;
 //		if (strategyValue < 1)
 //			s = new BuildStreetStrategy();
@@ -242,7 +253,7 @@ public class AI extends View{
 	@Override
 	// a seven was diced
 	public void eventRobber() {
-		s = new RobberStrategy();
+		s = new MoveRobberStrategy();
 		executeBestStrategy();
 	}
 

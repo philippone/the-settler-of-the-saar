@@ -35,11 +35,12 @@ public class ControllerAdapter {
 	 * @throws IllegalArgumentException
 	 * @throws IOException
 	 */
-	public void attackSettlement(Path catapult, Intersection settlement) throws IllegalStateException, IllegalArgumentException, IOException {
+	public void attackSettlement(Path catapult, Intersection settlement) {
 		Location l = Model.getLocation(catapult);
 		Location i = Model.getLocation(settlement);
-		controller.attackSettlement(l, i);
-		
+		try {
+			controller.attackSettlement(l, i);
+		} catch (Exception e) { e.printStackTrace(); }		
 	}
 	
 	/**
@@ -48,9 +49,11 @@ public class ControllerAdapter {
 	 * @throws IllegalArgumentException
 	 * @throws IOException
 	 */
-	public void buildCatapult(Path path) throws IllegalStateException, IllegalArgumentException, IOException {
+	public void buildCatapult(Path path) {
 		Location l = Model.getLocation(path);
-		controller.buildCatapult(l);
+		try {
+			controller.buildCatapult(l);
+		} catch (Exception e) { e.printStackTrace(); }
 	}
 	
 	/**
@@ -60,9 +63,11 @@ public class ControllerAdapter {
 	 * @throws IllegalArgumentException
 	 * @throws IOException
 	 */
-	public void buildSettlement(Intersection intersection, BuildingType buildingType) throws IllegalStateException, IllegalArgumentException, IOException {
+	public void buildSettlement(Intersection intersection, BuildingType buildingType) {
 		Location l = Model.getLocation(intersection);
-		controller.buildSettlement(l, buildingType);
+		try {
+			controller.buildSettlement(l, buildingType);
+		} catch (Exception e) { e.printStackTrace(); }
 		
 	}
 	
@@ -72,9 +77,11 @@ public class ControllerAdapter {
 	 * @throws IllegalArgumentException
 	 * @throws IOException
 	 */
-	public void buildStreet(Path path) throws IllegalStateException, IllegalArgumentException, IOException {
+	public void buildStreet(Path path) {
 		Location l = Model.getLocation(path);
-		controller.buildStreet(l);
+		try {
+			controller.buildStreet(l);
+		} catch (Exception e) { e.printStackTrace(); }
 	}
 	
 	/**
@@ -83,37 +90,45 @@ public class ControllerAdapter {
 	 * @throws IllegalArgumentException
 	 * @throws IOException
 	 */
-	public void claimLongestRoad(List<Path> road) throws IllegalStateException, IllegalArgumentException, IOException {
+	public void claimLongestRoad(List<Path> road) {
 		List<Location> roadList = new LinkedList<Location>();
 		for (Path p : road){
 			 Location l = Model.getLocation(p);
 			 roadList.add(l);
 		}
-		controller.claimLongestRoad(roadList);
+		try {
+			controller.claimLongestRoad(roadList);
+		} catch (Exception e) { e.printStackTrace(); }
 	}
 	
 	/**
 	 * @throws IllegalStateException
 	 * @throws IOException
 	 */
-	public void claimVictory() throws IllegalStateException, IOException {
-		controller.claimVictory();
+	public void claimVictory() {
+		try {
+			controller.claimVictory();
+		} catch (Exception e) { e.printStackTrace(); }
 	}
 	
 	/**
 	 * @throws IllegalStateException
 	 * @throws IOException
 	 */
-	public void endTurn() throws IllegalStateException, IOException {
-		controller.endTurn();
+	public void endTurn(){
+		try {
+			controller.endTurn();
+		} catch (Exception e) { e.printStackTrace(); }
 	}
 	
 	/**
 	 * @throws IllegalStateException
 	 * @throws IOException
 	 */
-	public void leaveMatch() throws IllegalStateException, IOException {
-		controller.leaveMatch();
+	public void leaveMatch() {
+		try {
+			controller.leaveMatch();
+		} catch (Exception e) { e.printStackTrace(); }
 	}
 	
 	/**
@@ -123,10 +138,12 @@ public class ControllerAdapter {
 	 * @throws IllegalArgumentException
 	 * @throws IOException
 	 */
-	public void moveCatapult(Path sourcePath, Path destinationPath) throws IllegalStateException, IllegalArgumentException, IOException {
+	public void moveCatapult(Path sourcePath, Path destinationPath) {
 		Location l = Model.getLocation(sourcePath);
 		Location l2 = Model.getLocation(destinationPath);
-		controller.moveCatapult(l, l2);
+		try {
+			controller.moveCatapult(l, l2);
+		} catch (Exception e) { e.printStackTrace(); }
 	}
 	
 	/**
@@ -137,7 +154,7 @@ public class ControllerAdapter {
 	 * @throws IllegalArgumentException
 	 * @throws IOException
 	 */
-	public void moveRobber(Field sourceField, Field destinationField, Player victimPlayer) throws IllegalStateException, IllegalArgumentException, IOException {
+	public void moveRobber(Field sourceField, Field destinationField, Player victimPlayer) {
 		Point p = Model.getLocation(sourceField);
 		Point p2 = Model.getLocation(destinationField);
 		Set<Long> keySet = model.getPlayerMap().keySet();
@@ -145,11 +162,16 @@ public class ControllerAdapter {
 			for (Long l : keySet) {
 				Player player = model.getPlayerMap().get(l);
 				if (player.equals(victimPlayer)){
-					controller.moveRobber(p, p2, l);
+					try {
+						controller.moveRobber(p, p2, l);
+					} catch (Exception e) { e.printStackTrace(); }
 					break;
 				}
 			}
-		} else controller.moveRobber(p, p2, -1);
+		} else
+			try {
+				controller.moveRobber(p, p2, -1);
+			} catch (Exception e) { e.printStackTrace(); }
 	}
 	
 	/**
@@ -157,14 +179,16 @@ public class ControllerAdapter {
 	 * @throws IllegalStateException
 	 * @throws IOException
 	 */
-	public void offerTrade(ResourcePackage resourcePackage) throws IllegalStateException, IOException {
+	public void offerTrade(ResourcePackage resourcePackage) {
 		// TODO: Ueberpruefe ob Handel so erlaubt (Verhaeltnisse)
 		int lumber = resourcePackage.getResource(LUMBER);
 		int brick =  resourcePackage.getResource(BRICK);
 		int wool =  resourcePackage.getResource(WOOL);
 		int grain =  resourcePackage.getResource(GRAIN);
 		int ore =   resourcePackage.getResource(ORE);
-		controller.offerTrade(lumber, brick, wool, grain, ore);
+		try {
+			controller.offerTrade(lumber, brick, wool, grain, ore);
+		} catch (Exception e) { e.printStackTrace(); }
 	}
 	
 	/**
@@ -173,8 +197,10 @@ public class ControllerAdapter {
 	 * @throws IllegalArgumentException
 	 * @throws IOException
 	 */
-	public void respondTrade(boolean decision) throws IllegalStateException, IllegalArgumentException, IOException {
-		controller.respondTrade(decision);
+	public void respondTrade(boolean decision) {
+		try {
+			controller.respondTrade(decision);
+		} catch (Exception e) { e.printStackTrace(); }
 	}
 	
 	/**
@@ -183,13 +209,15 @@ public class ControllerAdapter {
 	 * @throws IllegalArgumentException
 	 * @throws IOException
 	 */
-	public void returnResources(ResourcePackage resourcePackage) throws IllegalStateException, IllegalArgumentException, IOException {
+	public void returnResources(ResourcePackage resourcePackage) {
 		int lumber = resourcePackage.getResource(LUMBER);
 		int brick =  resourcePackage.getResource(BRICK);
 		int wool =  resourcePackage.getResource(WOOL);
 		int grain =  resourcePackage.getResource(GRAIN);
 		int ore =   resourcePackage.getResource(ORE);
-		controller.returnResources(lumber, brick, wool, grain, ore);
+		try {
+			controller.returnResources(lumber, brick, wool, grain, ore);
+		} catch (Exception e) { e.printStackTrace(); }
 	}
 
 

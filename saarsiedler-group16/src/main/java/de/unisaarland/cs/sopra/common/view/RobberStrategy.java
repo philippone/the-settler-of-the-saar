@@ -11,7 +11,7 @@ import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 public class RobberStrategy implements Strategy {
 
 	@Override
-	public void execute(ModelReader mr, ControllerAdapter ca) {
+	public void execute(ModelReader mr, ControllerAdapter ca)  throws Exception{
 		ResourcePackage myrp = mr.getMe().getResources().copy();
 		if (myrp.size() > 7){
 			int give = myrp.size()/2;
@@ -34,10 +34,9 @@ public class RobberStrategy implements Strategy {
 			} catch (IllegalArgumentException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
 			}
+
 		}
 			// and replace the robber if it is my turn
 		if (mr.getMe() == mr.getCurrentPlayer()){
@@ -51,10 +50,9 @@ public class RobberStrategy implements Strategy {
 				} catch (IllegalArgumentException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+
 				}
+
 			}
 	}
 	public int evaluate(){
