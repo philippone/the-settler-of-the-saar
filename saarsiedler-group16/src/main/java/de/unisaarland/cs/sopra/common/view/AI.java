@@ -78,7 +78,6 @@ public class AI extends View{
 			Controller cont = new Controller(c, m);
 			ControllerAdapter contAdap = new ControllerAdapter(cont, m);
 			AI ai = new AI(m, contAdap);
-			m.addModelObserver(ai);
 			Thread.sleep(15000);
 			c.changeReadyStatus(true);
 			GameEvent ge = c.getNextEvent(0);
@@ -110,6 +109,7 @@ public class AI extends View{
 	public AI(ModelReader modelReader, ControllerAdapter controllerAdapter){
 		super(modelReader, controllerAdapter);
 		evaluateBestStrategy();
+		modelReader.addModelObserver(this);
 	}
 	
 	public void evaluateBestStrategy(){
