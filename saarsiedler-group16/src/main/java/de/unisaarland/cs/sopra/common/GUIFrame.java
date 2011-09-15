@@ -189,7 +189,6 @@ public class GUIFrame extends JFrame {
 
 		//======== menuPanel ========
 		{
-			menuPanel.setVisible(false);
 
 			// JFormDesigner evaluation mark
 			menuPanel.setBorder(new javax.swing.border.CompoundBorder(
@@ -264,6 +263,7 @@ public class GUIFrame extends JFrame {
 
 		//======== lobbyPanel ========
 		{
+			lobbyPanel.setVisible(false);
 			lobbyPanel.setLayout(new GridBagLayout());
 			((GridBagLayout)lobbyPanel.getLayout()).columnWidths = new int[] {999, 0};
 			((GridBagLayout)lobbyPanel.getLayout()).rowHeights = new int[] {338, 80, 0};
@@ -294,7 +294,7 @@ public class GUIFrame extends JFrame {
 							"MatchID", "Name", "Players", "WorldID"
 						}
 					));
-					gameTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+					gameTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 					gameTable.setDoubleBuffered(true);
 					scrollPane4.setViewportView(gameTable);
 				}
