@@ -34,10 +34,11 @@ public class MoveCatapultStrategy implements Strategy {
 			Set<Path> neighbourPaths = mr.getPathsFromPath(p);
 			for (Path path : neighbourPaths) {
 				float currentValue = evaluateStreetValue(mr, path);
-				if (currentValue > bestValue)
+				if (currentValue > bestValue){
 					bestValue = currentValue;
-				sourcePath = new Path(p.getLocation());
-				bestPath = path;
+					sourcePath = new Path(p.getLocation());
+					bestPath = path;
+				}
 			}
 
 		}
