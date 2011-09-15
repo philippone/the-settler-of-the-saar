@@ -99,6 +99,7 @@ public class Controller {
 				break;
 			case NEW_ROUND:
 				byte num = ((GameEvent.NewRound)gameEvent).getSpotSum();
+				System.out.println(num);
 				modelWriter.newRound(num);
 				break;
 			case PLAYER_LEFT:

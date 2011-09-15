@@ -1361,6 +1361,9 @@ public class Model implements ModelReader, ModelWriter {
 				for (Field f : getFieldsFromIntersection(initLastVillageIntersection)) {
 					initLastVillageIntersection.generateGain(f.getResource());
 				}
+				if (reversedPlayersList){
+					java.util.Collections.reverse(players);
+				}
 			}
 		}
 	}
