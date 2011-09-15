@@ -1165,8 +1165,10 @@ public class Model implements ModelReader, ModelWriter {
 				ob.updateResources();
 			}
 		}
-		if (round == 0 && reversedPlayersList)
+		if (round == 0 && reversedPlayersList) {
 			Collections.reverse(players);
+			reversedPlayersList = false;
+		}
 		this.round++;
 		for (ModelObserver ob : modelObserver) {
 			ob.eventNewRound();
