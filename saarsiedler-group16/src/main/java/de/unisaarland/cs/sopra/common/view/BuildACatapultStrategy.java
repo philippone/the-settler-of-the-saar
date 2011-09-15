@@ -17,13 +17,16 @@ public class BuildACatapultStrategy implements Strategy {
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
 		// TODO Auto-generated method stub
 		Set<Path> paths=mr.buildableCatapultPaths(mr.getCurrentPlayer());
-		if (mr.affordableCatapultBuild()>0 && paths!=null){
+		if (mr.getSettlements(mr.getMe(), BuildingType.Town).size() > 0  && mr.affordableCatapultBuild()>0
+				&& paths!=null && paths.size()< mr.getCatapults(mr.getMe()).size() && mr.getCatapults(mr.getMe()).size() < mr.getMaxCatapult()){
 			Path bestPath=chooseBestPath(mr);
 			ca.buildCatapult(bestPath);
+			ca.endTurn();
 		}
+		ca.endTurn();
 	}
 	
-	private Path chooseBestPath(ModelReader mr){
+	public Path chooseBestPath(ModelReader mr){
 		Path bestPath=null;
 		Set<Path> paths=mr.buildableCatapultPaths(mr.getCurrentPlayer());
 		float bestValue=0;

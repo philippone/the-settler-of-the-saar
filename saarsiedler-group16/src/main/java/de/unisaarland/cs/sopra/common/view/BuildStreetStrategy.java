@@ -7,20 +7,23 @@ import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
 
 public class BuildStreetStrategy implements Strategy {
-private Path bestStreet;
+ Path bestStreet;
+ float bestStreetValue = 0;
 Strategy s;
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
-	if (mr.affordableStreets() > 0){
+	if (mr.affordableStreets() > 0 && mr.buildableStreetPaths(mr.getMe()).size() > 0){
+		bestStreet = evaluateStreet(mr);
 		ca.buildStreet(bestStreet);
+		ca.endTurn();
 	} else {
-		s = new TradeStrategy();
+		ca.endTurn();
 	}
 
 	}
 	
 	public Path evaluateStreet(ModelReader mr){
-		float bestStreetValue = 0;
+		
 		Set<Path> buildableStreet = mr.buildableStreetPaths(mr.getMe());
 		for (Path p : buildableStreet){
 			float currentValue = evaluateStreetValue(mr, p);

@@ -72,13 +72,12 @@ public class AI extends View{
 		try {
 			Connection c = Connection.establish("sopra.cs.uni-saarland.de", true);
 			WorldRepresentation wr = WorldRepresentation.getDefault();
-			MatchInformation mi = c.newMatch("K(a)I!", 1, wr, false);
+			MatchInformation mi = c.newMatch("K(a)I!", 2, wr, false);
 			Model m = new Model(wr, mi, c.getClientId());
 			System.out.printf("MatchID: %s", mi.getId());
 			Controller cont = new Controller(c, m);
 			ControllerAdapter contAdap = new ControllerAdapter(cont, m);
 			AI ai = new AI(m, contAdap);
-			m.addModelObserver(ai);
 			Thread.sleep(15000);
 			c.changeReadyStatus(true);
 			GameEvent ge = c.getNextEvent(0);
@@ -105,20 +104,25 @@ public class AI extends View{
 		}
 	}
 
-	Strategy s;
+	Strategy s,s1;
 	
 	public AI(ModelReader modelReader, ControllerAdapter controllerAdapter){
 		super(modelReader, controllerAdapter);
 		evaluateBestStrategy();
+		modelReader.addModelObserver(this);
 	}
 	
 	public void evaluateBestStrategy(){
-		s = new DoNothingStrategy();
+		s = new BuildStreetStrategy();
+		//s = new DoNothingStrategy();
+		//s= new BuildATownStrategy();
+		//s1 = new BuildACatapultStrategy();
 	}
 	
 	public void executeBestStrategy() {
 		try{
 		s.execute(modelReader, controllerAdapter);
+		//s1.execute(modelReader, controllerAdapter);
 		}
 	catch (Exception e){ e.printStackTrace(); }
 	}
