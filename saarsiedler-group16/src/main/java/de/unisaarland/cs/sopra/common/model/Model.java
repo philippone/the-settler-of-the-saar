@@ -1348,7 +1348,7 @@ public class Model implements ModelReader, ModelWriter {
 				reversedPlayersList = !reversedPlayersList;
 			}
 			initPlayer++;
-			if (getStreets(getCurrentPlayer()).size() == initVillages) {
+			if (getStreets(getCurrentPlayer()).size() != initVillages) {
 				for (ModelObserver act : modelObserver) {
 					if (getCurrentPlayer() == getMe())
 						act.initTurn();
