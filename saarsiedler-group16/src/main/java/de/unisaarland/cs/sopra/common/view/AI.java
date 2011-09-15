@@ -74,10 +74,19 @@ public class AI extends View{
 			WorldRepresentation wr = WorldRepresentation.getDefault();
 
 			//---------Create Code-----------
-			MatchInformation mi = c.newMatch("K(a)I!", 2, wr, false);
+			//MatchInformation mi = c.newMatch("K(a)I!", 2, wr, false);
 			//-------------------------------
 			
+
+			// --------Join Code---------
+
+			long matchId = 4151;
+			c.joinMatch(matchId, false);
+			MatchInformation mi = c.getMatchInfo(matchId);
+
+
 			// --------Join Code--------
+
 			//long matchId = 2734 ;
 			//c.joinMatch(matchId, false);
 			//MatchInformation mi = c.getMatchInfo(matchId);
@@ -177,7 +186,7 @@ public class AI extends View{
 	
 	public void executeBestStrategy() {
 		try{
-			//Thread.sleep(200);
+			Thread.sleep(5000);
 
 		s.execute(modelReader, controllerAdapter);
 		//s1.execute(modelReader, controllerAdapter);
