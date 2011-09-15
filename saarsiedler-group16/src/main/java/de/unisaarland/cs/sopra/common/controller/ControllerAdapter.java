@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import de.unisaarland.cs.sopra.common.model.*;
+import de.unisaarland.cs.sopra.common.view.Clickable;
 
 public class ControllerAdapter {
 
@@ -36,9 +37,6 @@ public class ControllerAdapter {
 	 */
 	public void attackSettlement(Path catapult, Intersection settlement) throws IllegalStateException, IllegalArgumentException, IOException {
 		Location l = Model.getLocation(catapult);
-		l.getX();
-		l.getY();
-		l.getOrientation();
 		Location i = Model.getLocation(settlement);
 		controller.attackSettlement(l, i);
 		
@@ -198,6 +196,10 @@ public class ControllerAdapter {
 
 	public void setEndOfGame(boolean b) {
 		controller.setEndOfGame(b);
+	}
+	
+	public void addGuiEvent(Clickable c) {
+		controller.addGuiEvent(c);
 	}
 	
 }

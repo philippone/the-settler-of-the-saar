@@ -12,20 +12,22 @@ import de.unisaarland.cs.sopra.common.model.FieldType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.Resource;
 
 public class InitializeStrategy implements Strategy {
+	private Set<Resource> playersResources = new HashSet<Resource>();
 
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
 		if (mr.getMe() == mr.getCurrentPlayer()){
 		Set<Intersection> intersections =mr.buildableVillageIntersections(mr.getMe());
-		/*	Intersection i = intersections.iterator().next();
+			Intersection i = intersections.iterator().next();
 			ca.buildSettlement(i, BuildingType.Village);
 			Set<Path> paths = mr.buildableStreetPaths(mr.getMe());
 			Path p = paths.iterator().next();
-			ca.buildStreet(p);*/
-	
-		
+			ca.buildStreet(p);
+		}
+		/*
 		Intersection bestIntersection=null;
 		float bestValue=0;
 		float value;
@@ -37,7 +39,7 @@ public class InitializeStrategy implements Strategy {
 			}
 
 		}
-		
+		setPlayersResources(mr, bestIntersection);
 		ca.buildSettlement(bestIntersection, BuildingType.Village);
 		Set<Path> neighbourPaths = mr.buildableStreetPaths(mr.getMe());
 		
@@ -45,6 +47,7 @@ public class InitializeStrategy implements Strategy {
 		ca.buildStreet(path);
 		
 		}
+	*/
 	}
 	
 	private float evaluateIntersection(ModelReader mr,Intersection i){
@@ -62,9 +65,37 @@ public class InitializeStrategy implements Strategy {
 			else if (n==5 || n==9) numberValue=(float)(numberValue+0.110);
 			else if (n==6 || n==8) numberValue=(float)(numberValue+0.140);
 			type=field.getFieldType();
-			if (type==FieldType.FOREST || type==FieldType.HILLS || type==FieldType.PASTURE ||
-					type==FieldType.FIELDS || type==FieldType.MOUNTAINS)
-							resourceValue =(float)(resourceValue+0.10);
+			if (type==FieldType.FOREST){
+				if (playersResources.contains(Resource.LUMBER))	{
+					resourceValue = (float) (resourceValue + 0.05);
+				} 
+				resourceValue = (float) (resourceValue + 0.10);
+			}
+			else 			if (type==FieldType.HILLS){
+				if (playersResources.contains(Resource.BRICK))	{
+					resourceValue = (float) (resourceValue + 0.05);
+				} 
+				resourceValue = (float) (resourceValue + 0.10);
+			}
+			else 			if (type==FieldType.MOUNTAINS){
+				if (playersResources.contains(Resource.ORE))	{
+					resourceValue = (float) (resourceValue + 0.05);
+				} 
+				resourceValue = (float) (resourceValue + 0.10);
+			}
+			else 			if (type==FieldType.PASTURE){
+				if (playersResources.contains(Resource.WOOL))	{
+					resourceValue = (float) (resourceValue + 0.05);
+				} 
+				resourceValue = (float) (resourceValue + 0.10);
+			} 
+			else 			if (type==FieldType.FIELDS){
+				if (playersResources.contains(Resource.GRAIN))	{
+					resourceValue = (float) (resourceValue + 0.05);
+				} 
+				resourceValue = (float) (resourceValue + 0.10);
+			}
+			
 		}
 		intersectionValue=resourceValue+numberValue;
 		return intersectionValue;
@@ -88,5 +119,13 @@ public class InitializeStrategy implements Strategy {
 	public int evaluate(){
 		// TODO implement this method
 		return 0;
+	}
+	
+	public void setPlayersResources(ModelReader mr,Intersection i){
+		Set<Field> fieldSet = mr.getFieldsFromIntersection(i);
+		for (Field f : fieldSet){
+			playersResources.add(f.getResource());
+		}
+			
 	}
 }

@@ -3,12 +3,16 @@ package de.unisaarland.cs.sopra.common.controller;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.SynchronousQueue;
 
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.ModelWriter;
 import de.unisaarland.cs.sopra.common.model.Point;
 import de.unisaarland.cs.sopra.common.model.Resource;
+import de.unisaarland.cs.sopra.common.view.Clickable;
 import de.unisaarland.cs.st.saarsiedler.comm.Connection;
 import de.unisaarland.cs.st.saarsiedler.comm.Edge;
 import de.unisaarland.cs.st.saarsiedler.comm.GameEvent;
@@ -21,6 +25,7 @@ public class Controller {
 	private ModelWriter modelWriter;;
 	private Resource r;
 	private boolean endOfGame;
+	private Queue<Clickable> guiEvents;
 
 	/**
 	 * @param connection
@@ -29,6 +34,7 @@ public class Controller {
 	public Controller(Connection connection, ModelWriter modelWriter) {
 		this.connection = connection;
 		this.modelWriter = modelWriter;
+		guiEvents = new LinkedBlockingQueue<Clickable>();
 	}
 
 	/**
@@ -44,9 +50,9 @@ public class Controller {
 			Edge e = ((GameEvent.Attack) gameEvent).getSourceLocation();
 			Intersection i = ((GameEvent.Attack) gameEvent)
 					.getTargetIntersection();
-			Location catapult = new Location(e.getCol(), e.getRow(),
+			Location catapult = new Location(e.getRow(), e.getCol(),
 					e.getDirection());
-			Location settlement = new Location(i.getCol(), i.getRow(),
+			Location settlement = new Location(i.getRow(), i.getCol(),
 					i.getDirection());
 			AttackResult r = connection.attack(e, i);
 			modelWriter.attackSettlement(catapult, settlement, r);
@@ -58,18 +64,18 @@ public class Controller {
 				break;
 			case BUILT_CATAPULT:
 				Edge ed = ((GameEvent.BuiltCatapult) gameEvent).getLocation();
-				Location location = new Location(ed.getCol(), ed.getRow(), ed.getDirection());
+				Location location = new Location(ed.getRow(), ed.getCol(), ed.getDirection());
 				boolean fightOutcome = ((GameEvent.BuiltCatapult) gameEvent).fightOutcome();
 				modelWriter.buildCatapult(location, fightOutcome);
 				break;
 			case BUILT_ROAD:
 				Edge edg = ((GameEvent.BuiltRoad)gameEvent).getLocation();
-				Location locatio = new Location(edg.getCol(), edg.getRow(), edg.getDirection());
+				Location locatio = new Location(edg.getRow(), edg.getCol(), edg.getDirection());
 				modelWriter.buildStreet(locatio);
 				break;
 			case BUILT_SETTLEMENT:
 				Intersection in = ((GameEvent.BuiltSettlement)gameEvent).getLocation();
-				Location locati = new Location(in.getCol(), in.getRow(), in.getDirection());
+				Location locati = new Location(in.getRow(), in.getCol(), in.getDirection());
 				boolean isUpgradeToTown = ((GameEvent.BuiltSettlement)gameEvent).isUpgradeToTown();
 				if (isUpgradeToTown){
 					modelWriter.buildSettlement(locati, BuildingType.Village);
@@ -80,9 +86,9 @@ public class Controller {
 				break;
 			case MOVED_CATAPULT:
 				Edge edge = ((GameEvent.MovedCatapult)gameEvent).getSourceLocation();
-				Location source = new Location(edge.getCol(), edge.getRow(), edge.getDirection());
+				Location source = new Location(edge.getRow(), edge.getCol(), edge.getDirection());
 				Edge e1 = ((GameEvent.MovedCatapult)gameEvent).getDestinationLocation();
-				Location destination = new Location(e1.getCol(), e1.getRow(), e1.getDirection());
+				Location destination = new Location(e1.getRow(), e1.getCol(), e1.getDirection());
 				boolean fightOutcome1 = ((GameEvent.MovedCatapult)gameEvent).fightOutcome(); 
 				modelWriter.catapultMoved(source, destination, fightOutcome1);
 				break;
@@ -128,7 +134,7 @@ public class Controller {
 				Edge[] edge1 = ((GameEvent.LongestRoad) gameEvent).getEdges();
 				List<Location> road = new LinkedList<Location>();
 				for (Edge e12 : edge1){
-					Location l = new Location(e12.getCol(), e12.getRow(), e12.getDirection());
+					Location l = new Location(e12.getRow(), e12.getCol(), e12.getDirection());
 					road.add(l);
 				}
 				modelWriter.longestRoadClaimed(road);
@@ -328,6 +334,10 @@ public class Controller {
 		connection.returnResources(lumber, brick, wool, grain, ore);
 		modelWriter.returnResources(lumber, brick, wool, grain, ore);
 	}
+	
+	public void addGuiEvent(Clickable c) {
+		guiEvents.add(c);
+	}
 
 	/**
 	 * @throws IllegalStateException
@@ -336,6 +346,11 @@ public class Controller {
 	public void mainLoop() throws IllegalStateException, IOException {
 		while(!endOfGame){
 			GameEvent e = connection.getNextEvent(0);
+			
+			for (Clickable click : guiEvents) {
+				click.execute();
+			}
+			
 			System.out.println(e);
 			handleEvent(e);
 		}

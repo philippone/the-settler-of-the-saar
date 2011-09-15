@@ -12,18 +12,19 @@ import de.unisaarland.cs.st.saarsiedler.comm.Connection;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 import de.unisaarland.cs.st.saarsiedler.comm.exceptions.IllegalMatchSpecificationException;
+import de.unisaarland.cs.st.saarsiedler.comm.results.ChangeReadyResult;
 import de.unisaarland.cs.st.saarsiedler.comm.results.JoinResult;
 
 public class ButtonListener implements ActionListener {
 
 	private GUIFrame gui;
-	private Client client;
+//	private Client client;
 	private boolean readyStatus;
 	public boolean joinAsObserver;
 
-	public ButtonListener(GUIFrame guiFrame, Client client) {
+	public ButtonListener(GUIFrame guiFrame) {
 		this.gui = guiFrame;
-		this.client= client;
+//		this.client= client;
 		this.readyStatus=false;
 		joinAsObserver=false;
 	}
@@ -33,6 +34,7 @@ public class ButtonListener implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 		//Menu:
 			if (arg0.getSource() == gui.exit){
+				Client.closeConnection();
 				System.exit(0);
 			}
 			if (arg0.getSource() == gui.menuItemSettings){
@@ -41,6 +43,7 @@ public class ButtonListener implements ActionListener {
 				gui.createPanel.setVisible(false);
 				gui.joinPanel.setVisible(false);
 				gui.settingsPanel.setVisible(true);
+				Client.closeConnection();
 			}
 		//
 		
@@ -50,7 +53,8 @@ public class ButtonListener implements ActionListener {
 				gui.settingsPanel.setVisible(true);
 			}
 			if (arg0.getSource() == gui.play){
-				client.createConnection("sopra.cs.uni-saarland.de", false);
+				Client.joinAsAI=false;
+				Client.createConnection("sopra.cs.uni-saarland.de");
 				refreshGameList();
 				gui.menuPanel.setVisible(false);
 				gui.lobbyPanel.setVisible(true);
@@ -59,7 +63,8 @@ public class ButtonListener implements ActionListener {
 				
 			}
 			if (arg0.getSource() == gui.playAsAI){
-				client.createConnection("sopra.cs.uni-saarland.de", true);
+				Client.joinAsAI=true;
+				Client.createConnection("sopra.cs.uni-saarland.de");
 				refreshGameList();
 				gui.menuPanel.setVisible(false);
 				gui.lobbyPanel.setVisible(true);
@@ -77,14 +82,17 @@ public class ButtonListener implements ActionListener {
 				gui.createPanel.setVisible(true);
 			}
 			if (arg0.getSource() == gui.join){
-				client.joinMatch(Client.matchInfo.getId(), joinAsObserver);
-				gui.lobbyPanel.setVisible(false);
-				gui.joinPanel.setVisible(true);
-				refreshPlayerList();
+//				if(Client.matchInfo!=null){
+					Client.joinMatch(joinAsObserver);
+					gui.lobbyPanel.setVisible(false);
+					gui.joinPanel.setVisible(true);
+					refreshPlayerList();
+//				}
 			}
 			if (arg0.getSource() == gui.back_lobby){
 				gui.lobbyPanel.setVisible(false);
 				gui.menuPanel.setVisible(true);
+				Client.closeConnection();
 			}
 		//
 			
@@ -98,7 +106,7 @@ public class ButtonListener implements ActionListener {
 		//CreatePanel
 			if (arg0.getSource() == gui.createMatch){
 				try {
-					client.createMatch(gui.gameTitleField.getText(), Integer.valueOf(gui.numPlayersField.getText())
+					Client.createMatch(gui.gameTitleField.getText(), Integer.valueOf(gui.numPlayersField.getText())
 					,/*TODO mehr auswahl schaffen*/WorldRepresentation.getDefault(), joinAsObserver);} catch (Exception e) {e.printStackTrace();}
 				gui.createPanel.setVisible(false);
 				gui.joinPanel.setVisible(true);
@@ -120,20 +128,16 @@ public class ButtonListener implements ActionListener {
 			//JoinPanel
 			if (arg0.getSource() == gui.readyToggle){
 				readyStatus=!readyStatus;
-				
-				if(readyStatus){
+				if(readyStatus)
 					gui.readyToggle.setText("Ready!");
-					try {
-						Client.connection.changeReadyStatus(true);}catch(Exception e) {e.printStackTrace();}
-				}
-				else{
+				else
 					gui.readyToggle.setText("Set Ready");
-					try {
-						Client.connection.changeReadyStatus(false);}catch(Exception e) {e.printStackTrace();}
-				}
+				
+				Client.ready(readyStatus);
 			}
 			
 			if (arg0.getSource() == gui.back_join){
+				readyStatus=false;
 				try {Client.connection.leaveMatch();} catch (Exception e) {e.printStackTrace();}
 				gui.joinPanel.setVisible(false);
 				gui.lobbyPanel.setVisible(true);
@@ -169,7 +173,9 @@ public class ButtonListener implements ActionListener {
 		readyPlayers = Client.matchInfo.getReadyPlayers();
 		Object[][] table = new Object[players.length][2];
 		for (int i = 0; i < table.length; i++) {
-			table[i][0]= players[i];
+			try {
+				table[i][0]= Client.connection.getPlayerInfo(players[i]).getName();} catch (IOException e) {e.printStackTrace();
+			}
 			table[i][1]= readyPlayers[i];
 		}												
 		gui.playerTable.setModel(new DefaultTableModel( table ,new String[] {"Players", "ready-Status"	}));
