@@ -21,7 +21,7 @@ public class BuildVillage implements Strategy {
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
 		if (mr.affordableSettlements(BuildingType.Village) > 0 && mr.buildableVillageIntersections(mr.getMe()).size() > 0
-				&& mr.buildableVillageIntersections(mr.getMe()).size() <= mr.getMaxBuilding(BuildingType.Village)) {
+				&& mr.buildableVillageIntersections(mr.getMe()).size() <= mr.getMaxBuilding(BuildingType.Village) && mr.getSettlements(mr.getMe(), BuildingType.Village).size() < mr.getMaxBuilding(BuildingType.Village)) {
 			Intersection bestIntersection = evaluateIntersection(mr);
 			ca.buildSettlement(bestIntersection, BuildingType.Village);
 			ca.endTurn();
