@@ -428,8 +428,15 @@ public class GameGUI extends View implements Runnable{
 		   //Render UI
 		   GL11.glPushMatrix();
 		   GL11.glTranslatef(xOffset, 0, 0);
-		   renderUI("Background", xOffsetUI, yOffsetUI, zOffsetUI, 1500, 550);
-		   renderUI("Res", xOffsetUI+957, yOffsetUI+20, zOffsetUI+1, 42, 330);
+		   renderUI("Background", xOffsetUI, yOffsetUI, zOffsetUI, 1500, 305);
+		   //renderUI("Res", xOffsetUI+957, yOffsetUI+20, zOffsetUI+1, 42, 330);
+		   renderUI("Console", xOffsetUI+630, yOffsetUI+65, zOffsetUI+1, 730, 300);
+		   renderUI("LumberScore", xOffsetUI+345, yOffsetUI+65, zOffsetUI+1, 95, 77);
+		   renderUI("BrickScore", xOffsetUI+345, yOffsetUI+110, zOffsetUI+1, 95, 77);
+		   renderUI("GrainScore", xOffsetUI+345, yOffsetUI+155, zOffsetUI+1, 95, 77);
+		   renderUI("WoolScore", xOffsetUI+345, yOffsetUI+200, zOffsetUI+1, 95, 77);
+		   renderUI("OreScore", xOffsetUI+345, yOffsetUI+245, zOffsetUI+1, 95, 77);
+
 		   for (Clickable act : Clickable.getList())
 			   renderUI(act);
 		   GL11.glPopMatrix();
@@ -441,15 +448,15 @@ public class GameGUI extends View implements Runnable{
 		   debugFont.drawString(300, 60, "mx: " + Mouse.getX() + ", my: " + Mouse.getY() + ", mw: " + Mouse.getEventDWheel(), Color.white);
 		   debugFont.drawString(300, 90, "minX: " + minX + ", minY: " + minY , Color.white);
 		   GL11.glPopMatrix();
-		   GL11.glTranslatef(xOffset+xOffsetUI, 955, -950);
-		   uiFont.drawString(1000, 20, ""+modelReader.getResources().getResource(Resource.LUMBER), Color.black);
-		   uiFont.drawString(1000, 52, ""+modelReader.getResources().getResource(Resource.BRICK), Color.black);
-		   uiFont.drawString(1000, 84, ""+modelReader.getResources().getResource(Resource.WOOL), Color.black);
-		   uiFont.drawString(1000, 116, ""+modelReader.getResources().getResource(Resource.GRAIN), Color.black);
-		   uiFont.drawString(1000, 147, ""+modelReader.getResources().getResource(Resource.ORE), Color.black);
-		   uiFont.drawString(1000, 178, ""+ village + "/" + modelReader.getMaxBuilding(BuildingType.Village), Color.black);
-		   uiFont.drawString(1000, 209, ""+ town + "/" + modelReader.getMaxBuilding(BuildingType.Town), Color.black);
-		   uiFont.drawString(1000, 240, ""+ catapult + "/" + modelReader.getMaxVictoryPoints(), Color.black);
+		   GL11.glTranslatef(xOffset+xOffsetUI, 955, -949);
+		   uiFont.drawString(396, 72, ""+modelReader.getResources().getResource(Resource.LUMBER), Color.black);
+		   uiFont.drawString(396, 117, ""+modelReader.getResources().getResource(Resource.BRICK), Color.black);
+		   uiFont.drawString(396, 162, ""+modelReader.getResources().getResource(Resource.WOOL), Color.black);
+		   uiFont.drawString(396, 207, ""+modelReader.getResources().getResource(Resource.GRAIN), Color.black);
+		   uiFont.drawString(396, 252, ""+modelReader.getResources().getResource(Resource.ORE), Color.black);
+		   uiFont.drawString(10, 178, ""+ village + "/" + modelReader.getMaxBuilding(BuildingType.Village), Color.black);
+		   uiFont.drawString(10, 209, ""+ town + "/" + modelReader.getMaxBuilding(BuildingType.Town), Color.black);
+		   uiFont.drawString(10, 240, ""+ catapult + "/" + modelReader.getMaxVictoryPoints(), Color.black);
 	}
 
 	public void drawTradeMenu() {
@@ -607,26 +614,96 @@ public class GameGUI extends View implements Runnable{
 			robberTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Robber.png"));
 			
 			uiTextureMap = new HashMap<String,Texture>();
-			uiTextureMap.put("Background", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Background.png")));
+			uiTextureMap.put("Background", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/menue_background.png")));
 			uiTextureMap.put("Res", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Res.png")));
-			uiTextureMap.put("EndTurn", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/EndTurn.png")));
-			uiTextureMap.put("ClaimVictory", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/ClaimVictory.png")));
+			uiTextureMap.put("EndTurn", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_endTurn.png")));
+			uiTextureMap.put("ClaimVictory", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_claimVictory.png")));
+			uiTextureMap.put("ClaimLongestRoad", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_claimLongestRoad.png")));
+			uiTextureMap.put("offerTrade", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_offerTrade.png")));
+			uiTextureMap.put("respondTrade", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_respondTrade.png")));
+			uiTextureMap.put("BuildVillage", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_BuildVillage.png")));
+			uiTextureMap.put("BuildTown", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_BuildTown.png")));
+			uiTextureMap.put("BuildCatapult", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_BuildCatapult.png")));
+			uiTextureMap.put("LumberScore", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Lumber_Score.png")));
+			uiTextureMap.put("BrickScore", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Brick_Score.png")));
+			uiTextureMap.put("GrainScore", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Grain_Score.png")));
+			uiTextureMap.put("WoolScore", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Wool_Score.png")));
+			uiTextureMap.put("OreScore", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Ore_Score.png")));
+			uiTextureMap.put("Console", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/console.png")));
 			
 			markTextureMap = new HashMap<String,Texture>();
 			markTextureMap.put("Field", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/FieldMark.png")));
 			
-			new Clickable("EndTurn", xOffsetUI+140, yOffsetUI+240, zOffsetUI+2, 158, 65, true) {
-				@Override
-				public void execute() {
-					minX = 1337;
-				}
-			};
-			new Clickable("ClaimVictory", xOffsetUI+300, yOffsetUI+240, zOffsetUI+2, 302, 65, true) {
+			
+			// Button: claimLongestRoad
+			new Clickable("ClaimLongestRoad", xOffsetUI+542, yOffsetUI+22, zOffsetUI+2, 373, 77, true) {
 				@Override
 				public void execute() {
 					minX = 42;
 				}
 			};
+
+			new Clickable("ClaimVictory", xOffsetUI+775, yOffsetUI+22, zOffsetUI+2, 185, 77, true) {
+				@Override
+				public void execute() {
+					minX = 42;
+				}
+			};
+			
+			
+			// Button: End Turn
+			new Clickable("EndTurn", xOffsetUI+930, yOffsetUI+22, zOffsetUI+2, 185, 77, true) {
+				@Override
+				public void execute() {
+					minX = 1337;
+				}
+			};
+			
+			// Button: offerTrade
+			new Clickable("offerTrade", xOffsetUI+450, yOffsetUI+65, zOffsetUI+2, 185, 77, true) {
+				@Override
+				public void execute() {
+					minX = 42;
+				}
+			};
+			
+			// Button: respondTrade
+			new Clickable("respondTrade", xOffsetUI+450, yOffsetUI+110, zOffsetUI+2, 185, 77, true) {
+				@Override
+				public void execute() {
+					minX = 42;
+				}
+			};
+			
+			
+			// Button: BuildVillage
+			new Clickable("BuildVillage", xOffsetUI+450, yOffsetUI+155, zOffsetUI+2, 185, 77, true) {
+				@Override
+				public void execute() {
+					minX = 42;
+				}
+			};
+			
+			
+			// Button: BuildTown
+			new Clickable("BuildTown", xOffsetUI+450, yOffsetUI+200, zOffsetUI+2, 185, 77, true) {
+				@Override
+				public void execute() {
+					minX = 42;
+				}
+			};
+						
+			
+			// Button: BuildCatapult
+			new Clickable("BuildCatapult", xOffsetUI+450, yOffsetUI+245, zOffsetUI+2, 185, 77, true) {
+				@Override
+				public void execute() {
+					minX = 42;
+				}
+			};
+						
+			
+
 			
 		} catch (Exception e) {}
 		
