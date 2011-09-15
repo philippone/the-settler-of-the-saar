@@ -61,11 +61,13 @@ public class GameGUI extends View implements Runnable{
 	private HashMap<BuildingType, Texture> intersectionTextureMap;
 	private Map<Integer,Texture> numberTextureMap;
 	private Map<String,Texture> uiTextureMap;
-	private Map<String,Texture> markTextureMap;
 	private List<Field> renderFieldList;
 	private Texture streetTexture;
 	private Texture catapultTexture;
 	private Texture robberTexture;
+	private Texture pathMarkTexture;
+	private Texture fieldMarkTexture;
+	private Texture intersectionMarkTexture;
 	private int x,y,z;
 	private int maxX, maxY, maxZ;
 	private int minX, minY, minZ;
@@ -384,7 +386,7 @@ public class GameGUI extends View implements Runnable{
 				   break;
 			    }
 			    GL11.glPushMatrix();
-			    markTextureMap.get("Field").bind();
+			    fieldMarkTexture.bind();
 			    setColor(BLACK);
 			    GL11.glTranslatef(fx+x, fy+y, 2+z);
 			    drawSquareMid(300, 300);
@@ -444,7 +446,7 @@ public class GameGUI extends View implements Runnable{
 		   renderUI("WoolScore", xOffsetUI+345, yOffsetUI+200, zOffsetUI+1, 95, 77);
 		   renderUI("OreScore", xOffsetUI+345, yOffsetUI+245, zOffsetUI+1, 95, 77);
 
-		   for (Clickable act : Clickable.getList())
+		   for (Clickable act : Clickable.getRenderList())
 			   renderUI(act);
 		   GL11.glPopMatrix();
 		   //Render Fonts on UI
@@ -600,7 +602,6 @@ public class GameGUI extends View implements Runnable{
 			fieldTextureMap.put(FieldType.HILLS, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Hills.png")));
 			fieldTextureMap.put(FieldType.PASTURE, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Pasture.png")));
 			fieldTextureMap.put(FieldType.WATER, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Water.png")));
-			
 			intersectionTextureMap = new HashMap<BuildingType,Texture>();
 			intersectionTextureMap.put(BuildingType.Village, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Village.png")));
 			intersectionTextureMap.put(BuildingType.Town, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Town.png")));
@@ -620,6 +621,9 @@ public class GameGUI extends View implements Runnable{
 			streetTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Street.png"));
 			catapultTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Catapult.png"));
 			robberTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Robber.png"));
+			fieldMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Mark.png"));
+			intersectionMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Mark.png"));
+			pathMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Mark.png"));
 			
 			uiTextureMap = new HashMap<String,Texture>();
 			uiTextureMap.put("Background", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/menue_background.png")));
@@ -639,83 +643,61 @@ public class GameGUI extends View implements Runnable{
 			uiTextureMap.put("OreScore", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Ore_Score.png")));
 			uiTextureMap.put("Console", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/console.png")));
 			
-			markTextureMap = new HashMap<String,Texture>();
-			markTextureMap.put("Field", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/FieldMark.png")));
-			
-			
-			// Button: claimLongestRoad
-			new Clickable("ClaimLongestRoad", xOffsetUI+542, yOffsetUI+22, zOffsetUI+2, 373, 77, true) {
+			Clickable claimLongestRoad = new Clickable("ClaimLongestRoad", xOffsetUI+542, yOffsetUI+22, zOffsetUI+2, 373, 77, true, true) {
 				@Override
 				public void execute() {
 					minX = 42;
 				}
 			};
 
-			new Clickable("ClaimVictory", xOffsetUI+775, yOffsetUI+22, zOffsetUI+2, 185, 77, true) {
+			Clickable claimVictory = new Clickable("ClaimVictory", xOffsetUI+775, yOffsetUI+22, zOffsetUI+2, 185, 77, true, false) {
 				@Override
 				public void execute() {
 					minX = 42;
 				}
 			};
 			
-			
-			// Button: End Turn
-			new Clickable("EndTurn", xOffsetUI+930, yOffsetUI+22, zOffsetUI+2, 185, 77, true) {
+			Clickable endTurn = new Clickable("EndTurn", xOffsetUI+930, yOffsetUI+22, zOffsetUI+2, 185, 77, true, false) {
 				@Override
 				public void execute() {
-					try {
-						controllerAdapter.endTurn();
-					} catch(Exception e) {
-						e.setStackTrace(null);
-					}
+					controllerAdapter.endTurn();
 				}
 			};
 			
-			// Button: offerTrade
-			new Clickable("offerTrade", xOffsetUI+450, yOffsetUI+65, zOffsetUI+2, 185, 77, true) {
+			Clickable offerTrade = new Clickable("offerTrade", xOffsetUI+450, yOffsetUI+65, zOffsetUI+2, 185, 77, true, true) {
 				@Override
 				public void execute() {
 					minX = 42;
 				}
 			};
 			
-			// Button: respondTrade
-			new Clickable("respondTrade", xOffsetUI+450, yOffsetUI+110, zOffsetUI+2, 185, 77, true) {
+			Clickable buildStreet = new Clickable("buildStreet", xOffsetUI+450, yOffsetUI+110, zOffsetUI+2, 185, 77, true, true) {
 				@Override
 				public void execute() {
 					minX = 42;
 				}
 			};
 			
-			
-			// Button: BuildVillage
-			new Clickable("BuildVillage", xOffsetUI+450, yOffsetUI+155, zOffsetUI+2, 185, 77, true) {
+			Clickable buildVillage = new Clickable("BuildVillage", xOffsetUI+450, yOffsetUI+155, zOffsetUI+2, 185, 77, true, true) {
 				@Override
 				public void execute() {
 					minX = 42;
 				}
 			};
 			
-			
-			// Button: BuildTown
-			new Clickable("BuildTown", xOffsetUI+450, yOffsetUI+200, zOffsetUI+2, 185, 77, true) {
+			Clickable buildTown = new Clickable("BuildTown", xOffsetUI+450, yOffsetUI+200, zOffsetUI+2, 185, 77, true, true) {
 				@Override
 				public void execute() {
 					minX = 42;
 				}
 			};
 						
-			
-			// Button: BuildCatapult
-			new Clickable("BuildCatapult", xOffsetUI+450, yOffsetUI+245, zOffsetUI+2, 185, 77, true) {
+			Clickable buildCatapult = new Clickable("BuildCatapult", xOffsetUI+450, yOffsetUI+245, zOffsetUI+2, 185, 77, true, true) {
 				@Override
 				public void execute() {
 					minX = 42;
 				}
 			};
-						
-			
-
 			
 		} catch (Exception e) {}
 		
@@ -771,8 +753,11 @@ public class GameGUI extends View implements Runnable{
 		int my = Mouse.getY();
 		
 		if (Mouse.isButtonDown(0)) {
-			for (Clickable c : Clickable.executeClicks(mx*screenToOpenGLX, (windowHeight-my)*screenToOpenGLY+380)) {
+			for (Clickable c : Clickable.executeModelClicks(mx*screenToOpenGLX, (windowHeight-my)*screenToOpenGLY+380)) {
 				controllerAdapter.addGuiEvent(c);
+			}
+			for (Clickable c : Clickable.executeUIClicks(mx*screenToOpenGLX, (windowHeight-my)*screenToOpenGLY+380)) {
+				c.execute();
 			}
 		}
 		
