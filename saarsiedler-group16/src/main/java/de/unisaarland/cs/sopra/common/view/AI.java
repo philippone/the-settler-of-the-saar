@@ -74,13 +74,19 @@ public class AI extends View{
 			WorldRepresentation wr = WorldRepresentation.getDefault();
 
 			//---------Create Code-----------
-			MatchInformation mi = c.newMatch("K(a)I!", 2, wr, false);
+			//MatchInformation mi = c.newMatch("K(a)I!", 2, wr, false);
 			//-------------------------------
 			
 			// --------Join Code---------
+
+			long matchId = 435 ;
+			c.joinMatch(matchId, false);
+			MatchInformation mi = c.getMatchInfo(matchId);
+
 			//long matchId = 2734 ;
 			//c.joinMatch(matchId, false);
 			//MatchInformation mi = c.getMatchInfo(matchId);
+
 			//---------------------------
 			 
 

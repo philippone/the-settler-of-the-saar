@@ -37,10 +37,11 @@ public class MoveRobberStrategy implements Strategy{
 			} catch (IllegalArgumentException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+
+			} 
+
+			
+
 		}
 		// TODO Auto-generated method stub
 		Player player=mr.getCurrentPlayer();
