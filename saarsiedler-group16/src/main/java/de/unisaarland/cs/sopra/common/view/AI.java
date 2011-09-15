@@ -78,7 +78,7 @@ public class AI extends View{
 			//-------------------------------
 			
 			// --------Join Code---------
-			long matchId = 2853 ;
+			long matchId = 3146 ;
 			c.joinMatch(matchId, false);
 			MatchInformation mi = c.getMatchInfo(matchId);
 			//---------------------------
