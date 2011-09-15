@@ -46,7 +46,6 @@ public class Client {
 					|| res==JoinResult.NOT_EXISTING)
 				throw new IllegalStateException("Running/closed/full/not_existing");
 			} catch (Exception e) {e.printStackTrace();}
-			initializeMatch();
 	}
 	
 	public static void createMatch(String title, int numPlayer, WorldRepresentation world, boolean asObserver) {

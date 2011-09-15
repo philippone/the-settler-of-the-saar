@@ -10,11 +10,13 @@ public abstract class Clickable {
 	private boolean active;
 	private String name;
 	
-	public static void executeClicks(float xogl, float yogl) {
+	public static List<Clickable> executeClicks(float xogl, float yogl) {
+		List<Clickable> liste = new LinkedList<Clickable>();
 		for (Clickable act : list) {
 			if (act.checkClick(xogl, yogl))
-				act.execute();
+				liste.add(act);
 		}
+		return liste;
 	}
 	
 	public Clickable(String name, int x, int y, int z, int width, int height, boolean active) {
