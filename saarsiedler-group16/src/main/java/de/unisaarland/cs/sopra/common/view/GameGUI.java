@@ -464,7 +464,7 @@ public class GameGUI extends View implements Runnable{
 		   uiFont.drawString(100, 178, ""+ village + "/" + modelReader.getMaxBuilding(BuildingType.Village), Color.black);
 		   uiFont.drawString(100, 209, ""+ town + "/" + modelReader.getMaxBuilding(BuildingType.Town), Color.black);
 		   uiFont.drawString(100, 240, ""+ catapult + "/" + modelReader.getMaxVictoryPoints(), Color.black);
-		   uiFont.drawString(10, 50, "Round "+modelReader.getRound(), Color.black);
+		   uiFont.drawString(640, 75, "Round "+modelReader.getRound(), Color.black);
 	}
 
 	public void drawTradeMenu() {
