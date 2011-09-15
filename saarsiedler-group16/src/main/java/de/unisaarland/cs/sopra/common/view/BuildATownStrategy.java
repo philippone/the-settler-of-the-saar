@@ -31,7 +31,7 @@ Strategy s;
 				&& mr.buildableTownIntersections(mr.getMe()).size() < mr.getMaxBuilding(BuildingType.Town) 
 				&& mr.getSettlements(mr.getMe(),BuildingType.Town).size()<mr.getMaxBuilding(BuildingType.Town))) return -1;
 		float value=0;
-		
+		value=evaluateIntersection(mr,chooseBestIntersection(mr));
 		return value;
 	}
 	
