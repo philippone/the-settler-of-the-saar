@@ -160,6 +160,7 @@ public class GUIFrame extends JFrame {
 		back_join = new JButton();
 
 		//======== this ========
+		setVisible(true);
 		Container contentPane = getContentPane();
 		contentPane.setLayout(null);
 
@@ -195,7 +196,7 @@ public class GUIFrame extends JFrame {
 
 			lobbyPanel.setLayout(new GridBagLayout());
 			((GridBagLayout)lobbyPanel.getLayout()).columnWidths = new int[] {999, 0};
-			((GridBagLayout)lobbyPanel.getLayout()).rowHeights = new int[] {597, 91, 0};
+			((GridBagLayout)lobbyPanel.getLayout()).rowHeights = new int[] {461, 91, 0};
 			((GridBagLayout)lobbyPanel.getLayout()).columnWeights = new double[] {0.0, 1.0E-4};
 			((GridBagLayout)lobbyPanel.getLayout()).rowWeights = new double[] {0.0, 0.0, 1.0E-4};
 
@@ -203,7 +204,7 @@ public class GUIFrame extends JFrame {
 			{
 				panel8.setLayout(new GridBagLayout());
 				((GridBagLayout)panel8.getLayout()).columnWidths = new int[] {752, 245, 0};
-				((GridBagLayout)panel8.getLayout()).rowHeights = new int[] {589, 0};
+				((GridBagLayout)panel8.getLayout()).rowHeights = new int[] {462, 0};
 				((GridBagLayout)panel8.getLayout()).columnWeights = new double[] {0.0, 0.0, 1.0E-4};
 				((GridBagLayout)panel8.getLayout()).rowWeights = new double[] {0.0, 1.0E-4};
 
@@ -265,22 +266,22 @@ public class GUIFrame extends JFrame {
 				new Insets(0, 0, 0, 0), 0, 0));
 		}
 		contentPane.add(lobbyPanel);
-		lobbyPanel.setBounds(0, 0, 1000, 665);
+		lobbyPanel.setBounds(0, 0, 1000, 560);
 
 		//======== settingsPanel ========
 		{
 			settingsPanel.setVisible(false);
 			settingsPanel.setLayout(new GridBagLayout());
 			((GridBagLayout)settingsPanel.getLayout()).columnWidths = new int[] {0, 0, 0, 0, 0};
-			((GridBagLayout)settingsPanel.getLayout()).rowHeights = new int[] {0, 0};
+			((GridBagLayout)settingsPanel.getLayout()).rowHeights = new int[] {567, 0};
 			((GridBagLayout)settingsPanel.getLayout()).columnWeights = new double[] {0.25, 0.5, 0.25, 1.0, 1.0E-4};
 			((GridBagLayout)settingsPanel.getLayout()).rowWeights = new double[] {1.0, 1.0E-4};
 
 			//======== panel10 ========
 			{
 				panel10.setLayout(new GridBagLayout());
-				((GridBagLayout)panel10.getLayout()).columnWidths = new int[] {0, 0, 0, 0};
-				((GridBagLayout)panel10.getLayout()).rowHeights = new int[] {157, 0, 0, 0, 0, 0, 0, 0, 338, 0, 0};
+				((GridBagLayout)panel10.getLayout()).columnWidths = new int[] {339, 0, 224, 0};
+				((GridBagLayout)panel10.getLayout()).rowHeights = new int[] {157, 0, 0, 0, 0, 0, 0, 0, 76, 0, 0};
 				((GridBagLayout)panel10.getLayout()).columnWeights = new double[] {0.36, 0.28, 0.36, 1.0E-4};
 				((GridBagLayout)panel10.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
@@ -295,7 +296,7 @@ public class GUIFrame extends JFrame {
 				new Insets(0, 0, 0, 0), 0, 0));
 		}
 		contentPane.add(settingsPanel);
-		settingsPanel.setBounds(0, 0, 1000, 675);
+		settingsPanel.setBounds(0, 0, 1000, 535);
 
 		//======== menuPanel ========
 		{
@@ -361,14 +362,14 @@ public class GUIFrame extends JFrame {
 			menuPanel.add(panel12, BorderLayout.NORTH);
 		}
 		contentPane.add(menuPanel);
-		menuPanel.setBounds(0, 0, 1000, 665);
+		menuPanel.setBounds(0, 0, 1000, 560);
 
 		//======== createPanel ========
 		{
 			createPanel.setVisible(false);
 			createPanel.setLayout(new GridBagLayout());
 			((GridBagLayout)createPanel.getLayout()).columnWidths = new int[] {730, 0, 0};
-			((GridBagLayout)createPanel.getLayout()).rowHeights = new int[] {0, 0};
+			((GridBagLayout)createPanel.getLayout()).rowHeights = new int[] {560, 0};
 			((GridBagLayout)createPanel.getLayout()).columnWeights = new double[] {0.5, 1.0, 1.0E-4};
 			((GridBagLayout)createPanel.getLayout()).rowWeights = new double[] {1.0, 1.0E-4};
 
@@ -376,7 +377,7 @@ public class GUIFrame extends JFrame {
 			{
 				panel13.setLayout(new GridBagLayout());
 				((GridBagLayout)panel13.getLayout()).columnWidths = new int[] {168, 145, 237, 13, 0};
-				((GridBagLayout)panel13.getLayout()).rowHeights = new int[] {175, 0, 0, 0, 32, 0, 227, 0, 23, 0, 0};
+				((GridBagLayout)panel13.getLayout()).rowHeights = new int[] {175, 0, 0, 0, 32, 0, 97, 0, 23, 0, 0};
 				((GridBagLayout)panel13.getLayout()).columnWeights = new double[] {0.0, 0.0, 0.0, 0.36, 1.0E-4};
 				((GridBagLayout)panel13.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
@@ -436,14 +437,14 @@ public class GUIFrame extends JFrame {
 				new Insets(0, 0, 0, 0), 0, 0));
 		}
 		contentPane.add(createPanel);
-		createPanel.setBounds(0, 0, 1000, 675);
+		createPanel.setBounds(0, 0, 1000, 560);
 
 		//======== joinPanel ========
 		{
 			joinPanel.setVisible(false);
 			joinPanel.setLayout(new GridBagLayout());
 			((GridBagLayout)joinPanel.getLayout()).columnWidths = new int[] {999, 0};
-			((GridBagLayout)joinPanel.getLayout()).rowHeights = new int[] {597, 91, 0};
+			((GridBagLayout)joinPanel.getLayout()).rowHeights = new int[] {473, 93, 0};
 			((GridBagLayout)joinPanel.getLayout()).columnWeights = new double[] {0.0, 1.0E-4};
 			((GridBagLayout)joinPanel.getLayout()).rowWeights = new double[] {0.0, 0.0, 1.0E-4};
 
@@ -451,7 +452,7 @@ public class GUIFrame extends JFrame {
 			{
 				panel14.setLayout(new GridBagLayout());
 				((GridBagLayout)panel14.getLayout()).columnWidths = new int[] {752, 245, 0};
-				((GridBagLayout)panel14.getLayout()).rowHeights = new int[] {589, 0};
+				((GridBagLayout)panel14.getLayout()).rowHeights = new int[] {470, 0};
 				((GridBagLayout)panel14.getLayout()).columnWeights = new double[] {0.0, 0.0, 1.0E-4};
 				((GridBagLayout)panel14.getLayout()).rowWeights = new double[] {0.0, 1.0E-4};
 
@@ -507,7 +508,7 @@ public class GUIFrame extends JFrame {
 				new Insets(0, 0, 0, 0), 0, 0));
 		}
 		contentPane.add(joinPanel);
-		joinPanel.setBounds(0, 0, 1000, 665);
+		joinPanel.setBounds(0, 0, 1000, 560);
 
 		{ // compute preferred size
 			Dimension preferredSize = new Dimension();
@@ -522,7 +523,7 @@ public class GUIFrame extends JFrame {
 			contentPane.setMinimumSize(preferredSize);
 			contentPane.setPreferredSize(preferredSize);
 		}
-		pack();
+		setSize(1020, 595);
 		setLocationRelativeTo(getOwner());
 		// JFormDesigner - End of component initialization  //GEN-END:initComponents
 	}
