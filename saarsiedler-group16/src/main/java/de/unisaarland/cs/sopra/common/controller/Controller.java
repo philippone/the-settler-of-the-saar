@@ -64,12 +64,12 @@ public class Controller {
 				break;
 			case BUILT_ROAD:
 				Edge edg = ((GameEvent.BuiltRoad)gameEvent).getLocation();
-				Location locatio = new Location(edg.getRow(), edg.getCol(), edg.getDirection());
+				Location locatio = new Location(edg.getCol(), edg.getRow(), edg.getDirection());
 				modelWriter.buildStreet(locatio);
 				break;
 			case BUILT_SETTLEMENT:
 				Intersection in = ((GameEvent.BuiltSettlement)gameEvent).getLocation();
-				Location locati = new Location(in.getRow(), in.getCol(), in.getDirection());
+				Location locati = new Location(in.getCol(), in.getRow(), in.getDirection());
 				boolean isUpgradeToTown = ((GameEvent.BuiltSettlement)gameEvent).isUpgradeToTown();
 				if (isUpgradeToTown){
 					modelWriter.buildSettlement(locati, BuildingType.Village);
