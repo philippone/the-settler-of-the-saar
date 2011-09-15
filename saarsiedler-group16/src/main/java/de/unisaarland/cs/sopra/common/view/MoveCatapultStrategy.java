@@ -4,6 +4,7 @@ import java.util.Set;
 
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.Catapult;
+import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
 
@@ -20,10 +21,18 @@ public class MoveCatapultStrategy implements Strategy {
 	public float evaluateStreetValue(ModelReader mr, Path p) {
 		if (p.hasCatapult() && p.getCatapultOwner() != mr.getMe()) {
 			return 1;
-		} else if (!p.hasCatapult()) {
-			return (float) (0.5);
+		} 
+		float value=0;
+		Set<Intersection> intersections=mr.getIntersectionsFromPath(p);
+		for (Intersection i: intersections){
+			if (i.hasOwner() && i.getOwner()!=mr.getMe()) value=(float) (value+0.3);
 		}
-		return 0;
+		Set<Path> paths=mr.getPathsFromPath(p);
+		for (Path p1: paths){
+			if (p1.hasCatapult() && p1.getCatapultOwner() != mr.getMe()) value=(float) (value+0.3);
+			
+		}
+		return value;
 	}
 	
 	public Path evaluateStreet(ModelReader mr) {
@@ -45,10 +54,10 @@ public class MoveCatapultStrategy implements Strategy {
 		return bestPath;
 	}
 
-	public int evaluate(ModelReader mr) {
+	public float evaluate(ModelReader mr) {
 		if (mr.getCatapults(mr.getMe()).size() < 1) {
 			return -1;
 		}
-		return 0;
+		return evaluateStreetValue(mr,evaluateStreet(mr));
 	}
 }
