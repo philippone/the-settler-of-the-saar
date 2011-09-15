@@ -122,7 +122,12 @@ public class AI extends View{
 	}
 	
 	public void evaluateBestStrategy(){
-		s = new BuildStreetStrategy();
+		float strategyValue=(float) Math.random()*3;
+		if (strategyValue<1) s=new BuildStreetStrategy();
+		if (strategyValue>2) s=new BuildATownStrategy();
+		//if (strategyValue==2) s=new BuildACatapultStrategy();
+		if (strategyValue>1 && strategyValue<2) s=new BuildVillage();
+		//s = new BuildStreetStrategy();
 		//s = new DoNothingStrategy();
 		//s= new BuildATownStrategy();
 		//s1 = new BuildACatapultStrategy();
