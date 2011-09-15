@@ -120,6 +120,8 @@ public class Client {
 	}
 	
 	public static void initializeMatch() {
+//		clientGUI.setVisible(false);
+		clientGUI.setEnabled(false);
 		Model m = buildModel();
 		Controller c = buildController(m);
 		AI ai;
