@@ -53,7 +53,7 @@ public class ButtonListener implements ActionListener {
 				gui.settingsPanel.setVisible(true);
 			}
 			if (arg0.getSource() == gui.play){
-				Client.joinAsAI=true;
+				Client.joinAsAI=false;
 				Client.createConnection("sopra.cs.uni-saarland.de");
 				refreshGameList();
 				gui.menuPanel.setVisible(false);
@@ -137,6 +137,7 @@ public class ButtonListener implements ActionListener {
 			}
 			
 			if (arg0.getSource() == gui.back_join){
+				readyStatus=false;
 				try {Client.connection.leaveMatch();} catch (Exception e) {e.printStackTrace();}
 				gui.joinPanel.setVisible(false);
 				gui.lobbyPanel.setVisible(true);

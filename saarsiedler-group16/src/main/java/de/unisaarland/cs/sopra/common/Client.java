@@ -1,6 +1,7 @@
 package de.unisaarland.cs.sopra.common;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.TreeMap;
@@ -45,6 +46,7 @@ public class Client {
 					|| res==JoinResult.NOT_EXISTING)
 				throw new IllegalStateException("Running/closed/full/not_existing");
 			} catch (Exception e) {e.printStackTrace();}
+			initializeMatch();
 	}
 	
 	public static void createMatch(String title, int numPlayer, WorldRepresentation world, boolean asObserver) {
@@ -67,7 +69,7 @@ public class Client {
 		if(result == ChangeReadyResult.UNCHANGED){
 			throw new IllegalStateException("Cant change ReadyStatus, JUST EPIC FAIL");
 		}
-		
+		initializeMatch();	
 	}
 	
 	public static void closeConnection() {
@@ -100,7 +102,7 @@ public class Client {
 		return new Controller(connection, modelWriter);
 	}
 	
-	public AI buildAI(Controller controller, Model model) {
+	public static AI buildAI(Controller controller, Model model) {
 		return new AI(model, new ControllerAdapter(controller, model));
 	}
 	
@@ -120,38 +122,86 @@ public class Client {
 	public static void initializeMatch() {
 		Model m = buildModel();
 		Controller c = buildController(m);
+		AI ai;
+		if(joinAsAI)
+			 ai = buildAI(c, m);
 		
-		if(joinAsAI){
-			//TODO kb drauf
-		}else{
-			GameEvent event = null;
+		GameEvent event = null;
 			
-			setting = new Setting(new DisplayMode(1024,580), true, PlayerColors.RED); //TODO change this!
-			
+		try {
+			event = connection.getNextEvent(0);
+		} catch (Exception e) {e.printStackTrace();	}
+		//wenn event hier noch null ist, dann wurde kein event geliefert
+		if(event==null) throw new IllegalStateException("kein event erhalten");
+		
+		if(!(event.getType()!=EventType.MATCH_END)) throw new IllegalArgumentException("sollte ein MatchStart liefert");
+		MatchStart startEvent = ((MatchStart)event);
+		String[] list = new String[] {
+				"jinput-dx8_64.dll", "jinput-dx8.dll", "jinput-raw_64.dll",
+				"jinput-raw.dll", "libjinput-linux.so", "libjinput-linux64.so",
+				"libjinput-osx.jnilib", "liblwjgl.jnilib", "liblwjgl.so",
+				"liblwjgl64.so", "libopenal.so", "libopenal64.so",
+				"lwjgl.dll", "lwjgl64.dll", "openal.dylib", "OpenAL32.dll", "OpenAL64.dll" };
+		String tmpdir = System.getProperty("java.io.tmpdir");
+		for (String act : list) {
+			InputStream input = ClassLoader.getSystemClassLoader().getResourceAsStream("native/" + act);
 			try {
-				event = connection.getNextEvent(10000);
-			} catch (Exception e) {e.printStackTrace();	}
-			//wenn event hier noch null ist, dann wurde kein event geliefert
-			if(event==null) throw new IllegalStateException("kein event erhalten");
-			
-			if(!(event.getType()!=EventType.MATCH_END)) throw new IllegalArgumentException("sollte ein MatchStart liefert");
-			MatchStart startEvent = ((MatchStart)event);
-			GameGUI gui = buildGameGUI(c, m, startEvent.getPlayerIds());
-			m.addModelObserver(gui);
-			
-			long[] players = startEvent.getPlayerIds();
-			byte[] number = startEvent.getNumbers();
-			m.matchStart(players, number);
-			
-			System.out.println("Das Spiel war erfolgreich! =)");
-			new Thread(gui).start();
-			try {
-				Thread.sleep(5000);
-				c.mainLoop();
-			} catch (Exception e) {e.printStackTrace();
+				GameGUI.saveFile(tmpdir + "/" + act, input);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			
 		}
+		String seperator;
+		if (System.getProperty("sun.desktop") != null && System.getProperty("sun.desktop").equals("windows")) seperator = ";";
+		else seperator = ":";
+		System.setProperty("java.library.path", System.getProperty("java.library.path") + seperator + tmpdir);
+		java.lang.reflect.Field vvv = null;
+		try {
+			vvv = ClassLoader.class.getDeclaredField("sys_paths");
+		} catch (SecurityException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (NoSuchFieldException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		vvv.setAccessible(true); 
+		try {
+			vvv.set(null, null);
+		} catch (IllegalArgumentException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		long[] players = startEvent.getPlayerIds();
+		byte[] number = startEvent.getNumbers();
+		m.matchStart(players, number);
+		
+		
+		Setting setting = new Setting(new DisplayMode(1024,580), true, PlayerColors.RED);
+		GameGUI gameGUI = null;
+		try {
+			gameGUI = buildGameGUI(c, m, startEvent.getPlayerIds());
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		new Thread(gameGUI).start();
+//		
+	
+		
+		System.out.println("Das Spiel war erfolgreich! =)");
+//		new Thread(gui).start();
+		try {
+			Thread.sleep(5000);
+			c.mainLoop();
+		} catch (Exception e) {e.printStackTrace();
+		}
+		
 	}
 	
 }
