@@ -21,9 +21,10 @@ public class BuildVillage implements Strategy {
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
 		if (mr.affordableSettlements(BuildingType.Village) > 0 && mr.buildableVillageIntersections(mr.getMe()).size() > 0
-				&& mr.buildableVillageIntersections(mr.getMe()).size() <= mr.getMaxBuilding(BuildingType.Village)) {
+				&& mr.buildableVillageIntersections(mr.getMe()).size() <= mr.getMaxBuilding(BuildingType.Village) && mr.getSettlements(mr.getMe(), BuildingType.Village).size() < mr.getMaxBuilding(BuildingType.Village)) {
 			Intersection bestIntersection = evaluateIntersection(mr);
 			ca.buildSettlement(bestIntersection, BuildingType.Village);
+			ca.endTurn();
 		} else 
 			 ca.endTurn();
 
@@ -34,6 +35,9 @@ public class BuildVillage implements Strategy {
 	}
 	
 	private float evaluateIntersectionValue(ModelReader mr, Intersection i) {
+			float intersectionValue=0;
+			float fieldNumberValue=0;
+			float fieldTypeValue=0;
 			Set<Field> neighborFields = mr.getFieldsFromIntersection(i);
 			int n;	
 			FieldType type;
@@ -54,7 +58,7 @@ public class BuildVillage implements Strategy {
 				type=field.getFieldType();
 				if (type==FieldType.FOREST || type==FieldType.HILLS || type==FieldType.PASTURE || type==FieldType.FIELDS || type==FieldType.MOUNTAINS) fieldTypeValue =(float)(fieldTypeValue+0.10);
 
-			intersectionValue=fieldTypeValue+fieldNumberValue;
+			intersectionValue=intersectionValue+fieldTypeValue+fieldNumberValue;
 		}
 		return intersectionValue;
 	}

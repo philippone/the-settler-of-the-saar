@@ -36,9 +36,6 @@ public class ControllerAdapter {
 	 */
 	public void attackSettlement(Path catapult, Intersection settlement) throws IllegalStateException, IllegalArgumentException, IOException {
 		Location l = Model.getLocation(catapult);
-		l.getX();
-		l.getY();
-		l.getOrientation();
 		Location i = Model.getLocation(settlement);
 		controller.attackSettlement(l, i);
 		

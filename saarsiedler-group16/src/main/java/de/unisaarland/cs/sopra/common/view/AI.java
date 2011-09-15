@@ -72,13 +72,25 @@ public class AI extends View{
 		try {
 			Connection c = Connection.establish("sopra.cs.uni-saarland.de", true);
 			WorldRepresentation wr = WorldRepresentation.getDefault();
-			MatchInformation mi = c.newMatch("K(a)I!", 2, wr, false);
+
+			//---------Create Code-----------
+			//MatchInformation mi = c.newMatch("K(a)I!", 2, wr, false);
+			//-------------------------------
+			
+			// --------Join Code---------
+			long matchId = 2594 ;
+			c.joinMatch(matchId, false);
+			MatchInformation mi = c.getMatchInfo(matchId);
+			//---------------------------
+			 
+
+			//MatchInformation mi = c.newMatch("K(a)I!", 1, wr, false);
 			Model m = new Model(wr, mi, c.getClientId());
 			System.out.printf("MatchID: %s", mi.getId());
 			Controller cont = new Controller(c, m);
 			ControllerAdapter contAdap = new ControllerAdapter(cont, m);
 			AI ai = new AI(m, contAdap);
-			Thread.sleep(15000);
+			//Thread.sleep(15000);
 			c.changeReadyStatus(true);
 			GameEvent ge = c.getNextEvent(0);
 			if (ge.getType() != EventType.MATCH_START)
@@ -113,7 +125,21 @@ public class AI extends View{
 	}
 	
 	public void evaluateBestStrategy(){
-		s = new BuildStreetStrategy();
+
+		//float strategyValue=(float) Math.random()*3;
+		//if (strategyValue<1) s=new BuildStreetStrategy();
+		//if (strategyValue>2) s=new BuildATownStrategy();
+		//if (strategyValue==2) s=new BuildACatapultStrategy();
+		//if (strategyValue>1 && strategyValue<2) s=new BuildVillage();
+		//if (strategyValue>1 && strategyValue<2) s=new BuildVillage();
+
+		float strategyValue=(float) Math.random()*4;
+		if (strategyValue<1) s=new BuildStreetStrategy();
+		if (strategyValue>1 && strategyValue<2) s=new BuildVillage();
+		if (strategyValue>2 && strategyValue<3) s=new BuildATownStrategy();
+		if (strategyValue>3) s=new BuildACatapultStrategy();
+
+		//s = new BuildStreetStrategy();
 		//s = new DoNothingStrategy();
 		//s= new BuildATownStrategy();
 		//s1 = new BuildACatapultStrategy();
@@ -121,6 +147,8 @@ public class AI extends View{
 	
 	public void executeBestStrategy() {
 		try{
+			Thread.sleep(3000);
+
 		s.execute(modelReader, controllerAdapter);
 		//s1.execute(modelReader, controllerAdapter);
 		}
