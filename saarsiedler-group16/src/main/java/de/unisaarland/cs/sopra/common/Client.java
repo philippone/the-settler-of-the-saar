@@ -119,25 +119,26 @@ public class Client {
 		throw new IllegalStateException("couldnt build GameGui");
 	}
 	
-	public static void initializeMatch() {
-		clientGUI.setVisible(false);
-//		clientGUI.
+	public static void initializeMatch() {					
+		GameEvent event = null;
+		try {
+			event = connection.getNextEvent(0);
+		} catch (Exception e) {e.printStackTrace();	}
+		//wenn event hier noch null ist, dann wurde kein event geliefert
+		if(event==null) throw new IllegalStateException("kein event erhalten");
+		if(!(event.getType()!=EventType.MATCH_END)) throw new IllegalArgumentException("sollte ein MatchStart liefert");
+		MatchStart startEvent = ((MatchStart)event);
+		
 		Model m = buildModel();
 		Controller c = buildController(m);
 		AI ai;
 		if(joinAsAI)
 			 ai = buildAI(c, m);
 		
-		GameEvent event = null;
-			
-		try {
-			event = connection.getNextEvent(0);
-		} catch (Exception e) {e.printStackTrace();	}
-		//wenn event hier noch null ist, dann wurde kein event geliefert
-		if(event==null) throw new IllegalStateException("kein event erhalten");
+		long[] players = startEvent.getPlayerIds();
+		byte[] number = startEvent.getNumbers();
+		m.matchStart(players, number);
 		
-		if(!(event.getType()!=EventType.MATCH_END)) throw new IllegalArgumentException("sollte ein MatchStart liefert");
-		MatchStart startEvent = ((MatchStart)event);
 		String[] list = new String[] {
 				"jinput-dx8_64.dll", "jinput-dx8.dll", "jinput-raw_64.dll",
 				"jinput-raw.dll", "libjinput-linux.so", "libjinput-linux64.so",
@@ -149,10 +150,7 @@ public class Client {
 			InputStream input = ClassLoader.getSystemClassLoader().getResourceAsStream("native/" + act);
 			try {
 				GameGUI.saveFile(tmpdir + "/" + act, input);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			} catch (IOException e) {e.printStackTrace();	}
 		}
 		String seperator;
 		if (System.getProperty("sun.desktop") != null && System.getProperty("sun.desktop").equals("windows")) seperator = ";";
@@ -161,40 +159,21 @@ public class Client {
 		java.lang.reflect.Field vvv = null;
 		try {
 			vvv = ClassLoader.class.getDeclaredField("sys_paths");
-		} catch (SecurityException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (NoSuchFieldException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		} catch (Exception e1) {e1.printStackTrace();	}
 		vvv.setAccessible(true); 
 		try {
 			vvv.set(null, null);
-		} catch (IllegalArgumentException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IllegalAccessException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		long[] players = startEvent.getPlayerIds();
-		byte[] number = startEvent.getNumbers();
-		m.matchStart(players, number);
-		
+		} catch (Exception e1) {e1.printStackTrace();}		
 		
 		Setting setting = new Setting(new DisplayMode(1024, 600), true, PlayerColors.RED);
 		GameGUI gameGUI = null;
 		try {
 			gameGUI = buildGameGUI(c, m, startEvent.getPlayerIds());
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (Exception e1) {e1.printStackTrace();
 		}
+		
+		clientGUI.setVisible(false); // versteckt die ClientGui
 		new Thread(gameGUI).start();
-//		
-	
 		
 		System.out.println("Das Spiel war erfolgreich! =)");
 //		new Thread(gui).start();
