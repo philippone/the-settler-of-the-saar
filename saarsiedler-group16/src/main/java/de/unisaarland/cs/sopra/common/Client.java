@@ -6,6 +6,7 @@ import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
 import de.unisaarland.cs.sopra.common.controller.Controller;
@@ -119,6 +120,8 @@ public class Client {
 	}
 	
 	public static void initializeMatch() {
+		clientGUI.setVisible(false);
+//		clientGUI.
 		Model m = buildModel();
 		Controller c = buildController(m);
 		AI ai;
@@ -181,7 +184,7 @@ public class Client {
 		m.matchStart(players, number);
 		
 		
-		Setting setting = new Setting(new DisplayMode(1024,580), true, PlayerColors.RED);
+		Setting setting = new Setting(new DisplayMode(1024, 600), true, PlayerColors.RED);
 		GameGUI gameGUI = null;
 		try {
 			gameGUI = buildGameGUI(c, m, startEvent.getPlayerIds());

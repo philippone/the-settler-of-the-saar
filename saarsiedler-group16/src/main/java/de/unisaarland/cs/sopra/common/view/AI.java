@@ -147,6 +147,28 @@ public class AI extends View{
 		s = new DoNothingStrategy();
 		//s= new BuildATownStrategy();
 		//s1 = new BuildACatapultStrategy();
+		
+		/*______________________________________________________
+		s=new DoNothingStrategy();
+		
+		Set<Strategy> strategies=new TreeSet<Strategy>();
+		strategies.add(new BuildVillage());
+		strategies.add(new BuildATownStrategy());
+		strategies.add(new BuildACatapultStrategy());
+		strategies.add(new BuildStreetStrategy());
+		strategies.add(new MoveCatapultStrategy());
+		
+		float bestValue=0;
+		float strategyValue;
+		for (Strategy strat: strategies){
+			strategyValue=strat.evaluate;
+			if (strategyValue>bestValue){
+				bestValue=value;
+				s=strat;
+			}
+		}
+		return s;
+		___________________________________________________________ */
 	}
 	
 	public void executeBestStrategy() {
