@@ -25,8 +25,8 @@ public class BuildVillage implements Strategy {
 		if (mr.affordableSettlements(BuildingType.Village) > 0 && mr.buildableVillageIntersections(mr.getMe()).size() > 0
 				&& mr.buildableVillageIntersections(mr.getMe()).size() < mr.getMaxBuilding(BuildingType.Village)) {
 			Intersection bestIntersection = evaluateIntersection(mr);
-			
 			ca.buildSettlement(bestIntersection, BuildingType.Village);
+			ca.endTurn();
 		} else 
 			 ca.endTurn();
 
