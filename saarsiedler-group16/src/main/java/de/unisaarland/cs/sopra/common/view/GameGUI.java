@@ -223,11 +223,18 @@ public class GameGUI extends View implements Runnable{
 		   GL11.glTranslatef(fx+x, fy+y, 0+z);
 		   fieldTextureMap.get(f.getFieldType()).bind(); 
 		   if (f.hasRobber()) {
+			   if(f.getFieldType().equals(FieldType.DESERT) || f.getFieldType().equals(FieldType.WATER)) {
+				   drawSquareMid(300, 300);
+				   robberTexture.bind();
+				   drawSquareMid(60, 60);
+			   }
+			   else {
 			   drawSquareMid(300, 300);
 			   GL11.glTranslatef(-50, 0, 0);
 			   robberTexture.bind();
 			   drawSquareMid(60, 60);
 			   GL11.glTranslatef(100, 0, 0);
+			   }
 		   }
 		   else {
 			   drawSquareMid(300, 300);
