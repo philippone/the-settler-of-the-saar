@@ -171,8 +171,6 @@ public class ModelWriterTest2 {
 		List<Player> playerList = new LinkedList<Player>();
 		playerList.add(model.getPlayerMap().get(0L));
 		playerList.add(model.getPlayerMap().get(2L));
-		System.out.println("expected playerList: " + playerList);
-		System.out.println("current playerList: " + model.getTableOrder());
 		assertEquals("Tableorder wasn't set correctly", model.getTableOrder(), playerList);
 		Point p1 = new Point(1,1);
 		Point p2 = new Point(2,1);

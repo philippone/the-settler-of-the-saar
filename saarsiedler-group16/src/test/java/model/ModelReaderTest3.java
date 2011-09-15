@@ -35,8 +35,6 @@ public class ModelReaderTest3 {
 			assertEquals(2, model.affordableCatapultBuild());
 			// check whether the players resourcePackage is intact
 			assertEquals(rp1, model.getCurrentPlayer().getResources());
-			int give1 = 51;
-			System.out.println("bla" + give1/2);
 		}
 	}
 

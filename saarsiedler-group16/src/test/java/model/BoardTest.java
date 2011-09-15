@@ -108,7 +108,7 @@ public class BoardTest {
 	@Test
 	public void testGetIntersectionRand(){
 		assertEquals(b.getIntersection(new Location(3, 2, 4)), b.getIntersection(new Location(3, 1, 2)));
-		//assertEquals(new Intersection(new Location(3, 2, 4)), b.getIntersection(new Location(3, 1, 2)));
+		assertEquals(new Intersection(new Location(3, 2, 4)), b.getIntersection(new Location(3, 1, 2)));
 	}
 	
 	@Test
@@ -213,14 +213,8 @@ public class BoardTest {
 		pathSet12.add(b.getPath(new Location(0, 1, 1)));
 		pathSet12.add(b.getPath(new Location(0, 2, 5)));
 		//test if both sets have identical content
-		//System.out.println("path1" + b.getPath(new Location (0, 1, 0)));
-		//System.out.println("path1" + b.getPath(new Location (0, 1, 1)));
-		//
-		System.out.println("bla" + b.getPathsFromIntersection(b.getIntersection(new Location(0, 1, 1))));
 		assertTrue(pathSet11.containsAll(pathSet12));
 		assertTrue(pathSet12.containsAll(pathSet11));
-		System.out.println("bla" + b.getPathsFromIntersection(b.getIntersection(new Location(0, 1, 1))));
-		
 	}
 	
 	@Test
@@ -453,10 +447,6 @@ public class BoardTest {
 		i2.add(b.getIntersection(new Location(1, 2, 2)));
 		i2.add(b.getIntersection(new Location(2, 1, 2)));
 		// test if both sets have identical content
-		System.out.println("path1" + b.getIntersection(new Location (1, 1, 2)));
-		System.out.println("path1" + b.getIntersection(new Location (1, 2, 2)));
-		System.out.println("path1" + b.getIntersection(new Location (2, 1, 2)));
-		System.out.println("interesction" + b.getIntersection(new Location(2,1,1)));
 		assertTrue(i1.containsAll(i2));
 		assertTrue(i2.containsAll(i1));
 

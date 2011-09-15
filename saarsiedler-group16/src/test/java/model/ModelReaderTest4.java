@@ -66,9 +66,7 @@ public class ModelReaderTest4 {
 		//new round -> first player builds
 		model3.newRound(12);
 		//Bauende Towns und Catapulte bauen
-		System.out.println("InterVillage: "+ model3.getIntersection(new Location(0, 0, 1)));
 		model3.buildSettlement(new Location(0,0,1) , BuildingType.Town);
-		System.out.println("InterVillage: "+ model3.getIntersection(new Location(0, 0, 1)));
 		model3.buildSettlement(new Location(1,0,1) , BuildingType.Town);
 		model3.buildCatapult(new Location(0,0,1), true);
 		model3.buildCatapult(new Location(1,0,1), true);
@@ -160,8 +158,7 @@ public class ModelReaderTest4 {
 		canSet.add(model1.getField(new Point(3, 2)));
 
 		Set<Field> expSet = model1.canPlaceRobber();
-		System.out.println(expSet);
-		System.out.println(canSet);
+		
 		assertTrue(canSet.containsAll(expSet));
 		assertTrue(expSet.containsAll(canSet));
 	
@@ -171,8 +168,7 @@ public class ModelReaderTest4 {
 	model1.getField(new Point(2, 1)).setRobber(true);
 	canSet.remove(model1.getField(new Point(2, 1)));
 	Set<Field> expSet1 = model1.canPlaceRobber();
-	System.out.println(expSet1);
-	System.out.println(canSet);
+
 	assertTrue(canSet.containsAll(expSet1));
 	assertTrue(expSet1.containsAll(canSet));
 

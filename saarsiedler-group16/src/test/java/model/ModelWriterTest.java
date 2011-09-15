@@ -462,8 +462,6 @@ public class ModelWriterTest {
 					model.respondTrade(l);
 			}
 		}
-		System.out.println(model.getMe());
-		System.out.println(model.getCurrentPlayer());
 		assertTrue(new ResourcePackage(999, 999, 1001, 1000, 1000).equals(model.getCurrentPlayer().getResources()));
 		//assertEquals("vermute equals von ResourcePAckage ist falsch (Philipp)",new ResourcePackage(3, 4, 0, 2, 1), model.getCurrentPlayer().getResources());
 	}

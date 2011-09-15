@@ -211,7 +211,7 @@ public class ModelTest {
 		long[] reihenfolge = new long[16];
 		while (fieldIterator.hasNext()) {
 			Field f = fieldIterator.next();
-			if (f.getNumber() != 0) {
+			if (f.getNumber() != -1) {
 				reihenfolge[i++] = f.getNumber();
 			}
 		}
