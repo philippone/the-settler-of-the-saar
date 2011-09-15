@@ -3,12 +3,16 @@ package de.unisaarland.cs.sopra.common.controller;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.SynchronousQueue;
 
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.ModelWriter;
 import de.unisaarland.cs.sopra.common.model.Point;
 import de.unisaarland.cs.sopra.common.model.Resource;
+import de.unisaarland.cs.sopra.common.view.Clickable;
 import de.unisaarland.cs.st.saarsiedler.comm.Connection;
 import de.unisaarland.cs.st.saarsiedler.comm.Edge;
 import de.unisaarland.cs.st.saarsiedler.comm.GameEvent;
@@ -21,6 +25,7 @@ public class Controller {
 	private ModelWriter modelWriter;;
 	private Resource r;
 	private boolean endOfGame;
+	private Queue<Clickable> guiEvents;
 
 	/**
 	 * @param connection
@@ -29,6 +34,7 @@ public class Controller {
 	public Controller(Connection connection, ModelWriter modelWriter) {
 		this.connection = connection;
 		this.modelWriter = modelWriter;
+		guiEvents = new LinkedBlockingQueue<Clickable>();
 	}
 
 	/**
@@ -180,8 +186,8 @@ public class Controller {
 	 */
 	public void buildSettlement(Location intersection, BuildingType buildingType)
 			throws IllegalStateException, IllegalArgumentException, IOException {
-		Intersection i = new Intersection(intersection.getY(),
-				intersection.getX(), intersection.getOrientation());
+		Intersection i = new Intersection(intersection.getX(),
+				intersection.getY(), intersection.getOrientation());
 
 		if (buildingType.equals(BuildingType.Village)) {
 			connection.buildSettlement(i, false);
@@ -200,7 +206,7 @@ public class Controller {
 	 */
 	public void buildStreet(Location path) throws IllegalStateException,
 			IllegalArgumentException, IOException {
-		Edge e = new Edge(path.getY(), path.getX(), path.getOrientation());
+		Edge e = new Edge(path.getX(), path.getY(), path.getOrientation());
 		connection.buildRoad(e);
 		modelWriter.buildStreet(path);
 	}
@@ -328,6 +334,10 @@ public class Controller {
 		connection.returnResources(lumber, brick, wool, grain, ore);
 		modelWriter.returnResources(lumber, brick, wool, grain, ore);
 	}
+	
+	public void addGuiEvent(Clickable c) {
+		guiEvents.add(c);
+	}
 
 	/**
 	 * @throws IllegalStateException
@@ -336,6 +346,11 @@ public class Controller {
 	public void mainLoop() throws IllegalStateException, IOException {
 		while(!endOfGame){
 			GameEvent e = connection.getNextEvent(0);
+			
+			for (Clickable click : guiEvents) {
+				click.execute();
+			}
+			
 			System.out.println(e);
 			handleEvent(e);
 		}
