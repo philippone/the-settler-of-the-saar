@@ -161,6 +161,7 @@ public class GUIFrame extends JFrame {
 
 		//======== this ========
 		setVisible(true);
+		setResizable(false);
 		Container contentPane = getContentPane();
 		contentPane.setLayout(null);
 

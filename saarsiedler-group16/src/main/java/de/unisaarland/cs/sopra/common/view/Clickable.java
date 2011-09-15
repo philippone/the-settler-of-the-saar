@@ -4,22 +4,32 @@ import java.util.LinkedList;
 import java.util.List;
 
 public abstract class Clickable {
-	private static List<Clickable> list = new LinkedList<Clickable>();
+	private static List<Clickable> model = new LinkedList<Clickable>();
+	private static List<Clickable> ui = new LinkedList<Clickable>();
 
 	private int x, y, z, width, height;
 	private boolean active;
 	private String name;
 	
-	public static List<Clickable> executeClicks(float xogl, float yogl) {
+	public static List<Clickable> executeModelClicks(float xogl, float yogl) {
 		List<Clickable> liste = new LinkedList<Clickable>();
-		for (Clickable act : list) {
+		for (Clickable act : model) {
 			if (act.checkClick(xogl, yogl))
 				liste.add(act);
 		}
 		return liste;
 	}
 	
-	public Clickable(String name, int x, int y, int z, int width, int height, boolean active) {
+	public static List<Clickable> executeUIClicks(float xogl, float yogl) {
+		List<Clickable> liste = new LinkedList<Clickable>();
+		for (Clickable act : ui) {
+			if (act.checkClick(xogl, yogl))
+				liste.add(act);
+		}
+		return liste;
+	}
+	
+	public Clickable(String name, int x, int y, int z, int width, int height, boolean active, boolean isGUIonly) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -27,7 +37,10 @@ public abstract class Clickable {
 		this.height = height;
 		this.active = active;
 		this.setName(name);
-		list.add(this);
+		if (isGUIonly)
+			ui.add(this);
+		else
+			model.add(this);
 	}
 	
 	public int getX() {
@@ -94,8 +107,12 @@ public abstract class Clickable {
 	public boolean isActive() {
 		return active;
 	}
-	
-	public static List<Clickable> getList() {
-		return list;
+
+	public static List<Clickable> getRenderList() {
+		List<Clickable> tmp = new LinkedList<Clickable>();
+		tmp.addAll(model);
+		tmp.addAll(ui);
+		return tmp;
 	}
+	
 }
