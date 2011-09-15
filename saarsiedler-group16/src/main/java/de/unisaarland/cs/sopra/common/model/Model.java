@@ -1140,7 +1140,9 @@ public class Model implements ModelReader, ModelWriter {
 	public void newRound(int number) {
 		if (number < 2 || number > 12)
 			throw new IllegalArgumentException();
+		
 		else {
+			this.round++;
 			if (number == 7) {
 			for (ModelObserver ob : modelObserver) {
 				ob.eventRobber();
@@ -1167,7 +1169,7 @@ public class Model implements ModelReader, ModelWriter {
 			Collections.reverse(players);
 			reversedPlayersList = false;
 		}
-		this.round++;
+		
 		for (ModelObserver ob : modelObserver) {
 			ob.eventNewRound();
 		}
