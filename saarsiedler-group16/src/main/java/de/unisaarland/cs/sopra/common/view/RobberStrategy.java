@@ -11,7 +11,7 @@ import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 public class RobberStrategy implements Strategy {
 
 	@Override
-	public void execute(ModelReader mr, ControllerAdapter ca) {
+	public void execute(ModelReader mr, ControllerAdapter ca)  throws Exception{
 		ResourcePackage myrp = mr.getMe().getResources().copy();
 		if (myrp.size() > 7){
 			int give = myrp.size()/2;
