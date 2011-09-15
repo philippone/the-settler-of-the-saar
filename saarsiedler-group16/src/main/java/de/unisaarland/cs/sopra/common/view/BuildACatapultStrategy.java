@@ -26,6 +26,18 @@ public class BuildACatapultStrategy implements Strategy {
 		ca.endTurn();
 	}
 	
+	public float evaluate(ModelReader mr, ControllerAdapter ca) throws Exception{
+		Set<Path> paths=mr.buildableCatapultPaths(mr.getCurrentPlayer());
+		if (!(mr.getSettlements(mr.getMe(), BuildingType.Town).size() > 0  
+				&& mr.affordableCatapultBuild()>0
+				&& paths!=null && paths.size()< mr.getCatapults(mr.getMe()).size()
+				&& mr.getCatapults(mr.getMe()).size() < mr.getMaxCatapult())) return -1;
+		// meaning we cannot apply this strategy
+		float value=0;
+		
+		return value;
+	}
+	
 	public Path chooseBestPath(ModelReader mr){
 		Path bestPath=null;
 		Set<Path> paths=mr.buildableCatapultPaths(mr.getCurrentPlayer());
