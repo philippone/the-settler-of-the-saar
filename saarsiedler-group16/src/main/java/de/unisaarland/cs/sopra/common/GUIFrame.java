@@ -120,6 +120,14 @@ public class GUIFrame extends JFrame {
 		menu1 = new JMenu();
 		menuItemSettings = new JMenuItem();
 		exit = new JMenuItem();
+		menuPanel = new JPanel();
+		panel11 = new JPanel();
+		play = new JButton();
+		playAsAI = new JButton();
+		settings_menu = new JButton();
+		exit_menu = new JButton();
+		panel12 = new JPanel();
+		label1 = new JLabel();
 		lobbyPanel = new JPanel();
 		panel8 = new JPanel();
 		scrollPane4 = new JScrollPane();
@@ -131,14 +139,6 @@ public class GUIFrame extends JFrame {
 		settingsPanel = new JPanel();
 		panel10 = new JPanel();
 		back_Settings = new JButton();
-		menuPanel = new JPanel();
-		panel11 = new JPanel();
-		play = new JButton();
-		playAsAI = new JButton();
-		settings_menu = new JButton();
-		exit_menu = new JButton();
-		panel12 = new JPanel();
-		label1 = new JLabel();
 		createPanel = new JPanel();
 		panel13 = new JPanel();
 		label2 = new JLabel();
@@ -183,20 +183,87 @@ public class GUIFrame extends JFrame {
 		}
 		setJMenuBar(menuBar1);
 
-		//======== lobbyPanel ========
+		//======== menuPanel ========
 		{
-			lobbyPanel.setVisible(false);
+			menuPanel.setVisible(false);
 
 			// JFormDesigner evaluation mark
-			lobbyPanel.setBorder(new javax.swing.border.CompoundBorder(
+			menuPanel.setBorder(new javax.swing.border.CompoundBorder(
 				new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 0),
 					"JFormDesigner Evaluation", javax.swing.border.TitledBorder.CENTER,
 					javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Dialog", java.awt.Font.BOLD, 12),
-					java.awt.Color.red), lobbyPanel.getBorder())); lobbyPanel.addPropertyChangeListener(new java.beans.PropertyChangeListener(){public void propertyChange(java.beans.PropertyChangeEvent e){if("border".equals(e.getPropertyName()))throw new RuntimeException();}});
+					java.awt.Color.red), menuPanel.getBorder())); menuPanel.addPropertyChangeListener(new java.beans.PropertyChangeListener(){public void propertyChange(java.beans.PropertyChangeEvent e){if("border".equals(e.getPropertyName()))throw new RuntimeException();}});
 
+			menuPanel.setLayout(new BorderLayout());
+
+			//======== panel11 ========
+			{
+				panel11.setLayout(new GridBagLayout());
+				((GridBagLayout)panel11.getLayout()).columnWidths = new int[] {0, 0, 0, 0};
+				((GridBagLayout)panel11.getLayout()).rowHeights = new int[] {0, 15, 0, 0, 0, 0, 0, 62, 0, 0};
+				((GridBagLayout)panel11.getLayout()).columnWeights = new double[] {0.36, 0.28, 0.36, 1.0E-4};
+				((GridBagLayout)panel11.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+
+				//---- play ----
+				play.setText("Play");
+				panel11.add(play, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- playAsAI ----
+				playAsAI.setText("Play as AI");
+				panel11.add(playAsAI, new GridBagConstraints(1, 4, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- settings_menu ----
+				settings_menu.setText("Settings");
+				panel11.add(settings_menu, new GridBagConstraints(1, 5, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- exit_menu ----
+				exit_menu.setText("Quit Game");
+				panel11.add(exit_menu, new GridBagConstraints(1, 8, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 0, 5), 0, 0));
+			}
+			menuPanel.add(panel11, BorderLayout.CENTER);
+
+			//======== panel12 ========
+			{
+				panel12.setLayout(null);
+
+				//---- label1 ----
+				label1.setIcon(new ImageIcon(getClass().getResource("/Textures/ClientGui/Saarlogo.png")));
+				panel12.add(label1);
+				label1.setBounds(0, 0, 1000, 175);
+
+				{ // compute preferred size
+					Dimension preferredSize = new Dimension();
+					for(int i = 0; i < panel12.getComponentCount(); i++) {
+						Rectangle bounds = panel12.getComponent(i).getBounds();
+						preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
+						preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
+					}
+					Insets insets = panel12.getInsets();
+					preferredSize.width += insets.right;
+					preferredSize.height += insets.bottom;
+					panel12.setMinimumSize(preferredSize);
+					panel12.setPreferredSize(preferredSize);
+				}
+			}
+			menuPanel.add(panel12, BorderLayout.NORTH);
+		}
+		contentPane.add(menuPanel);
+		menuPanel.setBounds(0, 0, menuPanel.getPreferredSize().width, 495);
+
+		//======== lobbyPanel ========
+		{
+			lobbyPanel.setVisible(false);
 			lobbyPanel.setLayout(new GridBagLayout());
 			((GridBagLayout)lobbyPanel.getLayout()).columnWidths = new int[] {999, 0};
-			((GridBagLayout)lobbyPanel.getLayout()).rowHeights = new int[] {461, 91, 0};
+			((GridBagLayout)lobbyPanel.getLayout()).rowHeights = new int[] {348, 91, 0};
 			((GridBagLayout)lobbyPanel.getLayout()).columnWeights = new double[] {0.0, 1.0E-4};
 			((GridBagLayout)lobbyPanel.getLayout()).rowWeights = new double[] {0.0, 0.0, 1.0E-4};
 
@@ -204,7 +271,7 @@ public class GUIFrame extends JFrame {
 			{
 				panel8.setLayout(new GridBagLayout());
 				((GridBagLayout)panel8.getLayout()).columnWidths = new int[] {752, 245, 0};
-				((GridBagLayout)panel8.getLayout()).rowHeights = new int[] {462, 0};
+				((GridBagLayout)panel8.getLayout()).rowHeights = new int[] {414, 0};
 				((GridBagLayout)panel8.getLayout()).columnWeights = new double[] {0.0, 0.0, 1.0E-4};
 				((GridBagLayout)panel8.getLayout()).rowWeights = new double[] {0.0, 1.0E-4};
 
@@ -238,8 +305,8 @@ public class GUIFrame extends JFrame {
 			//======== panel9 ========
 			{
 				panel9.setLayout(new GridBagLayout());
-				((GridBagLayout)panel9.getLayout()).columnWidths = new int[] {0, 5, 75, 5, 0, 5, 75, 5, 0, 5, 75, 5, 195, 5, 75, 5, 101, 5, 75, 5, 0, 0};
-				((GridBagLayout)panel9.getLayout()).rowHeights = new int[] {0, 5, 0, 5, 0, 0};
+				((GridBagLayout)panel9.getLayout()).columnWidths = new int[] {11, 5, 75, 5, 0, 5, 75, 5, 0, 5, 75, 5, 195, 5, 75, 5, 101, 5, 75, 5, 0, 0};
+				((GridBagLayout)panel9.getLayout()).rowHeights = new int[] {21, 5, 0, 5, 22, 0};
 				((GridBagLayout)panel9.getLayout()).columnWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 				((GridBagLayout)panel9.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
@@ -266,22 +333,22 @@ public class GUIFrame extends JFrame {
 				new Insets(0, 0, 0, 0), 0, 0));
 		}
 		contentPane.add(lobbyPanel);
-		lobbyPanel.setBounds(0, 0, 1000, 560);
+		lobbyPanel.setBounds(0, 0, 1005, 470);
 
 		//======== settingsPanel ========
 		{
 			settingsPanel.setVisible(false);
 			settingsPanel.setLayout(new GridBagLayout());
-			((GridBagLayout)settingsPanel.getLayout()).columnWidths = new int[] {0, 0, 0, 0, 0};
-			((GridBagLayout)settingsPanel.getLayout()).rowHeights = new int[] {567, 0};
+			((GridBagLayout)settingsPanel.getLayout()).columnWidths = new int[] {0, 0, 106, 256, 0};
+			((GridBagLayout)settingsPanel.getLayout()).rowHeights = new int[] {492, 0};
 			((GridBagLayout)settingsPanel.getLayout()).columnWeights = new double[] {0.25, 0.5, 0.25, 1.0, 1.0E-4};
 			((GridBagLayout)settingsPanel.getLayout()).rowWeights = new double[] {1.0, 1.0E-4};
 
 			//======== panel10 ========
 			{
 				panel10.setLayout(new GridBagLayout());
-				((GridBagLayout)panel10.getLayout()).columnWidths = new int[] {339, 0, 224, 0};
-				((GridBagLayout)panel10.getLayout()).rowHeights = new int[] {157, 0, 0, 0, 0, 0, 0, 0, 76, 0, 0};
+				((GridBagLayout)panel10.getLayout()).columnWidths = new int[] {354, 109, 250, 0};
+				((GridBagLayout)panel10.getLayout()).rowHeights = new int[] {131, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0};
 				((GridBagLayout)panel10.getLayout()).columnWeights = new double[] {0.36, 0.28, 0.36, 1.0E-4};
 				((GridBagLayout)panel10.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
@@ -296,80 +363,14 @@ public class GUIFrame extends JFrame {
 				new Insets(0, 0, 0, 0), 0, 0));
 		}
 		contentPane.add(settingsPanel);
-		settingsPanel.setBounds(0, 0, 1000, 535);
-
-		//======== menuPanel ========
-		{
-			menuPanel.setLayout(new BorderLayout());
-
-			//======== panel11 ========
-			{
-				panel11.setLayout(new GridBagLayout());
-				((GridBagLayout)panel11.getLayout()).columnWidths = new int[] {0, 0, 0, 0};
-				((GridBagLayout)panel11.getLayout()).rowHeights = new int[] {0, 15, 0, 0, 0, 0, 0, 0, 0, 62, 0, 0};
-				((GridBagLayout)panel11.getLayout()).columnWeights = new double[] {0.36, 0.28, 0.36, 1.0E-4};
-				((GridBagLayout)panel11.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
-
-				//---- play ----
-				play.setText("Play");
-				panel11.add(play, new GridBagConstraints(1, 5, 1, 1, 0.0, 0.0,
-					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-					new Insets(0, 0, 5, 5), 0, 0));
-
-				//---- playAsAI ----
-				playAsAI.setText("Play as AI");
-				panel11.add(playAsAI, new GridBagConstraints(1, 6, 1, 1, 0.0, 0.0,
-					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-					new Insets(0, 0, 5, 5), 0, 0));
-
-				//---- settings_menu ----
-				settings_menu.setText("Settings");
-				panel11.add(settings_menu, new GridBagConstraints(1, 7, 1, 1, 0.0, 0.0,
-					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-					new Insets(0, 0, 5, 5), 0, 0));
-
-				//---- exit_menu ----
-				exit_menu.setText("Quit Game");
-				panel11.add(exit_menu, new GridBagConstraints(1, 10, 1, 1, 0.0, 0.0,
-					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-					new Insets(0, 0, 0, 5), 0, 0));
-			}
-			menuPanel.add(panel11, BorderLayout.CENTER);
-
-			//======== panel12 ========
-			{
-				panel12.setLayout(null);
-
-				//---- label1 ----
-				label1.setIcon(new ImageIcon(getClass().getResource("/Textures/ClientGui/Saarlogo.png")));
-				panel12.add(label1);
-				label1.setBounds(0, 0, 1000, 175);
-
-				{ // compute preferred size
-					Dimension preferredSize = new Dimension();
-					for(int i = 0; i < panel12.getComponentCount(); i++) {
-						Rectangle bounds = panel12.getComponent(i).getBounds();
-						preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
-						preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
-					}
-					Insets insets = panel12.getInsets();
-					preferredSize.width += insets.right;
-					preferredSize.height += insets.bottom;
-					panel12.setMinimumSize(preferredSize);
-					panel12.setPreferredSize(preferredSize);
-				}
-			}
-			menuPanel.add(panel12, BorderLayout.NORTH);
-		}
-		contentPane.add(menuPanel);
-		menuPanel.setBounds(0, 0, 1000, 560);
+		settingsPanel.setBounds(0, 0, 995, 490);
 
 		//======== createPanel ========
 		{
 			createPanel.setVisible(false);
 			createPanel.setLayout(new GridBagLayout());
 			((GridBagLayout)createPanel.getLayout()).columnWidths = new int[] {730, 0, 0};
-			((GridBagLayout)createPanel.getLayout()).rowHeights = new int[] {560, 0};
+			((GridBagLayout)createPanel.getLayout()).rowHeights = new int[] {446, 0};
 			((GridBagLayout)createPanel.getLayout()).columnWeights = new double[] {0.5, 1.0, 1.0E-4};
 			((GridBagLayout)createPanel.getLayout()).rowWeights = new double[] {1.0, 1.0E-4};
 
@@ -377,7 +378,7 @@ public class GUIFrame extends JFrame {
 			{
 				panel13.setLayout(new GridBagLayout());
 				((GridBagLayout)panel13.getLayout()).columnWidths = new int[] {168, 145, 237, 13, 0};
-				((GridBagLayout)panel13.getLayout()).rowHeights = new int[] {175, 0, 0, 0, 32, 0, 97, 0, 23, 0, 0};
+				((GridBagLayout)panel13.getLayout()).rowHeights = new int[] {96, 0, 0, 0, 32, 0, 67, 0, 23, 0, 0};
 				((GridBagLayout)panel13.getLayout()).columnWeights = new double[] {0.0, 0.0, 0.0, 0.36, 1.0E-4};
 				((GridBagLayout)panel13.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
@@ -437,14 +438,13 @@ public class GUIFrame extends JFrame {
 				new Insets(0, 0, 0, 0), 0, 0));
 		}
 		contentPane.add(createPanel);
-		createPanel.setBounds(0, 0, 1000, 560);
+		createPanel.setBounds(0, 0, 1000, 495);
 
 		//======== joinPanel ========
 		{
-			joinPanel.setVisible(false);
 			joinPanel.setLayout(new GridBagLayout());
 			((GridBagLayout)joinPanel.getLayout()).columnWidths = new int[] {999, 0};
-			((GridBagLayout)joinPanel.getLayout()).rowHeights = new int[] {473, 93, 0};
+			((GridBagLayout)joinPanel.getLayout()).rowHeights = new int[] {399, 76, 0};
 			((GridBagLayout)joinPanel.getLayout()).columnWeights = new double[] {0.0, 1.0E-4};
 			((GridBagLayout)joinPanel.getLayout()).rowWeights = new double[] {0.0, 0.0, 1.0E-4};
 
@@ -452,7 +452,7 @@ public class GUIFrame extends JFrame {
 			{
 				panel14.setLayout(new GridBagLayout());
 				((GridBagLayout)panel14.getLayout()).columnWidths = new int[] {752, 245, 0};
-				((GridBagLayout)panel14.getLayout()).rowHeights = new int[] {470, 0};
+				((GridBagLayout)panel14.getLayout()).rowHeights = new int[] {398, 0};
 				((GridBagLayout)panel14.getLayout()).columnWeights = new double[] {0.0, 0.0, 1.0E-4};
 				((GridBagLayout)panel14.getLayout()).rowWeights = new double[] {0.0, 1.0E-4};
 
@@ -486,9 +486,9 @@ public class GUIFrame extends JFrame {
 			//======== panel15 ========
 			{
 				panel15.setLayout(new GridBagLayout());
-				((GridBagLayout)panel15.getLayout()).columnWidths = new int[] {0, 5, 75, 5, 0, 5, 75, 5, 0, 5, 75, 5, 195, 5, 75, 5, 101, 5, 75, 5, 0, 0};
-				((GridBagLayout)panel15.getLayout()).rowHeights = new int[] {0, 5, 0, 5, 0, 0};
-				((GridBagLayout)panel15.getLayout()).columnWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+				((GridBagLayout)panel15.getLayout()).columnWidths = new int[] {15, 5, 75, 5, 33, 5, 75, 5, 0, 0, 5, 75, 5, 195, 5, 75, 5, 101, 5, 75, 5, 0, 0};
+				((GridBagLayout)panel15.getLayout()).rowHeights = new int[] {17, 5, 0, 5, 0, 0};
+				((GridBagLayout)panel15.getLayout()).columnWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 				((GridBagLayout)panel15.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
 				//---- readyToggle ----
@@ -499,7 +499,7 @@ public class GUIFrame extends JFrame {
 
 				//---- back_join ----
 				back_join.setText("back to Lobby");
-				panel15.add(back_join, new GridBagConstraints(10, 2, 1, 1, 0.0, 0.0,
+				panel15.add(back_join, new GridBagConstraints(6, 2, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 0), 0, 0));
 			}
@@ -508,7 +508,7 @@ public class GUIFrame extends JFrame {
 				new Insets(0, 0, 0, 0), 0, 0));
 		}
 		contentPane.add(joinPanel);
-		joinPanel.setBounds(0, 0, 1000, 560);
+		joinPanel.setBounds(0, 0, 995, 490);
 
 		{ // compute preferred size
 			Dimension preferredSize = new Dimension();
@@ -523,7 +523,7 @@ public class GUIFrame extends JFrame {
 			contentPane.setMinimumSize(preferredSize);
 			contentPane.setPreferredSize(preferredSize);
 		}
-		setSize(1020, 595);
+		setSize(1020, 530);
 		setLocationRelativeTo(getOwner());
 		// JFormDesigner - End of component initialization  //GEN-END:initComponents
 	}
@@ -534,6 +534,14 @@ public class GUIFrame extends JFrame {
 	private JMenu menu1;
 	JMenuItem menuItemSettings;
 	JMenuItem exit;
+	public JPanel menuPanel;
+	private JPanel panel11;
+	public JButton play;
+	public JButton playAsAI;
+	public JButton settings_menu;
+	public JButton exit_menu;
+	private JPanel panel12;
+	private JLabel label1;
 	public JPanel lobbyPanel;
 	private JPanel panel8;
 	private JScrollPane scrollPane4;
@@ -545,14 +553,6 @@ public class GUIFrame extends JFrame {
 	public JPanel settingsPanel;
 	private JPanel panel10;
 	public JButton back_Settings;
-	public JPanel menuPanel;
-	private JPanel panel11;
-	public JButton play;
-	public JButton playAsAI;
-	public JButton settings_menu;
-	public JButton exit_menu;
-	private JPanel panel12;
-	private JLabel label1;
 	public JPanel createPanel;
 	private JPanel panel13;
 	private JLabel label2;
