@@ -72,7 +72,7 @@ public class AI extends View{
 		try {
 			Connection c = Connection.establish("sopra.cs.uni-saarland.de", true);
 			WorldRepresentation wr = WorldRepresentation.getDefault();
-			MatchInformation mi = c.newMatch("K(a)I!", 1, wr, false);
+			MatchInformation mi = c.newMatch("K(a)I!", 2, wr, false);
 			Model m = new Model(wr, mi, c.getClientId());
 			System.out.printf("MatchID: %s", mi.getId());
 			Controller cont = new Controller(c, m);
