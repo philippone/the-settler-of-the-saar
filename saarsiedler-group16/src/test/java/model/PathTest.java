@@ -10,6 +10,7 @@ import java.util.Random;
 
 import org.junit.Test;
 
+import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.HarborType;
 import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.Model;
@@ -44,26 +45,13 @@ public class PathTest {
 	//Testet init phase //TODO: teste normale runde
 	@Test
 	public void testStreet() throws IOException {
-		Random r = new Random();
-		int x=r.nextInt(10);
-		int y=r.nextInt(10);
-		int o=r.nextInt(5);
-		l=new Location(x,y,o);
 		pl=new Player();
-		p=new Path(l);
-		assertFalse(p.hasStreet());
-		p.createStreet(pl);
-		assertTrue(p.hasStreet());
-		assertEquals(pl,p.getStreetOwner());
-		
-		
-		
+
 		Model model = TestUtil.getStandardModel1();
 		
 		
-		(model.getPath(new Location(1,1,2))).createStreet(pl);
-		
 		// on the middle of the sea
+		model.buildSettlement(new Location(0,0,2),BuildingType.Village);
 		try {
 			model.buildStreet(new Location(0,0,1));
 			fail("No Street on Water");
@@ -72,6 +60,7 @@ public class PathTest {
 		}
 		
 		// on the border beetween water and land
+		model.buildSettlement(new Location(0,1,2),BuildingType.Village);
 		try {
 			model.buildStreet(new Location(0,1,2));
 			//Expect this
@@ -80,10 +69,12 @@ public class PathTest {
 		}
 		
 		// on the middle of the land
+		model.buildSettlement(new Location(1,1,2),BuildingType.Village);
 		try {
 			model.buildStreet(new Location(1,1,1));
 			//Expect this
 		} catch (Exception e) {
+			e.printStackTrace();
 			fail("Street can be build here");
 		}
 		

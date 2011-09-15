@@ -520,7 +520,7 @@ public class Model implements ModelReader, ModelWriter {
 		Set<Path> res = new HashSet<Path>();
 		
 		if(getRound()==0){
-			for(Path noStreet :getPathsFromIntersection(initLastVillageIntersection)){
+			for(Path noStreet : getPathsFromIntersection(initLastVillageIntersection)){
 				if(!noStreet.hasStreet())
 					for (Field f : board.getFieldsFromPath(noStreet)){
 						if (f.getFieldType() != FieldType.WATER) res.add(noStreet);
@@ -1141,14 +1141,18 @@ public class Model implements ModelReader, ModelWriter {
 		if (number < 2 || number > 12)
 			throw new IllegalArgumentException();
 		
-		else {
-			this.round++;
-			if (number == 7) {
+		if (round == 0 && reversedPlayersList) {
+			Collections.reverse(players);
+			reversedPlayersList = false;
+		}
+		this.round++;
+
+		if (number == 7) {
 			for (ModelObserver ob : modelObserver) {
 				ob.eventRobber();
 			}
 		}
-		
+		else {
 			for (Iterator<Field> itFields = getFieldIterator(); itFields
 					.hasNext();) {
 				Field field = itFields.next();
@@ -1160,16 +1164,10 @@ public class Model implements ModelReader, ModelWriter {
 					}
 				}
 			}
-			for (ModelObserver ob : modelObserver) {
-				ob.updateResources();
-			}
 		}
-
-		if (round == 0 && reversedPlayersList) {
-			Collections.reverse(players);
-			reversedPlayersList = false;
+		for (ModelObserver ob : modelObserver) {
+			ob.updateResources();
 		}
-		
 		for (ModelObserver ob : modelObserver) {
 			ob.eventNewRound();
 		}
@@ -1343,6 +1341,10 @@ public class Model implements ModelReader, ModelWriter {
 						"Path ist nur von Wasser umgeben!");
 		}
 		getPath(destination).createStreet(getCurrentPlayer());
+		for (ModelObserver ob : modelObserver) {
+			ob.updateResources();
+			ob.updatePath(dest);
+		}
 		if (round == 0) {
 			if (initPlayer == players.size() - 1) {
 				initPlayer = -1;
@@ -1365,10 +1367,6 @@ public class Model implements ModelReader, ModelWriter {
 					reversedPlayersList = false;
 				}
 			}
-		}
-		for (ModelObserver ob : modelObserver) {
-			ob.updateResources();
-			ob.updatePath(dest);
 		}
 	}
 
