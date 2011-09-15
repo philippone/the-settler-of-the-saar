@@ -14,9 +14,9 @@ public class AttackSettlementStrategy implements Strategy {
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
 		// TODO Auto-generated method stub
-		if (!(mr.getCatapults(mr.getMe()).size()>0
-				|| (mr.attackableSettlements(mr.getMe(), BuildingType.Town).size()>0)
-				|| (mr.attackableSettlements(mr.getMe(), BuildingType.Village).size()>0))){
+		if ((mr.getCatapults(mr.getMe()).size()>0
+				&& (mr.attackableSettlements(mr.getMe(), BuildingType.Town).size()>0)
+				&& (mr.attackableSettlements(mr.getMe(), BuildingType.Village).size()>0))){
 			Intersection target=chooseTarget(mr);
 			ca.attackSettlement(sourcePath, target);
 		}	
@@ -50,8 +50,8 @@ public class AttackSettlementStrategy implements Strategy {
 	public float evaluate(ModelReader mr, ControllerAdapter ca) throws Exception {
 		// TODO Auto-generated method stub
 		if (!(mr.getCatapults(mr.getMe()).size()>0
-				|| (mr.attackableSettlements(mr.getMe(), BuildingType.Town).size()>0)
-				|| (mr.attackableSettlements(mr.getMe(), BuildingType.Village).size()>0))) return -1;
+				&& (mr.attackableSettlements(mr.getMe(), BuildingType.Town).size()>0)
+				&& (mr.attackableSettlements(mr.getMe(), BuildingType.Village).size()>0))) return -1;
 		float value=0;
 		value=evaluateIntersection(mr,chooseTarget(mr));
 		return value;
