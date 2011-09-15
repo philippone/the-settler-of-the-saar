@@ -120,7 +120,7 @@ public class AI extends View{
 	
 	public AI(ModelReader modelReader, ControllerAdapter controllerAdapter){
 		super(modelReader, controllerAdapter);
-		evaluateBestStrategy();
+		s=new DoNothingStrategy();
 		modelReader.addModelObserver(this);
 	}
 	
@@ -152,6 +152,28 @@ public class AI extends View{
 		s = new DoNothingStrategy();
 		//s= new BuildATownStrategy();
 		//s1 = new BuildACatapultStrategy();
+		
+		/*______________________________________________________
+		
+		Set<Strategy> strategies=new TreeSet<Strategy>();
+		strategies.add(new DoNothingStrategy());
+		strategies.add(new BuildVillage());
+		strategies.add(new BuildATownStrategy());
+		strategies.add(new BuildACatapultStrategy());
+		strategies.add(new BuildStreetStrategy());
+		strategies.add(new MoveCatapultStrategy());
+		
+		float bestValue=0;
+		float strategyValue;
+		for (Strategy strat: strategies){
+			strategyValue=strat.evaluate(modelReader, controllerAdapter);
+			if (strategyValue>bestValue){
+				bestValue=value;
+				s=strat;
+			}
+		}
+		return s;
+		___________________________________________________________ */
 	}
 	
 	public void executeBestStrategy() {
@@ -162,6 +184,22 @@ public class AI extends View{
 		//s1.execute(modelReader, controllerAdapter);
 		}
 	catch (Exception e){ e.printStackTrace(); }
+		
+		
+		/*_______________________________________________________________
+		evaluateBestStrategy();
+		while (!s.instanceOf(DoNothingStrategy)){
+			try{
+				s.execute(modelReader, controllerAdapter);
+			}
+			catch (Exception e){ e.printStackTrace(); }
+			evaluateBestStrategy();
+		} 
+		ca.endTurn();
+		// WARNING: Exceptions + remove endTurn() in strategies 
+		__________________________________________________________________*/
+		
+		
 	}
 	@Override
 	public void updatePath(Path path) {

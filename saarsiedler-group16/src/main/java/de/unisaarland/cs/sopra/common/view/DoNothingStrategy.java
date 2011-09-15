@@ -18,5 +18,9 @@ public class DoNothingStrategy implements Strategy {
 			e.printStackTrace();
 		}
 	}
+	
+	public float evaluate(ModelReader mr, ControllerAdapter ca) {
+		return 0;
+	}
 
 }

@@ -161,6 +161,7 @@ public class GUIFrame extends JFrame {
 
 		//======== this ========
 		setVisible(true);
+		setResizable(false);
 		Container contentPane = getContentPane();
 		contentPane.setLayout(null);
 
@@ -185,7 +186,6 @@ public class GUIFrame extends JFrame {
 
 		//======== menuPanel ========
 		{
-			menuPanel.setVisible(false);
 
 			// JFormDesigner evaluation mark
 			menuPanel.setBorder(new javax.swing.border.CompoundBorder(
@@ -200,31 +200,31 @@ public class GUIFrame extends JFrame {
 			{
 				panel11.setLayout(new GridBagLayout());
 				((GridBagLayout)panel11.getLayout()).columnWidths = new int[] {0, 0, 0, 0};
-				((GridBagLayout)panel11.getLayout()).rowHeights = new int[] {0, 15, 0, 0, 0, 0, 0, 62, 0, 0};
+				((GridBagLayout)panel11.getLayout()).rowHeights = new int[] {0, 0, 0, 0, 0, 30, 0, 0};
 				((GridBagLayout)panel11.getLayout()).columnWeights = new double[] {0.36, 0.28, 0.36, 1.0E-4};
-				((GridBagLayout)panel11.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+				((GridBagLayout)panel11.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
 				//---- play ----
 				play.setText("Play");
-				panel11.add(play, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0,
+				panel11.add(play, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- playAsAI ----
 				playAsAI.setText("Play as AI");
-				panel11.add(playAsAI, new GridBagConstraints(1, 4, 1, 1, 0.0, 0.0,
+				panel11.add(playAsAI, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- settings_menu ----
 				settings_menu.setText("Settings");
-				panel11.add(settings_menu, new GridBagConstraints(1, 5, 1, 1, 0.0, 0.0,
+				panel11.add(settings_menu, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- exit_menu ----
 				exit_menu.setText("Quit Game");
-				panel11.add(exit_menu, new GridBagConstraints(1, 8, 1, 1, 0.0, 0.0,
+				panel11.add(exit_menu, new GridBagConstraints(1, 6, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 5), 0, 0));
 			}
@@ -256,14 +256,14 @@ public class GUIFrame extends JFrame {
 			menuPanel.add(panel12, BorderLayout.NORTH);
 		}
 		contentPane.add(menuPanel);
-		menuPanel.setBounds(0, 0, menuPanel.getPreferredSize().width, 495);
+		menuPanel.setBounds(0, 0, menuPanel.getPreferredSize().width, 445);
 
 		//======== lobbyPanel ========
 		{
 			lobbyPanel.setVisible(false);
 			lobbyPanel.setLayout(new GridBagLayout());
 			((GridBagLayout)lobbyPanel.getLayout()).columnWidths = new int[] {999, 0};
-			((GridBagLayout)lobbyPanel.getLayout()).rowHeights = new int[] {348, 91, 0};
+			((GridBagLayout)lobbyPanel.getLayout()).rowHeights = new int[] {338, 80, 0};
 			((GridBagLayout)lobbyPanel.getLayout()).columnWeights = new double[] {0.0, 1.0E-4};
 			((GridBagLayout)lobbyPanel.getLayout()).rowWeights = new double[] {0.0, 0.0, 1.0E-4};
 
@@ -271,7 +271,7 @@ public class GUIFrame extends JFrame {
 			{
 				panel8.setLayout(new GridBagLayout());
 				((GridBagLayout)panel8.getLayout()).columnWidths = new int[] {752, 245, 0};
-				((GridBagLayout)panel8.getLayout()).rowHeights = new int[] {414, 0};
+				((GridBagLayout)panel8.getLayout()).rowHeights = new int[] {339, 0};
 				((GridBagLayout)panel8.getLayout()).columnWeights = new double[] {0.0, 0.0, 1.0E-4};
 				((GridBagLayout)panel8.getLayout()).rowWeights = new double[] {0.0, 1.0E-4};
 
@@ -306,7 +306,7 @@ public class GUIFrame extends JFrame {
 			{
 				panel9.setLayout(new GridBagLayout());
 				((GridBagLayout)panel9.getLayout()).columnWidths = new int[] {11, 5, 75, 5, 0, 5, 75, 5, 0, 5, 75, 5, 195, 5, 75, 5, 101, 5, 75, 5, 0, 0};
-				((GridBagLayout)panel9.getLayout()).rowHeights = new int[] {21, 5, 0, 5, 22, 0};
+				((GridBagLayout)panel9.getLayout()).rowHeights = new int[] {14, 5, 0, 5, 22, 0};
 				((GridBagLayout)panel9.getLayout()).columnWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 				((GridBagLayout)panel9.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
@@ -333,7 +333,7 @@ public class GUIFrame extends JFrame {
 				new Insets(0, 0, 0, 0), 0, 0));
 		}
 		contentPane.add(lobbyPanel);
-		lobbyPanel.setBounds(0, 0, 1005, 470);
+		lobbyPanel.setBounds(5, 0, 1000, 425);
 
 		//======== settingsPanel ========
 		{
@@ -348,7 +348,7 @@ public class GUIFrame extends JFrame {
 			{
 				panel10.setLayout(new GridBagLayout());
 				((GridBagLayout)panel10.getLayout()).columnWidths = new int[] {354, 109, 250, 0};
-				((GridBagLayout)panel10.getLayout()).rowHeights = new int[] {131, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0};
+				((GridBagLayout)panel10.getLayout()).rowHeights = new int[] {65, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0};
 				((GridBagLayout)panel10.getLayout()).columnWeights = new double[] {0.36, 0.28, 0.36, 1.0E-4};
 				((GridBagLayout)panel10.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
@@ -363,14 +363,14 @@ public class GUIFrame extends JFrame {
 				new Insets(0, 0, 0, 0), 0, 0));
 		}
 		contentPane.add(settingsPanel);
-		settingsPanel.setBounds(0, 0, 995, 490);
+		settingsPanel.setBounds(0, 0, 995, 400);
 
 		//======== createPanel ========
 		{
 			createPanel.setVisible(false);
 			createPanel.setLayout(new GridBagLayout());
 			((GridBagLayout)createPanel.getLayout()).columnWidths = new int[] {730, 0, 0};
-			((GridBagLayout)createPanel.getLayout()).rowHeights = new int[] {446, 0};
+			((GridBagLayout)createPanel.getLayout()).rowHeights = new int[] {420, 0};
 			((GridBagLayout)createPanel.getLayout()).columnWeights = new double[] {0.5, 1.0, 1.0E-4};
 			((GridBagLayout)createPanel.getLayout()).rowWeights = new double[] {1.0, 1.0E-4};
 
@@ -378,7 +378,7 @@ public class GUIFrame extends JFrame {
 			{
 				panel13.setLayout(new GridBagLayout());
 				((GridBagLayout)panel13.getLayout()).columnWidths = new int[] {168, 145, 237, 13, 0};
-				((GridBagLayout)panel13.getLayout()).rowHeights = new int[] {96, 0, 0, 0, 32, 0, 67, 0, 23, 0, 0};
+				((GridBagLayout)panel13.getLayout()).rowHeights = new int[] {68, 0, 0, 0, 32, 0, 67, 0, 23, 0, 0};
 				((GridBagLayout)panel13.getLayout()).columnWeights = new double[] {0.0, 0.0, 0.0, 0.36, 1.0E-4};
 				((GridBagLayout)panel13.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
@@ -438,13 +438,14 @@ public class GUIFrame extends JFrame {
 				new Insets(0, 0, 0, 0), 0, 0));
 		}
 		contentPane.add(createPanel);
-		createPanel.setBounds(0, 0, 1000, 495);
+		createPanel.setBounds(0, 0, 995, 425);
 
 		//======== joinPanel ========
 		{
+			joinPanel.setVisible(false);
 			joinPanel.setLayout(new GridBagLayout());
 			((GridBagLayout)joinPanel.getLayout()).columnWidths = new int[] {999, 0};
-			((GridBagLayout)joinPanel.getLayout()).rowHeights = new int[] {399, 76, 0};
+			((GridBagLayout)joinPanel.getLayout()).rowHeights = new int[] {337, 76, 0};
 			((GridBagLayout)joinPanel.getLayout()).columnWeights = new double[] {0.0, 1.0E-4};
 			((GridBagLayout)joinPanel.getLayout()).rowWeights = new double[] {0.0, 0.0, 1.0E-4};
 
@@ -452,7 +453,7 @@ public class GUIFrame extends JFrame {
 			{
 				panel14.setLayout(new GridBagLayout());
 				((GridBagLayout)panel14.getLayout()).columnWidths = new int[] {752, 245, 0};
-				((GridBagLayout)panel14.getLayout()).rowHeights = new int[] {398, 0};
+				((GridBagLayout)panel14.getLayout()).rowHeights = new int[] {330, 0};
 				((GridBagLayout)panel14.getLayout()).columnWeights = new double[] {0.0, 0.0, 1.0E-4};
 				((GridBagLayout)panel14.getLayout()).rowWeights = new double[] {0.0, 1.0E-4};
 
@@ -508,7 +509,7 @@ public class GUIFrame extends JFrame {
 				new Insets(0, 0, 0, 0), 0, 0));
 		}
 		contentPane.add(joinPanel);
-		joinPanel.setBounds(0, 0, 995, 490);
+		joinPanel.setBounds(0, 0, 995, 415);
 
 		{ // compute preferred size
 			Dimension preferredSize = new Dimension();
@@ -523,7 +524,7 @@ public class GUIFrame extends JFrame {
 			contentPane.setMinimumSize(preferredSize);
 			contentPane.setPreferredSize(preferredSize);
 		}
-		setSize(1020, 530);
+		setSize(1020, 475);
 		setLocationRelativeTo(getOwner());
 		// JFormDesigner - End of component initialization  //GEN-END:initComponents
 	}

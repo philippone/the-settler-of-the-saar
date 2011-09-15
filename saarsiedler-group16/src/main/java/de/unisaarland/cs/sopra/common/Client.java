@@ -3,20 +3,20 @@ package de.unisaarland.cs.sopra.common;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.lwjgl.opengl.Display;
+import javax.swing.table.DefaultTableModel;
+
 import org.lwjgl.opengl.DisplayMode;
 
 import de.unisaarland.cs.sopra.common.controller.Controller;
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.Model;
-import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.ModelWriter;
 import de.unisaarland.cs.sopra.common.view.AI;
 import de.unisaarland.cs.sopra.common.view.GameGUI;
-import de.unisaarland.cs.sopra.common.view.View;
 import de.unisaarland.cs.st.saarsiedler.comm.*;
 import de.unisaarland.cs.st.saarsiedler.comm.GameEvent.EventType;
 import de.unisaarland.cs.st.saarsiedler.comm.GameEvent.MatchStart;
@@ -83,12 +83,12 @@ public class Client {
 	}
 	
 	public Connection getConnection(){
-		return this.connection;
+		return connection;
 	}
 	
 	public static void changeName(String name){
 		try {
-			Client.connection.changeName(name);} catch (Exception e) {e.printStackTrace();	}
+			connection.changeName(name);} catch (Exception e) {e.printStackTrace();	}
 	}
 
 	public static Model buildModel() {
@@ -120,8 +120,8 @@ public class Client {
 	}
 	
 	public static void initializeMatch() {
-//		clientGUI.setVisible(false);
-		clientGUI.setEnabled(false);
+		clientGUI.setVisible(false);
+//		clientGUI.
 		Model m = buildModel();
 		Controller c = buildController(m);
 		AI ai;
@@ -184,7 +184,7 @@ public class Client {
 		m.matchStart(players, number);
 		
 		
-		Setting setting = new Setting(Display.getDesktopDisplayMode(), true, PlayerColors.RED);
+		Setting setting = new Setting(new DisplayMode(1024, 600), true, PlayerColors.RED);
 		GameGUI gameGUI = null;
 		try {
 			gameGUI = buildGameGUI(c, m, startEvent.getPlayerIds());
@@ -206,4 +206,52 @@ public class Client {
 		
 	}
 	
+	public static  void setUpListUpdater(){
+		try {
+			Client.connection.registerMatchListUpdater(new GameListUpdater());	}catch(IOException e){throw new IllegalStateException("iwas mit Matchlistupdater faul!!!");}
+	
+	}
+	
+	
+	public static void refreshGameList(){
+		List<MatchInformation> matchList=null;
+		try {
+			matchList =Client.connection.listMatches();		} catch (IOException e1) {	e1.printStackTrace();		}
+			
+			clientGUI.gameTable.setModel(new DefaultTableModel(
+					parseMatchList(matchList),
+					new String[] {"MatchID", "Name", "Players", "WorldID", "Already started"	}));
+	}
+	
+	public static void refreshPlayerList(){
+		long[] players;
+		boolean[]readyPlayers;
+		if(Client.matchInfo==null) throw new IllegalStateException("Tries to setUp PlayersList, but actual machtlist is null");
+		
+		players = Client.matchInfo.getCurrentPlayers();
+		readyPlayers = Client.matchInfo.getReadyPlayers();
+		Object[][] table = new Object[players.length][2];
+		for (int i = 0; i < table.length; i++) {
+			try {
+				table[i][0]= Client.connection.getPlayerInfo(players[i]).getName();} catch (IOException e) {e.printStackTrace();
+			}
+			table[i][1]= readyPlayers[i];
+		}												
+		clientGUI.playerTable.setModel(new DefaultTableModel( table ,new String[] {"Players", "ready-Status"	}));
+	}
+	
+	private static Object[][] parseMatchList(List<MatchInformation> matchList1){
+		if (matchList1 == null)	throw new IllegalArgumentException("matchList is null");
+		Object[][] ret = new Object[matchList1.size()][5];
+		int i =0;
+		for (MatchInformation m : matchList1) {
+			ret[i][0]=m.getId();
+			ret[i][1]=m.getTitle();
+			ret[i][2]=m.getCurrentPlayers().length+"/"+m.getNumPlayers();
+			ret[i][3]=m.getWorldId();
+			ret[i][4]=m.isStarted();
+			i++;
+		}
+		return ret;
+	}
 }
