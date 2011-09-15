@@ -21,13 +21,13 @@ public class InitializeStrategy implements Strategy {
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
 		if (mr.getMe() == mr.getCurrentPlayer()){
 		Set<Intersection> intersections =mr.buildableVillageIntersections(mr.getMe());
-		/*	Intersection i = intersections.iterator().next();
+			Intersection i = intersections.iterator().next();
 			ca.buildSettlement(i, BuildingType.Village);
 			Set<Path> paths = mr.buildableStreetPaths(mr.getMe());
 			Path p = paths.iterator().next();
-			ca.buildStreet(p);*/
-	
-		
+			ca.buildStreet(p);
+		}
+		/*
 		Intersection bestIntersection=null;
 		float bestValue=0;
 		float value;
@@ -47,6 +47,7 @@ public class InitializeStrategy implements Strategy {
 		ca.buildStreet(path);
 		
 		}
+	*/
 	}
 	
 	private float evaluateIntersection(ModelReader mr,Intersection i){

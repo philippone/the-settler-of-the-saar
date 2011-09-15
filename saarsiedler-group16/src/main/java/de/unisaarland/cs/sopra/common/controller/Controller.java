@@ -186,8 +186,8 @@ public class Controller {
 	 */
 	public void buildSettlement(Location intersection, BuildingType buildingType)
 			throws IllegalStateException, IllegalArgumentException, IOException {
-		Intersection i = new Intersection(intersection.getX(),
-				intersection.getY(), intersection.getOrientation());
+		Intersection i = new Intersection(intersection.getY(),
+				intersection.getX(), intersection.getOrientation());
 
 		if (buildingType.equals(BuildingType.Village)) {
 			connection.buildSettlement(i, false);
@@ -206,7 +206,7 @@ public class Controller {
 	 */
 	public void buildStreet(Location path) throws IllegalStateException,
 			IllegalArgumentException, IOException {
-		Edge e = new Edge(path.getX(), path.getY(), path.getOrientation());
+		Edge e = new Edge(path.getY(), path.getX(), path.getOrientation());
 		connection.buildRoad(e);
 		modelWriter.buildStreet(path);
 	}
