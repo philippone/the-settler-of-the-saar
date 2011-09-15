@@ -74,15 +74,15 @@ public class AI extends View{
 			WorldRepresentation wr = WorldRepresentation.getDefault();
 
 			//---------Create Code-----------
-			//MatchInformation mi = c.newMatch("K(a)I!", 2, wr, false);
+			MatchInformation mi = c.newMatch("K(a)I!", 1, wr, false);
 			//-------------------------------
-			
+			/*
 			// --------Join Code---------
 			long matchId = 2670 ;
 			c.joinMatch(matchId, false);
 			MatchInformation mi = c.getMatchInfo(matchId);
 			//---------------------------
-			 
+			 */
 
 			//MatchInformation mi = c.newMatch("K(a)I!", 1, wr, false);
 			Model m = new Model(wr, mi, c.getClientId());
@@ -90,7 +90,7 @@ public class AI extends View{
 			Controller cont = new Controller(c, m);
 			ControllerAdapter contAdap = new ControllerAdapter(cont, m);
 			AI ai = new AI(m, contAdap);
-			//Thread.sleep(15000);
+			Thread.sleep(15000);
 			c.changeReadyStatus(true);
 			GameEvent ge = c.getNextEvent(0);
 			if (ge.getType() != EventType.MATCH_START)

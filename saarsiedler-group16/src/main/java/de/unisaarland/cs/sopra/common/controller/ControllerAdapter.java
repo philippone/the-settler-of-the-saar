@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import de.unisaarland.cs.sopra.common.model.*;
+import de.unisaarland.cs.sopra.common.view.Clickable;
 
 public class ControllerAdapter {
 
@@ -195,6 +196,10 @@ public class ControllerAdapter {
 
 	public void setEndOfGame(boolean b) {
 		controller.setEndOfGame(b);
+	}
+	
+	public void addGuiEvent(Clickable c) {
+		controller.addGuiEvent(c);
 	}
 	
 }
