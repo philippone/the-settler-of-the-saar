@@ -21,11 +21,8 @@ public class GUIFrame extends JFrame {
 	public long focusedWordID;
 	
 	
-	public GUIFrame(Client client) {
-		actLis = new ButtonListener(this, client);
-		this.setLocation(150, 30);
-//		this.setPreferredSize(new Dimension(900,600));
-//		this.pack();
+	public GUIFrame() {
+		actLis = new ButtonListener(this);
 		this.setResizable(true);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -62,7 +59,7 @@ public class GUIFrame extends JFrame {
 		gameTable.addFocusListener(new FocusListener() {
 			@Override
 			public void focusLost(FocusEvent e) {
-				Client.matchInfo = null;
+				//TODO evtl noch was zu tun
 			}
 			
 			@Override
