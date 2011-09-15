@@ -8,6 +8,7 @@ import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.FieldType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
+import de.unisaarland.cs.sopra.common.model.Resource;
 
 public class BuildVillage implements Strategy {
 	private float bestValue = 0;
@@ -16,13 +17,15 @@ public class BuildVillage implements Strategy {
 	private float fieldNumberValue = (float)(0.0);
 	private float fieldTypeValue = (float)(0.0);
 	private float HarborValue = (float)(0.0);
+	
 	Strategy s;
 
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
 		if (mr.affordableSettlements(BuildingType.Village) > 0 && mr.buildableVillageIntersections(mr.getMe()).size() > 0
-				&& mr.buildableVillageIntersections(mr.getMe()).size() <= mr.getMaxBuilding(BuildingType.Village)) {
+				&& mr.buildableVillageIntersections(mr.getMe()).size() < mr.getMaxBuilding(BuildingType.Village)) {
 			Intersection bestIntersection = evaluateIntersection(mr);
+			
 			ca.buildSettlement(bestIntersection, BuildingType.Village);
 		} else 
 			 ca.endTurn();
@@ -34,7 +37,7 @@ public class BuildVillage implements Strategy {
 	}
 	
 	private float evaluateIntersectionValue(ModelReader mr, Intersection i) {
-			Set<Field> neighborFields = mr.getFieldsFromIntersection(i);
+			Set<Field> neighborFields = mr.getFieldsFromIntersection(i); 
 			int n;	
 			FieldType type;
 			for(Field field : neighborFields){
@@ -52,6 +55,7 @@ public class BuildVillage implements Strategy {
 				else if (n==6 || n==8) 
 					fieldNumberValue= (float) (fieldNumberValue + 0.140);
 				type=field.getFieldType();
+				
 				if (type==FieldType.FOREST || type==FieldType.HILLS || type==FieldType.PASTURE || type==FieldType.FIELDS || type==FieldType.MOUNTAINS) fieldTypeValue =(float)(fieldTypeValue+0.10);
 
 			intersectionValue=fieldTypeValue+fieldNumberValue;
@@ -73,5 +77,5 @@ public class BuildVillage implements Strategy {
 		return bestIntersection;
 	}
 	
-	
+
 }
