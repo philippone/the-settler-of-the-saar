@@ -25,6 +25,16 @@ Strategy s;
 			 ca.endTurn();
 	}	
 	
+	public float evaluate(ModelReader mr, ControllerAdapter ca) throws Exception{
+		if (!(mr.affordableSettlements(BuildingType.Town)>0 
+				&& mr.buildableTownIntersections(mr.getMe()).size() > 0
+				&& mr.buildableTownIntersections(mr.getMe()).size() < mr.getMaxBuilding(BuildingType.Town) 
+				&& mr.getSettlements(mr.getMe(),BuildingType.Town).size()<mr.getMaxBuilding(BuildingType.Town))) return -1;
+		float value=0;
+		
+		return value;
+	}
+	
 	private Intersection chooseBestIntersection(ModelReader mr){
 		Intersection bestIntersection=null;
 		Set<Intersection> intersections=mr.buildableTownIntersections(mr.getCurrentPlayer());

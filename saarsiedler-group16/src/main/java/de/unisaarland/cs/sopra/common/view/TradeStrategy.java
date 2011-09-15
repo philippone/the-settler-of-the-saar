@@ -17,10 +17,7 @@ public class TradeStrategy implements Strategy {
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} 
 	}
 	public int evaluate(){
 		// TODO implement this method

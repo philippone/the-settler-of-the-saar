@@ -74,13 +74,19 @@ public class AI extends View{
 			WorldRepresentation wr = WorldRepresentation.getDefault();
 
 			//---------Create Code-----------
-			//MatchInformation mi = c.newMatch("K(a)I!", 1, wr, false);
+			//MatchInformation mi = c.newMatch("K(a)I!", 2, wr, false);
 			//-------------------------------
 			
 			// --------Join Code---------
-			long matchId = 3146 ;
+
+			long matchId =  ;
 			c.joinMatch(matchId, false);
 			MatchInformation mi = c.getMatchInfo(matchId);
+
+			//long matchId = 2734 ;
+			//c.joinMatch(matchId, false);
+			//MatchInformation mi = c.getMatchInfo(matchId);
+
 			//---------------------------
 			 
 
@@ -120,7 +126,7 @@ public class AI extends View{
 	
 	public AI(ModelReader modelReader, ControllerAdapter controllerAdapter){
 		super(modelReader, controllerAdapter);
-		evaluateBestStrategy();
+		s=new DoNothingStrategy();
 		modelReader.addModelObserver(this);
 	}
 	
@@ -133,6 +139,11 @@ public class AI extends View{
 		//if (strategyValue>1 && strategyValue<2) s=new BuildVillage();
 		//if (strategyValue>1 && strategyValue<2) s=new BuildVillage();
 
+		//float strategyValue=(float) Math.random()*4;
+		//if (strategyValue<1) s=new BuildStreetStrategy();
+		//if (strategyValue>1 && strategyValue<2) s=new BuildVillage();
+		//if (strategyValue>2 && strategyValue<3) s=new BuildATownStrategy();
+		//if (strategyValue>3) s=new BuildACatapultStrategy();
 //		float strategyValue = (float) Math.random() * 4;
 //		if (strategyValue < 1)
 //			s = new BuildStreetStrategy();
@@ -149,9 +160,9 @@ public class AI extends View{
 		//s1 = new BuildACatapultStrategy();
 		
 		/*______________________________________________________
-		s=new DoNothingStrategy();
 		
 		Set<Strategy> strategies=new TreeSet<Strategy>();
+		strategies.add(new DoNothingStrategy());
 		strategies.add(new BuildVillage());
 		strategies.add(new BuildATownStrategy());
 		strategies.add(new BuildACatapultStrategy());
@@ -161,7 +172,7 @@ public class AI extends View{
 		float bestValue=0;
 		float strategyValue;
 		for (Strategy strat: strategies){
-			strategyValue=strat.evaluate;
+			strategyValue=strat.evaluate(modelReader, controllerAdapter);
 			if (strategyValue>bestValue){
 				bestValue=value;
 				s=strat;
@@ -179,6 +190,22 @@ public class AI extends View{
 		//s1.execute(modelReader, controllerAdapter);
 		}
 	catch (Exception e){ e.printStackTrace(); }
+		
+		
+		/*_______________________________________________________________
+		evaluateBestStrategy();
+		while (!s.instanceOf(DoNothingStrategy)){
+			try{
+				s.execute(modelReader, controllerAdapter);
+			}
+			catch (Exception e){ e.printStackTrace(); }
+			evaluateBestStrategy();
+		} 
+		ca.endTurn();
+		// WARNING: Exceptions + remove endTurn() in strategies 
+		__________________________________________________________________*/
+		
+		
 	}
 	@Override
 	public void updatePath(Path path) {

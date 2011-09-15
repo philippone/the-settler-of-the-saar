@@ -29,9 +29,14 @@ public class BuildVillage implements Strategy {
 			 ca.endTurn();
 
 	}
-	public int evaluate(){
-		// TODO implement this method
-		return 0;
+	public float evaluate(ModelReader mr, ControllerAdapter ca) throws Exception {
+		if (!(mr.affordableSettlements(BuildingType.Village) > 0
+				&& mr.buildableVillageIntersections(mr.getMe()).size() > 0
+				&& mr.buildableVillageIntersections(mr.getMe()).size() <= mr.getMaxBuilding(BuildingType.Village)
+				&& mr.getSettlements(mr.getMe(), BuildingType.Village).size() < mr.getMaxBuilding(BuildingType.Village))) return -1;
+		float value=0;	
+		
+		return value;
 	}
 	
 	private float evaluateIntersectionValue(ModelReader mr, Intersection i) {

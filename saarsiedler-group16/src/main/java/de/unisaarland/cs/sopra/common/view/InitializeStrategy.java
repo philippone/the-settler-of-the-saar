@@ -45,8 +45,13 @@ public class InitializeStrategy implements Strategy {
 		
 		Path path = neighbourPaths.iterator().next();	
 		ca.buildStreet(path);
+
 		}
-	}
+
+		
+		}
+
+	
 	
 	private float evaluateIntersection(ModelReader mr,Intersection i){
 		float intersectionValue=0;
