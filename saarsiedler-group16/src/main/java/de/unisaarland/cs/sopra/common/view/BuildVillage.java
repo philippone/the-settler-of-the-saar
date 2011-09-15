@@ -35,7 +35,7 @@ public class BuildVillage implements Strategy {
 				&& mr.buildableVillageIntersections(mr.getMe()).size() <= mr.getMaxBuilding(BuildingType.Village)
 				&& mr.getSettlements(mr.getMe(), BuildingType.Village).size() < mr.getMaxBuilding(BuildingType.Village))) return -1;
 		float value=0;	
-		
+		value=evaluateIntersectionValue(mr,evaluateIntersection(mr));
 		return value;
 	}
 	
