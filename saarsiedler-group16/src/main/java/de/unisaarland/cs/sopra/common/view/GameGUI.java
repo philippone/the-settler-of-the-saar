@@ -461,9 +461,10 @@ public class GameGUI extends View implements Runnable{
 		   uiFont.drawString(396, 162, ""+modelReader.getResources().getResource(Resource.WOOL), Color.black);
 		   uiFont.drawString(396, 207, ""+modelReader.getResources().getResource(Resource.GRAIN), Color.black);
 		   uiFont.drawString(396, 252, ""+modelReader.getResources().getResource(Resource.ORE), Color.black);
-		   uiFont.drawString(10, 178, ""+ village + "/" + modelReader.getMaxBuilding(BuildingType.Village), Color.black);
-		   uiFont.drawString(10, 209, ""+ town + "/" + modelReader.getMaxBuilding(BuildingType.Town), Color.black);
-		   uiFont.drawString(10, 240, ""+ catapult + "/" + modelReader.getMaxVictoryPoints(), Color.black);
+		   uiFont.drawString(100, 178, ""+ village + "/" + modelReader.getMaxBuilding(BuildingType.Village), Color.black);
+		   uiFont.drawString(100, 209, ""+ town + "/" + modelReader.getMaxBuilding(BuildingType.Town), Color.black);
+		   uiFont.drawString(100, 240, ""+ catapult + "/" + modelReader.getMaxVictoryPoints(), Color.black);
+		   uiFont.drawString(10, 50, "Round "+modelReader.getRound(), Color.black);
 	}
 
 	public void drawTradeMenu() {
@@ -662,7 +663,11 @@ public class GameGUI extends View implements Runnable{
 			new Clickable("EndTurn", xOffsetUI+930, yOffsetUI+22, zOffsetUI+2, 185, 77, true) {
 				@Override
 				public void execute() {
-					minX = 1337;
+					try {
+						controllerAdapter.endTurn();
+					} catch(Exception e) {
+						e.setStackTrace(null);
+					}
 				}
 			};
 			
@@ -766,7 +771,9 @@ public class GameGUI extends View implements Runnable{
 		int my = Mouse.getY();
 		
 		if (Mouse.isButtonDown(0)) {
-			Clickable.executeClicks(mx*screenToOpenGLX, (windowHeight-my)*screenToOpenGLY+380);
+			for (Clickable c : Clickable.executeClicks(mx*screenToOpenGLX, (windowHeight-my)*screenToOpenGLY+380)) {
+				controllerAdapter.addGuiEvent(c);
+			}
 		}
 		
 		if (Mouse.isInsideWindow()) {
