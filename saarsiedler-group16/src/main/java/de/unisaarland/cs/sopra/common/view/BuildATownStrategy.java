@@ -16,7 +16,7 @@ Strategy s;
 		// TODO Auto-generated method stub
 		
 		if (mr.affordableSettlements(BuildingType.Town)>0 && mr.buildableTownIntersections(mr.getMe()).size() > 0
-				&& mr.buildableTownIntersections(mr.getMe()).size() < mr.getMaxBuilding(BuildingType.Town) && mr.getSettlements(mr.getMe(),BuildingType.Town).size()<=mr.getMaxBuilding(BuildingType.Village))
+				&& mr.buildableTownIntersections(mr.getMe()).size() < mr.getMaxBuilding(BuildingType.Town) && mr.getSettlements(mr.getMe(),BuildingType.Town).size()<mr.getMaxBuilding(BuildingType.Town))
 		{
 			Intersection bestIntersection=chooseBestIntersection(mr);
 			ca.buildSettlement(bestIntersection, BuildingType.Town);
