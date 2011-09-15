@@ -43,7 +43,7 @@ public class AttackSettlementStrategy implements Strategy {
 	
 	private float evaluateIntersection(ModelReader mr, Intersection i){
 		if (i.hasOwner() && i.getOwner()!=mr.getMe() && i.getBuildingType()==BuildingType.Town) return 1;
-		if (i.hasOwner() && i.getOwner()!=mr.getMe() && i.getBuildingType()==BuildingType.Village) return (float) 0.5;
+		if (i.hasOwner() && i.getOwner()!=mr.getMe() && i.getBuildingType()==BuildingType.Village) return (float) 0.8;
 		return 0;
 	}
 	
@@ -53,7 +53,7 @@ public class AttackSettlementStrategy implements Strategy {
 				|| (mr.attackableSettlements(mr.getMe(), BuildingType.Town).size()>0)
 				|| (mr.attackableSettlements(mr.getMe(), BuildingType.Village).size()>0))) return -1;
 		float value=0;
-		
+		value=evaluateIntersection(mr,chooseTarget(mr));
 		return value;
 	}
 
