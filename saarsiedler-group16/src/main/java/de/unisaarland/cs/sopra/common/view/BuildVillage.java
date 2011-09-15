@@ -34,6 +34,9 @@ public class BuildVillage implements Strategy {
 	}
 	
 	private float evaluateIntersectionValue(ModelReader mr, Intersection i) {
+			float intersectionValue=0;
+			float fieldNumberValue=0;
+			float fieldTypeValue=0;
 			Set<Field> neighborFields = mr.getFieldsFromIntersection(i);
 			int n;	
 			FieldType type;
@@ -54,7 +57,7 @@ public class BuildVillage implements Strategy {
 				type=field.getFieldType();
 				if (type==FieldType.FOREST || type==FieldType.HILLS || type==FieldType.PASTURE || type==FieldType.FIELDS || type==FieldType.MOUNTAINS) fieldTypeValue =(float)(fieldTypeValue+0.10);
 
-			intersectionValue=fieldTypeValue+fieldNumberValue;
+			intersectionValue=intersectionValue+fieldTypeValue+fieldNumberValue;
 		}
 		return intersectionValue;
 	}
