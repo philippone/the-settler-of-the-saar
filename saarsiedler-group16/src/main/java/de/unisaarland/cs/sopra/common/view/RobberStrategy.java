@@ -21,7 +21,6 @@ public class RobberStrategy implements Strategy {
 				// find the resource that you have most
 				for (Resource r : Resource.values())
 					max = myrp.getResource(r)>myrp.getResource(max)?r:max;
-				myrp.modifyResource(max, -1);
 				tmp.modifyResource(max, 1);
 				give--;
 			}

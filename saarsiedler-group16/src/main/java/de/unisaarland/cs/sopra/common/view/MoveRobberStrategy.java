@@ -24,7 +24,6 @@ public class MoveRobberStrategy implements Strategy{
 				// find the resource that you have most
 				for (Resource r : Resource.values())
 					max = myrp.getResource(r)>myrp.getResource(max)?r:max;
-				myrp.modifyResource(max, -1);
 				tmp.modifyResource(max, 1);
 				give--;
 			}
@@ -43,14 +42,14 @@ public class MoveRobberStrategy implements Strategy{
 			
 
 		}
-		// TODO Auto-generated method stub
+		if (mr.getMe() == mr.getCurrentPlayer()){
 		Player player=mr.getCurrentPlayer();
 		Field sourceField =chooseBestSource(player, mr);
 		Field destinationField=chooseBestDestination(player, mr);
 		
 		ca.moveRobber(sourceField, destinationField,chooseVictim(player, destinationField, mr));
+		}
 	}
-	
 	private Field chooseBestDestination(Player player, ModelReader mr){
 		Set<Field> fields=mr.canPlaceRobber();
 		Field destinationField = null;
