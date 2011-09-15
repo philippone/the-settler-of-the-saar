@@ -21,12 +21,13 @@ public class InitializeStrategy implements Strategy {
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
 		if (mr.getMe() == mr.getCurrentPlayer()){
 		Set<Intersection> intersections =mr.buildableVillageIntersections(mr.getMe());
+		/*
 			Intersection i = intersections.iterator().next();
 			ca.buildSettlement(i, BuildingType.Village);
 			Set<Path> paths = mr.buildableStreetPaths(mr.getMe());
 			Path p = paths.iterator().next();
 			ca.buildStreet(p);
-		/*
+		*/
 	
 		
 		Intersection bestIntersection=null;
@@ -46,7 +47,6 @@ public class InitializeStrategy implements Strategy {
 		
 		Path path = neighbourPaths.iterator().next();	
 		ca.buildStreet(path);
-		 */
 		}
 		
 		}
@@ -72,31 +72,31 @@ public class InitializeStrategy implements Strategy {
 				if (playersResources.contains(Resource.LUMBER))	{
 					resourceValue = (float) (resourceValue + 0.145);
 				} 
-				resourceValue = (float) (resourceValue + 0.29);
+				resourceValue = (float) (resourceValue + 0.39);
 			}
 			else 			if (type==FieldType.HILLS){
 				if (playersResources.contains(Resource.BRICK))	{
 					resourceValue = (float) (resourceValue + 0.145);
 				} 
-				resourceValue = (float) (resourceValue + 0.29);
+				resourceValue = (float) (resourceValue + 0.39);
 			}
 			else 			if (type==FieldType.MOUNTAINS){
 				if (playersResources.contains(Resource.ORE))	{
 					resourceValue = (float) (resourceValue + 0.145);
 				} 
-				resourceValue = (float) (resourceValue + 0.29);
+				resourceValue = (float) (resourceValue + 0.23);
 			}
 			else 			if (type==FieldType.PASTURE){
 				if (playersResources.contains(Resource.WOOL))	{
 					resourceValue = (float) (resourceValue + 0.145);
 				} 
-				resourceValue = (float) (resourceValue + 0.29);
+				resourceValue = (float) (resourceValue + 0.23);
 			} 
 			else 			if (type==FieldType.FIELDS){
 				if (playersResources.contains(Resource.GRAIN))	{
 					resourceValue = (float) (resourceValue + 0.145);
 				} 
-				resourceValue = (float) (resourceValue + 0.29);
+				resourceValue = (float) (resourceValue + 0.23);
 			}
 			
 		}

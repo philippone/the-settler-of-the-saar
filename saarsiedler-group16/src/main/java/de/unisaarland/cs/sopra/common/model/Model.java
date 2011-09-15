@@ -1150,9 +1150,7 @@ public class Model implements ModelReader, ModelWriter {
 			for (Iterator<Field> itFields = getFieldIterator(); itFields
 					.hasNext();) {
 				Field field = itFields.next();
-				if (field.getNumber() == number) { // nur zur Optimierung,
-													// streng genommen nicht
-													// noetig
+				if (field.getNumber() == number) {
 					for (Intersection inter : getIntersectionsFromField(field)) {
 						if (inter.hasOwner()) {
 							inter.generateGain(field.getResource(number));
@@ -1164,8 +1162,6 @@ public class Model implements ModelReader, ModelWriter {
 				ob.updateResources();
 			}
 		}
-		if (round == 0 && reversedPlayersList)
-			Collections.reverse(players);
 		this.round++;
 		for (ModelObserver ob : modelObserver) {
 			ob.eventNewRound();
