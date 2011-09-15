@@ -7,17 +7,19 @@ import de.unisaarland.cs.sopra.common.model.Catapult;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 
 public class MoveCatapultStrategy implements Strategy {
  Path sourcePath;
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
-		
+		if (!(mr.getMe().getResources().copy().add(new ResourcePackage(0,0,0,-1,0))).hasNegativeResources()){
 		Path destinationPath = evaluateStreet(mr);
 		ca.moveCatapult(sourcePath, destinationPath);
-	}
-	
+		ca.endTurn();
+	} ca.endTurn();
+}
 	public float evaluateStreetValue(ModelReader mr, Path p) {
 		if (p.hasCatapult() && p.getCatapultOwner() != mr.getMe()) {
 			return 1;

@@ -78,10 +78,10 @@ public class Controller {
 				Location locati = new Location(in.getRow(), in.getCol(), in.getDirection());
 				boolean isUpgradeToTown = ((GameEvent.BuiltSettlement)gameEvent).isUpgradeToTown();
 				if (isUpgradeToTown){
-					modelWriter.buildSettlement(locati, BuildingType.Village);
+					modelWriter.buildSettlement(locati, BuildingType.Town);
 				} 
 				else {
-					modelWriter.buildSettlement(locati, BuildingType.Town);
+					modelWriter.buildSettlement(locati, BuildingType.Village);
 				}
 				break;
 			case MOVED_CATAPULT:

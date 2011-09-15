@@ -1141,18 +1141,17 @@ public class Model implements ModelReader, ModelWriter {
 	public void newRound(int number) {
 		if (number < 2 || number > 12)
 			throw new IllegalArgumentException();
-
-		if (number == 7) {
+		else {
+			if (number == 7) {
 			for (ModelObserver ob : modelObserver) {
 				ob.eventRobber();
 			}
-		} else {
+		}
+		
 			for (Iterator<Field> itFields = getFieldIterator(); itFields
 					.hasNext();) {
 				Field field = itFields.next();
-				if (field.getNumber() == number) { // nur zur Optimierung,
-													// streng genommen nicht
-													// noetig
+				if (field.getNumber() == number) {
 					for (Intersection inter : getIntersectionsFromField(field)) {
 						if (inter.hasOwner()) {
 							inter.generateGain(field.getResource(number));
@@ -1164,6 +1163,7 @@ public class Model implements ModelReader, ModelWriter {
 				ob.updateResources();
 			}
 		}
+
 		if (round == 0 && reversedPlayersList) {
 			Collections.reverse(players);
 			reversedPlayersList = false;
@@ -1365,6 +1365,7 @@ public class Model implements ModelReader, ModelWriter {
 				}
 				if (reversedPlayersList){
 					java.util.Collections.reverse(players);
+					reversedPlayersList = false;
 				}
 			}
 		}

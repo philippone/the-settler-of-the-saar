@@ -74,10 +74,19 @@ public class AI extends View{
 			WorldRepresentation wr = WorldRepresentation.getDefault();
 
 			//---------Create Code-----------
-			MatchInformation mi = c.newMatch("K(a)I!", 2, wr, false);
+			//MatchInformation mi = c.newMatch("K(a)I!", 2, wr, false);
 			//-------------------------------
 			
+
+			// --------Join Code---------
+
+			long matchId = 4151;
+			c.joinMatch(matchId, false);
+			MatchInformation mi = c.getMatchInfo(matchId);
+
+
 			// --------Join Code--------
+
 			//long matchId = 2734 ;
 			//c.joinMatch(matchId, false);
 			//MatchInformation mi = c.getMatchInfo(matchId);
@@ -127,13 +136,11 @@ public class AI extends View{
 	
 	public void evaluateBestStrategy(){
 
-		//float strategyValue=(float) Math.random()*3;
-		//if (strategyValue<1) s=new BuildStreetStrategy();
-		//if (strategyValue>2) s=new BuildATownStrategy();
-		//if (strategyValue==2) s=new BuildACatapultStrategy();
-		//if (strategyValue>1 && strategyValue<2) s=new BuildVillage();
-		//if (strategyValue>1 && strategyValue<2) s=new BuildVillage();
-
+		float strategyValue=(float) Math.random()*3;
+		if (strategyValue<1) s=new BuildStreetStrategy();
+		if (strategyValue>2) s=new BuildATownStrategy();
+		if (strategyValue==2) s=new BuildACatapultStrategy();
+		if (strategyValue>1 && strategyValue<2) s=new BuildVillage();
 		//float strategyValue=(float) Math.random()*4;
 		//if (strategyValue<1) s=new BuildStreetStrategy();
 		//if (strategyValue>1 && strategyValue<2) s=new BuildVillage();
@@ -150,7 +157,6 @@ public class AI extends View{
 //			s = new BuildACatapultStrategy();
 
 		//s = new BuildStreetStrategy();
-		s = new DoNothingStrategy();
 		//s= new BuildATownStrategy();
 		//s1 = new BuildACatapultStrategy();
 		
@@ -180,7 +186,7 @@ public class AI extends View{
 	
 	public void executeBestStrategy() {
 		try{
-			Thread.sleep(3000);
+			Thread.sleep(5000);
 
 		s.execute(modelReader, controllerAdapter);
 		//s1.execute(modelReader, controllerAdapter);
@@ -249,7 +255,7 @@ public class AI extends View{
 	@Override
 	// a seven was diced
 	public void eventRobber() {
-		s = new RobberStrategy();
+		s = new MoveRobberStrategy();
 		executeBestStrategy();
 	}
 
@@ -261,11 +267,8 @@ public class AI extends View{
 
 	@Override
 	public void eventNewRound() {
-		// TODO Auto-generated method stub
-		if (modelReader.getMe() == modelReader.getCurrentPlayer()) {
 			evaluateBestStrategy();
 			executeBestStrategy();
-		}
 	}
 
 	@Override
@@ -278,7 +281,6 @@ public class AI extends View{
 	public void initTurn() { 
 		s = new InitializeStrategy();
 		executeBestStrategy();
-		
 	}
 	
 }
