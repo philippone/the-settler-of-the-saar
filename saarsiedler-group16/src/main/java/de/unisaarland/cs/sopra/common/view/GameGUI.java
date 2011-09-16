@@ -453,8 +453,14 @@ public class GameGUI extends View implements Runnable{
 	}
 	
 	private void renderUI(Clickable click) {
-		renderUI(click.getName(),click.getX(),click.getY(),click.getZ(),click.getWidth(),click.getHeight());
-		//TODO render grey for inactive clickables
+		if (!click.isActive()) {
+			GL11.glColor4f(0.5f, 0.5f, 0.5f, 0.5f);
+			renderUI(click.getName(),click.getX(),click.getY(),click.getZ(),click.getWidth(),click.getHeight());
+			GL11.glColor4f(1, 1, 1, 1);
+		}
+		else {
+			renderUI(click.getName(),click.getX(),click.getY(),click.getZ(),click.getWidth(),click.getHeight());
+		}
 	}
 	
 	private void render() {
@@ -733,7 +739,7 @@ public class GameGUI extends View implements Runnable{
 				}
 			};
 			
-			Clickable buildStreet = new Clickable("BuildStreet", xOffsetUI+450, yOffsetUI+110, 2, 185, 77, true, true, true) {
+			Clickable buildStreet = new Clickable("BuildStreet", xOffsetUI+450, yOffsetUI+110, 2, 185, 77, false, true, true) {
 				@Override
 				public void execute() {
 					selectionLocation = Model.getLocationListPath(modelReader.buildableStreetPaths(modelReader.getMe()));
