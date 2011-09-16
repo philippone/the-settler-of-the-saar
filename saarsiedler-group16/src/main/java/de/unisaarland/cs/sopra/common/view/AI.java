@@ -74,15 +74,15 @@ public class AI extends View{
 			WorldRepresentation wr = WorldRepresentation.getDefault();
 
 			//---------Create Code-----------
-			MatchInformation mi = c.newMatch("K(a)I!", 2, wr, false);
+			//MatchInformation mi = c.newMatch("K(a)I!", 2, wr, false);
 			//-------------------------------
 			
 
 			// --------Join Code---------
 
-//			long matchId = 4262;
-//			c.joinMatch(matchId, false);
-//			MatchInformation mi = c.getMatchInfo(matchId);
+		long matchId = 169;
+		c.joinMatch(matchId, false);
+	MatchInformation mi = c.getMatchInfo(matchId);
 
 
 			// --------Join Code--------
@@ -269,8 +269,10 @@ public class AI extends View{
 
 	@Override
 	public void eventNewRound() {
+		if (modelReader.getMe() == modelReader.getCurrentPlayer()){
 			evaluateBestStrategy();
 			executeBestStrategy();
+		}
 	}
 
 	@Override
