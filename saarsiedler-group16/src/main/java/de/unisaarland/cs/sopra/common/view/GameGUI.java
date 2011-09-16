@@ -11,6 +11,7 @@ import static de.unisaarland.cs.sopra.common.PlayerColors.WHITE;
 import static de.unisaarland.cs.sopra.common.PlayerColors.YELLOW;
 
 import java.awt.Font;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -21,6 +22,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -759,7 +761,7 @@ public class GameGUI extends View implements Runnable{
         
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
-		GLU.gluPerspective(+45.0f, aspectRatio, 0.1f, 5000.0f); //-5000.f ist die maximale z tiefe
+		GLU.gluPerspective(+45.0f, aspectRatio, 0.1f, z+2500); //-5000.f ist die maximale z tiefe
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		
         Keyboard.enableRepeatEvents(true);
@@ -878,9 +880,24 @@ public class GameGUI extends View implements Runnable{
 				"liblwjgl64.so", "libopenal.so", "libopenal64.so",
 				"lwjgl.dll", "lwjgl64.dll", "openal.dylib", "OpenAL32.dll", "OpenAL64.dll" };
 		String tmpdir = System.getProperty("java.io.tmpdir");
-		for (String act : list) {
-			InputStream input = ClassLoader.getSystemClassLoader().getResourceAsStream("native/" + act);
-			saveFile(tmpdir + "/" + act, input);
+		
+		boolean everythingIsBad = true;
+		while (everythingIsBad) {
+			everythingIsBad = false;
+			for (String act : list) {
+				InputStream input = ClassLoader.getSystemClassLoader().getResourceAsStream("native/" + act);
+				Random r = new Random();
+	
+				try {
+					saveFile(tmpdir + "/" + act, input);
+				} catch (IOException e) {
+					//e.printStackTrace();
+					tmpdir = System.getProperty("java.io.tmpdir") + r.nextInt();
+					new File(tmpdir).mkdirs();
+					everythingIsBad = true;
+					break;
+				}
+			}
 		}
 		String seperator;
 		if (System.getProperty("sun.desktop") != null && System.getProperty("sun.desktop").equals("windows")) seperator = ";";
@@ -979,7 +996,7 @@ public class GameGUI extends View implements Runnable{
 	}
 	
 	public static void saveFile(String filename, InputStream inputStr) throws IOException {
-		   FileOutputStream fos = new FileOutputStream(filename);
+		FileOutputStream fos = new FileOutputStream(filename);
 		   int len = -1;
 		   byte[] buffer = new byte[4096];
 		   while ((len = inputStr.read(buffer)) != -1) {
@@ -995,46 +1012,39 @@ public class GameGUI extends View implements Runnable{
 
 		
 	/*
-	 	String[] list = new String[] {
+		String[] list = new String[] {
 				"jinput-dx8_64.dll", "jinput-dx8.dll", "jinput-raw_64.dll",
 				"jinput-raw.dll", "libjinput-linux.so", "libjinput-linux64.so",
 				"libjinput-osx.jnilib", "liblwjgl.jnilib", "liblwjgl.so",
 				"liblwjgl64.so", "libopenal.so", "libopenal64.so",
 				"lwjgl.dll", "lwjgl64.dll", "openal.dylib", "OpenAL32.dll", "OpenAL64.dll" };
 		String tmpdir = System.getProperty("java.io.tmpdir");
-		for (String act : list) {
-			InputStream input = ClassLoader.getSystemClassLoader().getResourceAsStream("native/" + act);
-			try {
-				GameGUI.saveFile(tmpdir + "/" + act, input);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		
+		boolean everythingIsBad = true;
+		while (everythingIsBad) {
+			everythingIsBad = false;
+			for (String act : list) {
+				InputStream input = ClassLoader.getSystemClassLoader().getResourceAsStream("native/" + act);
+				Random r = new Random();
+	
+				try {
+					saveFile(tmpdir + "/" + act, input);
+				} catch (IOException e) {
+					//e.printStackTrace();
+					tmpdir = System.getProperty("java.io.tmpdir") + r.nextInt();
+					new File(tmpdir).mkdirs();
+					everythingIsBad = true;
+					break;
+				}
 			}
 		}
 		String seperator;
 		if (System.getProperty("sun.desktop") != null && System.getProperty("sun.desktop").equals("windows")) seperator = ";";
 		else seperator = ":";
 		System.setProperty("java.library.path", System.getProperty("java.library.path") + seperator + tmpdir);
-		java.lang.reflect.Field vvv = null;
-		try {
-			vvv = ClassLoader.class.getDeclaredField("sys_paths");
-		} catch (SecurityException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (NoSuchFieldException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		java.lang.reflect.Field vvv = ClassLoader.class.getDeclaredField("sys_paths");
 		vvv.setAccessible(true); 
-		try {
-			vvv.set(null, null);
-		} catch (IllegalArgumentException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IllegalAccessException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		vvv.set(null, null);
 		
 		Setting setting = new Setting(new DisplayMode(1024,580), true, PlayerColors.RED);
 		GameGUI gameGUI = null;

@@ -1,5 +1,6 @@
 package de.unisaarland.cs.sopra.common;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.UnknownHostException;
@@ -7,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.swing.table.DefaultTableModel;
 
@@ -39,6 +41,7 @@ public class Client {
 		setting = new Setting(new DisplayMode(1024, 600), true, PlayerColors.RED);
 	}
 	private static void initOpenGL(){
+		
 		String[] list = new String[] {
 				"jinput-dx8_64.dll", "jinput-dx8.dll", "jinput-raw_64.dll",
 				"jinput-raw.dll", "libjinput-linux.so", "libjinput-linux64.so",
@@ -46,11 +49,23 @@ public class Client {
 				"liblwjgl64.so", "libopenal.so", "libopenal64.so",
 				"lwjgl.dll", "lwjgl64.dll", "openal.dylib", "OpenAL32.dll", "OpenAL64.dll" };
 		String tmpdir = System.getProperty("java.io.tmpdir");
-		for (String act : list) {
-			InputStream input = ClassLoader.getSystemClassLoader().getResourceAsStream("native/" + act);
-			try {
-				GameGUI.saveFile(tmpdir + "/" + act, input);
-			} catch (IOException e) {e.printStackTrace();	}
+		
+		boolean everythingIsBad = true;
+		while (everythingIsBad) {
+			everythingIsBad = false;
+			for (String act : list) {
+				InputStream input = ClassLoader.getSystemClassLoader().getResourceAsStream("native/" + act);
+				Random r = new Random();
+	
+				try {
+					GameGUI.saveFile(tmpdir + "/" + act, input);
+				} catch (IOException e) {
+					tmpdir = System.getProperty("java.io.tmpdir") + r.nextInt();
+					new File(tmpdir).mkdirs();
+					everythingIsBad = true;
+					break;
+				}
+			}
 		}
 		String seperator;
 		if (System.getProperty("sun.desktop") != null && System.getProperty("sun.desktop").equals("windows")) seperator = ";";
@@ -59,11 +74,11 @@ public class Client {
 		java.lang.reflect.Field vvv = null;
 		try {
 			vvv = ClassLoader.class.getDeclaredField("sys_paths");
-		} catch (Exception e1) {e1.printStackTrace();	}
+		} catch (Exception e) { e.printStackTrace(); }
 		vvv.setAccessible(true); 
 		try {
 			vvv.set(null, null);
-		} catch (Exception e1) {e1.printStackTrace();}		
+		} catch (Exception e) { e.printStackTrace(); }
 	}
 	
 	public static void joinMatch(boolean asObserver) {

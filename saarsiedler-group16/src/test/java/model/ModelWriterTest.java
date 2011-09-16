@@ -400,7 +400,7 @@ public class ModelWriterTest {
 	// Tests wheter you have enough resoruces to build a street.
 	public void buildStreet_resourcesTest(){
 		initialize();
-		model.getCurrentPlayer().modifyResources(new ResourcePackage(-1000,-1000,-1000,-1000,-1000));
+		model.getCurrentPlayer().modifyResources(new ResourcePackage(-1001,-1000,-1000,-1000,-1000));
 		assertEquals(new ResourcePackage(0, 0, 0, 0, 0), model.getCurrentPlayer().getResources());
 		assertEquals(model.getCurrentPlayer(), model.getMe());
 		try {
@@ -462,7 +462,7 @@ public class ModelWriterTest {
 					model.respondTrade(l);
 			}
 		}
-		assertTrue(new ResourcePackage(999, 999, 1001, 1000, 1000).equals(model.getCurrentPlayer().getResources()));
+		assertTrue(new ResourcePackage(1000, 999, 1001, 1000, 1000).equals(model.getCurrentPlayer().getResources()));
 		//assertEquals("vermute equals von ResourcePAckage ist falsch (Philipp)",new ResourcePackage(3, 4, 0, 2, 1), model.getCurrentPlayer().getResources());
 	}
 	
