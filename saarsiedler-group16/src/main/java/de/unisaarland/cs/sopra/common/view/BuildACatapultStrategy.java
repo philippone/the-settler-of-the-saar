@@ -32,10 +32,8 @@ public class BuildACatapultStrategy implements Strategy {
 				&& mr.affordableCatapultBuild()>0
 				&& paths!=null && paths.size()< mr.getCatapults(mr.getMe()).size()
 				&& mr.getCatapults(mr.getMe()).size() < mr.getMaxCatapult())) return -1;
-		// meaning we cannot apply this strategy
-		float value=0;
-		value=evaluatePath(mr,chooseBestPath(mr));
-		return value;
+		// TODO: check the trade
+		return 1;
 	}
 	
 	public Path chooseBestPath(ModelReader mr){

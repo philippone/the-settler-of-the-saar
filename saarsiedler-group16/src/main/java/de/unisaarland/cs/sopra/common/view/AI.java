@@ -2,6 +2,7 @@ package de.unisaarland.cs.sopra.common.view;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import org.lwjgl.opengl.DisplayMode;
 
@@ -78,8 +79,8 @@ public class AI extends View{
 // -------------------------------	
 
 // --------Join Code---------
-//		long matchId = 235;
-//		c.joinMatch(matchId, false);
+//		long matchId = 6534;
+//	c.joinMatch(matchId, false);
 //		MatchInformation mi = c.getMatchInfo(matchId);
 // --------------------------
 			 
@@ -149,10 +150,10 @@ public class AI extends View{
 		//s= new BuildATownStrategy();
 		//s1 = new BuildACatapultStrategy();
 		
-		/*______________________________________________________
+		/*______________________________________________________________
 		s=new DoNothingStrategy();
 		
-		Set<Strategy> strategies=new TreeSet<Strategy>();
+		ArrayList<Strategy> strategies=new ArrayList<Strategy>();
 		strategies.add(new BuildVillage());
 		strategies.add(new BuildATownStrategy());
 		strategies.add(new BuildACatapultStrategy());
@@ -161,20 +162,26 @@ public class AI extends View{
 		strategies.add(new AttackSettlementStrategy());
 		
 		float bestValue=0;
-		float strategyValue;
+		float strategyValue=0;
 		for (Strategy strat: strategies){
-			strategyValue=strat.evaluate(modelReader, controllerAdapter);
+			try {
+				strategyValue=strat.evaluate(modelReader, controllerAdapter);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			if (strategyValue>bestValue){
 				bestValue=strategyValue;
 				s=strat;
 			}
 		}
-		___________________________________________________________ */
+		____________________________________________________________*/
+		
 	}
 	
 	public void executeBestStrategy() {
 		try{
-			Thread.sleep(5000);
+			Thread.sleep(500);
 
 		s.execute(modelReader, controllerAdapter);
 		//s1.execute(modelReader, controllerAdapter);

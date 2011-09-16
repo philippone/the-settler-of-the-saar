@@ -26,9 +26,8 @@ Strategy s;
 	public float evaluate(ModelReader mr, ControllerAdapter ca) throws Exception {
 		if (!(mr.affordableStreets() > 0 
 			&& mr.buildableStreetPaths(mr.getMe()).size() > 0)) return -1;
-		float value=0;
-		value=evaluateStreetValue(mr,evaluateStreet(mr));
-		return value;
+		// TODO: check the trade
+		return 1;
 	}
 	
 	public Path evaluateStreet(ModelReader mr){

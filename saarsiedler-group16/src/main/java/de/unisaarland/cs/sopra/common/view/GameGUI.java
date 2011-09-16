@@ -25,6 +25,7 @@ import java.util.Map;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 import org.newdawn.slick.Color;
@@ -80,7 +81,8 @@ public class GameGUI extends View implements Runnable{
 	private static final  int INTERSECTIONS = 1;
 	private static final  int PATHS = 2;
 	private static final  int FIELDS = 3;
-	private List<Point> locations;
+	private List<Point> selectionPoint;
+	private List<Location> selectionLocation;
 	
 	private int uiMode;
 	private static final int RESOURCE_VIEW = 0;
@@ -372,14 +374,20 @@ public class GameGUI extends View implements Runnable{
 	private void renderPlayerInfo(Player player, long pos) {
 		int px = 10;
 		int py = 10+(int)pos*76;
-		//String name = getName(player);
-		GL11.glTranslatef(0, 0, zOffsetUI);
-		//uiFont20.drawString(xOffsetUI+px+30, yOffsetUI+py-3, name);
-		GL11.glTranslatef(0, 0, -zOffsetUI);
+		GL11.glPushMatrix();
+//		String name = getName(player);
+//		GL11.glTranslatef(0, 0, zOffsetUI);
+//		uiFont20.drawString(xOffsetUI+px+30, yOffsetUI+py-3, name);
+//		GL11.glTranslatef(0, 0, -zOffsetUI);
 		setColor(colorMap.get(player));
-		renderUI("PlayerColor", xOffsetUI+px, yOffsetUI+px, zOffsetUI+1, 30, 30);
-		
-		
+		renderUI("PlayerColor", xOffsetUI+px, yOffsetUI+py, zOffsetUI+2, 30, 30);
+		renderUI("PlayerColor", px, py, zOffsetUI+2, 30, 30);
+		renderUI("PlayerColor", px, py, 2, 30, 30);
+		renderUI("Cup", xOffsetUI+px, yOffsetUI+px, zOffsetUI+1, 30, 50);
+		GL11.glTranslated(xOffsetUI+px, yOffsetUI+py, zOffsetUI+1);
+		intersectionTextureMap.get(BuildingType.Village).bind();
+		drawSquareMid(30, 30);
+		GL11.glPopMatrix();
 		
 	}
 
@@ -388,7 +396,7 @@ public class GameGUI extends View implements Runnable{
 		case NONE: 
 			break;
 		case FIELDS:
-			for (Point p : locations) {
+			for (Point p : selectionPoint) {
 			    int fx = 0;
 			    int fy = 0;
 			    switch(p.getY()%2) {
@@ -458,19 +466,18 @@ public class GameGUI extends View implements Runnable{
 		   renderUI("Console", xOffsetUI+630, yOffsetUI+65, 1, 730, 300);
 		   setColor(BLACK);
 		   renderUI("LumberScore", xOffsetUI+345, yOffsetUI+65, 1, 95, 77);
-		   uiFont20.drawString(xOffsetUI+396+minX, 72+xOffsetUI+minY, ""+modelReader.getResources().getResource(Resource.LUMBER), Color.black);
 		   setColor(BLACK);
 		   renderUI("BrickScore", xOffsetUI+345, yOffsetUI+110, 1, 95, 77);
-		   uiFont20.drawString(xOffsetUI+396, 117, ""+modelReader.getResources().getResource(Resource.BRICK));
+//		   uiFont20.drawString(xOffsetUI+396, 117, ""+modelReader.getResources().getResource(Resource.BRICK));
 		   setColor(BLACK);
-		   renderUI("GrainScore", xOffsetUI+345, yOffsetUI+155, 1, 95, 77);
-		   uiFont20.drawString(xOffsetUI+396, 162, ""+modelReader.getResources().getResource(Resource.WOOL));
+		   renderUI("WoolScore", xOffsetUI+345, yOffsetUI+155, 1, 95, 77);
+//		   uiFont20.drawString(xOffsetUI+396, 162, ""+modelReader.getResources().getResource(Resource.WOOL));
 		   setColor(BLACK);
-		   renderUI("WoolScore", xOffsetUI+345, yOffsetUI+200, 1, 95, 77);
-		   uiFont20.drawString(xOffsetUI+396, 207, ""+modelReader.getResources().getResource(Resource.GRAIN));
+		   renderUI("GrainScore", xOffsetUI+345, yOffsetUI+200, 1, 95, 77);
+//		   uiFont20.drawString(xOffsetUI+396, 207, ""+modelReader.getResources().getResource(Resource.GRAIN));
 		   setColor(BLACK);
 		   renderUI("OreScore", xOffsetUI+345, yOffsetUI+245, 1, 95, 77);
-		   uiFont20.drawString(xOffsetUI+396, 252, ""+modelReader.getResources().getResource(Resource.ORE));
+//		   uiFont20.drawString(xOffsetUI+396, 252, ""+modelReader.getResources().getResource(Resource.ORE));
 		   setColor(BLACK);
 		   for (Clickable act : Clickable.getRenderList()) {
 			   if (act.isVisible()) renderUI(act);
@@ -488,9 +495,11 @@ public class GameGUI extends View implements Runnable{
 
 		   GL11.glPushMatrix();
 		   GL11.glTranslatef(xOffset+xOffsetUI, yOffsetUI, zOffsetUI);
-//		   uiFont20.drawString(396, 162, ""+modelReader.getResources().getResource(Resource.WOOL));
-//		   uiFont20.drawString(396, 207, ""+modelReader.getResources().getResource(Resource.GRAIN));
-//		   uiFont20.drawString(396, 252, ""+modelReader.getResources().getResource(Resource.ORE));
+		   uiFont20.drawString(396, 72, ""+modelReader.getResources().getResource(Resource.LUMBER));
+		   uiFont20.drawString(396, 117, ""+modelReader.getResources().getResource(Resource.BRICK));
+		   uiFont20.drawString(396, 162, ""+modelReader.getResources().getResource(Resource.WOOL));
+		   uiFont20.drawString(396, 207, ""+modelReader.getResources().getResource(Resource.GRAIN));
+		   uiFont20.drawString(396, 252, ""+modelReader.getResources().getResource(Resource.ORE));
 		   uiFont20.drawString(100, 178, ""+ village + "/" + modelReader.getMaxBuilding(BuildingType.Village), Color.black);
 		   uiFont20.drawString(100, 209, ""+ town + "/" + modelReader.getMaxBuilding(BuildingType.Town), Color.black);
 		   uiFont20.drawString(100, 240, ""+ catapult + "/" + modelReader.getMaxVictoryPoints(), Color.black);
@@ -675,59 +684,64 @@ public class GameGUI extends View implements Runnable{
 			uiTextureMap.put("Cup", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Cup.png")));
 
 			
-			Clickable claimLongestRoad = new Clickable("ClaimLongestRoad", xOffsetUI+542, yOffsetUI+22, zOffsetUI+2, 373, 77, true, true, true) {
+			Clickable claimLongestRoad = new Clickable("ClaimLongestRoad", xOffsetUI+542, yOffsetUI+22, 2, 373, 77, true, true, true) {
 				@Override
 				public void execute() {
 					minX = 42;
 				}
 			};
 
-			Clickable claimVictory = new Clickable("ClaimVictory", xOffsetUI+775, yOffsetUI+22, zOffsetUI+2, 185, 77, true, false, true) {
+			Clickable claimVictory = new Clickable("ClaimVictory", xOffsetUI+775, yOffsetUI+22, 2, 185, 77, true, false, true) {
 				@Override
 				public void execute() {
 					minX = 42;
 				}
 			};
 			
-			Clickable endTurn = new Clickable("EndTurn", xOffsetUI+930, yOffsetUI+22, zOffsetUI+2, 185, 77, true, false, true) {
+			Clickable endTurn = new Clickable("EndTurn", xOffsetUI+930, yOffsetUI+22, 2, 185, 77, true, false, true) {
 				@Override
 				public void execute() {
 					controllerAdapter.endTurn();
 				}
 			};
 			
-			Clickable offerTrade = new Clickable("offerTrade", xOffsetUI+450, yOffsetUI+65, zOffsetUI+2, 185, 77, true, true, true) {
+			Clickable offerTrade = new Clickable("offerTrade", xOffsetUI+450, yOffsetUI+65, 2, 185, 77, true, true, true) {
 				@Override
 				public void execute() {
 					minX = 42;
 				}
 			};
 			
-			Clickable buildStreet = new Clickable("BuildStreet", xOffsetUI+450, yOffsetUI+110, zOffsetUI+2, 185, 77, true, true, true) {
+			Clickable buildStreet = new Clickable("BuildStreet", xOffsetUI+450, yOffsetUI+110, 2, 185, 77, true, true, true) {
 				@Override
 				public void execute() {
-					minX = 42;
+					selectionLocation = Model.getLocationListPath(modelReader.buildableStreetPaths(modelReader.getMe()));
+					selectionMode = PATHS;
+					
 				}
 			};
 			
-			Clickable buildVillage = new Clickable("BuildVillage", xOffsetUI+450, yOffsetUI+155, zOffsetUI+2, 185, 77, true, true, true) {
+			Clickable buildVillage = new Clickable("BuildVillage", xOffsetUI+450, yOffsetUI+155, 2, 185, 77, true, true, true) {
 				@Override
 				public void execute() {
-					minX = 42;
+					selectionLocation = Model.getLocationListIntersection(modelReader.buildableVillageIntersections(modelReader.getMe()));
+					selectionMode = INTERSECTIONS;
 				}
 			};
 			
-			Clickable buildTown = new Clickable("BuildTown", xOffsetUI+450, yOffsetUI+200, zOffsetUI+2, 185, 77, true, true, true) {
+			Clickable buildTown = new Clickable("BuildTown", xOffsetUI+450, yOffsetUI+200, 2, 185, 77, true, true, true) {
 				@Override
 				public void execute() {
-					minX = 42;
+					selectionLocation = Model.getLocationListIntersection(modelReader.buildableTownIntersections(modelReader.getMe()));
+					selectionMode = INTERSECTIONS;
 				}
 			};
 						
-			Clickable buildCatapult = new Clickable("BuildCatapult", xOffsetUI+450, yOffsetUI+245, zOffsetUI+2, 185, 77, true, true, true) {
+			Clickable buildCatapult = new Clickable("BuildCatapult", xOffsetUI+450, yOffsetUI+245, 2, 185, 77, true, true, true) {
 				@Override
 				public void execute() {
-					minX = 42;
+					selectionLocation = Model.getLocationListPath(modelReader.buildableStreetPaths(modelReader.getMe()));
+					selectionMode = PATHS;
 				}
 			};
 			
@@ -956,7 +970,7 @@ public class GameGUI extends View implements Runnable{
 		//Setting setting = new Setting(new DisplayMode(1280, 1024), true);
 		//Setting setting = new Setting(new DisplayMode(800, 600), true);
 		//Setting setting = new Setting(new DisplayMode(400, 300), true);
-		Setting setting = new Setting(Display.getDesktopDisplayMode(), false, PlayerColors.RED);
+		Setting setting = new Setting(new DisplayMode(1024, 550), false, PlayerColors.RED);  /// Display.getDesktopDisplayMode()
 		
 		GameGUI gameGUI = new GameGUI(model, null, names, setting, "TestSpiel");
 		new Thread(gameGUI).start();
