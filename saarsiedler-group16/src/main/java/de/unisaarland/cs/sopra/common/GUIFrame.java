@@ -7,11 +7,15 @@ package de.unisaarland.cs.sopra.common;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.IOException;
 
 import javax.swing.*;
-import javax.swing.event.ListDataListener;
 import javax.swing.table.*;
+
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
 
 /**
  * @author Hans Lange der
@@ -19,15 +23,16 @@ import javax.swing.table.*;
 public class GUIFrame extends JFrame {
 	private ButtonListener actLis;
 	public long focusedWordID;
-	
+//	public PlayerColors selectedColor;
 	
 	public GUIFrame() {
 		actLis = new ButtonListener(this);
-		this.setResizable(true);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		initComponents();
 		setActionListner();
+		playerColorChooser();
+		resolutionChooser();
 	}
 	private void setActionListner() {
 		menuItemSettings.addActionListener(actLis);
@@ -45,6 +50,33 @@ public class GUIFrame extends JFrame {
 		playAsAI.addActionListener(actLis);
 		readyToggle.addActionListener(actLis);
 		back_join.addActionListener(actLis);
+		fullscreenToggle.addActionListener(actLis);
+//		playerColorBox.addFocusListener(new FocusListener() {
+//			
+//			@Override
+//			public void focusLost(FocusEvent e) {
+//				// TODO Auto-generated method stub
+//			}
+//			
+//			@Override
+//			public void focusGained(FocusEvent e) {
+//				selectedColor = (PlayerColors)playerColorBox.getSelectedItem();
+//			}
+//		});
+		resolutionBox.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		worldRepoBox.addFocusListener(new FocusListener() {
 			@Override
 			public void focusLost(FocusEvent e) {
@@ -73,43 +105,34 @@ public class GUIFrame extends JFrame {
 			}
 		});
 	}
+	
+	public void playerColorChooser(){
+		final PlayerColors[] pc = new PlayerColors[]{PlayerColors.RED, PlayerColors.BLUE,PlayerColors.GREEN,PlayerColors.YELLOW,PlayerColors.ORANGE,PlayerColors.BROWN,PlayerColors.WHITE,PlayerColors.PURPLE,PlayerColors.BLACK};
+		String [] farben = new String[]{"RED","BLUE","GREEN","YELLOW","ORANGE","BROWN","WHITE","PURPLE","BLACK"};
+		for ( String s : farben)
+		      playerColorBox.addItem( s );
+		playerColorBox.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				Setting.setPlayerColor(pc[playerColorBox.getSelectedIndex()]);
+			}
+		});
+	}
+
+	
 	public void worldRepoChooser(){
-		worldRepoBox.setModel(new ComboBoxModel() {
-			
+		
+	}
+	
+	public void resolutionChooser(){
+		final DisplayMode[] displaymodes = new DisplayMode[]{Display.getDisplayMode(), new DisplayMode(1024, 600), new DisplayMode(800, 600)};
+		String [] farben = new String[]{"AUTO","1024x600","800x600"};
+		for ( String s : farben)
+		      resolutionBox.addItem( s );
+		resolutionBox.addItemListener(new ItemListener() {
 			@Override
-			public void removeListDataListener(ListDataListener arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public int getSize() {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-			
-			@Override
-			public Object getElementAt(int arg0) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-			
-			@Override
-			public void addListDataListener(ListDataListener arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void setSelectedItem(Object anItem) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public Object getSelectedItem() {
-				// TODO Auto-generated method stub
-				return null;
+			public void itemStateChanged(ItemEvent e) {
+				Setting.setDisplayMode(displaymodes[resolutionBox.getSelectedIndex()]);
 			}
 		});
 	}
@@ -141,6 +164,14 @@ public class GUIFrame extends JFrame {
 		back_lobby = new JButton();
 		settingsPanel = new JPanel();
 		panel10 = new JPanel();
+		label6 = new JLabel();
+		resolutionBox = new JComboBox();
+		label7 = new JLabel();
+		fullscreenToggle = new JToggleButton();
+		label8 = new JLabel();
+		playerColorBox = new JComboBox();
+		label9 = new JLabel();
+		playerName = new JTextField();
 		back_Settings = new JButton();
 		createPanel = new JPanel();
 		panel13 = new JPanel();
@@ -189,6 +220,7 @@ public class GUIFrame extends JFrame {
 
 		//======== menuPanel ========
 		{
+			menuPanel.setVisible(false);
 
 			// JFormDesigner evaluation mark
 			menuPanel.setBorder(new javax.swing.border.CompoundBorder(
@@ -349,7 +381,6 @@ public class GUIFrame extends JFrame {
 
 		//======== settingsPanel ========
 		{
-			settingsPanel.setVisible(false);
 			settingsPanel.setLayout(new GridBagLayout());
 			((GridBagLayout)settingsPanel.getLayout()).columnWidths = new int[] {0, 0, 106, 256, 0};
 			((GridBagLayout)settingsPanel.getLayout()).rowHeights = new int[] {492, 0};
@@ -359,14 +390,56 @@ public class GUIFrame extends JFrame {
 			//======== panel10 ========
 			{
 				panel10.setLayout(new GridBagLayout());
-				((GridBagLayout)panel10.getLayout()).columnWidths = new int[] {354, 109, 250, 0};
-				((GridBagLayout)panel10.getLayout()).rowHeights = new int[] {65, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0};
-				((GridBagLayout)panel10.getLayout()).columnWeights = new double[] {0.36, 0.28, 0.36, 1.0E-4};
+				((GridBagLayout)panel10.getLayout()).columnWidths = new int[] {262, 115, 180, 250, 0};
+				((GridBagLayout)panel10.getLayout()).rowHeights = new int[] {114, 0, 0, 0, 0, 0, 0, 0, 74, 0, 0};
+				((GridBagLayout)panel10.getLayout()).columnWeights = new double[] {0.0, 0.36, 0.28, 0.36, 1.0E-4};
 				((GridBagLayout)panel10.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+
+				//---- label6 ----
+				label6.setText("Resolution: ");
+				panel10.add(label6, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+				panel10.add(resolutionBox, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- label7 ----
+				label7.setText("Fullscreen: ");
+				panel10.add(label7, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- fullscreenToggle ----
+				fullscreenToggle.setText("OFF");
+				panel10.add(fullscreenToggle, new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- label8 ----
+				label8.setText("Playercolor:");
+				panel10.add(label8, new GridBagConstraints(1, 5, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+				panel10.add(playerColorBox, new GridBagConstraints(2, 5, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- label9 ----
+				label9.setText("Playername: ");
+				panel10.add(label9, new GridBagConstraints(1, 7, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- playerName ----
+				playerName.setText("Gruppe16");
+				panel10.add(playerName, new GridBagConstraints(2, 7, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- back_Settings ----
 				back_Settings.setText("back to Menu");
-				panel10.add(back_Settings, new GridBagConstraints(1, 9, 1, 1, 0.0, 0.0,
+				panel10.add(back_Settings, new GridBagConstraints(2, 9, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 5), 0, 0));
 			}
@@ -567,6 +640,14 @@ public class GUIFrame extends JFrame {
 	JButton back_lobby;
 	public JPanel settingsPanel;
 	private JPanel panel10;
+	private JLabel label6;
+	public JComboBox resolutionBox;
+	private JLabel label7;
+	public JToggleButton fullscreenToggle;
+	private JLabel label8;
+	public JComboBox playerColorBox;
+	private JLabel label9;
+	public JTextField playerName;
 	public JButton back_Settings;
 	public JPanel createPanel;
 	private JPanel panel13;
