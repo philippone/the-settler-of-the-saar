@@ -21,8 +21,11 @@ public class TradeStrategy implements Strategy {
 		}
 
 	}
-	public int evaluate(){
-		// TODO implement this method
+	
+	@Override
+	public float evaluate(ModelReader mr, ControllerAdapter ca)
+			throws Exception {
+		// TODO Auto-generated method stub
 		return 0;
 	}
 }
