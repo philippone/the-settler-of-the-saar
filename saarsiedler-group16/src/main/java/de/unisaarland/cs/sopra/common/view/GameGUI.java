@@ -375,14 +375,17 @@ public class GameGUI extends View implements Runnable{
 		int py = 10+(int)pos*76;
 		GL11.glPushMatrix();
 //		String name = getName(player);
-		GL11.glTranslatef(0, 0, zOffsetUI);
+//		GL11.glTranslatef(0, 0, zOffsetUI);
 //		uiFont20.drawString(xOffsetUI+px+30, yOffsetUI+py-3, name);
-		GL11.glTranslatef(0, 0, -zOffsetUI);
+//		GL11.glTranslatef(0, 0, -zOffsetUI);
 		setColor(colorMap.get(player));
-		renderUI("PlayerColor", xOffsetUI+px, yOffsetUI+py, zOffsetUI+1, 30, 30);
+		renderUI("PlayerColor", xOffsetUI+px, yOffsetUI+py, zOffsetUI+2, 30, 30);
+		renderUI("PlayerColor", px, py, zOffsetUI+2, 30, 30);
+		renderUI("PlayerColor", px, py, 2, 30, 30);
 		renderUI("Cup", xOffsetUI+px, yOffsetUI+px, zOffsetUI+1, 30, 50);
 		GL11.glTranslated(xOffsetUI+px, yOffsetUI+py, zOffsetUI+1);
 		intersectionTextureMap.get(BuildingType.Village).bind();
+		drawSquareMid(30, 30);
 		GL11.glPopMatrix();
 		
 	}
@@ -711,7 +714,10 @@ public class GameGUI extends View implements Runnable{
 			Clickable buildStreet = new Clickable("BuildStreet", xOffsetUI+450, yOffsetUI+110, 2, 185, 77, true, true, true) {
 				@Override
 				public void execute() {
-					minX = 42;
+					
+					locations = Model.getLocationList(modelReader.buildableStreetPaths(modelReader.getMe()));
+					selectionMode = PATHS;
+					
 				}
 			};
 			
