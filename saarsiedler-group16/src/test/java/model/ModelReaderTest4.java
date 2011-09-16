@@ -204,12 +204,21 @@ public class ModelReaderTest4 {
 	@Test
 	public void testGetFieldIterator() {
 		Iterator<Field> it = model1.getFieldIterator();
+		assertEquals(model1.getField(new Point(-1, -1)), it.next());
+		assertEquals(model1.getField(new Point(-1, 0)), it.next());
+		assertEquals(model1.getField(new Point(-1, 1)), it.next());
+		assertEquals(model1.getField(new Point(-1, 2)), it.next());
+		assertEquals(model1.getField(new Point(-1, 3)), it.next());
+		assertEquals(model1.getField(new Point(0, -1)), it.next());
 		assertEquals(model1.getField(new Point(0, 0)), it.next());
 		assertEquals(model1.getField(new Point(0, 1)), it.next());
 		assertEquals(model1.getField(new Point(0, 2)), it.next());
+		assertEquals(model1.getField(new Point(0, 3)), it.next());
+		assertEquals(model1.getField(new Point(1, -1)), it.next());
 		assertEquals(model1.getField(new Point(1, 0)), it.next());
 		assertEquals(model1.getField(new Point(1, 1)), it.next());
-		assertEquals(model1.getField(new Point(1, 2)), it.next());	
+		assertEquals(model1.getField(new Point(1, 2)), it.next());
+		assertEquals(model1.getField(new Point(1, 3)), it.next());
 	}
 	
 	@Test
