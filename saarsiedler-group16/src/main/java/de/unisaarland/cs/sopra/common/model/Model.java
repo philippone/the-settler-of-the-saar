@@ -124,11 +124,37 @@ public class Model implements ModelReader, ModelWriter {
 	/**
 	 * @return Locations of the Paths in the List
 	 */
-	public static Collection<Location> getLocationList(List<Path> pathlist) {
-		if (pathlist == null)
+	public static List<Location> getLocationListPath(Collection<Path> list) {
+		if (list == null)
 			throw new IllegalArgumentException();
 		List<Location> tmp = new LinkedList<Location>();
-		for (Path act : pathlist) {
+		for (Path act : list) {
+			tmp.add(act.getLocation());
+		}
+		return tmp;
+	}
+	
+	/**
+	 * @return Locations of the Intersections in the List
+	 */
+	public static List<Location> getLocationListIntersection(Collection<Intersection> list) {
+		if (list == null)
+			throw new IllegalArgumentException();
+		List<Location> tmp = new LinkedList<Location>();
+		for (Intersection act : list) {
+			tmp.add(act.getLocation());
+		}
+		return tmp;
+	}
+	
+	/**
+	 * @return Locations of the Paths in the List
+	 */
+	public static List<Point> getLocationListField(Collection<Field> list) {
+		if (list == null)
+			throw new IllegalArgumentException();
+		List<Point> tmp = new LinkedList<Point>();
+		for (Field act : list) {
 			tmp.add(act.getLocation());
 		}
 		return tmp;
