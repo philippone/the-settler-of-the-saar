@@ -5,6 +5,7 @@ import java.util.Set;
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.Intersection;
 
 public class BuildStreetStrategy implements Strategy {
  Path bestStreet;
@@ -44,7 +45,13 @@ Strategy s;
 	}
 	
 	public float evaluateStreetValue(ModelReader mr,Path p){
-		return 1;
+		double value=0;
+		Set<Intersection> intersections=mr.getIntersectionsFromPath(p);
+		for (Intersection i: intersections){
+			if (i.hasOwner()) value=value+0.1;
+			else value=value+0.15;
+		}
+		return (float) value;
 	}
 	
 }

@@ -1592,8 +1592,13 @@ public class Model implements ModelReader, ModelWriter {
 				playerMap.get(victimPlayer).getResources()
 						.modifyResource(stolenResource, -1);
 				for (ModelObserver ob : modelObserver) {
-					ob.eventRobber();
+					if (me == getCurrentPlayer())
+						ob.updateResources();
 				}
+			}
+			for (ModelObserver ob : modelObserver) {
+				ob.updateField(getField(sourceField));
+				ob.updateField(getField(destinationField));
 			}
 		}
 	}
