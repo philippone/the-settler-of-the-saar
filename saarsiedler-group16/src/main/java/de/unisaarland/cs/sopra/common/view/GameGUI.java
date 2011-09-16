@@ -967,7 +967,7 @@ public class GameGUI extends View implements Runnable{
 		//Setting setting = new Setting(new DisplayMode(1280, 1024), true);
 		//Setting setting = new Setting(new DisplayMode(800, 600), true);
 		//Setting setting = new Setting(new DisplayMode(400, 300), true);
-		Setting setting = new Setting(new DisplayMode(800, 600), false, PlayerColors.RED);  /// Display.getDesktopDisplayMode()
+		Setting setting = new Setting(new DisplayMode(1024, 550), false, PlayerColors.RED);  /// Display.getDesktopDisplayMode()
 		
 		GameGUI gameGUI = new GameGUI(model, null, names, setting, "TestSpiel");
 		new Thread(gameGUI).start();
