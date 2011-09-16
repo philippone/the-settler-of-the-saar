@@ -396,7 +396,7 @@ public class GameGUI extends View implements Runnable{
 		case NONE: 
 			break;
 		case FIELDS:
-			for (Point p : locations) {
+			for (Point p : selectionPoint) {
 			    int fx = 0;
 			    int fy = 0;
 			    switch(p.getY()%2) {
@@ -715,8 +715,7 @@ public class GameGUI extends View implements Runnable{
 			Clickable buildStreet = new Clickable("BuildStreet", xOffsetUI+450, yOffsetUI+110, 2, 185, 77, true, true, true) {
 				@Override
 				public void execute() {
-					
-					locations = Model.getLocationList(modelReader.buildableStreetPaths(modelReader.getMe()));
+					selectionLocation = Model.getLocationList(modelReader.buildableStreetPaths(modelReader.getMe()));
 					selectionMode = PATHS;
 					
 				}
@@ -725,21 +724,24 @@ public class GameGUI extends View implements Runnable{
 			Clickable buildVillage = new Clickable("BuildVillage", xOffsetUI+450, yOffsetUI+155, 2, 185, 77, true, true, true) {
 				@Override
 				public void execute() {
-					minX = 42;
+					selectionLocation = Model.getLocationList(modelReader.buildableVillageIntersections(modelReader.getMe()));
+					selectionMode = INTERSECTIONS;
 				}
 			};
 			
 			Clickable buildTown = new Clickable("BuildTown", xOffsetUI+450, yOffsetUI+200, 2, 185, 77, true, true, true) {
 				@Override
 				public void execute() {
-					minX = 42;
+					selectionLocation = Model.getLocationList(modelReader.buildableTownIntersections(modelReader.getMe()));
+					selectionMode = INTERSECTIONS;
 				}
 			};
 						
 			Clickable buildCatapult = new Clickable("BuildCatapult", xOffsetUI+450, yOffsetUI+245, 2, 185, 77, true, true, true) {
 				@Override
 				public void execute() {
-					minX = 42;
+					selectionLocation = Model.getLocationList(modelReader.buildableStreetPaths(modelReader.getMe()));
+					selectionMode = PATHS;
 				}
 			};
 			
