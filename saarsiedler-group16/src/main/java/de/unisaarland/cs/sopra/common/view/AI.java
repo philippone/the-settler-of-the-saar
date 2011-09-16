@@ -181,7 +181,7 @@ public class AI extends View{
 	
 	public void executeBestStrategy() {
 		try{
-			Thread.sleep(10000);
+			Thread.sleep(500);
 
 		s.execute(modelReader, controllerAdapter);
 		//s1.execute(modelReader, controllerAdapter);

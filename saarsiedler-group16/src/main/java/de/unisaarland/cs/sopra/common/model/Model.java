@@ -1618,8 +1618,8 @@ public class Model implements ModelReader, ModelWriter {
 			getField(sourceField).setRobber(false);
 			getField(destinationField).setRobber(true);
 			if (playerMap.containsKey(victimPlayer)) {
-				playerMap.get(victimPlayer).getResources()
-						.modifyResource(stolenResource, -1);
+				playerMap.get(victimPlayer).getResources().modifyResource(stolenResource, -1);
+				playerMap.get(getCurrentPlayer()).getResources().modifyResource(stolenResource, 1);
 				for (ModelObserver ob : modelObserver) {
 					if (me == getCurrentPlayer())
 						ob.updateResources();
