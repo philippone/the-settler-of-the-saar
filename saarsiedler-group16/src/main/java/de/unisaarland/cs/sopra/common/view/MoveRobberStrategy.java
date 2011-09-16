@@ -49,6 +49,8 @@ public class MoveRobberStrategy implements Strategy{
 		Field destinationField=chooseBestDestination(player, mr);
 		
 		ca.moveRobber(sourceField, destinationField,chooseVictim(player, destinationField, mr));
+
+
 		}
 	}
 	private Field chooseBestDestination(Player player, ModelReader mr){
