@@ -604,7 +604,7 @@ public class GameGUI extends View implements Runnable{
 		      else {
 		        try {
 		          Thread.sleep(100);
-		        } catch (InterruptedException e) {}
+		        } catch (InterruptedException e) {e.printStackTrace();}
 		      }
 		      if (Display.isVisible() || Display.isDirty()) {
 		          render();
@@ -755,21 +755,21 @@ public class GameGUI extends View implements Runnable{
         debugFont.getEffects().add(new ColorEffect(java.awt.Color.WHITE)); 
         try {
 			debugFont.loadGlyphs();
-		} catch (SlickException e1) {}
+		} catch (SlickException e1) {e1.printStackTrace();}
 		
         uiFont20 = new UnicodeFont(awtFont, 20, false, false);
         uiFont20.addAsciiGlyphs();
         uiFont20.getEffects().add(new ColorEffect(java.awt.Color.BLACK)); 
         try {
 			uiFont20.loadGlyphs();
-		} catch (SlickException e1) {}
+		} catch (SlickException e1) {e1.printStackTrace();}
 
         uiFont40 = new UnicodeFont(awtFont, 40, false, false);
         uiFont40.addAsciiGlyphs();
         uiFont40.getEffects().add(new ColorEffect(java.awt.Color.BLACK)); 
         try {
 			uiFont40.loadGlyphs();
-		} catch (SlickException e1) {}
+		} catch (SlickException e1) {e1.printStackTrace();}
         
         renderFieldList = new LinkedList<Field>();
         Iterator<Field> iter = modelReader.getFieldIterator();

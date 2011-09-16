@@ -304,6 +304,6 @@ public interface ModelReader {
 	 * @param player
 	 * @return
 	 */
-	public List<List<Path>> calculateLongestRoads(Player player)
+	public List<List<Path>> calculateLongestRoads(Player player);
 	
 }
