@@ -152,7 +152,7 @@ public class AI extends View{
 		/*______________________________________________________
 		s=new DoNothingStrategy();
 		
-		Set<Strategy> strategies=new TreeSet<Strategy>();
+		ArrayList<Strategy> strategies=new ArrayList<Strategy>();
 		strategies.add(new BuildVillage());
 		strategies.add(new BuildATownStrategy());
 		strategies.add(new BuildACatapultStrategy());
