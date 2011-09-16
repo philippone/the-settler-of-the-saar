@@ -295,6 +295,15 @@ public interface ModelReader {
 	 */
 	public void addModelObserver(ModelObserver modelObserver);
 
+	/**
+	 * @return
+	 */
 	public Map<Long, Player> getPlayerMap();
+
+	/**
+	 * @param player
+	 * @return
+	 */
+	public List<List<Path>> calculateLongestRoads(Player player)
 	
 }
