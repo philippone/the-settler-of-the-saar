@@ -74,13 +74,13 @@ public class AI extends View{
 			WorldRepresentation wr = WorldRepresentation.getDefault();
 
 // ---------Create Code-----------
-		MatchInformation mi = c.newMatch("K(a)I!", 2, wr, false);
+	//	MatchInformation mi = c.newMatch("K(a)I!", 2, wr, false);
 // -------------------------------	
 
 // --------Join Code---------
-//		long matchId = 235;
-//		c.joinMatch(matchId, false);
-//		MatchInformation mi = c.getMatchInfo(matchId);
+		long matchId = 6534;
+		c.joinMatch(matchId, false);
+		MatchInformation mi = c.getMatchInfo(matchId);
 // --------------------------
 			 
 
@@ -152,7 +152,7 @@ public class AI extends View{
 		/*______________________________________________________
 		s=new DoNothingStrategy();
 		
-		Set<Strategy> strategies=new TreeSet<Strategy>();
+		ArrayList<Strategy> strategies=new ArrayList<Strategy>();
 		strategies.add(new BuildVillage());
 		strategies.add(new BuildATownStrategy());
 		strategies.add(new BuildACatapultStrategy());
@@ -174,7 +174,7 @@ public class AI extends View{
 	
 	public void executeBestStrategy() {
 		try{
-			Thread.sleep(5000);
+			Thread.sleep(500);
 
 		s.execute(modelReader, controllerAdapter);
 		//s1.execute(modelReader, controllerAdapter);
