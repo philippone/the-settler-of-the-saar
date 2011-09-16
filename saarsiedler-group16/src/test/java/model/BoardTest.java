@@ -108,12 +108,12 @@ public class BoardTest {
 	@Test
 	public void testGetIntersectionRand(){
 		assertEquals(b.getIntersection(new Location(3, 2, 4)), b.getIntersection(new Location(3, 1, 2)));
-		assertEquals(new Intersection(new Location(3, 2, 4)), b.getIntersection(new Location(3, 1, 2)));
+		assertEquals(b.getIntersection(new Location(3, 2, 4)), b.getIntersection(new Location(3, 1, 2)));
 	}
 	
 	@Test
 	public void testGetPath() {
-		assertEquals(new Path(new Location(1, 0, 4)), b.getPath(new Location(1, 0, 4)));
+		assertEquals(b.getPath(new Location(1, 0, 4)), b.getPath(new Location(1, 0, 4)));
 	
 	}
 	@Test
@@ -125,7 +125,7 @@ public class BoardTest {
 	
 	@Test
 	public void testGetPath2(){
-		assertEquals(new Path(new Location(0, 2, 5)), b.getPath(new Location(0, 2, 5)));
+		assertEquals(b.getPath(new Location(0, 2, 5)), b.getPath(new Location(0, 2, 5)));
 		assertEquals(false, b.getPath(new Location(0, 2, 5)).equals(b.getPath(new Location(2, 0, 5))));
 	}
 	
@@ -173,7 +173,7 @@ public class BoardTest {
 	@Test
 	public void testGetPathsFromPathsRand2(){
 		//create both Sets
-		pathSet15 = b.getPathsFromPath(new Path(new Location(-1, 2, 0)));
+		pathSet15 = b.getPathsFromPath(b.getPath(new Location(-1, 2, 0)));
 		pathSet16 = new HashSet<Path>();
 		pathSet16.add(b.getPath(new Location(-1, 2, 1)));
 		pathSet16.add(b.getPath(new Location(-1, 2, 5)));

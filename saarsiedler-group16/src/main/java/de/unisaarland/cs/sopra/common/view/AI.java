@@ -161,9 +161,9 @@ public class AI extends View{
 		//s1 = new BuildACatapultStrategy();
 		
 		/*______________________________________________________
+		s=new DoNothingStrategy();
 		
 		Set<Strategy> strategies=new TreeSet<Strategy>();
-		strategies.add(new DoNothingStrategy());
 		strategies.add(new BuildVillage());
 		strategies.add(new BuildATownStrategy());
 		strategies.add(new BuildACatapultStrategy());
@@ -180,7 +180,6 @@ public class AI extends View{
 				s=strat;
 			}
 		}
-		return s;
 		___________________________________________________________ */
 	}
 	
@@ -257,6 +256,9 @@ public class AI extends View{
 	public void eventRobber() {
 		s = new MoveRobberStrategy();
 		executeBestStrategy();
+		// s=new MoveRobberStrategy
+		// s.execute(modelReader,controllerAdapter);
+		// WARNING Try Catch block
 	}
 
 	@Override
