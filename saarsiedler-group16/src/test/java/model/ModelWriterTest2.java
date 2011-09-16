@@ -240,8 +240,8 @@ public class ModelWriterTest2 {
 		model.robberMoved(p1, p2, 0, Resource.LUMBER);
 		assertFalse("Robber shouldn't be on field 1,2", model.getField(p1).hasRobber());
 		assertTrue("Robber should be on field 1,1", model.getField(p2).hasRobber());
-		assertTrue(modelObserver.eventRobberCalled);
-		//assertTrue(modelObserver.updateResourcesCalled);
+		assertTrue(modelObserver.updateFieldCalled != null);
+		assertTrue(modelObserver.updateResourcesCalled);
 		assertEquals("Resources not right expected 100,100,100,100,100",player1.getResources(), new ResourcePackage(99,100,100,100,100));
 	}
 	
@@ -254,7 +254,8 @@ public class ModelWriterTest2 {
 		model.robberMoved(p1, p2, 0, null);
 		assertFalse("Robber shouldn't be on field 1,2", model.getField(p1).hasRobber());
 		assertTrue("Robber should be on field 2,1", model.getField(p2).hasRobber());
-		assertTrue(modelObserver.eventRobberCalled);
+		assertTrue(modelObserver.updateFieldCalled != null);
+		assertTrue(modelObserver.updateResourcesCalled);
 	}
 	
 	@Test
