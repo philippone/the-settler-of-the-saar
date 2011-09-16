@@ -11,6 +11,7 @@ import static de.unisaarland.cs.sopra.common.PlayerColors.WHITE;
 import static de.unisaarland.cs.sopra.common.PlayerColors.YELLOW;
 
 import java.awt.Font;
+import java.awt.MultipleGradientPaint.ColorSpaceType;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -101,9 +102,9 @@ public class GameGUI extends View implements Runnable{
 	private static float screenToOpenGLX;
 	private static float screenToOpenGLY;
 	
-	private int village;
-	private int town;
-	private int catapult;
+	private int[] village;
+	private int[] town;
+	private int[] catapult;
 	
 	private Map<Player,PlayerColors> colorMap;
 	
@@ -115,6 +116,9 @@ public class GameGUI extends View implements Runnable{
 		this.uiMode = RESOURCE_VIEW;
 		this.selectionMode = NONE;
 		this.gameTitle = gameTitle;
+		this.catapult = new int[names.size()];
+		this.village = new int[names.size()];
+		this.town = new int[names.size()];
 		windowWidth = Setting.getDisplayMode().getWidth();
 		windowHeight = Setting.getDisplayMode().getHeight();
 		aspectRatio = ((float)windowWidth)/windowHeight;
@@ -158,9 +162,12 @@ public class GameGUI extends View implements Runnable{
 			}
 		}
 		
-		this.village = modelReader.getSettlements(modelReader.getMe(), BuildingType.Village).size();
-		this.town = modelReader.getSettlements(modelReader.getMe(), BuildingType.Town).size();
-		this.catapult = modelReader.getCatapults(modelReader.getMe()).size();
+		int i = 0;
+		for (Player act :modelReader.getTableOrder()) {
+			this.village[i] = modelReader.getSettlements(act, BuildingType.Village).size();
+			this.town[i] = modelReader.getSettlements(act, BuildingType.Town).size();
+			this.catapult[i++] = modelReader.getCatapults(act).size();
+		}
 	}
 	
 	private void setColor(PlayerColors playerColor) {
@@ -377,37 +384,48 @@ public class GameGUI extends View implements Runnable{
 		int px = 10;
 		int py = 10+(int)pos*76;
 		GL11.glPushMatrix();
-//		String name = getName(player);
-//		GL11.glTranslatef(0, 0, zOffsetUI);
-//		uiFont20.drawString(xOffsetUI+px+30, yOffsetUI+py-3, name);
-//		GL11.glTranslatef(0, 0, -zOffsetUI);
+		String name = getName(player);
+		uiFont20.drawString(xOffsetUI+px+30, yOffsetUI+py-3, name);
 		setColor(colorMap.get(player));
-		renderUI("PlayerColor", xOffsetUI+px, yOffsetUI+py, zOffsetUI+2, 30, 30);
-		renderUI("PlayerColor", px, py, zOffsetUI+2, 30, 30);
-		renderUI("PlayerColor", px, py, 2, 30, 30);
-		renderUI("Cup", xOffsetUI+px, yOffsetUI+py+20, zOffsetUI+1, 30, 50);
-//		// draw currentScorePoints 0/??
-//		GL11.glTranslated(xOffsetUI+px+40, yOffsetUI+py+20, zOffsetUI+1);
-//		intersectionTextureMap.get(BuildingType.Village).bind();
-//		drawSquareMid(30, 30);
-//		GL11.glPopMatrix();
-//		//draw VillageScore 0/??
-//		GL11.glTranslated(xOffsetUI+px+80, yOffsetUI+py+20, zOffsetUI+1);
-//		intersectionTextureMap.get(BuildingType.Town).bind();
-//		drawSquareMid(30,30);
-//		GL11.glPopMatrix();
-//		//draw TownScore
-//		GL11.glTranslated(xOffsetUI+px+80, yOffsetUI+py+20, zOffsetUI+1);
-//		intersectionTextureMap.get(BuildingType.Town).bind();
-//		drawSquareMid(30,30);
-//		GL11.glPopMatrix();
-//		//draw CatapultScore
-//		GL11.glTranslated(xOffsetUI+px+120, yOffsetUI+py+20, zOffsetUI+1);
-//		catapultTexture.bind();
-//		drawSquareMid(30,30);
-//		GL11.glPopMatrix();
-//		// draw LongestRoad (as int)
-		
+		renderUI("PlayerColor", xOffsetUI+px, yOffsetUI+py, 2, 30, 30);
+		setColor(BLACK);
+		renderUI("Cup", xOffsetUI+px, yOffsetUI+py+20, 2, 30, 50);
+		// draw currentScorePoints 0/??
+		uiFont20.drawString(xOffsetUI+px+20, yOffsetUI+py+25, ""+modelReader.getCurrentVictoryPoints(player) + "/" + modelReader.getMaxVictoryPoints());
+		setColor(colorMap.get(player));
+		GL11.glPushMatrix();
+		GL11.glTranslatef(xOffsetUI+px+90, yOffsetUI+py+42, 1);
+		intersectionTextureMap.get(BuildingType.Village).bind();
+		drawSquareMid(30, 30);
+		GL11.glPopMatrix();
+		setColor(BLACK);
+		//draw VillageScore 0/??
+		uiFont20.drawString(xOffsetUI+px+100, yOffsetUI+py+25, ""+village[(int)pos] + "/" + 10);
+		setColor(colorMap.get(player));
+		GL11.glPushMatrix();
+		GL11.glTranslatef(xOffsetUI+px+155, yOffsetUI+py+42, 1);
+		intersectionTextureMap.get(BuildingType.Town).bind();
+		drawSquareMid(30,30);
+		GL11.glPopMatrix();
+		setColor(BLACK);
+		//draw TownScore
+		setColor(colorMap.get(player));
+		GL11.glPushMatrix();
+		GL11.glTranslatef(xOffsetUI+px+220, yOffsetUI+py+42, 1);
+		catapultTexture.bind();
+		drawSquareMid(30,30);
+		GL11.glPopMatrix();
+		setColor(BLACK);
+		//draw CatapultScore
+		setColor(colorMap.get(player));
+		GL11.glPushMatrix();
+		GL11.glTranslatef(xOffsetUI+px+270, yOffsetUI+py+37, 1);
+		streetTexture.bind();
+		drawSquareMid(5,30);
+		GL11.glPopMatrix();
+		setColor(BLACK);
+		// draw LongestRoad (as int)
+		GL11.glPopMatrix();
 	}
 
 	private void renderMarks() {
@@ -484,30 +502,34 @@ public class GameGUI extends View implements Runnable{
 		   renderMarks(); //TODO: implement markierungen
 		   //Render UI
 		   GL11.glPushMatrix();
-		   GL11.glTranslatef(xOffset, 0, zOffsetUI+1);
-		   renderPlayerInfo(modelReader.getMe(), 0);
+		   GL11.glTranslatef(xOffset, 0, zOffsetUI);
 		   setColor(BLACK);
 		   renderUI("Background", xOffsetUI, yOffsetUI, 0, 1500, 305);
 		   renderUI("Console", xOffsetUI+630, yOffsetUI+65, 1, 730, 300);
 		   setColor(BLACK);
 		   renderUI("LumberScore", xOffsetUI+345, yOffsetUI+65, 1, 95, 77);
+		   uiFont20.drawString(xOffsetUI+396, yOffsetUI+72, ""+modelReader.getResources().getResource(Resource.LUMBER));
 		   setColor(BLACK);
 		   renderUI("BrickScore", xOffsetUI+345, yOffsetUI+110, 1, 95, 77);
-//		   uiFont20.drawString(xOffsetUI+396, 117, ""+modelReader.getResources().getResource(Resource.BRICK));
+		   uiFont20.drawString(xOffsetUI+396, yOffsetUI+117, ""+modelReader.getResources().getResource(Resource.BRICK));
 		   setColor(BLACK);
 		   renderUI("WoolScore", xOffsetUI+345, yOffsetUI+155, 1, 95, 77);
-//		   uiFont20.drawString(xOffsetUI+396, 162, ""+modelReader.getResources().getResource(Resource.WOOL));
+		   uiFont20.drawString(xOffsetUI+396, yOffsetUI+162, ""+modelReader.getResources().getResource(Resource.WOOL));
 		   setColor(BLACK);
 		   renderUI("GrainScore", xOffsetUI+345, yOffsetUI+200, 1, 95, 77);
-//		   uiFont20.drawString(xOffsetUI+396, 207, ""+modelReader.getResources().getResource(Resource.GRAIN));
+		   uiFont20.drawString(xOffsetUI+396, yOffsetUI+207, ""+modelReader.getResources().getResource(Resource.GRAIN));
 		   setColor(BLACK);
 		   renderUI("OreScore", xOffsetUI+345, yOffsetUI+245, 1, 95, 77);
-//		   uiFont20.drawString(xOffsetUI+396, 252, ""+modelReader.getResources().getResource(Resource.ORE));
+		   uiFont20.drawString(xOffsetUI+396, yOffsetUI+252, ""+modelReader.getResources().getResource(Resource.ORE));
 		   setColor(BLACK);
 		   for (Clickable act : Clickable.getRenderList()) {
 			   if (act.isVisible()) renderUI(act);
 		   }
-		   
+		   int i = 0;
+		   for (Player act : modelReader.getTableOrder()) {
+			   if (i > 4) break;
+			   renderPlayerInfo(act, i++);
+		   }
 		   GL11.glPopMatrix();
 		   //Render Fonts on UI
 		   GL11.glPushMatrix();
@@ -515,19 +537,11 @@ public class GameGUI extends View implements Runnable{
 		   debugFont.drawString(300, 0, "Debug:", Color.white);
 		   debugFont.drawString(300, 30, "x: " + x + ", y: " + y + ", z: " + z, Color.white);
 		   debugFont.drawString(300, 60, "mx: " + Mouse.getX() + ", my: " + Mouse.getY() + ", mw: " + Mouse.getEventDWheel(), Color.white);
-		   debugFont.drawString(300, 90, "minX: " + minX + ", minY: " + minY , Color.white);
+		   debugFont.drawString(300, 90, "minX: " + minX + ", minY: " + minY + ", minZ: " + maxX, Color.white);
 		   GL11.glPopMatrix();
 
 		   GL11.glPushMatrix();
 		   GL11.glTranslatef(xOffset+xOffsetUI, yOffsetUI, zOffsetUI);
-		   uiFont20.drawString(396, 72, ""+modelReader.getResources().getResource(Resource.LUMBER));
-		   uiFont20.drawString(396, 117, ""+modelReader.getResources().getResource(Resource.BRICK));
-		   uiFont20.drawString(396, 162, ""+modelReader.getResources().getResource(Resource.WOOL));
-		   uiFont20.drawString(396, 207, ""+modelReader.getResources().getResource(Resource.GRAIN));
-		   uiFont20.drawString(396, 252, ""+modelReader.getResources().getResource(Resource.ORE));
-		   uiFont20.drawString(100, 178, ""+ village + "/" + modelReader.getMaxBuilding(BuildingType.Village), Color.black);
-		   uiFont20.drawString(100, 209, ""+ town + "/" + modelReader.getMaxBuilding(BuildingType.Town), Color.black);
-		   uiFont20.drawString(100, 240, ""+ catapult + "/" + modelReader.getMaxVictoryPoints(), Color.black);
 		   uiFont20.drawString(640, 75, "Round "+modelReader.getRound(), Color.black);
 		   GL11.glPopMatrix();
 		   }
@@ -576,17 +590,26 @@ public class GameGUI extends View implements Runnable{
 
 	@Override
 	public void updateCatapultCount() {
-		this.catapult = modelReader.getCatapults(modelReader.getMe()).size();
+		int i = 0;
+		for (Player act :modelReader.getTableOrder()) {
+			this.catapult[i++] = modelReader.getCatapults(act).size();
+		}
 	}
 
 	@Override
 	public void updateSettlementCount(BuildingType buildingType) {
 		switch(buildingType) {
 		case Village:
-			this.village = modelReader.getSettlements(modelReader.getMe(), BuildingType.Village).size(); 
+			int i = 0;
+			for (Player act :modelReader.getTableOrder()) {
+				this.village[i++] = modelReader.getSettlements(act, BuildingType.Village).size();
+			}
 			break;
 		case Town:
-			this.town = modelReader.getSettlements(modelReader.getMe(), BuildingType.Town).size();
+			int i2 = 0;
+			for (Player act :modelReader.getTableOrder()) {
+				this.town[i2++] = modelReader.getSettlements(act, BuildingType.Town).size();
+			}
 			break;
 		}
 	}
@@ -883,10 +906,12 @@ public class GameGUI extends View implements Runnable{
 		if (Keyboard.isKeyDown(Keyboard.KEY_N)) {
 			if (z+50 < this.maxZ)
 				z+=50;
+			maxX+=10;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_M)) {
 			if (z-50 > this.minZ)
 				z-=50;
+			maxX-=10;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
 			Display.destroy();
@@ -981,14 +1006,16 @@ public class GameGUI extends View implements Runnable{
 				new byte[] {});*/
 		
 		Model model = new Model(/*worldrep*/WorldRepresentation.getDefault(), matchinfo, 0);
-		model.matchStart(new long[] {0,1}, new byte[]   {2,3,4,
+		model.matchStart(new long[] {3,2,1,0}, new byte[]   {2,3,4,
 														 6,8,9,10,
 														 11,12,11,10,
 														 9,8,6,5,
 														 2,6,9});
 		Map<Player,String> names = new HashMap<Player,String>();
-		names.put(model.getTableOrder().get(0), "Ichbinkeinreh");
-		names.put(model.getTableOrder().get(1), "Herbert");
+		names.put(model.getTableOrder().get(3), "Ichbinkeinreh");
+		names.put(model.getTableOrder().get(2), "Herbert");
+		names.put(model.getTableOrder().get(1), "Hubert");
+		names.put(model.getTableOrder().get(0), "Hannes");
 		model.getTableOrder().get(0).modifyResources(new ResourcePackage(100,200,140,130,120));
 		
 		model.buildSettlement(new Location(3,3,0), BuildingType.Village);
@@ -1008,11 +1035,8 @@ public class GameGUI extends View implements Runnable{
 		model.buildSettlement(new Location(3,3,0), BuildingType.Town);
 		model.buildCatapult(new Location(3,3,0), true);
 		
-		//Setting setting = new Setting(new DisplayMode(1920, 1080), true);
-		//Setting setting = new Setting(new DisplayMode(1280, 1024), true);
-		//Setting setting = new Setting(new DisplayMode(800, 600), true);
-		//Setting setting = new Setting(new DisplayMode(400, 300), true);
-		Setting setting = new Setting(new DisplayMode(1024, 550), false, PlayerColors.RED);  /// Display.getDesktopDisplayMode()
+		Setting setting = new Setting(Display.getDesktopDisplayMode(), true, PlayerColors.RED);
+//		Setting setting = new Setting(new DisplayMode(1024, 550), false, PlayerColors.RED);  /// Display.getDesktopDisplayMode()
 		
 		GameGUI gameGUI = new GameGUI(model, null, names, setting, "TestSpiel");
 		new Thread(gameGUI).start();
