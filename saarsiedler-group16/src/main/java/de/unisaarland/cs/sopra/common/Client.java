@@ -113,6 +113,7 @@ public class Client {
 		Iterator<Player> iterPl = model.getTableOrder().iterator();
 		for (long l : playerIDs) {  // erstellt Player-> names map
 			try {
+				System.out.println(connection.getPlayerInfo(l).getName());
 				plToNames.put(iterPl.next(), connection.getPlayerInfo(l).getName());
 			} catch (IOException e) {e.printStackTrace();}
 		}
