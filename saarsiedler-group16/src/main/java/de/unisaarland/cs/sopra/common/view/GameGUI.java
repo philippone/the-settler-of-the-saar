@@ -81,7 +81,8 @@ public class GameGUI extends View implements Runnable{
 	private static final  int INTERSECTIONS = 1;
 	private static final  int PATHS = 2;
 	private static final  int FIELDS = 3;
-	private List<Point> locations;
+	private List<Point> selectionPoint;
+	private List<Location> selectionLocation;
 	
 	private int uiMode;
 	private static final int RESOURCE_VIEW = 0;
