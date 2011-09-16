@@ -315,13 +315,13 @@ public class BoardTest {
 	@Test
 	public void TestGetFieldsFromField4(){
 		//this time 4 neighbors
-		Field f5 = b.getField(new Point(3,1));
+		Field f5 = b.getField(new Point(4,1));
 		//create both Sets
 		Set<Field> eSet = new HashSet<Field>();
+		eSet.add(b.getField(new Point(4,2)));
 		eSet.add(b.getField(new Point(3,2)));
-		eSet.add(b.getField(new Point(3,0)));
-		eSet.add(b.getField(new Point(2,1)));
-		eSet.add(b.getField(new Point(2,0)));
+		eSet.add(b.getField(new Point(3,1)));
+		eSet.add(b.getField(new Point(4,0)));
 		Set<Field> cSet = b.getFieldsFromField(f5);
 		//test if both sets have identical content
 		assertTrue(eSet.containsAll(cSet));
@@ -331,14 +331,14 @@ public class BoardTest {
 	@Test
 	public void TestGetFieldsFromField5(){
 		//this time 5 neighbors
-		Field f6 = b.getField(new Point(1,2));
+		Field f6 = b.getField(new Point(1,3));
 		//create both Sets
 		Set<Field> eSet = new HashSet<Field>();
-		eSet.add(b.getField(new Point(0,1)));
+		eSet.add(b.getField(new Point(0,3)));
 		eSet.add(b.getField(new Point(0,2)));
-		eSet.add(b.getField(new Point(1,1)));
-		eSet.add(b.getField(new Point(2,1)));
+		eSet.add(b.getField(new Point(1,2)));
 		eSet.add(b.getField(new Point(2,2)));
+		eSet.add(b.getField(new Point(2,3)));
 		Set<Field> cSet =b.getFieldsFromField(f6);
 		//test if both sets have identical content
 		assertTrue(eSet.containsAll(cSet));
@@ -387,9 +387,9 @@ public class BoardTest {
 	@Test
 	public void testGetFieldsFromPath2(){
 		//one neighbor field
-		Set<Field> cSet = b.getFieldsFromPath(b.getPath(new Location(3, 2, 3)));
+		Set<Field> cSet = b.getFieldsFromPath(b.getPath(new Location(4, 3, 3)));
 		Set<Field> eSet = new HashSet<Field>();
-		eSet.add(b.getField(new Point(3,2)));
+		eSet.add(b.getField(new Point(4,3)));
 		
 		assertTrue(cSet.containsAll(eSet));
 		assertTrue(eSet.containsAll(cSet));
@@ -456,11 +456,11 @@ public class BoardTest {
 	@Test
 	public void testGetIntersectionsFromIntersectionRand(){
 		//create both sets
-		Intersection i = b.getIntersection(new Location(1, 0, 4));
+		Intersection i = b.getIntersection(new Location(1, -1, 4));
 		Set<Intersection> i1=b.getIntersectionsFromIntersection(i);
 		Set<Intersection> i2=new HashSet<Intersection>();
-		i2.add(b.getIntersection(new Location(1, 0 ,5)));
-		i2.add(b.getIntersection(new Location(1, 0, 3)));
+		i2.add(b.getIntersection(new Location(1, -1 ,5)));
+		i2.add(b.getIntersection(new Location(1, -1, 3)));
 		// test if both sets have identical content
 		assertTrue(i1.containsAll(i2));
 		assertTrue(i2.containsAll(i1));
