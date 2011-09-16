@@ -58,4 +58,10 @@ public class RobberStrategy implements Strategy {
 		// TODO implement this method
 		return 0;
 	}
+	@Override
+	public float evaluate(ModelReader mr, ControllerAdapter ca)
+			throws Exception {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

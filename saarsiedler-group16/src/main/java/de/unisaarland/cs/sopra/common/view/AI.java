@@ -176,7 +176,7 @@ public class AI extends View{
 		for (Strategy strat: strategies){
 			strategyValue=strat.evaluate(modelReader, controllerAdapter);
 			if (strategyValue>bestValue){
-				bestValue=value;
+				bestValue=strategyValue;
 				s=strat;
 			}
 		}

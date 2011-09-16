@@ -56,7 +56,7 @@ public class MoveCatapultStrategy implements Strategy {
 		return bestPath;
 	}
 
-	public float evaluate(ModelReader mr) {
+	public float evaluate(ModelReader mr,ControllerAdapter ca) {
 		if (mr.getCatapults(mr.getMe()).size() < 1) {
 			return -1;
 		}
