@@ -2,6 +2,7 @@ package de.unisaarland.cs.sopra.common.view;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import org.lwjgl.opengl.DisplayMode;
 
@@ -149,7 +150,7 @@ public class AI extends View{
 		//s= new BuildATownStrategy();
 		//s1 = new BuildACatapultStrategy();
 		
-		/*______________________________________________________
+		/*______________________________________________________________
 		s=new DoNothingStrategy();
 		
 		ArrayList<Strategy> strategies=new ArrayList<Strategy>();
@@ -161,15 +162,21 @@ public class AI extends View{
 		strategies.add(new AttackSettlementStrategy());
 		
 		float bestValue=0;
-		float strategyValue;
+		float strategyValue=0;
 		for (Strategy strat: strategies){
-			strategyValue=strat.evaluate(modelReader, controllerAdapter);
+			try {
+				strategyValue=strat.evaluate(modelReader, controllerAdapter);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			if (strategyValue>bestValue){
 				bestValue=strategyValue;
 				s=strat;
 			}
 		}
-		___________________________________________________________ */
+		____________________________________________________________*/
+		
 	}
 	
 	public void executeBestStrategy() {
