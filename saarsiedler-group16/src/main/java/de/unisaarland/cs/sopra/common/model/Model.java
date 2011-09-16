@@ -1419,7 +1419,9 @@ public class Model implements ModelReader, ModelWriter {
 					ob.updateVictoryPoints();
 					ob.updateIntersection(i);
 				}
-				initLastVillageIntersection = i;
+				if (me == getCurrentPlayer()) {
+					initLastVillageIntersection = i;
+				}
 			} else
 			throw new IllegalStateException("geb wurde nicht gebaut, da i nicht in buildableIn...");
 		} else {

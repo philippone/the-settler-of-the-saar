@@ -80,7 +80,7 @@ public class AI extends View{
 
 // --------Join Code---------
 //		long matchId = 6534;
-//		c.joinMatch(matchId, false);
+//	c.joinMatch(matchId, false);
 //		MatchInformation mi = c.getMatchInfo(matchId);
 // --------------------------
 			 
@@ -181,7 +181,7 @@ public class AI extends View{
 	
 	public void executeBestStrategy() {
 		try{
-			Thread.sleep(500);
+			Thread.sleep(10000);
 
 		s.execute(modelReader, controllerAdapter);
 		//s1.execute(modelReader, controllerAdapter);
