@@ -74,7 +74,7 @@ public class AI extends View{
 			WorldRepresentation wr = WorldRepresentation.getDefault();
 
 // ---------Create Code-----------
-		MatchInformation mi = c.newMatch("K(a)I!", 2, wr, false);
+		MatchInformation mi = c.newMatch("K(a)I!", 1, wr, false);
 // -------------------------------	
 
 // --------Join Code---------
@@ -106,7 +106,7 @@ public class AI extends View{
 				e1.printStackTrace();
 			}
 			new Thread(gameGUI).start();
-			Thread.sleep(5000);
+			//Thread.sleep(5000);
 			cont.mainLoop();
 			System.out.println("Das Spiel war erfolgreich! =)");
 		} catch (Exception e){
@@ -174,7 +174,7 @@ public class AI extends View{
 	
 	public void executeBestStrategy() {
 		try{
-			Thread.sleep(5000);
+			//Thread.sleep(5000);
 
 		s.execute(modelReader, controllerAdapter);
 		//s1.execute(modelReader, controllerAdapter);
