@@ -57,6 +57,7 @@ public class MoveCatapultStrategy implements Strategy {
 	}
 
 	public float evaluate(ModelReader mr) {
+		//TODO return -1 if not enough resources
 		if (mr.getCatapults(mr.getMe()).size() < 1) {
 			return -1;
 		}

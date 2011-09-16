@@ -177,6 +177,7 @@ public class BoardTest {
 		pathSet16 = new HashSet<Path>();
 		pathSet16.add(b.getPath(new Location(-1, 2, 1)));
 		pathSet16.add(b.getPath(new Location(-1, 2, 5)));
+		pathSet16.add(b.getPath(new Location(-1, 3, 5)));
 		//test if both sets have identical content
 		assertTrue (pathSet15.containsAll(pathSet16));
 		assertTrue (pathSet16.containsAll(pathSet15));
@@ -243,7 +244,9 @@ public class BoardTest {
 		pathSet8 = new HashSet<Path>();
 		pathSet8.add(b.getPath(new Location(0, 0, 0)));
 		pathSet8.add(b.getPath(new Location(0, 0, 5)));
+		pathSet8.add(b.getPath(new Location(-1, 0, 1)));
 		// test if both sets have identical content
+
 		assertTrue(pathSet7.containsAll(pathSet8));
 		assertTrue(pathSet8.containsAll(pathSet7));
 	}
@@ -256,6 +259,7 @@ public class BoardTest {
 		 Set<Path> eSet =  new HashSet<Path>();
 		 eSet.add(b.getPath(new Location(3, 1, 2)));
 		 eSet.add(b.getPath(new Location(3, 1, 3)));
+		 eSet.add(b.getPath(new Location(4, 0, 1)));
 		//test if both sets have identical content
 			assertTrue(eSet.containsAll(cSet));
 			assertTrue(cSet.containsAll(eSet));
@@ -291,7 +295,9 @@ public class BoardTest {
 		fff.add(b.getField(new Point(0,1)));
 		fff.add(b.getField(new Point(1,0)));
 		fff.add(b.getField(new Point(1,1)));
-		
+		fff.add(b.getField(new Point(-1,0)));
+		fff.add(b.getField(new Point(0,-1)));
+		fff.add(b.getField(new Point(-1,1)));
 		assertTrue(ff.containsAll(fff));
 		assertTrue(fff.containsAll(ff));
 	}
@@ -302,6 +308,10 @@ public class BoardTest {
 		Field f4 = b.getField(new Point(3,0));
 		//create both Sets
 		Set<Field> expectedSet = new HashSet<Field>();
+		expectedSet.add(b.getField(new Point(2,0)));
+		expectedSet.add(b.getField(new Point(3,1)));
+		expectedSet.add(b.getField(new Point(2,0)));
+		expectedSet.add(b.getField(new Point(3,1)));
 		expectedSet.add(b.getField(new Point(2,0)));
 		expectedSet.add(b.getField(new Point(3,1)));
 		Set<Field> currentSet = b.getFieldsFromField(f4);
