@@ -73,28 +73,17 @@ public class AI extends View{
 			Connection c = Connection.establish("sopra.cs.uni-saarland.de", true);
 			WorldRepresentation wr = WorldRepresentation.getDefault();
 
-			//---------Create Code-----------
-			//MatchInformation mi = c.newMatch("K(a)I!", 2, wr, false);
-			//-------------------------------
-			
+// ---------Create Code-----------
+		MatchInformation mi = c.newMatch("K(a)I!", 2, wr, false);
+// -------------------------------	
 
-			// --------Join Code---------
-
-		long matchId = 235;
-		c.joinMatch(matchId, false);
-	MatchInformation mi = c.getMatchInfo(matchId);
-
-
-			// --------Join Code--------
-
-			//long matchId = 2734 ;
-			//c.joinMatch(matchId, false);
-			//MatchInformation mi = c.getMatchInfo(matchId);
-
-			//---------------------------
+// --------Join Code---------
+//		long matchId = 235;
+//		c.joinMatch(matchId, false);
+//		MatchInformation mi = c.getMatchInfo(matchId);
+// --------------------------
 			 
 
-			//MatchInformation mi = c.newMatch("K(a)I!", 1, wr, false);
 			Model m = new Model(wr, mi, c.getClientId());
 			System.out.printf("MatchID: %s", mi.getId());
 			Controller cont = new Controller(c, m);
