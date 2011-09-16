@@ -81,7 +81,8 @@ public class GameGUI extends View implements Runnable{
 	private static final  int INTERSECTIONS = 1;
 	private static final  int PATHS = 2;
 	private static final  int FIELDS = 3;
-	private List<Point> locations;
+	private List<Point> selectionPoint;
+	private List<Location> selectionLocation;
 	
 	private int uiMode;
 	private static final int RESOURCE_VIEW = 0;
@@ -375,14 +376,17 @@ public class GameGUI extends View implements Runnable{
 		int py = 10+(int)pos*76;
 		GL11.glPushMatrix();
 //		String name = getName(player);
-		GL11.glTranslatef(0, 0, zOffsetUI);
+//		GL11.glTranslatef(0, 0, zOffsetUI);
 //		uiFont20.drawString(xOffsetUI+px+30, yOffsetUI+py-3, name);
-		GL11.glTranslatef(0, 0, -zOffsetUI);
+//		GL11.glTranslatef(0, 0, -zOffsetUI);
 		setColor(colorMap.get(player));
-		renderUI("PlayerColor", xOffsetUI+px, yOffsetUI+py, zOffsetUI+1, 30, 30);
+		renderUI("PlayerColor", xOffsetUI+px, yOffsetUI+py, zOffsetUI+2, 30, 30);
+		renderUI("PlayerColor", px, py, zOffsetUI+2, 30, 30);
+		renderUI("PlayerColor", px, py, 2, 30, 30);
 		renderUI("Cup", xOffsetUI+px, yOffsetUI+px, zOffsetUI+1, 30, 50);
 		GL11.glTranslated(xOffsetUI+px, yOffsetUI+py, zOffsetUI+1);
 		intersectionTextureMap.get(BuildingType.Village).bind();
+		drawSquareMid(30, 30);
 		GL11.glPopMatrix();
 		
 	}
@@ -392,7 +396,7 @@ public class GameGUI extends View implements Runnable{
 		case NONE: 
 			break;
 		case FIELDS:
-			for (Point p : locations) {
+			for (Point p : selectionPoint) {
 			    int fx = 0;
 			    int fy = 0;
 			    switch(p.getY()%2) {
@@ -711,28 +715,33 @@ public class GameGUI extends View implements Runnable{
 			Clickable buildStreet = new Clickable("BuildStreet", xOffsetUI+450, yOffsetUI+110, 2, 185, 77, true, true, true) {
 				@Override
 				public void execute() {
-					minX = 42;
+					selectionLocation = Model.getLocationList(modelReader.buildableStreetPaths(modelReader.getMe()));
+					selectionMode = PATHS;
+					
 				}
 			};
 			
 			Clickable buildVillage = new Clickable("BuildVillage", xOffsetUI+450, yOffsetUI+155, 2, 185, 77, true, true, true) {
 				@Override
 				public void execute() {
-					minX = 42;
+					selectionLocation = Model.getLocationList(modelReader.buildableVillageIntersections(modelReader.getMe()));
+					selectionMode = INTERSECTIONS;
 				}
 			};
 			
 			Clickable buildTown = new Clickable("BuildTown", xOffsetUI+450, yOffsetUI+200, 2, 185, 77, true, true, true) {
 				@Override
 				public void execute() {
-					minX = 42;
+					selectionLocation = Model.getLocationList(modelReader.buildableTownIntersections(modelReader.getMe()));
+					selectionMode = INTERSECTIONS;
 				}
 			};
 						
 			Clickable buildCatapult = new Clickable("BuildCatapult", xOffsetUI+450, yOffsetUI+245, 2, 185, 77, true, true, true) {
 				@Override
 				public void execute() {
-					minX = 42;
+					selectionLocation = Model.getLocationList(modelReader.buildableStreetPaths(modelReader.getMe()));
+					selectionMode = PATHS;
 				}
 			};
 			
@@ -961,7 +970,7 @@ public class GameGUI extends View implements Runnable{
 		//Setting setting = new Setting(new DisplayMode(1280, 1024), true);
 		//Setting setting = new Setting(new DisplayMode(800, 600), true);
 		//Setting setting = new Setting(new DisplayMode(400, 300), true);
-		Setting setting = new Setting(new DisplayMode(800, 600), false, PlayerColors.RED);  /// Display.getDesktopDisplayMode()
+		Setting setting = new Setting(new DisplayMode(1024, 550), false, PlayerColors.RED);  /// Display.getDesktopDisplayMode()
 		
 		GameGUI gameGUI = new GameGUI(model, null, names, setting, "TestSpiel");
 		new Thread(gameGUI).start();
