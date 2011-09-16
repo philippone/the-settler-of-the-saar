@@ -466,10 +466,10 @@ public class GameGUI extends View implements Runnable{
 		   renderUI("BrickScore", xOffsetUI+345, yOffsetUI+110, 1, 95, 77);
 //		   uiFont20.drawString(xOffsetUI+396, 117, ""+modelReader.getResources().getResource(Resource.BRICK));
 		   setColor(BLACK);
-		   renderUI("GrainScore", xOffsetUI+345, yOffsetUI+155, 1, 95, 77);
+		   renderUI("WoolScore", xOffsetUI+345, yOffsetUI+155, 1, 95, 77);
 //		   uiFont20.drawString(xOffsetUI+396, 162, ""+modelReader.getResources().getResource(Resource.WOOL));
 		   setColor(BLACK);
-		   renderUI("WoolScore", xOffsetUI+345, yOffsetUI+200, 1, 95, 77);
+		   renderUI("GrainScore", xOffsetUI+345, yOffsetUI+200, 1, 95, 77);
 //		   uiFont20.drawString(xOffsetUI+396, 207, ""+modelReader.getResources().getResource(Resource.GRAIN));
 		   setColor(BLACK);
 		   renderUI("OreScore", xOffsetUI+345, yOffsetUI+245, 1, 95, 77);
