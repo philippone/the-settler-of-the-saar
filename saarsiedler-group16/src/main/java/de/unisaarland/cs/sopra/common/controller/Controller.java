@@ -109,10 +109,10 @@ public class Controller {
 			case ROBBER_MOVED:
 				int y = ((GameEvent.RobberMoved)gameEvent).getSrcRow(); 
 				int x = ((GameEvent.RobberMoved)gameEvent).getSrcCol();
-				Point sourceField = new Point(x,y);
+				Point sourceField = new Point(y,x);
 				int y1 = ((GameEvent.RobberMoved)gameEvent).getDstRow();
 				int x1 = ((GameEvent.RobberMoved)gameEvent).getDstCol();
-				Point destinationField = new Point(x1,y1);
+				Point destinationField = new Point(y1,x1);
 				long victimPlayer = ((GameEvent.RobberMoved)gameEvent).getVictimClientId();
 				de.unisaarland.cs.st.saarsiedler.comm.Resource r1 = ((GameEvent.RobberMoved)
 						gameEvent).getStolenResource();
@@ -152,14 +152,14 @@ public class Controller {
 	 */
 	public void attackSettlement(Location catapult, Location settlement)
 			throws IllegalStateException, IllegalArgumentException, IOException {
-		int y = catapult.getX();
-		int x = catapult.getY();
+		int y = catapult.getY();
+		int x = catapult.getX();
 		int o = catapult.getOrientation();
-		Edge e = new Edge(x, y, o);
-		int y1 = settlement.getX();
-		int x1 = settlement.getY();
+		Edge e = new Edge(y, x, o);
+		int y1 = settlement.getY();
+		int x1 = settlement.getX();
 		int o1 = settlement.getOrientation();
-		Intersection i = new Intersection(x1, y1, o1);
+		Intersection i = new Intersection(y1, x1, o1);
 
 		AttackResult r = connection.attack(e, i);
 		modelWriter.attackSettlement(catapult, settlement, r);
@@ -281,10 +281,10 @@ public class Controller {
 	public void moveRobber(Point sourceField, Point destinationField,
 			long victimPlayer) throws IllegalStateException,
 			IllegalArgumentException, IOException {
-		int y = sourceField.getX();
-		int x = sourceField.getY();
-		int y1 = destinationField.getX();
-		int x1 = destinationField.getY();
+		int y = sourceField.getY();
+		int x = sourceField.getX();
+		int y1 = destinationField.getY();
+		int x1 = destinationField.getX();
 
 		de.unisaarland.cs.st.saarsiedler.comm.Resource r1 = connection
 				.moveRobber(y, x, y1, x1, victimPlayer);
