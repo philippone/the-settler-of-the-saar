@@ -63,6 +63,7 @@ public class MoveCatapultStrategy implements Strategy {
 		if (mr.getCatapults(mr.getMe()).size() < 1) {
 			return -1;
 		}
-		return evaluateStreetValue(mr,evaluateStreet(mr));
+		// TODO: check the trade
+		return 1;
 	}
 }
