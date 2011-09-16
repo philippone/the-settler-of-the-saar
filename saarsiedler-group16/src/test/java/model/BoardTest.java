@@ -177,6 +177,7 @@ public class BoardTest {
 		pathSet16 = new HashSet<Path>();
 		pathSet16.add(b.getPath(new Location(-1, 2, 1)));
 		pathSet16.add(b.getPath(new Location(-1, 2, 5)));
+		pathSet16.add(b.getPath(new Location(-1, 3, 5)));
 		//test if both sets have identical content
 		assertTrue (pathSet15.containsAll(pathSet16));
 		assertTrue (pathSet16.containsAll(pathSet15));
@@ -243,6 +244,7 @@ public class BoardTest {
 		pathSet8 = new HashSet<Path>();
 		pathSet8.add(b.getPath(new Location(0, 0, 0)));
 		pathSet8.add(b.getPath(new Location(0, 0, 5)));
+		pathSet8.add(b.getPath(new Location(-1, 0, 1)));
 		// test if both sets have identical content
 		assertTrue(pathSet7.containsAll(pathSet8));
 		assertTrue(pathSet8.containsAll(pathSet7));
