@@ -374,9 +374,9 @@ public class GameGUI extends View implements Runnable{
 		int px = 10;
 		int py = 10+(int)pos*76;
 		GL11.glPushMatrix();
-		String name = getName(player);
+//		String name = getName(player);
 		GL11.glTranslatef(0, 0, zOffsetUI);
-		uiFont20.drawString(xOffsetUI+px+30, yOffsetUI+py-3, name);
+//		uiFont20.drawString(xOffsetUI+px+30, yOffsetUI+py-3, name);
 		GL11.glTranslatef(0, 0, -zOffsetUI);
 		setColor(colorMap.get(player));
 		renderUI("PlayerColor", xOffsetUI+px, yOffsetUI+py, zOffsetUI+1, 30, 30);
