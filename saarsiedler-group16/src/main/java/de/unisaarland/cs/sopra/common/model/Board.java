@@ -39,7 +39,7 @@ public class Board {
 					Path p = new Path(new Location(y, x, o));
 					if (!paths.containsKey(new Location(y, x, o))){
 						paths.put(new Location(y, x, o), p);
-						if (y % 2 == 1){
+						if (y % 2 == 1 || y == -1){
 							switch(o){
 							case 0:
 								if(isValid(y-1, x)) paths.put(new Location(y-1, x, 3), p);
@@ -96,7 +96,7 @@ public class Board {
 					Intersection i = new Intersection(new Location(y, x, o));
 					if (!intersections.containsKey(new Location(y, x, o))){
 						intersections.put(new Location(y, x, o), i);
-						if (y % 2 == 1){
+						if (y % 2 == 1  || y == -1){
 							switch(o){
 							case 0:
 								if(isValid(y-1, x-1)) intersections.put(new Location(y-1, x-1, 2), i);
@@ -206,7 +206,7 @@ public class Board {
 		int o = loc.getOrientation();
 		Set<Field> s = new HashSet<Field>();
 		s.add(this.getField(new Point(y, x)));
-		if (y % 2 == 1){
+		if (y % 2 == 1  || y == -1){
 			switch(o){
 			case 0:
 				if (isValid(y-1, x-1)) s.add(this.getField(new Point(y-1, x-1)));
@@ -272,7 +272,7 @@ public class Board {
 		int o = loc.getOrientation();
 		Set<Field> s = new HashSet<Field>();
 		s.add(this.getField(new Point(y, x)));
-		if (y % 2 == 1){
+		if (y % 2 == 1 || y == -1){
 			switch(o){
 			case 0:
 				if (isValid(y-1, x)) s.add(this.getField(new Point(y-1, x)));
@@ -337,7 +337,7 @@ public class Board {
 		Set<Intersection> s = new HashSet<Intersection>();
 		s.add(getIntersection(new Location(y, x, (o+5)%6)));
 		s.add(getIntersection(new Location(y, x, (o+1)%6)));
-		if (y % 2 == 1){
+		if (y % 2 == 1  || y == -1){
 			switch(o){
 			case 0:
 				if (isValid(y-1, x-1)) s.add(this.getIntersection(new Location(y-1, x-1, 1)));
@@ -426,7 +426,7 @@ public class Board {
 		Set<Path> s = new HashSet<Path>();
 		s.add(getPath(new Location(y, x, o)));
 		s.add(getPath(new Location(y, x, (o+5)%6)));
-		if (y % 2 == 1){
+		if (y % 2 == 1  || y == -1){
 			switch(o){
 			case 0:
 				if (isValid(y-1, x-1)) s.add(this.getPath(new Location(y-1, x-1, 1)));
@@ -491,7 +491,7 @@ public class Board {
 		Set<Path> s = new HashSet<Path>();
 		s.add(getPath(new Location(y, x, (o+1)%6)));
 		s.add(getPath(new Location(y, x, (o+5)%6)));
-		if (y % 2 == 1){
+		if (y % 2 == 1  || y == -1){
 			switch(o){
 			case 0:
 				if (isValid(y-1, x-1)) s.add(this.getPath(new Location(y-1, x-1, 1)));
