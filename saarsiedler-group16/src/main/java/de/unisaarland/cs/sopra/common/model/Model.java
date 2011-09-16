@@ -1,6 +1,7 @@
 package de.unisaarland.cs.sopra.common.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -123,7 +124,7 @@ public class Model implements ModelReader, ModelWriter {
 	/**
 	 * @return Locations of the Paths in the List
 	 */
-	public static List<Location> getLocationList(List<Path> pathlist) {
+	public static Collection<Location> getLocationList(List<Path> pathlist) {
 		if (pathlist == null)
 			throw new IllegalArgumentException();
 		List<Location> tmp = new LinkedList<Location>();
