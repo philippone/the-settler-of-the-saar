@@ -680,56 +680,56 @@ public class GameGUI extends View implements Runnable{
 			uiTextureMap.put("Cup", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Cup.png")));
 
 			
-			Clickable claimLongestRoad = new Clickable("ClaimLongestRoad", xOffsetUI+542, yOffsetUI+22, zOffsetUI+2, 373, 77, true, true, true) {
+			Clickable claimLongestRoad = new Clickable("ClaimLongestRoad", xOffsetUI+542, yOffsetUI+22, 2, 373, 77, true, true, true) {
 				@Override
 				public void execute() {
 					minX = 42;
 				}
 			};
 
-			Clickable claimVictory = new Clickable("ClaimVictory", xOffsetUI+775, yOffsetUI+22, zOffsetUI+2, 185, 77, true, false, true) {
+			Clickable claimVictory = new Clickable("ClaimVictory", xOffsetUI+775, yOffsetUI+22, 2, 185, 77, true, false, true) {
 				@Override
 				public void execute() {
 					minX = 42;
 				}
 			};
 			
-			Clickable endTurn = new Clickable("EndTurn", xOffsetUI+930, yOffsetUI+22, zOffsetUI+2, 185, 77, true, false, true) {
+			Clickable endTurn = new Clickable("EndTurn", xOffsetUI+930, yOffsetUI+22, 2, 185, 77, true, false, true) {
 				@Override
 				public void execute() {
 					controllerAdapter.endTurn();
 				}
 			};
 			
-			Clickable offerTrade = new Clickable("offerTrade", xOffsetUI+450, yOffsetUI+65, zOffsetUI+2, 185, 77, true, true, true) {
+			Clickable offerTrade = new Clickable("offerTrade", xOffsetUI+450, yOffsetUI+65, 2, 185, 77, true, true, true) {
 				@Override
 				public void execute() {
 					minX = 42;
 				}
 			};
 			
-			Clickable buildStreet = new Clickable("BuildStreet", xOffsetUI+450, yOffsetUI+110, zOffsetUI+2, 185, 77, true, true, true) {
+			Clickable buildStreet = new Clickable("BuildStreet", xOffsetUI+450, yOffsetUI+110, 2, 185, 77, true, true, true) {
 				@Override
 				public void execute() {
 					minX = 42;
 				}
 			};
 			
-			Clickable buildVillage = new Clickable("BuildVillage", xOffsetUI+450, yOffsetUI+155, zOffsetUI+2, 185, 77, true, true, true) {
+			Clickable buildVillage = new Clickable("BuildVillage", xOffsetUI+450, yOffsetUI+155, 2, 185, 77, true, true, true) {
 				@Override
 				public void execute() {
 					minX = 42;
 				}
 			};
 			
-			Clickable buildTown = new Clickable("BuildTown", xOffsetUI+450, yOffsetUI+200, zOffsetUI+2, 185, 77, true, true, true) {
+			Clickable buildTown = new Clickable("BuildTown", xOffsetUI+450, yOffsetUI+200, 2, 185, 77, true, true, true) {
 				@Override
 				public void execute() {
 					minX = 42;
 				}
 			};
 						
-			Clickable buildCatapult = new Clickable("BuildCatapult", xOffsetUI+450, yOffsetUI+245, zOffsetUI+2, 185, 77, true, true, true) {
+			Clickable buildCatapult = new Clickable("BuildCatapult", xOffsetUI+450, yOffsetUI+245, 2, 185, 77, true, true, true) {
 				@Override
 				public void execute() {
 					minX = 42;
