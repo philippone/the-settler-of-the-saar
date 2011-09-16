@@ -287,7 +287,7 @@ public class Controller {
 		int x1 = destinationField.getY();
 
 		de.unisaarland.cs.st.saarsiedler.comm.Resource r1 = connection
-				.moveRobber(x, y, x1, y1, victimPlayer);
+				.moveRobber(y, x, y1, x1, victimPlayer);
 		r = Resource.convert(r1);
 		modelWriter.robberMoved(sourceField, destinationField, victimPlayer, r);
 	}

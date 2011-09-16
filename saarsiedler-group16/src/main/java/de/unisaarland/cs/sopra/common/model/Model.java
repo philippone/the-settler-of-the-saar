@@ -1317,12 +1317,14 @@ public class Model implements ModelReader, ModelWriter {
 			if (!dest.hasCatapult())
 				throw new IllegalStateException(
 						"Wird nicht gebaut, obwohl kein Gegner vorhanden ist");
+		}
+		if (me == getCurrentPlayer()) {
 			if (!getCurrentPlayer().checkResourcesSufficient(
 					Catapult.getBuildingprice()))
 				throw new IllegalArgumentException(
 						"Player has no resources to built a Catapult");
+			getCurrentPlayer().modifyResources(Catapult.getBuildingprice());
 		}
-		getCurrentPlayer().modifyResources(Catapult.getBuildingprice());
 		for (ModelObserver ob : modelObserver) {
 			ob.updateResources();
 			ob.updateCatapultCount();
@@ -1425,7 +1427,10 @@ public class Model implements ModelReader, ModelWriter {
 			} else
 			throw new IllegalStateException("geb wurde nicht gebaut, da i nicht in buildableIn...");
 		} else {
-			if (isBuildable(i, buildingType) && (isAffordable(buildingType)) && getSettlements(getCurrentPlayer(), buildingType).size() < getMaxBuilding(buildingType)) {
+			if (me == getCurrentPlayer() && !isAffordable(buildingType)) {
+				throw new IllegalArgumentException("Not enough resources");
+			}
+			if (isBuildable(i, buildingType) && getSettlements(getCurrentPlayer(), buildingType).size() < getMaxBuilding(buildingType)) {
 				getCurrentPlayer().modifyResources(buildingType.getPrice());
 				i.createBuilding(buildingType, getCurrentPlayer());
 				getCurrentPlayer().setVictoryPoints(getCurrentPlayer().getVictoryPoints() + 1);
