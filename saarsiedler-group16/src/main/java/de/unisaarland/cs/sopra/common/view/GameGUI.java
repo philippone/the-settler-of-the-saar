@@ -383,11 +383,28 @@ public class GameGUI extends View implements Runnable{
 		renderUI("PlayerColor", xOffsetUI+px, yOffsetUI+py, zOffsetUI+2, 30, 30);
 		renderUI("PlayerColor", px, py, zOffsetUI+2, 30, 30);
 		renderUI("PlayerColor", px, py, 2, 30, 30);
-		renderUI("Cup", xOffsetUI+px, yOffsetUI+px, zOffsetUI+1, 30, 50);
-		GL11.glTranslated(xOffsetUI+px, yOffsetUI+py, zOffsetUI+1);
-		intersectionTextureMap.get(BuildingType.Village).bind();
-		drawSquareMid(30, 30);
-		GL11.glPopMatrix();
+		renderUI("Cup", xOffsetUI+px, yOffsetUI+py+20, zOffsetUI+1, 30, 50);
+//		// draw currentScorePoints 0/??
+//		GL11.glTranslated(xOffsetUI+px+40, yOffsetUI+py+20, zOffsetUI+1);
+//		intersectionTextureMap.get(BuildingType.Village).bind();
+//		drawSquareMid(30, 30);
+//		GL11.glPopMatrix();
+//		//draw VillageScore 0/??
+//		GL11.glTranslated(xOffsetUI+px+80, yOffsetUI+py+20, zOffsetUI+1);
+//		intersectionTextureMap.get(BuildingType.Town).bind();
+//		drawSquareMid(30,30);
+//		GL11.glPopMatrix();
+//		//draw TownScore
+//		GL11.glTranslated(xOffsetUI+px+80, yOffsetUI+py+20, zOffsetUI+1);
+//		intersectionTextureMap.get(BuildingType.Town).bind();
+//		drawSquareMid(30,30);
+//		GL11.glPopMatrix();
+//		//draw CatapultScore
+//		GL11.glTranslated(xOffsetUI+px+120, yOffsetUI+py+20, zOffsetUI+1);
+//		catapultTexture.bind();
+//		drawSquareMid(30,30);
+//		GL11.glPopMatrix();
+//		// draw LongestRoad (as int)
 		
 	}
 
