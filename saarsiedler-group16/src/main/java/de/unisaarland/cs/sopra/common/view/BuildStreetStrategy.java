@@ -28,7 +28,7 @@ Strategy s;
 			&& mr.buildableStreetPaths(mr.getMe()).size() > 0)) return -1;
 		float value=0;
 		value=evaluateStreetValue(mr,evaluateStreet(mr));
-		return value/4;
+		return value;
 	}
 	
 	public Path evaluateStreet(ModelReader mr){
