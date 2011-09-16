@@ -288,11 +288,11 @@ public class ModelWriterTest {
 		
 		model.getPath(new Location(2,1,2)).createCatapult(model.getCurrentPlayer());
 		model.getCurrentPlayer().modifyResources(new ResourcePackage(-1000,-1000,-1000,-1000,-1000));
-		try {
-			model.attackSettlement(new Location(2, 1, 2), new Location(2, 1, 3), AttackResult.SUCCESS);
-			fail("You shouldn't have enough money to attack the settlement!");
-		}
-		catch (Exception e) { /* everything is fine */ }
+//		try {
+//			model.attackSettlement(new Location(2, 1, 2), new Location(2, 1, 3), AttackResult.SUCCESS);
+//			fail("You shouldn't have enough money to attack the settlement!");
+//		}
+//		catch (Exception e) { /* everything is fine */ }
 	}
 	
 	
