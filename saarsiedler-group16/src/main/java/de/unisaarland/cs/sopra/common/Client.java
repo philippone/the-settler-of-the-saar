@@ -150,7 +150,7 @@ public class Client {
 		return new AI(model, new ControllerAdapter(controller, model));
 	}
 	
-	public static GameGUI buildGameGUI(Controller controller, Model model, long[] playerIDs) {
+	public static GameGUI buildGameGUI(Controller controller, Model model, long[] playerIDs, boolean AIisPlaying) {
 		Map<Player, String> plToNames = new HashMap<Player, String>();
 		Iterator<Player> iterPl = model.getTableOrder().iterator();
 		for (long l : playerIDs) {  // erstellt Player-> names map
@@ -160,7 +160,7 @@ public class Client {
 			} catch (IOException e) {e.printStackTrace();}
 		}
 		try {
-			return new GameGUI(model, new ControllerAdapter(controller, model), plToNames , setting, matchInfo.getTitle());
+			return new GameGUI(model, new ControllerAdapter(controller, model), plToNames , setting, matchInfo.getTitle(), AIisPlaying);
 		} catch (Exception e) {e.printStackTrace();	}
 		throw new IllegalStateException("couldnt build GameGui");
 	}
@@ -182,9 +182,9 @@ public class Client {
 		
 		Model m = buildModel();
 		Controller c = buildController(m);
-		AI ai;
+		
 		if(joinAsAI)
-			 ai = buildAI(c, m);
+			 buildAI(c, m);
 		
 		long[] players = startEvent.getPlayerIds();
 		byte[] number = startEvent.getNumbers();
@@ -193,7 +193,7 @@ public class Client {
 		GameGUI gameGUI = null;
 		
 		try {
-			gameGUI = buildGameGUI(c, m, players);
+			gameGUI = buildGameGUI(c, m, players, joinAsAI);
 		} catch (Exception e1) {e1.printStackTrace();
 		}
 		

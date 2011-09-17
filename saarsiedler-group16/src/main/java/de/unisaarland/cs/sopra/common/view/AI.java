@@ -101,7 +101,7 @@ public class AI extends View{
 			Setting setting = new Setting(new DisplayMode(1024,580), true, PlayerColors.RED);
 			GameGUI gameGUI = null;
 			try {
-				gameGUI = new GameGUI(m, null, null, setting, "K(A)I");
+				gameGUI = new GameGUI(m, null, null, setting, "K(A)I", true);
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

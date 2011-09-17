@@ -107,8 +107,8 @@ public class GUIFrame extends JFrame {
 	}
 	
 	public void playerColorChooser(){
-		final PlayerColors[] pc = new PlayerColors[]{PlayerColors.RED, PlayerColors.BLUE,PlayerColors.GREEN,PlayerColors.YELLOW,PlayerColors.ORANGE,PlayerColors.BROWN,PlayerColors.WHITE,PlayerColors.PURPLE,PlayerColors.BLACK};
-		String [] farben = new String[]{"RED","BLUE","GREEN","YELLOW","ORANGE","BROWN","WHITE","PURPLE","BLACK"};
+		final PlayerColors[] pc = new PlayerColors[]{PlayerColors.RED, PlayerColors.BLUE,PlayerColors.YELLOW,PlayerColors.ORANGE,PlayerColors.BROWN,PlayerColors.WHITE,PlayerColors.PURPLE,PlayerColors.BLACK};
+		String [] farben = new String[]{"RED","BLUE","YELLOW","ORANGE","BROWN","WHITE","PURPLE","BLACK"};
 		for ( String s : farben)
 		      playerColorBox.addItem( s );
 		playerColorBox.addItemListener(new ItemListener() {
