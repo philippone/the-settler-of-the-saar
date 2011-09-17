@@ -105,6 +105,7 @@ public class GameGUI extends View implements Runnable{
 	private int[] village;
 	private int[] town;
 	private int[] catapult;
+	private int[] road;
 	
 	private Map<Player,PlayerColors> colorMap;
 	
@@ -119,6 +120,7 @@ public class GameGUI extends View implements Runnable{
 		this.catapult = new int[names.size()];
 		this.village = new int[names.size()];
 		this.town = new int[names.size()];
+		this.road = new int[names.size()];
 		windowWidth = Setting.getDisplayMode().getWidth();
 		windowHeight = Setting.getDisplayMode().getHeight();
 		aspectRatio = ((float)windowWidth)/windowHeight;
@@ -166,7 +168,9 @@ public class GameGUI extends View implements Runnable{
 		for (Player act :modelReader.getTableOrder()) {
 			this.village[i] = modelReader.getSettlements(act, BuildingType.Village).size();
 			this.town[i] = modelReader.getSettlements(act, BuildingType.Town).size();
-			this.catapult[i++] = modelReader.getCatapults(act).size();
+			this.catapult[i] = modelReader.getCatapults(act).size();
+			List<List<Path>> streets = modelReader.calculateLongestRoads(act);
+			this.road[i++] = streets.size() > 0 ? streets.get(0).size() : 0;
 		}
 	}
 	
@@ -391,7 +395,7 @@ public class GameGUI extends View implements Runnable{
 		setColor(BLACK);
 		renderUI("Cup", xOffsetUI+px, yOffsetUI+py+20, 2, 30, 50);
 		// draw currentScorePoints 0/??
-		uiFont20.drawString(xOffsetUI+px+20, yOffsetUI+py+25, ""+modelReader.getCurrentVictoryPoints(player) + "/" + modelReader.getMaxVictoryPoints());
+		uiFont20.drawString(xOffsetUI+px+22, yOffsetUI+py+25, ""+modelReader.getCurrentVictoryPoints(player) + "/" + modelReader.getMaxVictoryPoints());
 		setColor(colorMap.get(player));
 		GL11.glPushMatrix();
 		GL11.glTranslatef(xOffsetUI+px+90, yOffsetUI+py+42, 1);
@@ -400,7 +404,7 @@ public class GameGUI extends View implements Runnable{
 		GL11.glPopMatrix();
 		setColor(BLACK);
 		//draw VillageScore 0/??
-		uiFont20.drawString(xOffsetUI+px+100, yOffsetUI+py+25, ""+village[(int)pos] + "/" + 10);
+		uiFont20.drawString(xOffsetUI+px+99, yOffsetUI+py+25, ""+village[(int)pos] + "/" + modelReader.getMaxBuilding(BuildingType.Village));
 		setColor(colorMap.get(player));
 		GL11.glPushMatrix();
 		GL11.glTranslatef(xOffsetUI+px+155, yOffsetUI+py+42, 1);
@@ -409,6 +413,7 @@ public class GameGUI extends View implements Runnable{
 		GL11.glPopMatrix();
 		setColor(BLACK);
 		//draw TownScore
+		uiFont20.drawString(xOffsetUI+px+163, yOffsetUI+py+25, ""+town[(int)pos] + "/" + modelReader.getMaxBuilding(BuildingType.Town));
 		setColor(colorMap.get(player));
 		GL11.glPushMatrix();
 		GL11.glTranslatef(xOffsetUI+px+220, yOffsetUI+py+42, 1);
@@ -417,6 +422,7 @@ public class GameGUI extends View implements Runnable{
 		GL11.glPopMatrix();
 		setColor(BLACK);
 		//draw CatapultScore
+		uiFont20.drawString(xOffsetUI+px+230, yOffsetUI+py+25, ""+catapult[(int)pos] + "/" + modelReader.getMaxCatapult());
 		setColor(colorMap.get(player));
 		GL11.glPushMatrix();
 		GL11.glTranslatef(xOffsetUI+px+270, yOffsetUI+py+37, 1);
@@ -425,6 +431,9 @@ public class GameGUI extends View implements Runnable{
 		GL11.glPopMatrix();
 		setColor(BLACK);
 		// draw LongestRoad (as int)
+		uiFont20.drawString(xOffsetUI+px+262, yOffsetUI+py+23, ""+road[(int)pos]);
+		// draw seperation for players
+		
 		GL11.glPopMatrix();
 	}
 
@@ -472,7 +481,7 @@ public class GameGUI extends View implements Runnable{
 	
 	private void renderUI(Clickable click) {
 		if (!click.isActive()) {
-			GL11.glColor4f(0.5f, 0.5f, 0.5f, 0.5f);
+			GL11.glColor4f(0.3f, 0.3f, 0.3f, 0.3f);
 			renderUI(click.getName(),click.getX(),click.getY(),click.getZ(),click.getWidth(),click.getHeight());
 			GL11.glColor4f(1, 1, 1, 1);
 		}
@@ -565,7 +574,11 @@ public class GameGUI extends View implements Runnable{
 
 	@Override
 	public void updatePath(Path path) {
-		//TODO: implement it!
+		int i = 0;
+		for (Player act : modelReader.getTableOrder()) {
+			List<List<Path>> streets = modelReader.calculateLongestRoads(act);
+			this.road[i++] = streets.size() > 0 ? streets.get(0).size() : 0;
+		}
 	}
 
 	@Override
