@@ -392,6 +392,7 @@ public class GameGUI extends View implements Runnable{
 		renderUI("Cup", xOffsetUI+px, yOffsetUI+py+20, 2, 30, 50);
 		// draw currentScorePoints 0/??
 		uiFont20.drawString(xOffsetUI+px+20, yOffsetUI+py+25, ""+modelReader.getCurrentVictoryPoints(player) + "/" + modelReader.getMaxVictoryPoints());
+		//draw Village+ Score
 		setColor(colorMap.get(player));
 		GL11.glPushMatrix();
 		GL11.glTranslatef(xOffsetUI+px+90, yOffsetUI+py+42, 1);
@@ -399,8 +400,8 @@ public class GameGUI extends View implements Runnable{
 		drawSquareMid(30, 30);
 		GL11.glPopMatrix();
 		setColor(BLACK);
-		//draw VillageScore 0/??
-		uiFont20.drawString(xOffsetUI+px+100, yOffsetUI+py+25, ""+village[(int)pos] + "/" + 10);
+		uiFont20.drawString(xOffsetUI+px+100, yOffsetUI+py+25, ""+village[(int)pos] + "/" + modelReader.getMaxBuilding(BuildingType.Village));
+		//draw Town + Score
 		setColor(colorMap.get(player));
 		GL11.glPushMatrix();
 		GL11.glTranslatef(xOffsetUI+px+155, yOffsetUI+py+42, 1);
@@ -408,7 +409,9 @@ public class GameGUI extends View implements Runnable{
 		drawSquareMid(30,30);
 		GL11.glPopMatrix();
 		setColor(BLACK);
-		//draw TownScore
+		uiFont20.drawString(xOffsetUI+px+160, yOffsetUI+py+25, ""+town[(int)pos] + "/" + modelReader.getMaxBuilding(BuildingType.Town));
+		setColor(BLACK);
+		//draw Catapult + Score 
 		setColor(colorMap.get(player));
 		GL11.glPushMatrix();
 		GL11.glTranslatef(xOffsetUI+px+220, yOffsetUI+py+42, 1);
@@ -416,7 +419,9 @@ public class GameGUI extends View implements Runnable{
 		drawSquareMid(30,30);
 		GL11.glPopMatrix();
 		setColor(BLACK);
-		//draw CatapultScore
+		uiFont20.drawString(xOffsetUI+px+225, yOffsetUI+py+25, ""+catapult[(int)pos] + "/" + modelReader.getMaxCatapult());
+		setColor(BLACK);
+		// draw LongestRoad + Score
 		setColor(colorMap.get(player));
 		GL11.glPushMatrix();
 		GL11.glTranslatef(xOffsetUI+px+270, yOffsetUI+py+37, 1);
@@ -424,8 +429,9 @@ public class GameGUI extends View implements Runnable{
 		drawSquareMid(5,30);
 		GL11.glPopMatrix();
 		setColor(BLACK);
-		// draw LongestRoad (as int)
-		GL11.glPopMatrix();
+		uiFont20.drawString(xOffsetUI+px+275, yOffsetUI+py+25, ""+modelReader.calculateLongestRoads(player).size());
+		setColor(BLACK);
+		//GL11.glPopMatrix();
 	}
 
 	private void renderMarks() {
