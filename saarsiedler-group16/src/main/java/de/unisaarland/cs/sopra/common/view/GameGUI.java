@@ -387,6 +387,13 @@ public class GameGUI extends View implements Runnable{
 	private void renderPlayerInfo(Player player, long pos) {
 		int px = 10;
 		int py = 10+(int)pos*76;
+		
+		// Trenner
+		if (pos >0) {
+			setColor(BLACK);
+			renderUI("Trenner", xOffsetUI, yOffsetUI+py-10, 1, 410, 2);
+		}
+		
 		GL11.glPushMatrix();
 		String name = getName(player);
 		uiFont20.drawString(xOffsetUI+px+30, yOffsetUI+py-3, name);
@@ -743,6 +750,7 @@ public class GameGUI extends View implements Runnable{
 			uiTextureMap.put("Console", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/console.png")));
 			uiTextureMap.put("PlayerColor", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Player_Color.png")));
 			uiTextureMap.put("Cup", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Cup.png")));
+			uiTextureMap.put("Trenner", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/PlayerTrenner.png")));
 
 			
 			Clickable claimLongestRoad = new Clickable("ClaimLongestRoad", xOffsetUI+542, yOffsetUI+22, 2, 373, 77, false, true, true) {
