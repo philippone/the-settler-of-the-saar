@@ -209,10 +209,10 @@ public class GameGUI extends View implements Runnable{
 	}
 	
 	private void reinitiateUI() {
-		//TODO vervollständigen!
 		for (Clickable click : Clickable.getRenderList()) {
 			click.setActive(true);
 		}
+		Player me = modelReader.getMe();
 		if (modelReader.affordableSettlements(BuildingType.Village) == 0) 
 			buildVillage.setActive(false);
 		if (modelReader.affordableSettlements(BuildingType.Town) == 0) 
@@ -221,6 +221,14 @@ public class GameGUI extends View implements Runnable{
 			buildCatapult.setActive(false);
 		if (modelReader.affordableStreets() == 0) 
 			buildStreet.setActive(false);
+		if (modelReader.calculateLongestRoads(me).isEmpty())
+			claimLongestRoad.setActive(false);
+		if (modelReader.getCurrentVictoryPoints(me) < modelReader.getMaxVictoryPoints())
+			claimVictory.setActive(false);
+		if (modelReader.getRound() < 1)
+			endTurn.setActive(false);
+		if (me.getResources().size() >= 1)
+			offerTrade.setActive(false);
 	}
 
 	private void setColor(PlayerColors playerColor) {
