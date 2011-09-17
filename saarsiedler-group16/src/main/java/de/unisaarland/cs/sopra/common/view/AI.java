@@ -3,6 +3,9 @@ package de.unisaarland.cs.sopra.common.view;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.lwjgl.opengl.DisplayMode;
 
@@ -16,6 +19,7 @@ import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 import de.unisaarland.cs.st.saarsiedler.comm.Connection;
 import de.unisaarland.cs.st.saarsiedler.comm.GameEvent;
@@ -99,9 +103,17 @@ public class AI extends View{
 			byte[] number = ((GameEvent.MatchStart) ge).getNumbers();
 			m.matchStart(players, number);
 			Setting setting = new Setting(new DisplayMode(1024,580), true, PlayerColors.RED);
+			Map<Player, String> plToNames = new HashMap<Player, String>();
+			Iterator<Player> iterPl = m.getTableOrder().iterator();
+			for (long l : players) {  // erstellt Player-> names map
+				try {
+					System.out.println(c.getPlayerInfo(l).getName());
+					plToNames.put(iterPl.next(), c.getPlayerInfo(l).getName());
+				} catch (IOException e) {e.printStackTrace();}
+			}
 			GameGUI gameGUI = null;
 			try {
-				gameGUI = new GameGUI(m, null, null, setting, "K(A)I", true);
+				gameGUI = new GameGUI(m, null, , setting, "K(A)I", true);
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -264,7 +276,7 @@ public class AI extends View{
 	}
 
 	@Override
-	public void eventNewRound() {
+	public void eventNewRound(int number) {
 		if (modelReader.getMe() == modelReader.getCurrentPlayer()){
 			evaluateBestStrategy();
 			executeBestStrategy();

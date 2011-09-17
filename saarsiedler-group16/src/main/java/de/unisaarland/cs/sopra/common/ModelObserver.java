@@ -19,7 +19,7 @@ public interface ModelObserver {
 	public void eventPlayerLeft(long playerID);
 	public void eventRobber();
 	public void eventTrade(ResourcePackage resourcePackage);
-	public void eventNewRound();
+	public void eventNewRound(int number);
 	public void initTurn();
 	
 }

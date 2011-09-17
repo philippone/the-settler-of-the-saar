@@ -482,7 +482,15 @@ public class Model implements ModelReader, ModelWriter {
 	 * @return The List of Player sorted in TableOrder
 	 */
 	public List<Player> getTableOrder() {
-		return this.players;
+		if (!reversedPlayersList) {
+			return this.players;
+		}
+		else {
+			List<Player> tmp = new LinkedList<Player>(this.players);
+			Collections.reverse(tmp);
+			return tmp;
+		}
+			
 	}
 
 	@Override
@@ -1178,7 +1186,7 @@ public class Model implements ModelReader, ModelWriter {
 			ob.updateResources();
 		}
 		for (ModelObserver ob : modelObserver) {
-			ob.eventNewRound();
+			ob.eventNewRound(number);
 		}
 	}
 

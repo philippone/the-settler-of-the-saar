@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 
 import javax.swing.table.DefaultTableModel;
 
@@ -150,7 +152,7 @@ public class Client {
 		return new AI(model, new ControllerAdapter(controller, model));
 	}
 	
-	public static GameGUI buildGameGUI(Controller controller, Model model, long[] playerIDs, boolean AIisPlaying) {
+	public static GameGUI buildGameGUI(Controller controller, Model model, long[] playerIDs, boolean AIisPlaying, CyclicBarrier barrier) {
 		Map<Player, String> plToNames = new HashMap<Player, String>();
 		Iterator<Player> iterPl = model.getTableOrder().iterator();
 		for (long l : playerIDs) {  // erstellt Player-> names map
@@ -159,10 +161,7 @@ public class Client {
 				plToNames.put(iterPl.next(), connection.getPlayerInfo(l).getName());
 			} catch (IOException e) {e.printStackTrace();}
 		}
-		try {
-			return new GameGUI(model, new ControllerAdapter(controller, model), plToNames , setting, matchInfo.getTitle(), AIisPlaying);
-		} catch (Exception e) {e.printStackTrace();	}
-		throw new IllegalStateException("couldnt build GameGui");
+		return new GameGUI(model, new ControllerAdapter(controller, model), plToNames , setting, matchInfo.getTitle(), AIisPlaying, barrier);
 	}
 	
 	public static void changeSettings(DisplayMode mode, boolean fullscreen,PlayerColors playerColor, String name){
@@ -191,17 +190,19 @@ public class Client {
 		m.matchStart(players, number);
 		
 		GameGUI gameGUI = null;
-		
+		CyclicBarrier barrier = new CyclicBarrier(2);
 		try {
-			gameGUI = buildGameGUI(c, m, players, joinAsAI);
+			gameGUI = buildGameGUI(c, m, players, joinAsAI, barrier);
 		} catch (Exception e1) {e1.printStackTrace();
 		}
 		
 		clientGUI.setVisible(false); // versteckt die ClientGui
 		new Thread(gameGUI).start();
+		try {
+			barrier.await();
+		} catch (Exception e) {e.printStackTrace();}
 		
 		System.out.println("Das Spiel war erfolgreich! =)");
-//		new Thread(gui).start();
 		try {
 			Thread.sleep(5000);
 			c.mainLoop();

@@ -54,7 +54,7 @@ public class Controller {
 					e.getDirection());
 			Location settlement = new Location(i.getRow(), i.getCol(),
 					i.getDirection());
-			AttackResult r = connection.attack(e, i);
+			AttackResult r = ((GameEvent.Attack) gameEvent).attackResult();
 			modelWriter.attackSettlement(catapult, settlement, r);
 			break;
 			case MATCH_START:

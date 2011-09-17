@@ -22,6 +22,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -86,10 +88,6 @@ public class GameGUI extends View implements Runnable{
 	private static float aspectRatio;
 	private static int xOffset;
 	private static int xOffsetUI, yOffsetUI, zOffsetUI;
-	private static int viewportXwidth;
-	private static int viewportYwidth;
-	private static float screenToOpenGLX;
-	private static float screenToOpenGLY;
 	
 	private int[] village;
 	private int[] town;
@@ -106,10 +104,14 @@ public class GameGUI extends View implements Runnable{
 	private Clickable buildCatapult;
 	
 	private boolean observer;
+	private int lastNumberDiced;
 	
 	private Map<Player,PlayerColors> colorMap;
 	
-	public GameGUI(ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player, String> names, Setting setting, String gameTitle, boolean observer) throws Exception {
+	private CyclicBarrier barrier;
+
+	
+	public GameGUI(ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player, String> names, Setting setting, String gameTitle, boolean observer, CyclicBarrier barrier) {
 		super(modelReader, controllerAdapter);
 		this.modelReader.addModelObserver(this);
 		this.playerNames = names;
@@ -122,15 +124,12 @@ public class GameGUI extends View implements Runnable{
 		this.town = new int[names.size()];
 		this.road = new int[names.size()];
 		this.observer = observer;
+		this.barrier = barrier;
 		windowWidth = Setting.getDisplayMode().getWidth();
 		windowHeight = Setting.getDisplayMode().getHeight();
 		aspectRatio = ((float)windowWidth)/windowHeight;
-		viewportXwidth = (int)(870*aspectRatio);
-		viewportYwidth = 870;
-		screenToOpenGLX = ((float)viewportXwidth/windowWidth);
-		screenToOpenGLY = ((float)viewportYwidth/windowHeight);
 		xOffset = (int)(366*aspectRatio);
-		xOffsetUI = (int)((viewportXwidth-1075)/2);
+		xOffsetUI = (int)(((870*aspectRatio)-1075)/2);
 		yOffsetUI = 955;
 		zOffsetUI = -950;
 		//center to the area where the first field is drawn
@@ -174,6 +173,26 @@ public class GameGUI extends View implements Runnable{
 			this.road[i++] = streets.size() > 0 ? streets.get(0).size() : 0;
 		}
 	}
+	
+	private static int screenToOpenGLx (int zoom) {
+//		viewportXwidth = (int)(870*aspectRatio);
+//		viewportYwidth = 870;
+//		viewportXwidthZoom = (int)(870*aspectRatio);
+//		viewportYwidthZoom = 870;
+//		screenToOpenGLX = ((float)(870*aspectRatio)/windowWidth);
+//		screenToOpenGLY = ((float)870/windowHeight);
+			return (int)((float)(870*aspectRatio)/windowWidth);
+		}
+	
+	private static int screenToOpenGLy (int zoom) {
+//		viewportXwidth = (int)(870*aspectRatio);
+//		viewportYwidth = 870;
+//		viewportXwidthZoom = (int)(870*aspectRatio);
+//		viewportYwidthZoom = 870;
+//		screenToOpenGLX = ((float)(870*aspectRatio)/windowWidth);
+//		screenToOpenGLY = ((float)870/windowHeight);
+			return (int)((float)870/windowHeight);
+		}
 	
 	private void deactivateUI() {
 		for (Clickable click : Clickable.getRenderList()) {
@@ -411,9 +430,12 @@ public class GameGUI extends View implements Runnable{
 		// Trenner
 		if (pos >0) {
 			setColor(BLACK);
-			renderUI("Trenner", xOffsetUI, yOffsetUI+py-10, 1, 410, 2);
+			renderUI("Trenner", xOffsetUI, yOffsetUI+py-10, 2, 410, 2);
 		}
-		
+		if (player == modelReader.getCurrentPlayer()) {
+			
+			renderUI("Cup", xOffsetUI+px, yOffsetUI+py+20, 2, 30, 50);
+		}
 		GL11.glPushMatrix();
 		String name = getName(player);
 		uiFont20.drawString(xOffsetUI+px+30, yOffsetUI+py-3, name);
@@ -579,6 +601,15 @@ public class GameGUI extends View implements Runnable{
 		   Iterator<Intersection> iterI = modelReader.getIntersectionIterator();
 		   while (iterI.hasNext()) 
 			   renderIntersection(iterI.next());
+		   
+		   GL11.glPushMatrix();
+		   //GL11.glColor4f(0.3f, 0.3f, 0.3f, 0.3f); // (Mouse.getX()*screenToOpenGLX)/, ((windowHeight-Mouse.getY())*screenToOpenGLY+380)*(zOffsetUI/z), maxX
+		   GL11.glTranslatef(Mouse.getX()+minX, (windowHeight-Mouse.getY())+minY, maxX + z);
+		   intersectionMarkTexture.bind();
+		   drawSquareMid(300, 300);
+		   //setColor(BLACK);
+		   GL11.glPopMatrix();
+		   
 		   //Render Selections
 		   renderMarks();
 		   //Render UI
@@ -611,6 +642,7 @@ public class GameGUI extends View implements Runnable{
 			   if (i > 4) break;
 			   renderPlayerInfo(act, i++);
 		   }
+		   
 		   GL11.glPopMatrix();
 		   //Render Fonts on UI
 		   GL11.glPushMatrix();
@@ -624,6 +656,8 @@ public class GameGUI extends View implements Runnable{
 		   GL11.glPushMatrix();
 		   GL11.glTranslatef(xOffset+xOffsetUI, yOffsetUI, zOffsetUI);
 		   uiFont20.drawString(640, 75, "Round "+modelReader.getRound(), Color.black);
+		   uiFont20.drawString(640, 100, ""+ lastNumberDiced + " was diced", Color.black);
+		   uiFont20.drawString(640, 125, "It's "+ getName(modelReader.getCurrentPlayer()) + "'s turn", Color.black);
 		   GL11.glPopMatrix();
 		   }
 
@@ -705,10 +739,11 @@ public class GameGUI extends View implements Runnable{
 	}
 
 	@Override
-	public void eventNewRound() {
+	public void eventNewRound(int number) {
 		if (modelReader.getCurrentPlayer() == modelReader.getMe() && !observer) {
 			reinitiateUI();
 		}
+		this.lastNumberDiced = number;
 	}
 
 	@Override
@@ -724,6 +759,10 @@ public class GameGUI extends View implements Runnable{
 	@Override
 	public void run() {
 		init();
+		try {
+			barrier.await();
+		} catch (Exception e) {e.printStackTrace();} 
+		
 	    boolean finished = false;
 		while (!finished) {
 			  handleInput();
@@ -813,7 +852,7 @@ public class GameGUI extends View implements Runnable{
 			uiTextureMap.put("PlayerColor", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Player_Color.png")));
 			uiTextureMap.put("Cup", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Cup.png")));
 			uiTextureMap.put("Trenner", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/PlayerTrenner.png")));
-
+			uiTextureMap.put("PlayerBackgroundHighlight", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/PlayerBackgroundHighlight.png")));
 			
 			claimLongestRoad = new Clickable("ClaimLongestRoad", xOffsetUI+542, yOffsetUI+22, 2, 373, 77, false, true, true) {
 				@Override
@@ -945,12 +984,14 @@ public class GameGUI extends View implements Runnable{
 		int my = Mouse.getY();
 		
 		if (Mouse.isButtonDown(0)) {
-			for (Clickable c : Clickable.executeModelClicks(mx*screenToOpenGLX, (windowHeight-my)*screenToOpenGLY+380)) {
+			for (Clickable c : Clickable.executeModelClicks(mx*screenToOpenGLx(zOffsetUI), (windowHeight-my)*screenToOpenGLy(zOffsetUI)+380)) {
 				controllerAdapter.addGuiEvent(c);
 			}
-			for (Clickable c : Clickable.executeUIClicks(mx*screenToOpenGLX, (windowHeight-my)*screenToOpenGLY+380)) {
+			for (Clickable c : Clickable.executeUIClicks(mx*screenToOpenGLx(zOffsetUI), (windowHeight-my)*screenToOpenGLy(zOffsetUI)+380)) {
 				c.execute();
 			}
+			//TODO hier kommen die sachen mit der selektion hin- wenn in mode intersection koordinatenumrechnung und validierung
+			
 		}
 		
 		if (Mouse.isInsideWindow()) {
@@ -1130,12 +1171,15 @@ public class GameGUI extends View implements Runnable{
 		model.newRound(2);
 		
 		model.buildStreet(new Location(1,2,2));
+		model.buildStreet(new Location(2,1,1));
 		
 //		Setting setting = new Setting(Display.getDesktopDisplayMode(), true, PlayerColors.RED);
 		Setting setting = new Setting(new DisplayMode(1024, 550), false, PlayerColors.RED);  /// Display.getDesktopDisplayMode()
 		
-		GameGUI gameGUI = new GameGUI(model, null, names, setting, "TestSpiel", false);
+		CyclicBarrier barrier = new CyclicBarrier(2);
+		GameGUI gameGUI = new GameGUI(model, null, names, setting, "TestSpiel", false, barrier);
 		new Thread(gameGUI).start();
+		barrier.await();
 	}
 	
 	public static void saveFile(String filename, InputStream inputStr) throws IOException {
@@ -1198,7 +1242,7 @@ public class GameGUI extends View implements Runnable{
 		Setting setting = new Setting(new DisplayMode(1024,580), true, PlayerColors.RED);
 		GameGUI gameGUI = null;
 		try {
-			gameGUI = new GameGUI(model, null, null, setting);
+			gameGUI = new GameGUI(model, null, null, setting, true);
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
