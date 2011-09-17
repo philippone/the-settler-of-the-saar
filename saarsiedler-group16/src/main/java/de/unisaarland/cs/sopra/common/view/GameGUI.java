@@ -22,7 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
 import org.lwjgl.input.Keyboard;
@@ -41,11 +40,20 @@ import org.newdawn.slick.opengl.TextureLoader;
 import de.unisaarland.cs.sopra.common.PlayerColors;
 import de.unisaarland.cs.sopra.common.Setting;
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
-import de.unisaarland.cs.sopra.common.model.*;
+import de.unisaarland.cs.sopra.common.model.BuildingType;
+import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.FieldType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
+import de.unisaarland.cs.sopra.common.model.Location;
+import de.unisaarland.cs.sopra.common.model.Model;
+import de.unisaarland.cs.sopra.common.model.ModelReader;
+import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.Point;
 import de.unisaarland.cs.sopra.common.model.Resource;
-import de.unisaarland.cs.st.saarsiedler.comm.*;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
+import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
+import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 
 public class GameGUI extends View implements Runnable{
 

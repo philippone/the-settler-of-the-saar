@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
 import javax.swing.table.DefaultTableModel;
@@ -23,10 +22,14 @@ import de.unisaarland.cs.sopra.common.model.ModelWriter;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.view.AI;
 import de.unisaarland.cs.sopra.common.view.GameGUI;
-import de.unisaarland.cs.st.saarsiedler.comm.*;
+import de.unisaarland.cs.st.saarsiedler.comm.Connection;
+import de.unisaarland.cs.st.saarsiedler.comm.GameEvent;
 import de.unisaarland.cs.st.saarsiedler.comm.GameEvent.EventType;
 import de.unisaarland.cs.st.saarsiedler.comm.GameEvent.MatchStart;
-import de.unisaarland.cs.st.saarsiedler.comm.results.*;
+import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
+import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
+import de.unisaarland.cs.st.saarsiedler.comm.results.ChangeReadyResult;
+import de.unisaarland.cs.st.saarsiedler.comm.results.JoinResult;
 
 public class Client {
 	
