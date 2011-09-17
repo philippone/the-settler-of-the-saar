@@ -433,8 +433,9 @@ public class GameGUI extends View implements Runnable{
 			renderUI("Trenner", xOffsetUI, yOffsetUI+py-10, 2, 410, 2);
 		}
 		if (player == modelReader.getCurrentPlayer()) {
-			
-			renderUI("Cup", xOffsetUI+px, yOffsetUI+py+20, 2, 30, 50);
+			GL11.glColor4f(0.15f, 0.15f, 0.15f, 0.15f);
+			renderUI("PlayerBackgroundHighlight", xOffsetUI+px-5, yOffsetUI+py-10, 2, 440, 80);
+			setColor(BLACK);
 		}
 		GL11.glPushMatrix();
 		String name = getName(player);
@@ -695,6 +696,7 @@ public class GameGUI extends View implements Runnable{
 	@Override
 	public void updateResources() {
 		//TODO: implement it!
+		//überprüfen ob bau-
 	}
 
 	@Override
@@ -731,11 +733,13 @@ public class GameGUI extends View implements Runnable{
 	@Override
 	public void eventRobber() {
 		//TODO: implement it!
+		// in selektionsmodus für felder gehn und evtl nachricht auf console
 	}
 
 	@Override
 	public void eventTrade(ResourcePackage resourcePackage) {
 		//TODO: implement it!
+		// handel auf console ausgeben und 2 knöpfe einblenden für annehmen ablehnen
 	}
 
 	@Override

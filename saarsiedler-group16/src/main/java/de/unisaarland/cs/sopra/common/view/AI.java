@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.CyclicBarrier;
 
 import org.lwjgl.opengl.DisplayMode;
 
@@ -111,15 +112,16 @@ public class AI extends View{
 					plToNames.put(iterPl.next(), c.getPlayerInfo(l).getName());
 				} catch (IOException e) {e.printStackTrace();}
 			}
+			CyclicBarrier barrier = new CyclicBarrier(2);
 			GameGUI gameGUI = null;
 			try {
-				gameGUI = new GameGUI(m, null, , setting, "K(A)I", true);
+				gameGUI = new GameGUI(m, null, plToNames, setting, "K(A)I", true, barrier);
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			new Thread(gameGUI).start();
-			Thread.sleep(5000);
+			barrier.await();
 			cont.mainLoop();
 			System.out.println("Das Spiel war erfolgreich! =)");
 		} catch (Exception e){
