@@ -71,7 +71,7 @@ public class TestModelObserver implements ModelObserver {
 		}
 
 		@Override
-		public void eventNewRound() {
+		public void eventNewRound(int number) {
 			this.eventNewRoundCalled = true;
 		}
 
