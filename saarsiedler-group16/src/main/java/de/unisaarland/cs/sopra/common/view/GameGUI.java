@@ -431,7 +431,7 @@ public class GameGUI extends View implements Runnable{
 		GL11.glPopMatrix();
 		setColor(BLACK);
 		// draw LongestRoad (as int)
-		uiFont20.drawString(xOffsetUI+px+262, yOffsetUI+py+23, ""+road[(int)pos]);
+		uiFont20.drawString(xOffsetUI+px+277, yOffsetUI+py+24, ""+road[(int)pos]);
 		// draw seperation for players
 		
 		GL11.glPopMatrix();
