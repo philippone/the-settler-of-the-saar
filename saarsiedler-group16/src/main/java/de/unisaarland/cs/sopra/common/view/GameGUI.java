@@ -383,56 +383,129 @@ public class GameGUI extends View implements Runnable{
 	}
 
 	private void renderPath(Path p) {
+		if (p.hasStreet()) {
+			renderStreet(p);
+		}
+		if (p.hasCatapult()) {
+			renderCatapult(p);
+		}
+		if (p.getHarborType() != null) {
+			renderHarbor(p);
+		}
+	}
+	
+	private void renderHarbor(Path p) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void renderCatapult(Path p) {
 		int px = 0;
 		int py = 0;
 		int po = 0;
-		if (p.hasStreet() || p.hasCatapult()) {
-			   switch(p.getLocation().getY()%2) {
-				   case 0:
-					   px = p.getLocation().getX()*250;
-					   py = p.getLocation().getY()*215; 
-					   break;
-				   case 1:
-					   px = p.getLocation().getX()*250-125;
-					   py = p.getLocation().getY()*215;
-					   break;
-			   }
-			  switch(p.getLocation().getOrientation()) {
-				   case 0:
-					   px+=67;
-					   py+=-107;
-					   po+=30;
-					   break;
-				   case 1:
-					   px+=120;
-					   py+=14;
-					   po+=90;
-					   break;
-				   case 2:
-					   px+=40;
-					   py+=118;
-					   po+=150;
-					   break;
-				   case 3:
-					   px+=-82;
-					   py+=95;
-					   po+=210;
-					   break;
-				   case 4:
-					   px+=-128;
-					   py+=-21;
-					   po+=270;
-					   break;
-				   case 5:
-					   px+=-52;
-					   py+=-115;
-					   po+=330;
-					   break;
-				   default:
-					   throw new IllegalArgumentException();
-			   }
-		}
-		if (p.hasStreet()) {	
+	
+		  switch(p.getLocation().getY()%2) {
+			   case 0:
+				   px = p.getLocation().getX()*250;
+				   py = p.getLocation().getY()*215; 
+				   break;
+			   case 1:
+				   px = p.getLocation().getX()*250-125;
+				   py = p.getLocation().getY()*215;
+				   break;
+		   }
+		  switch(p.getLocation().getOrientation()) {
+			   case 0:
+				   px+=67;
+				   py+=-107;
+				   po+=30;
+				   break;
+			   case 1:
+				   px+=120;
+				   py+=14;
+				   po+=90;
+				   break;
+			   case 2:
+				   px+=40;
+				   py+=118;
+				   po+=150;
+				   break;
+			   case 3:
+				   px+=-82;
+				   py+=95;
+				   po+=210;
+				   break;
+			   case 4:
+				   px+=-128;
+				   py+=-21;
+				   po+=270;
+				   break;
+			   case 5:
+				   px+=-52;
+				   py+=-115;
+				   po+=330;
+				   break;
+			   default:
+				   throw new IllegalArgumentException();
+		   }
+			GL11.glPushMatrix();
+			GL11.glTranslatef(px+x, py+y, 1+z);
+		    catapultTexture.bind();
+		    setColor(colorMap.get(p.getCatapultOwner()));
+		    drawSquareMid(70, 70);
+		    GL11.glPopMatrix();
+	}
+	
+	
+	private void renderStreet(Path p) {
+		int px = 0;
+		int py = 0;
+		int po = 0;
+	
+		  switch(p.getLocation().getY()%2) {
+			   case 0:
+				   px = p.getLocation().getX()*250;
+				   py = p.getLocation().getY()*215; 
+				   break;
+			   case 1:
+				   px = p.getLocation().getX()*250-125;
+				   py = p.getLocation().getY()*215;
+				   break;
+		   }
+		  switch(p.getLocation().getOrientation()) {
+			   case 0:
+				   px+=67;
+				   py+=-107;
+				   po+=30;
+				   break;
+			   case 1:
+				   px+=120;
+				   py+=14;
+				   po+=90;
+				   break;
+			   case 2:
+				   px+=40;
+				   py+=118;
+				   po+=150;
+				   break;
+			   case 3:
+				   px+=-82;
+				   py+=95;
+				   po+=210;
+				   break;
+			   case 4:
+				   px+=-128;
+				   py+=-21;
+				   po+=270;
+				   break;
+			   case 5:
+				   px+=-52;
+				   py+=-115;
+				   po+=330;
+				   break;
+			   default:
+				   throw new IllegalArgumentException();
+		   }
 			GL11.glPushMatrix();
 			GL11.glTranslatef(px+x, py+y, 1+z);
 			GL11.glRotatef(po, 0, 0, 1);
@@ -440,18 +513,8 @@ public class GameGUI extends View implements Runnable{
 		    setColor(colorMap.get(p.getStreetOwner()));
 		    drawSquareMid(170,20);
 		    GL11.glPopMatrix();
-		}
-		if (p.hasCatapult()) {	
-			GL11.glPushMatrix();
-			GL11.glTranslatef(px+x, py+y, 1+z);
-		    catapultTexture.bind();
-		    setColor(colorMap.get(p.getCatapultOwner()));
-		    drawSquareMid(70, 70);
-		    GL11.glPopMatrix();
-		}
 	}
-	
-	
+
 	private void renderPlayerInfo(Player player, long pos) {
 		int px = 10;
 		int py = 10+(int)pos*76;
