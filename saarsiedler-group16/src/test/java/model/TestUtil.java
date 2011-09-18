@@ -6,10 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.unisaarland.cs.sopra.common.ModelObserver;
-import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.Board;
 import de.unisaarland.cs.sopra.common.model.Model;
-import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.st.saarsiedler.comm.Connection;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
