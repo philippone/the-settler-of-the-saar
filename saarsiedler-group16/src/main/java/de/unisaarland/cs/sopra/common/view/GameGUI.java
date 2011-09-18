@@ -61,16 +61,20 @@ public class GameGUI extends View implements Runnable{
 	private String gameTitle;
 	private Setting setting;
 	private Map<FieldType,Texture> fieldTextureMap;
-	private HashMap<BuildingType, Texture> intersectionTextureMap;
 	private Map<Integer,Texture> numberTextureMap;
 	private Map<String,Texture> uiTextureMap;
 	private List<Field> renderFieldList;
 	private Texture streetTexture;
 	private Texture catapultTexture;
+	private Texture catapultPCTexture;
 	private Texture robberTexture;
 	private Texture pathMarkTexture;
 	private Texture fieldMarkTexture;
 	private Texture intersectionMarkTexture;
+	private Texture villageTexture;
+	private Texture villagePCTexture;
+	private Texture townTexture;
+	private Texture townPCTexture;
 	private int x,y,z;
 	private int maxX, maxY, maxZ;
 	private int minX, minY, minZ;
@@ -363,10 +367,24 @@ public class GameGUI extends View implements Runnable{
 					   throw new IllegalArgumentException();
 			   }
 			   GL11.glPushMatrix();
-			   intersectionTextureMap.get(i.getBuildingType()).bind();
-			   setColor(colorMap.get(i.getOwner()));
-			   GL11.glTranslatef(ix+x, iy+y, 1+z);
-			   drawSquareMid(125, 125);
+			   switch (i.getBuildingType()) {
+			   case Village:
+				   villagePCTexture.bind();
+				   setColor(colorMap.get(i.getOwner()));
+				   GL11.glTranslatef(ix+x, iy+y, 1+z);
+				   drawSquareMid(125, 125);
+				   villageTexture.bind();
+				   drawSquareMid(125, 125);
+				   break;
+			   case Town:
+				   townPCTexture.bind();
+				   setColor(colorMap.get(i.getOwner()));
+				   GL11.glTranslatef(ix+x, iy+y, 1+z);
+				   drawSquareMid(125, 125);
+				   townTexture.bind();
+				   drawSquareMid(125, 125);
+				   break;
+			   }
 			   GL11.glPopMatrix();
 		}
 	}
@@ -467,19 +485,23 @@ public class GameGUI extends View implements Runnable{
 		setColor(colorMap.get(player));
 		GL11.glPushMatrix();
 		GL11.glTranslatef(xOffsetUI+px+90, yOffsetUI+py+39, 1);
-		intersectionTextureMap.get(BuildingType.Village).bind();
+		villagePCTexture.bind();
+		drawSquareMid(30, 30);
+		setColor(BLACK);
+		villageTexture.bind();
 		drawSquareMid(30, 30);
 		GL11.glPopMatrix();
-		setColor(BLACK);
 		//draw VillageScore 0/??
 		uiFont20.drawString(xOffsetUI+px+100, yOffsetUI+py+25, ""+village[(int)pos] + "/" + modelReader.getMaxBuilding(BuildingType.Village));
 		setColor(colorMap.get(player));
 		GL11.glPushMatrix();
 		GL11.glTranslatef(xOffsetUI+px+155, yOffsetUI+py+39, 1);
-		intersectionTextureMap.get(BuildingType.Town).bind();
+		townPCTexture.bind();
+		drawSquareMid(30,30);
+		setColor(BLACK);
+		townTexture.bind();
 		drawSquareMid(30,30);
 		GL11.glPopMatrix();
-		setColor(BLACK);
 		//draw TownScore
 		uiFont20.drawString(xOffsetUI+px+168, yOffsetUI+py+25, ""+town[(int)pos] + "/" + modelReader.getMaxBuilding(BuildingType.Town));
 		setColor(colorMap.get(player));
@@ -862,9 +884,6 @@ public class GameGUI extends View implements Runnable{
 			fieldTextureMap.put(FieldType.HILLS, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Hills.png")));
 			fieldTextureMap.put(FieldType.PASTURE, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Pasture.png")));
 			fieldTextureMap.put(FieldType.WATER, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Water.png")));
-			intersectionTextureMap = new HashMap<BuildingType,Texture>();
-			intersectionTextureMap.put(BuildingType.Village, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Village.png")));
-			intersectionTextureMap.put(BuildingType.Town, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Town.png")));
 			
 			numberTextureMap = new HashMap<Integer,Texture>();
 			numberTextureMap.put(2, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/2.png")));
@@ -880,10 +899,16 @@ public class GameGUI extends View implements Runnable{
 		
 			streetTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Street.png"));
 			catapultTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Catapult.png"));
+			catapultTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Catapult.png"));
 			robberTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Robber.png"));
 			fieldMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Mark.png"));
 			intersectionMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Mark.png"));
 			pathMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Mark.png"));
+			villageTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Village.png"));
+			villagePCTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/VillagePC.png"));
+			townTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Town.png"));
+			townPCTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/TownPC.png"));
+			
 			
 			uiTextureMap = new HashMap<String,Texture>();
 			uiTextureMap.put("Background", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/menue_background.png")));
@@ -905,8 +930,9 @@ public class GameGUI extends View implements Runnable{
 			uiTextureMap.put("Cup", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Cup.png")));
 			uiTextureMap.put("Trenner", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/PlayerTrenner.png")));
 			uiTextureMap.put("PlayerBackgroundHighlight", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/PlayerBackgroundHighlight.png")));
+			uiTextureMap.put("Quit", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_Quit.png")));
 			
-			claimLongestRoad = new Clickable("ClaimLongestRoad", xOffsetUI+542, yOffsetUI+22, 2, 373, 77, false, true, true) {
+			claimLongestRoad = new Clickable("ClaimLongestRoad", xOffsetUI+450, yOffsetUI+22, 2, 373, 77, false, true, true) {
 				@Override
 				public void execute() {
 					// vorerst gerade die erste longestRoad
@@ -915,14 +941,14 @@ public class GameGUI extends View implements Runnable{
 				}
 			};
 
-			claimVictory = new Clickable("ClaimVictory", xOffsetUI+775, yOffsetUI+22, 2, 185, 77, false, false, true) {
+			claimVictory = new Clickable("ClaimVictory", xOffsetUI+673, yOffsetUI+22, 2, 185, 77, false, false, true) {
 				@Override
 				public void execute() {
 					controllerAdapter.claimVictory();
 				}
 			};
 			
-			endTurn = new Clickable("EndTurn", xOffsetUI+930, yOffsetUI+22, 2, 185, 77, false, false, true) {
+			endTurn = new Clickable("EndTurn", xOffsetUI+828, yOffsetUI+22, 2, 185, 77, false, false, true) {
 				@Override
 				public void execute() {
 					controllerAdapter.endTurn();
@@ -1147,8 +1173,7 @@ public class GameGUI extends View implements Runnable{
 //			maxX-=10;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
-			Display.destroy();
-			System.exit(0);
+			selectionMode = NONE;
 		}
 	}
 

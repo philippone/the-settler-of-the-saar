@@ -199,6 +199,9 @@ public class Client {
 		Model m = buildModel();
 		Controller c = buildController(m);
 		
+		if(joinAsAI)
+			 buildAI(c, m);
+		
 		long[] players = startEvent.getPlayerIds();
 		byte[] number = startEvent.getNumbers();
 		m.matchStart(players, number);
@@ -215,9 +218,6 @@ public class Client {
 		try {
 			barrier.await();
 		} catch (Exception e) {e.printStackTrace();}
-		
-		if(joinAsAI)
-			 buildAI(c, m);
 		
 		System.out.println("Das Spiel war erfolgreich! =)");
 		try {
