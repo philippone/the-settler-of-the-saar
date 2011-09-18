@@ -243,7 +243,7 @@ public class GameGUI extends View implements Runnable{
 	private void setColor(PlayerColors playerColor) {
 		switch(playerColor) {
 		case BLUE:
-			GL11.glColor4f(0.50f,0.50f,1.0f,1.0f); break;
+			GL11.glColor4f(0.2f,0.2f,1.0f,1.0f); break;
 		case RED:
 			GL11.glColor4f(1.0f,0.0f,0.0f,1.0f); break;
 		case YELLOW:
@@ -308,15 +308,16 @@ public class GameGUI extends View implements Runnable{
 		   if (f.hasRobber()) {
 			   if(f.getFieldType().equals(FieldType.DESERT) || f.getFieldType().equals(FieldType.WATER)) {
 				   drawSquareMid(300, 300);
+				   GL11.glTranslatef(20, 0, 0);
 				   robberTexture.bind();
-				   drawSquareMid(60, 60);
+				   drawSquareMid(160, 160);
 			   }
 			   else {
 			   drawSquareMid(300, 300);
-			   GL11.glTranslatef(-50, 0, 0);
+			   GL11.glTranslatef(-30, 20, 0);
 			   robberTexture.bind();
-			   drawSquareMid(60, 60);
-			   GL11.glTranslatef(100, 0, 0);
+			   drawSquareMid(160, 160);
+			   GL11.glTranslatef(60, -20, 0);
 			   }
 		   }
 		   else {
@@ -927,20 +928,20 @@ public class GameGUI extends View implements Runnable{
 			if (modelReader.getMe().getResources().size() > 7) {
 				//TODO: handle return resources über gamemode bzw erstmal über swing!
 			}
-			selectionPoint = Model.getLocationListField(modelReader.getRobberFields());
-			selectionMode = ROBBER_SELECT;
-			console4 = "You have to select a Robber to move!";
+			if (modelReader.getMe() == modelReader.getCurrentPlayer()) {
+				selectionPoint = Model.getLocationListField(modelReader.getRobberFields());
+				selectionMode = ROBBER_SELECT;
+				console4 = "You have to select a Robber to move!";
+			}
 		}
 	}
 
-	
 	@Override
 	public void eventTrade(ResourcePackage resourcePackage) {
 		//TODO: implement it!
 		// handel auf console ausgeben und 2 knöpfe einblenden für annehmen ablehnen
 	}
 
-	
 	@Override
 	public void eventNewRound(int number) {
 		if (modelReader.getCurrentPlayer() == modelReader.getMe() && !observer
@@ -963,7 +964,7 @@ public class GameGUI extends View implements Runnable{
 
 	@Override
 	public void eventPlayerLeft(long playerID) {
-		//TODO: implement it!
+		playerNames.put(modelReader.getPlayerMap().get(playerID),"Left the Game");
 	}
 	
 	
@@ -1037,7 +1038,7 @@ public class GameGUI extends View implements Runnable{
 		
 			streetTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Street.png"));
 			catapultTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Catapult.png"));
-			robberTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Robber.png"));
+			robberTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Robber.png"));
 			fieldMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Mark.png"));
 			intersectionMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Mark.png"));
 			intersectionMarkRedTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/MarkRed.png"));
@@ -1723,11 +1724,11 @@ public class GameGUI extends View implements Runnable{
 		model.buildStreet(new Location(2,1,1));
 		
 //		model.getPath(new Location(-1,-1,0)).createStreet(model.getMe());
-		model.getPath(new Location(-1,-1,1)).createStreet(model.getMe());
-		model.getPath(new Location(-1,-1,2)).createStreet(model.getMe());
-		model.getPath(new Location(-1,-1,3)).createStreet(model.getMe());
-		model.getPath(new Location(-1,-1,4)).createStreet(model.getMe());
-		model.getPath(new Location(-1,-1,5)).createStreet(model.getMe());
+//		model.getPath(new Location(-1,-1,1)).createStreet(model.getMe());
+//		model.getPath(new Location(-1,-1,2)).createStreet(model.getMe());
+//		model.getPath(new Location(-1,-1,3)).createStreet(model.getMe());
+//		model.getPath(new Location(-1,-1,4)).createStreet(model.getMe());
+//		model.getPath(new Location(-1,-1,5)).createStreet(model.getMe());
 		
 //		model.getPath(new Location(-1,-1,0)).createCatapult(model.getMe());
 //		model.getPath(new Location(-1,-1,1)).createCatapult(model.getMe());
@@ -1743,6 +1744,7 @@ public class GameGUI extends View implements Runnable{
 //		model.getIntersection(new Location(-1,-1,4)).createBuilding(BuildingType.Town, model.getMe());
 //		model.getIntersection(new Location(-1,-1,5)).createBuilding(BuildingType.Town, model.getMe());
 		
+//		model.getField(new Point(2,2)).setRobber(true);
 		
 //		Setting setting = new Setting(Display.getDesktopDisplayMode(), true, PlayerColors.RED);
 		Setting setting = new Setting(new DisplayMode(1024, 550), false, PlayerColors.RED);  /// Display.getDesktopDisplayMode()
