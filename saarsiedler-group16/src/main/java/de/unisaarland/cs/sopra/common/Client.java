@@ -174,19 +174,30 @@ public class Client {
 	
 	public static void initializeMatch() {					
 		GameEvent event = null;
-		try {
-			event = connection.getNextEvent(0);
-		} catch (Exception e) {e.printStackTrace();	}
-		//wenn event hier noch null ist, dann wurde kein event geliefert
-		if(event==null) throw new IllegalStateException("kein event erhalten");
-		if(!(event.getType()!=EventType.MATCH_END)) throw new IllegalArgumentException("sollte ein MatchStart liefert");
-		MatchStart startEvent = ((MatchStart)event);
+		boolean jetztgehtslos = false;
+		MatchStart startEvent = null;
+		while(!jetztgehtslos) {
+			try {
+				event = connection.getNextEvent(0);
+			} catch (Exception e) {e.printStackTrace();	}
+			if (event==null) {
+				throw new IllegalStateException("kein event erhalten");
+			}
+			else if ((event.getType()==EventType.MATCH_START)) {
+				startEvent = ((MatchStart)event);
+				jetztgehtslos = true;
+			}
+			else if ((event.getType()==EventType.PLAYER_LEFT)) {
+				//TODO: handle player left
+			}
+			else {
+				System.out.println(event);
+				throw new IllegalArgumentException("illegal event returned");
+			}
+		}
 		
 		Model m = buildModel();
 		Controller c = buildController(m);
-		
-		if(joinAsAI)
-			 buildAI(c, m);
 		
 		long[] players = startEvent.getPlayerIds();
 		byte[] number = startEvent.getNumbers();
@@ -205,9 +216,11 @@ public class Client {
 			barrier.await();
 		} catch (Exception e) {e.printStackTrace();}
 		
+		if(joinAsAI)
+			 buildAI(c, m);
+		
 		System.out.println("Das Spiel war erfolgreich! =)");
 		try {
-			Thread.sleep(5000);
 			c.mainLoop();
 		} catch (Exception e) {e.printStackTrace();
 		}

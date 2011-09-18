@@ -341,22 +341,22 @@ public class GameGUI extends View implements Runnable{
 					   iy+=-135;
 					   break;
 				   case 1:
-					   ix+=125;
+					   ix+=123;
 					   iy+=-70;
 					   break;
 				   case 2:
-					   ix+=125;
+					   ix+=123;
 					   iy+=80;
 					   break;
 				   case 3:
 					   iy+=140;
 					   break;
 				   case 4:
-					   ix+=-120;
+					   ix+=-122;
 					   iy+=80;
 					   break;
 				   case 5:
-					   ix+=-120;
+					   ix+=-122;
 					   iy+=-70;
 					   break;
 				   default:
@@ -366,7 +366,7 @@ public class GameGUI extends View implements Runnable{
 			   intersectionTextureMap.get(i.getBuildingType()).bind();
 			   setColor(colorMap.get(i.getOwner()));
 			   GL11.glTranslatef(ix+x, iy+y, 1+z);
-			   drawSquareMid(180, 180);
+			   drawSquareMid(125, 125);
 			   GL11.glPopMatrix();
 		}
 	}
@@ -435,10 +435,11 @@ public class GameGUI extends View implements Runnable{
 			GL11.glTranslatef(px+x, py+y, 1+z);
 		    catapultTexture.bind();
 		    setColor(colorMap.get(p.getCatapultOwner()));
-		    drawSquareMid(140, 140);
+		    drawSquareMid(70, 70);
 		    GL11.glPopMatrix();
 		}
 	}
+	
 	
 	private void renderPlayerInfo(Player player, long pos) {
 		int px = 10;
@@ -465,22 +466,22 @@ public class GameGUI extends View implements Runnable{
 		uiFont20.drawString(xOffsetUI+px+22, yOffsetUI+py+25, ""+modelReader.getCurrentVictoryPoints(player) + "/" + modelReader.getMaxVictoryPoints());
 		setColor(colorMap.get(player));
 		GL11.glPushMatrix();
-		GL11.glTranslatef(xOffsetUI+px+90, yOffsetUI+py+42, 1);
+		GL11.glTranslatef(xOffsetUI+px+90, yOffsetUI+py+39, 1);
 		intersectionTextureMap.get(BuildingType.Village).bind();
 		drawSquareMid(30, 30);
 		GL11.glPopMatrix();
 		setColor(BLACK);
 		//draw VillageScore 0/??
-		uiFont20.drawString(xOffsetUI+px+99, yOffsetUI+py+25, ""+village[(int)pos] + "/" + modelReader.getMaxBuilding(BuildingType.Village));
+		uiFont20.drawString(xOffsetUI+px+100, yOffsetUI+py+25, ""+village[(int)pos] + "/" + modelReader.getMaxBuilding(BuildingType.Village));
 		setColor(colorMap.get(player));
 		GL11.glPushMatrix();
-		GL11.glTranslatef(xOffsetUI+px+155, yOffsetUI+py+42, 1);
+		GL11.glTranslatef(xOffsetUI+px+155, yOffsetUI+py+39, 1);
 		intersectionTextureMap.get(BuildingType.Town).bind();
 		drawSquareMid(30,30);
 		GL11.glPopMatrix();
 		setColor(BLACK);
 		//draw TownScore
-		uiFont20.drawString(xOffsetUI+px+163, yOffsetUI+py+25, ""+town[(int)pos] + "/" + modelReader.getMaxBuilding(BuildingType.Town));
+		uiFont20.drawString(xOffsetUI+px+168, yOffsetUI+py+25, ""+town[(int)pos] + "/" + modelReader.getMaxBuilding(BuildingType.Town));
 		setColor(colorMap.get(player));
 		GL11.glPushMatrix();
 		GL11.glTranslatef(xOffsetUI+px+220, yOffsetUI+py+42, 1);
@@ -492,14 +493,13 @@ public class GameGUI extends View implements Runnable{
 		uiFont20.drawString(xOffsetUI+px+230, yOffsetUI+py+25, ""+catapult[(int)pos] + "/" + modelReader.getMaxCatapult());
 		setColor(colorMap.get(player));
 		GL11.glPushMatrix();
-		GL11.glTranslatef(xOffsetUI+px+270, yOffsetUI+py+37, 1);
+		GL11.glTranslatef(xOffsetUI+px+270, yOffsetUI+py+38, 1);
 		streetTexture.bind();
 		drawSquareMid(5,30);
 		GL11.glPopMatrix();
 		setColor(BLACK);
 		// draw LongestRoad (as int)
-		uiFont20.drawString(xOffsetUI+px+277, yOffsetUI+py+24, ""+road[(int)pos]);
-		// draw seperation for players
+		uiFont20.drawString(xOffsetUI+px+277, yOffsetUI+py+25, ""+road[(int)pos]);
 		
 		GL11.glPopMatrix();
 	}
@@ -575,7 +575,7 @@ public class GameGUI extends View implements Runnable{
 			    intersectionMarkTexture.bind();
 			    setColor(BLACK);
 			    GL11.glTranslatef(ix+x, iy+y, 3+z);
-			    drawSquareMid(50, 50);
+			    drawSquareMid(150, 150);
 			    GL11.glPopMatrix();
 			}
 			break;
@@ -594,6 +594,7 @@ public class GameGUI extends View implements Runnable{
 		GL11.glPopMatrix();
 	}
 	
+	
 	private void renderUI(Clickable click) {
 		if (!click.isActive()) {
 			GL11.glColor4f(0.3f, 0.3f, 0.3f, 0.3f);
@@ -604,6 +605,8 @@ public class GameGUI extends View implements Runnable{
 			renderUI(click.getName(),click.getX(),click.getY(),click.getZ(),click.getWidth(),click.getHeight());
 		}
 	}
+	
+	
 	
 	private void render() {
 	   //Clear and center
@@ -678,9 +681,12 @@ public class GameGUI extends View implements Runnable{
 	   GL11.glPopMatrix();
 	}
 
+	
+	
 	public void drawTradeMenu() {
 		//TODO: implement it!
 	}
+	
 	
 	
 	public void drawBuildMenu() {
@@ -719,6 +725,7 @@ public class GameGUI extends View implements Runnable{
 	public void updateIntersection(Intersection intersection) {
 		// TODO Auto-generated method stub
 	}
+	
 	
 	@Override
 	public void updateResources() {
@@ -780,6 +787,9 @@ public class GameGUI extends View implements Runnable{
 	public void eventNewRound(int number) {
 		if (modelReader.getCurrentPlayer() == modelReader.getMe() && !observer) {
 			reinitiateUI();
+		}
+		else {
+			deactivateUI();
 		}
 		this.lastNumberDiced = number;
 	}
@@ -982,6 +992,11 @@ public class GameGUI extends View implements Runnable{
 			
 		} catch (Exception e) {e.printStackTrace();}
 		
+		if (!observer) {
+			init = true;
+			buildVillage.setActive(true);
+		}
+		
 		GL11.glDisable(GL11.GL_DEPTH_TEST); // Enables Depth Testing
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glTexParameterf( GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
@@ -1019,12 +1034,6 @@ public class GameGUI extends View implements Runnable{
         try {
 			uiFont40.loadGlyphs();
 		} catch (SlickException e1) {e1.printStackTrace();}
-        
-        renderFieldList = new LinkedList<Field>();
-        Iterator<Field> iter = modelReader.getFieldIterator();
-        while (iter.hasNext()) {
-        	renderFieldList.add(iter.next());
-        }
         
         Display.update();
         render();
