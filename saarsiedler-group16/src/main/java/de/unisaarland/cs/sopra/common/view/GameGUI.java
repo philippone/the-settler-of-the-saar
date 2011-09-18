@@ -124,6 +124,12 @@ public class GameGUI extends View implements Runnable{
 	private Map<Player,PlayerColors> colorMap;
 	
 	private CyclicBarrier barrier;
+	
+	private String console4 = "";
+	private String console5 = "";
+	private String console6 = "";
+	private String console7 = "";
+	private boolean init;
 
 	
 	public GameGUI(ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player, String> names, Setting setting, String gameTitle, boolean observer, CyclicBarrier barrier) {
@@ -662,9 +668,13 @@ public class GameGUI extends View implements Runnable{
 
 	   GL11.glPushMatrix();
 	   GL11.glTranslatef(xOffset+xOffsetUI, yOffsetUI, zOffsetUI);
-	   uiFont20.drawString(640, 75, "Round "+modelReader.getRound(), Color.black);
-	   uiFont20.drawString(640, 100, ""+ lastNumberDiced + " was diced", Color.black);
-	   uiFont20.drawString(640, 125, "It's "+ getName(modelReader.getCurrentPlayer()) + "'s turn", Color.black);
+	   uiFont20.drawString(640, 75, "Round "+modelReader.getRound());
+	   uiFont20.drawString(640, 100, ""+ lastNumberDiced + " was diced");
+	   uiFont20.drawString(640, 125, "It's "+ getName(modelReader.getCurrentPlayer()) + "'s turn");
+	   uiFont20.drawString(640, 150, console4);
+	   uiFont20.drawString(640, 175, console5);
+	   uiFont20.drawString(640, 200, console6);
+	   uiFont20.drawString(640, 225, console7);
 	   GL11.glPopMatrix();
 	}
 
@@ -704,6 +714,11 @@ public class GameGUI extends View implements Runnable{
 		//TODO: implement it!
 	}
 
+	
+	@Override
+	public void updateIntersection(Intersection intersection) {
+		// TODO Auto-generated method stub
+	}
 	
 	@Override
 	public void updateResources() {
@@ -748,8 +763,9 @@ public class GameGUI extends View implements Runnable{
 	
 	@Override
 	public void eventRobber() {
-		//TODO: implement it!
-		// in selektionsmodus für felder gehn und evtl nachricht auf console
+		selectionPoint = Model.getLocationListField(modelReader.getRobberFields());
+		selectionMode = ROBBER;
+		console4 = "You have to move the Robber!";
 	}
 
 	
@@ -919,7 +935,7 @@ public class GameGUI extends View implements Runnable{
 				}
 			};
 			
-			buildVillage = new Clickable("BuildVillage", xOffsetUI+450, yOffsetUI+155, 2, 185, 77, true, true, true) {
+			buildVillage = new Clickable("BuildVillage", xOffsetUI+450, yOffsetUI+155, 2, 185, 77, false, true, true) {
 				@Override
 				public void execute() {
 					selectionLocation = Model.getLocationListIntersection(modelReader.buildableVillageIntersections(modelReader.getMe()));
@@ -941,6 +957,13 @@ public class GameGUI extends View implements Runnable{
 					selectionMode = TOWN;
 				}
 			};
+			
+			buildTownGhost = new Clickable(null, 0, 0, 0, 0, 0, false, false, false) {
+				@Override
+				public void execute() {
+					controllerAdapter.buildSettlement(getIntersection(), BuildingType.Town);
+				}
+			};
 						
 			buildCatapult = new Clickable("BuildCatapult", xOffsetUI+450, yOffsetUI+245, 2, 185, 77, false, true, true) {
 				@Override
@@ -950,12 +973,12 @@ public class GameGUI extends View implements Runnable{
 				}
 			};
 			
-			if (modelReader.getMe() != modelReader.getCurrentPlayer() || observer) {
-				deactivateUI();
-			}
-			else {
-				reinitiateUI();
-			}
+			buildCatapultGhost = new Clickable(null, 0, 0, 0, 0, 0, false, false, false) {
+				@Override
+				public void execute() {
+					controllerAdapter.buildCatapult(getPath());
+				}
+			};
 			
 		} catch (Exception e) {e.printStackTrace();}
 		
@@ -1026,20 +1049,40 @@ public class GameGUI extends View implements Runnable{
 			}
 			switch (selectionMode) {
 				case ROBBER:
-					Field tmp = getMouseField();
-					if (tmp != null) {
-						setRobberGhost.setField(getMouseField());
+					Field robber = getMouseField();
+					if (robber != null && selectionPoint.contains(Model.getLocation(robber))) {
+						setRobberGhost.setField(robber);
 						selectionMode = NONE;
+						console4 = "";
 						controllerAdapter.addGuiEvent(setRobberGhost);
 					}
 					break;
 				case VILLAGE:
+					Intersection village = getMouseIntersection();
+					if (village != null && selectionLocation.contains(Model.getLocation(village))) {
+						buildVillageGhost.setIntersection(village);
+						selectionMode = NONE;
+						console4 = "";
+						controllerAdapter.addGuiEvent(buildVillageGhost);
+						if (init) {
+							buildStreet.setActive(true);
+							buildVillage.setActive(false);
+						}
+					}
 					break;
 				case TOWN:
+					Intersection town = getMouseIntersection();
+					if (town != null && selectionLocation.contains(Model.getLocation(town))) {
+						buildTownGhost.setIntersection(town);
+						selectionMode = NONE;
+						console4 = "";
+						controllerAdapter.addGuiEvent(buildTownGhost);
+					}
 					break;
 				case CATAPULT:
 					break;
 				case STREET:
+					//if init set init to false
 					break; //TODO implement it!
 			}
 		}
@@ -1308,15 +1351,10 @@ public class GameGUI extends View implements Runnable{
 
 	@Override
 	public void initTurn() {
-		//TODO: implement it!
+		init = true;
+		buildVillage.setActive(true);
 	}
-	
 
-	@Override
-	public void updateIntersection(Intersection intersection) {
-		// TODO Auto-generated method stub
-		
-	}
 
 		
 	/*
@@ -1338,7 +1376,7 @@ public class GameGUI extends View implements Runnable{
 				try {
 					saveFile(tmpdir + "/" + act, input);
 				} catch (IOException e) {
-					//e.printStackTrace();
+					e.printStackTrace();
 					tmpdir = System.getProperty("java.io.tmpdir") + r.nextInt();
 					new File(tmpdir).mkdirs();
 					everythingIsBad = true;
@@ -1359,7 +1397,6 @@ public class GameGUI extends View implements Runnable{
 		try {
 			gameGUI = new GameGUI(model, null, null, setting, true);
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		new Thread(gameGUI).start();
