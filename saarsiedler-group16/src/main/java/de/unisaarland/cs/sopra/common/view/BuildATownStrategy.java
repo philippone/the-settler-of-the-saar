@@ -20,6 +20,8 @@ Strategy s;
 		{
 			Intersection bestIntersection=chooseBestIntersection(mr);
 			ca.buildSettlement(bestIntersection, BuildingType.Town);
+			if (mr.getMe().getVictoryPoints() >= mr.getMaxVictoryPoints())
+				ca.claimVictory();
 			 ca.endTurn();
 		} else 
 			 ca.endTurn();

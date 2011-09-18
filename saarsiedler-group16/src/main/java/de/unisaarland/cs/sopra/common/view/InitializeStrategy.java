@@ -84,19 +84,19 @@ public class InitializeStrategy implements Strategy {
 				if (playersResources.contains(Resource.ORE))	{
 					resourceValue = (float) (resourceValue + 0.145);
 				} 
-				resourceValue = (float) (resourceValue + 0.23);
+				resourceValue = (float) (resourceValue + 0.39);
 			}
 			else 			if (type==FieldType.PASTURE){
 				if (playersResources.contains(Resource.WOOL))	{
 					resourceValue = (float) (resourceValue + 0.145);
 				} 
-				resourceValue = (float) (resourceValue + 0.23);
+				resourceValue = (float) (resourceValue + 0.39);
 			} 
 			else 			if (type==FieldType.FIELDS){
 				if (playersResources.contains(Resource.GRAIN))	{
 					resourceValue = (float) (resourceValue + 0.145);
 				} 
-				resourceValue = (float) (resourceValue + 0.23);
+				resourceValue = (float) (resourceValue + 0.39);
 			}
 			
 		}
