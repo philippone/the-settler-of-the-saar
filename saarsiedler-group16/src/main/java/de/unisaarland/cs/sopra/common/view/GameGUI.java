@@ -107,9 +107,14 @@ public class GameGUI extends View implements Runnable{
 	private Clickable endTurn;
 	private Clickable offerTrade;
 	private Clickable buildStreet;
+	private Clickable buildStreetGhost;
 	private Clickable buildVillage;
+	private Clickable buildVillageGhost;
 	private Clickable buildTown;	
+	private Clickable buildTownGhost;
 	private Clickable buildCatapult;
+	private Clickable buildCatapultGhost;
+	private Clickable setRobberGhost;
 	
 	private boolean observer;
 	private int lastNumberDiced;
@@ -182,25 +187,15 @@ public class GameGUI extends View implements Runnable{
 		}
 	}
 	
-	private static int screenToOpenGLx (int zoom) {
-//		viewportXwidth = (int)(870*aspectRatio);
-//		viewportYwidth = 870;
-//		viewportXwidthZoom = (int)(870*aspectRatio);
-//		viewportYwidthZoom = 870;
-//		screenToOpenGLX = ((float)(870*aspectRatio)/windowWidth);
-//		screenToOpenGLY = ((float)870/windowHeight);
-			return (int)((float)(870*aspectRatio)/windowWidth);
-		}
+	private static float screenToOpenGLx (int zoom) {
+		float oglwidth = (2000+zoom)*0.82841f*aspectRatio;
+		return oglwidth/windowWidth;
+	}
 	
-	private static int screenToOpenGLy (int zoom) {
-//		viewportXwidth = (int)(870*aspectRatio);
-//		viewportYwidth = 870;
-//		viewportXwidthZoom = (int)(870*aspectRatio);
-//		viewportYwidthZoom = 870;
-//		screenToOpenGLX = ((float)(870*aspectRatio)/windowWidth);
-//		screenToOpenGLY = ((float)870/windowHeight);
-			return (int)((float)870/windowHeight);
-		}
+	private static float screenToOpenGLy (int zoom) {
+		float oglheight = (2000+zoom)*0.82841f;
+		return oglheight/windowHeight;
+	}
 	
 	private void deactivateUI() {
 		for (Clickable click : Clickable.getRenderList()) {
@@ -209,26 +204,24 @@ public class GameGUI extends View implements Runnable{
 	}
 	
 	private void reinitiateUI() {
-		for (Clickable click : Clickable.getRenderList()) {
-			click.setActive(true);
-		}
 		Player me = modelReader.getMe();
-		if (modelReader.affordableSettlements(BuildingType.Village) == 0) 
-			buildVillage.setActive(false);
-		if (modelReader.affordableSettlements(BuildingType.Town) == 0) 
-			buildTown.setActive(false);
-		if (modelReader.affordableCatapultBuild() == 0) 
-			buildCatapult.setActive(false);
-		if (modelReader.affordableStreets() == 0) 
-			buildStreet.setActive(false);
-		if (modelReader.calculateLongestRoads(me).isEmpty())
-			claimLongestRoad.setActive(false);
-		if (modelReader.getCurrentVictoryPoints(me) < modelReader.getMaxVictoryPoints())
-			claimVictory.setActive(false);
-		if (modelReader.getRound() < 1)
-			endTurn.setActive(false);
+		if (modelReader.affordableSettlements(BuildingType.Village) > 0) 
+			buildVillage.setActive(true);
+		if (modelReader.affordableSettlements(BuildingType.Town) > 0) 
+			buildTown.setActive(true);
+		if (modelReader.affordableCatapultBuild() > 0) 
+			buildCatapult.setActive(true);
+		if (modelReader.affordableStreets() > 0) 
+			buildStreet.setActive(true);
+		if (!modelReader.calculateLongestRoads(me).isEmpty())
+			claimLongestRoad.setActive(true);
+		//TODO evtl ändern wenn sich longestroad funktion ändert
+		if (modelReader.getCurrentVictoryPoints(me) >= modelReader.getMaxVictoryPoints())
+			claimVictory.setActive(true);
+		if (modelReader.getRound() >= 1)
+			endTurn.setActive(true);
 		if (me.getResources().size() >= 1)
-			offerTrade.setActive(false);
+			offerTrade.setActive(true);
 	}
 
 	private void setColor(PlayerColors playerColor) {
@@ -602,99 +595,95 @@ public class GameGUI extends View implements Runnable{
 	}
 	
 	private void render() {
-		   //Clear and center
-		   GL11.glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
-		   GL11.glLoadIdentity();
-		   GL11.glTranslatef(-812.8125f*aspectRatio,820,-2000);
-		   GL11.glRotatef(180, 1, 0, 0);
-		   GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-		   //Render Board
-		   Iterator<Field> iterF = modelReader.getFieldIterator();
-		   while (iterF.hasNext())
-			   renderField(iterF.next());
-		   Iterator<Path> iterP = modelReader.getPathIterator();
-		   while (iterP.hasNext()) 
-			   renderPath(iterP.next());
-		   Iterator<Intersection> iterI = modelReader.getIntersectionIterator();
-		   while (iterI.hasNext()) 
-			   renderIntersection(iterI.next());
-		   
-		   GL11.glPushMatrix();
-		   //GL11.glColor4f(0.3f, 0.3f, 0.3f, 0.3f); // (Mouse.getX()*screenToOpenGLX)/, ((windowHeight-Mouse.getY())*screenToOpenGLY+380)*(zOffsetUI/z), maxX
-		   GL11.glTranslatef(Mouse.getX()+minX, (windowHeight-Mouse.getY())+minY, maxX + z);
-		   intersectionMarkTexture.bind();
-		   drawSquareMid(300, 300);
-		   //setColor(BLACK);
-		   GL11.glPopMatrix();
-		   
-		   //Render Selections
-		   renderMarks();
-		   //Render UI
-		   GL11.glPushMatrix();
-		   GL11.glTranslatef(xOffset, 0, zOffsetUI);
-		   setColor(BLACK);
-		   renderUI("Background", xOffsetUI, yOffsetUI, 0, 1500, 305);
-		   renderUI("Console", xOffsetUI+630, yOffsetUI+65, 1, 730, 300);
-		   setColor(BLACK);
-		   renderUI("LumberScore", xOffsetUI+345, yOffsetUI+65, 1, 95, 77);
-		   uiFont20.drawString(xOffsetUI+396, yOffsetUI+72, ""+modelReader.getResources().getResource(Resource.LUMBER));
-		   setColor(BLACK);
-		   renderUI("BrickScore", xOffsetUI+345, yOffsetUI+110, 1, 95, 77);
-		   uiFont20.drawString(xOffsetUI+396, yOffsetUI+117, ""+modelReader.getResources().getResource(Resource.BRICK));
-		   setColor(BLACK);
-		   renderUI("WoolScore", xOffsetUI+345, yOffsetUI+155, 1, 95, 77);
-		   uiFont20.drawString(xOffsetUI+396, yOffsetUI+162, ""+modelReader.getResources().getResource(Resource.WOOL));
-		   setColor(BLACK);
-		   renderUI("GrainScore", xOffsetUI+345, yOffsetUI+200, 1, 95, 77);
-		   uiFont20.drawString(xOffsetUI+396, yOffsetUI+207, ""+modelReader.getResources().getResource(Resource.GRAIN));
-		   setColor(BLACK);
-		   renderUI("OreScore", xOffsetUI+345, yOffsetUI+245, 1, 95, 77);
-		   uiFont20.drawString(xOffsetUI+396, yOffsetUI+252, ""+modelReader.getResources().getResource(Resource.ORE));
-		   setColor(BLACK);
-		   for (Clickable act : Clickable.getRenderList()) {
-			   if (act.isVisible()) renderUI(act);
-		   }
-		   int i = 0;
-		   for (Player act : modelReader.getTableOrder()) {
-			   if (i > 4) break;
-			   renderPlayerInfo(act, i++);
-		   }
-		   
-		   GL11.glPopMatrix();
-		   //Render Fonts on UI
-		   GL11.glPushMatrix();
-		   GL11.glTranslatef(xOffset+20, 400, -950);
-		   debugFont.drawString(300, 0, "Debug:", Color.white);
-		   debugFont.drawString(300, 30, "x: " + x + ", y: " + y + ", z: " + z, Color.white);
-		   debugFont.drawString(300, 60, "mx: " + Mouse.getX() + ", my: " + Mouse.getY() + ", mw: " + Mouse.getEventDWheel(), Color.white);
-		   debugFont.drawString(300, 90, "minX: " + minX + ", minY: " + minY + ", minZ: " + maxX, Color.white);
-		   GL11.glPopMatrix();
+	   //Clear and center
+	   GL11.glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
+	   GL11.glLoadIdentity();
+	   GL11.glTranslatef(-812.8125f*aspectRatio,820,-2000);
+	   GL11.glRotatef(180, 1, 0, 0);
+	   GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+	   //Render Board
+	   Iterator<Field> iterF = modelReader.getFieldIterator();
+	   while (iterF.hasNext())
+		   renderField(iterF.next());
+	   Iterator<Path> iterP = modelReader.getPathIterator();
+	   while (iterP.hasNext()) 
+		   renderPath(iterP.next());
+	   Iterator<Intersection> iterI = modelReader.getIntersectionIterator();
+	   while (iterI.hasNext()) 
+		   renderIntersection(iterI.next());
+	   //Render Selections
+	   renderMarks();
+	   //Render UI
+	   GL11.glPushMatrix();
+	   GL11.glTranslatef(xOffset, 0, zOffsetUI);
+	   setColor(BLACK);
+	   renderUI("Background", xOffsetUI, yOffsetUI, 0, 1500, 305);
+	   renderUI("Console", xOffsetUI+630, yOffsetUI+65, 1, 730, 300);
+	   setColor(BLACK);
+	   renderUI("LumberScore", xOffsetUI+345, yOffsetUI+65, 1, 95, 77);
+	   uiFont20.drawString(xOffsetUI+396, yOffsetUI+72, ""+modelReader.getResources().getResource(Resource.LUMBER));
+	   setColor(BLACK);
+	   renderUI("BrickScore", xOffsetUI+345, yOffsetUI+110, 1, 95, 77);
+	   uiFont20.drawString(xOffsetUI+396, yOffsetUI+117, ""+modelReader.getResources().getResource(Resource.BRICK));
+	   setColor(BLACK);
+	   renderUI("WoolScore", xOffsetUI+345, yOffsetUI+155, 1, 95, 77);
+	   uiFont20.drawString(xOffsetUI+396, yOffsetUI+162, ""+modelReader.getResources().getResource(Resource.WOOL));
+	   setColor(BLACK);
+	   renderUI("GrainScore", xOffsetUI+345, yOffsetUI+200, 1, 95, 77);
+	   uiFont20.drawString(xOffsetUI+396, yOffsetUI+207, ""+modelReader.getResources().getResource(Resource.GRAIN));
+	   setColor(BLACK);
+	   renderUI("OreScore", xOffsetUI+345, yOffsetUI+245, 1, 95, 77);
+	   uiFont20.drawString(xOffsetUI+396, yOffsetUI+252, ""+modelReader.getResources().getResource(Resource.ORE));
+	   setColor(BLACK);
+	   for (Clickable act : Clickable.getRenderList()) {
+		   if (act.isVisible()) renderUI(act);
+	   }
+	   int i = 0;
+	   for (Player act : modelReader.getTableOrder()) {
+		   if (i > 4) break;
+		   renderPlayerInfo(act, i++);
+	   }
+	   
+	   GL11.glPopMatrix();
+	   //Render Fonts on UI
+	   GL11.glPushMatrix();
+	   GL11.glTranslatef(xOffset+20, 400, -950);
+	   debugFont.drawString(300, 0, "Debug:", Color.white);
+	   debugFont.drawString(300, 30, "x: " + x + ", y: " + y + ", z: " + z, Color.white);
+	   debugFont.drawString(300, 60, "mx: " + Mouse.getX() + ", my: " + Mouse.getY() + ", mw: " + Mouse.getEventDWheel(), Color.white);
+	   debugFont.drawString(300, 90, "minX: " + minX + ", minY: " + minY + ", minZ: " + maxX, Color.white);
+	   debugFont.drawString(300, 120, "oglx: " + (Mouse.getX()*screenToOpenGLx(z)+(minX*aspectRatio)) + ", ogly: " + ((windowHeight-Mouse.getY())*screenToOpenGLy(z)+(minY*aspectRatio)), Color.white);
+	   GL11.glPopMatrix();
 
-		   GL11.glPushMatrix();
-		   GL11.glTranslatef(xOffset+xOffsetUI, yOffsetUI, zOffsetUI);
-		   uiFont20.drawString(640, 75, "Round "+modelReader.getRound(), Color.black);
-		   uiFont20.drawString(640, 100, ""+ lastNumberDiced + " was diced", Color.black);
-		   uiFont20.drawString(640, 125, "It's "+ getName(modelReader.getCurrentPlayer()) + "'s turn", Color.black);
-		   GL11.glPopMatrix();
-		   }
+	   GL11.glPushMatrix();
+	   GL11.glTranslatef(xOffset+xOffsetUI, yOffsetUI, zOffsetUI);
+	   uiFont20.drawString(640, 75, "Round "+modelReader.getRound(), Color.black);
+	   uiFont20.drawString(640, 100, ""+ lastNumberDiced + " was diced", Color.black);
+	   uiFont20.drawString(640, 125, "It's "+ getName(modelReader.getCurrentPlayer()) + "'s turn", Color.black);
+	   GL11.glPopMatrix();
+	}
 
 	public void drawTradeMenu() {
 		//TODO: implement it!
 	}
 	
+	
 	public void drawBuildMenu() {
 		//TODO: implement it!
 	}
+	
 	
 	public void drawResource() {
 		//TODO: implement it!
 	}
 	
+
 	public String getName(Player player) {
 		if (player == null) throw new IllegalArgumentException();
 		return playerNames.get(player);
 	}
 
+	
 	@Override
 	public void updatePath(Path path) {
 		int i = 0;
@@ -704,22 +693,26 @@ public class GameGUI extends View implements Runnable{
 		}
 	}
 
+
 	@Override
 	public void updateField(Field field) {
 		//TODO: implement it!
 	}
 
+	
 	@Override
 	public void updateResources() {
 		//TODO: implement it!
 		//überprüfen ob bau-
 	}
 
+	
 	@Override
 	public void updateVictoryPoints() {
 		//TODO: implement it!
 	}
 
+	
 	@Override
 	public void updateCatapultCount() {
 		int i = 0;
@@ -728,6 +721,7 @@ public class GameGUI extends View implements Runnable{
 		}
 	}
 
+	
 	@Override
 	public void updateSettlementCount(BuildingType buildingType) {
 		switch(buildingType) {
@@ -746,18 +740,21 @@ public class GameGUI extends View implements Runnable{
 		}
 	}
 
+	
 	@Override
 	public void eventRobber() {
 		//TODO: implement it!
 		// in selektionsmodus für felder gehn und evtl nachricht auf console
 	}
 
+	
 	@Override
 	public void eventTrade(ResourcePackage resourcePackage) {
 		//TODO: implement it!
 		// handel auf console ausgeben und 2 knöpfe einblenden für annehmen ablehnen
 	}
 
+	
 	@Override
 	public void eventNewRound(int number) {
 		if (modelReader.getCurrentPlayer() == modelReader.getMe() && !observer) {
@@ -765,16 +762,19 @@ public class GameGUI extends View implements Runnable{
 		}
 		this.lastNumberDiced = number;
 	}
+	
 
 	@Override
 	public void updateTradePossibilities() {
 		//TODO: implement it!
 	}
+	
 
 	@Override
 	public void eventPlayerLeft(long playerID) {
 		//TODO: implement it!
 	}
+	
 	
 	@Override
 	public void run() {
@@ -811,7 +811,8 @@ public class GameGUI extends View implements Runnable{
 		Display.destroy();
 		System.exit(0);
 	}
-	
+		
+
 	@SuppressWarnings("unchecked")
 	private void init() {
 		try {//Display.getDesktopDisplayMode()
@@ -921,6 +922,13 @@ public class GameGUI extends View implements Runnable{
 				}
 			};
 			
+			buildVillageGhost = new Clickable("BuildVillage", xOffsetUI+450, yOffsetUI+155, 2, 185, 77, true, true, true) {
+				@Override
+				public void execute() {
+					controllerAdapter.buildSettlement(intersection, BuildingType.Village)
+				}
+			};
+			
 			buildTown = new Clickable("BuildTown", xOffsetUI+450, yOffsetUI+200, 2, 185, 77, false, true, true) {
 				@Override
 				public void execute() {
@@ -998,6 +1006,7 @@ public class GameGUI extends View implements Runnable{
         render();
         //render two/three times to fill the double/triple buffer
 	}
+	
 
 	private void handleInput() {
 		int mx = Mouse.getX();
@@ -1010,8 +1019,17 @@ public class GameGUI extends View implements Runnable{
 			for (Clickable c : Clickable.executeUIClicks(mx*screenToOpenGLx(zOffsetUI), (windowHeight-my)*screenToOpenGLy(zOffsetUI)+380)) {
 				c.execute();
 			}
-			//TODO hier kommen die sachen mit der selektion hin- wenn in mode intersection koordinatenumrechnung und validierung
-			
+			switch (selectionMode) {
+				case FIELDS:
+					selectionMode = NONE;
+					controllerAdapter.addGuiEvent(setRobberGhost);
+					break;
+				case INTERSECTIONS:
+					break;
+				case PATHS:
+					break;
+			}
+			System.out.println(getMouseField());
 		}
 		
 		if (Mouse.isInsideWindow()) {
@@ -1039,37 +1057,89 @@ public class GameGUI extends View implements Runnable{
 		}
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
-			//x+=5;
+			//x+=10;
 			minX+=5;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
-			//x-=5;
+			//x-=10;
 			minX-=5;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
-			//y+=5;
+			//y+=10;
 			minY+=5;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
-			//y-=5;
+			//y-=10;
 			minY-=5;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_N)) {
 			if (z+50 < this.maxZ)
 				z+=50;
-			maxX+=10;
+//			maxX+=10;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_M)) {
 			if (z-50 > this.minZ)
 				z-=50;
-			maxX-=10;
+//			maxX-=10;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
 			Display.destroy();
 			System.exit(0);
 		}
 	}
-
+	
+	public int getOglx() {
+		//Do not touch. took me 2 days to get it to work!
+		return (int) (Mouse.getX()*screenToOpenGLx(z)+(585*aspectRatio)+((1450+z)*-0.415f*aspectRatio))-x+128;
+	}
+	
+	public int getOgly() {
+		//Do not touch. took me 2 days to get it to work!
+		return (int) ((windowHeight-Mouse.getY())*screenToOpenGLy(z)+592+((1450+z)*-0.415f))-y+148;
+	}
+	
+	public Field getMouseField() {
+		int tmpx = getOglx();
+		int tmpy = getOgly();
+		int ergx,ergy;
+		if (tmpy > 0) {
+			switch((tmpy/215) % 2) {
+			case 1:
+				tmpx-=-125;
+				break;
+			case 0:
+				break;
+			}
+		}
+		else {
+			switch((tmpy/215) % 2) {
+			case -1:
+				break;
+			case 0:
+				tmpx-=-125;
+				break;
+			}
+		}
+		
+		if (tmpx > 0) {
+			ergx = tmpx/250;
+		}
+		else {
+			ergx = tmpx/250-1;
+		}
+		if (tmpy > 0) {
+			ergy = tmpy/215;
+		}
+		else {
+			ergy = tmpy/215-1;
+		}
+		if (ergx >= -1 && ergx < modelReader.getBoardWidth()+1 && ergy >= -1 && ergy < modelReader.getBoardHeight()+1)
+			return modelReader.getField(new Point(ergy, ergx));
+		else 
+			return null;
+		//TODO evtl verbessern da nur klappt wenn man ca genau in die mitte klickt
+	}
+	
 	public static void main(String[] args) throws Exception {		
 				
 		String[] list = new String[] {
@@ -1202,20 +1272,23 @@ public class GameGUI extends View implements Runnable{
 		barrier.await();
 	}
 	
+	
 	public static void saveFile(String filename, InputStream inputStr) throws IOException {
 		FileOutputStream fos = new FileOutputStream(filename);
-		   int len = -1;
-		   byte[] buffer = new byte[4096];
-		   while ((len = inputStr.read(buffer)) != -1) {
-		      fos.write(buffer,0,len);
-		   }
-		   fos.close();
-		}
+	    int len = -1;
+	    byte[] buffer = new byte[4096];
+	    while ((len = inputStr.read(buffer)) != -1) {
+	      fos.write(buffer,0,len);
+	    }
+	    fos.close();
+	}
+	
 
 	@Override
 	public void initTurn() {
 		//TODO: implement it!
 	}
+	
 
 	@Override
 	public void updateIntersection(Intersection intersection) {
@@ -1269,5 +1342,13 @@ public class GameGUI extends View implements Runnable{
 		}
 		new Thread(gameGUI).start();
 		*/
+	
+//	   GL11.glPushMatrix();
+//	   GL11.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);  // (-0.1453125f*(2000+z)      (-0.11875f*(2000+z)
+//	   GL11.glTranslatef(Mouse.getX()*screenToOpenGLx(z)+(585*aspectRatio)+((1450+z)*-0.415f*aspectRatio), (windowHeight-Mouse.getY())*screenToOpenGLy(z)+592+((1450+z)*-0.415f), z);
+//	   fieldMarkTexture.bind();
+//	   drawSquareLeftTop(100, 100);
+//	   //setColor(BLACK);
+//	   GL11.glPopMatrix();
 	
 }
