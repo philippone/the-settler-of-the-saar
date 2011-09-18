@@ -18,5 +18,9 @@ public class DoNothingStrategy implements Strategy {
 	public float evaluate(ModelReader mr, ControllerAdapter ca) {
 		return 0;
 	}
+	
+	public AIGameStats getGameStats(ModelReader mr) {
+		return null;
+	}
 
 }

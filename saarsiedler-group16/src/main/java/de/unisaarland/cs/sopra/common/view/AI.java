@@ -2,6 +2,7 @@ package de.unisaarland.cs.sopra.common.view;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -28,6 +29,8 @@ import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 
 public class AI extends View{
+	private AIGameStats[] gameStats;
+	
 	
 	public static void main(String[] args){
 		
@@ -139,11 +142,42 @@ public class AI extends View{
 	
 	public void evaluateBestStrategy(){
 
-		float strategyValue=(float) Math.random()*3;
-		if (strategyValue<1) s=new BuildStreetStrategy();
-		if (strategyValue>2) s=new BuildATownStrategy();
-		if (strategyValue==2) s=new BuildACatapultStrategy();
-		if (strategyValue>1 && strategyValue<2) s=new BuildVillage();
+		gameStats = new AIGameStats[6];
+		Strategy s2 = new BuildStreetStrategy();
+		gameStats[0] = s2.getGameStats(modelReader);
+		Strategy s3 = new BuildVillage();
+		gameStats[1] = s3.getGameStats(modelReader);
+		Strategy s4 = new BuildATownStrategy();
+		gameStats[2] = s4.getGameStats(modelReader);
+		Strategy s5 = new BuildACatapultStrategy();
+		gameStats[3] = s5.getGameStats(modelReader);
+		Strategy s6 = new MoveCatapultStrategy();
+		gameStats[4] = s6.getGameStats(modelReader);
+		Strategy s7 = new AttackSettlementStrategy();
+		gameStats[5] = s7.getGameStats(modelReader);
+		//Strategy s8 = new BuildLongestRoadStrategy();
+		//gameStats[6] = s8.getGameStats(modelReader);
+			
+		Strategy bestStrategy = gameStats[0].getStrategy();
+		int bestStatsIdx = 0;
+		for (int k = 1; k < 6; k++) {
+			if (gameStats[bestStatsIdx].getVictoryPoints() < gameStats[k].getVictoryPoints()) {
+				bestStrategy = gameStats[k].getStrategy();
+				bestStatsIdx = k;
+			} else if (gameStats[bestStatsIdx].getVictoryPoints() == gameStats[k].getVictoryPoints()) {
+				if (gameStats[bestStatsIdx].getResources().size() < gameStats[k].getResources().size()) {
+					bestStrategy = gameStats[k].getStrategy();
+					bestStatsIdx = k;
+				}
+			}
+		}
+		s = bestStrategy;
+		
+//		float strategyValue=(float) Math.random()*3;
+//		if (strategyValue<1) s=new BuildStreetStrategy();
+//		if (strategyValue>2) s=new BuildATownStrategy();
+//		if (strategyValue==2) s=new BuildACatapultStrategy();
+//		if (strategyValue>1 && strategyValue<2) s=new BuildVillage();
 		//float strategyValue=(float) Math.random()*4;
 		//if (strategyValue<1) s=new BuildStreetStrategy();
 		//if (strategyValue>1 && strategyValue<2) s=new BuildVillage();
@@ -194,7 +228,7 @@ public class AI extends View{
 	
 	public void executeBestStrategy() {
 		try{
-			Thread.sleep(500);
+			Thread.sleep(1000);
 
 		s.execute(modelReader, controllerAdapter);
 		//s1.execute(modelReader, controllerAdapter);

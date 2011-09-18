@@ -62,4 +62,9 @@ public class RobberStrategy implements Strategy {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	
+	public AIGameStats getGameStats(ModelReader mr) {
+		return null;
+	}
+
 }

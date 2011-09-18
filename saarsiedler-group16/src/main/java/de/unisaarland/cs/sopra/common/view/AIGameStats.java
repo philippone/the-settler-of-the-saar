@@ -9,13 +9,16 @@ public class AIGameStats  {
 	
 	private	Player player;
 	private ResourcePackage ResourcePackage;
-	private int victoryPoints ; 
+	private int victoryPoints ;
+	private Strategy strategy;
 	
-	public AIGameStats(Player player, ResourcePackage resourcePackage, int victoryPoints) {
+	public AIGameStats(Player player, Strategy strategy, ResourcePackage resourcePackage, int victoryPoints) {
 		if (player == null) throw new IllegalArgumentException();
 		this.player = player;
+		this.strategy = strategy;
 		this.ResourcePackage = resourcePackage;
 		this.victoryPoints = victoryPoints;
+		
 		
 	}
 
@@ -25,6 +28,10 @@ public class AIGameStats  {
 	
 	public int getVictoryPoints(){
 		return this.victoryPoints;
+	}
+	
+	public Strategy getStrategy(){
+		return strategy;
 	}
 
 	public void setStats(ResourcePackage resourcePackage, int victoryPoints) {

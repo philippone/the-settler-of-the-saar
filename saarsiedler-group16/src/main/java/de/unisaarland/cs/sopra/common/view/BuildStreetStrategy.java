@@ -58,9 +58,9 @@ Strategy s;
 	public AIGameStats getGameStats(ModelReader mr){
 		Player player = mr.getMe();
 		if (mr.buildableStreetPaths(player).size() < 1)
-		return null;
-		ResourcePackage resourcePackage = player.getResources().add(new ResourcePackage(-1, -1, 0, 0, 0));
-		AIGameStats gameStats = new AIGameStats( player, resourcePackage, player.getVictoryPoints());
+			return new AIGameStats(player, this, new ResourcePackage(0, 0, 0, 0, 0), 0);
+		ResourcePackage resourcePackage = player.getResources().copy().add(new ResourcePackage(-1, -1, 0, 0, 0));
+		AIGameStats gameStats = new AIGameStats( player, this, resourcePackage, player.getVictoryPoints());
 		return gameStats;
 	}
 }

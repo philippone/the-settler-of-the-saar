@@ -70,31 +70,31 @@ public class InitializeStrategy implements Strategy {
 				if (playersResources.contains(Resource.LUMBER))	{
 					resourceValue = (float) (resourceValue + 0.145);
 				} 
-				resourceValue = (float) (resourceValue + 0.39);
+				resourceValue = (float) (resourceValue + 0.5);
 			}
 			else 			if (type==FieldType.HILLS){
 				if (playersResources.contains(Resource.BRICK))	{
 					resourceValue = (float) (resourceValue + 0.145);
 				} 
-				resourceValue = (float) (resourceValue + 0.39);
-			}
-			else 			if (type==FieldType.MOUNTAINS){
-				if (playersResources.contains(Resource.ORE))	{
-					resourceValue = (float) (resourceValue + 0.145);
-				} 
-				resourceValue = (float) (resourceValue + 0.39);
+				resourceValue = (float) (resourceValue + 0.5);
 			}
 			else 			if (type==FieldType.PASTURE){
 				if (playersResources.contains(Resource.WOOL))	{
 					resourceValue = (float) (resourceValue + 0.145);
 				} 
-				resourceValue = (float) (resourceValue + 0.39);
-			} 
+				resourceValue = (float) (resourceValue + 0.5);
+			}
 			else 			if (type==FieldType.FIELDS){
 				if (playersResources.contains(Resource.GRAIN))	{
 					resourceValue = (float) (resourceValue + 0.145);
 				} 
-				resourceValue = (float) (resourceValue + 0.39);
+				resourceValue = (float) (resourceValue + 0.5);
+			} 
+			else 			if (type==FieldType.MOUNTAINS){
+				if (playersResources.contains(Resource.ORE))	{
+					resourceValue = (float) (resourceValue + 0.145);
+				} 
+				resourceValue = (float) (resourceValue + 0.25);
 			}
 			
 		}
@@ -130,6 +130,9 @@ public class InitializeStrategy implements Strategy {
 			
 	}
 
+	public AIGameStats getGameStats(ModelReader mr) {
+		return null;
+	}
 
 
 	@Override

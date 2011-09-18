@@ -61,10 +61,10 @@ public class AttackSettlementStrategy implements Strategy {
 	public AIGameStats getGameStats(ModelReader mr){
 		Player player = mr.getMe();
 		if (mr.getCatapults(player).size() < 1)
-		return null;
-		ResourcePackage resourcePackage = player.getResources().add(new ResourcePackage(0, 0, 0 ,0 ,-1));
+			return new AIGameStats(player, this, new ResourcePackage(0, 0, 0, 0, 0), 0);
+		ResourcePackage resourcePackage = player.getResources().copy().add(new ResourcePackage(0, 0, 0 ,0 ,-1));
 		int victoryPoints = player.getVictoryPoints();
-		AIGameStats gameStats = new AIGameStats(player, resourcePackage, victoryPoints);
+		AIGameStats gameStats = new AIGameStats(player, this, resourcePackage, victoryPoints);
 		return gameStats;
 	}
 }
