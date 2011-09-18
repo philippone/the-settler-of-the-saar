@@ -1,6 +1,7 @@
 package de.unisaarland.cs.sopra.common.controller;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -345,14 +346,18 @@ public class Controller {
 	 */
 	public void mainLoop() throws IllegalStateException, IOException {
 		while(!endOfGame){
-			GameEvent e = connection.getNextEvent(0);
+			GameEvent e = connection.getNextEvent(100);
 			
-			for (Clickable click : guiEvents) {
-				click.execute();
+			Iterator<Clickable> iter = guiEvents.iterator();
+			while (iter.hasNext()) {
+				iter.next().execute();
+				iter.remove();
 			}
 			
+			if (e != null) {
 			System.out.println(e);
 			handleEvent(e);
+			}
 		}
 	}
 	
