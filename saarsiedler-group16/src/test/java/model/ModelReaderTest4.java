@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -14,10 +13,7 @@ import java.util.TreeSet;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.lwjgl.opengl.DisplayMode;
 
-import de.unisaarland.cs.sopra.common.PlayerColors;
-import de.unisaarland.cs.sopra.common.Setting;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.HarborType;
@@ -28,7 +24,6 @@ import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Point;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
-import de.unisaarland.cs.sopra.common.view.GameGUI;
 
 public class ModelReaderTest4 {
 	private Model model1;

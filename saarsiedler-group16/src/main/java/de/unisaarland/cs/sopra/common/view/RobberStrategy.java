@@ -1,7 +1,5 @@
 package de.unisaarland.cs.sopra.common.view;
 
-import java.io.IOException;
-
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.ModelReader;

@@ -17,7 +17,6 @@ import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
-import de.unisaarland.cs.st.saarsiedler.comm.results.AttackResult;
 
 public class ModelWriterTest {	
 	
