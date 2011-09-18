@@ -66,15 +66,12 @@ public class GameGUI extends View implements Runnable{
 	private List<Field> renderFieldList;
 	private Texture streetTexture;
 	private Texture catapultTexture;
-	private Texture catapultPCTexture;
 	private Texture robberTexture;
 	private Texture pathMarkTexture;
 	private Texture fieldMarkTexture;
 	private Texture intersectionMarkTexture;
 	private Texture villageTexture;
-	private Texture villagePCTexture;
 	private Texture townTexture;
-	private Texture townPCTexture;
 	private int x,y,z;
 	private int maxX, maxY, maxZ;
 	private int minX, minY, minZ;
@@ -369,18 +366,14 @@ public class GameGUI extends View implements Runnable{
 			   GL11.glPushMatrix();
 			   switch (i.getBuildingType()) {
 			   case Village:
-				   villagePCTexture.bind();
 				   setColor(colorMap.get(i.getOwner()));
 				   GL11.glTranslatef(ix+x, iy+y, 1+z);
-				   drawSquareMid(125, 125);
 				   villageTexture.bind();
 				   drawSquareMid(125, 125);
 				   break;
 			   case Town:
-				   townPCTexture.bind();
 				   setColor(colorMap.get(i.getOwner()));
 				   GL11.glTranslatef(ix+x, iy+y, 1+z);
-				   drawSquareMid(125, 125);
 				   townTexture.bind();
 				   drawSquareMid(125, 125);
 				   break;
@@ -485,23 +478,19 @@ public class GameGUI extends View implements Runnable{
 		setColor(colorMap.get(player));
 		GL11.glPushMatrix();
 		GL11.glTranslatef(xOffsetUI+px+90, yOffsetUI+py+39, 1);
-		villagePCTexture.bind();
-		drawSquareMid(30, 30);
-		setColor(BLACK);
 		villageTexture.bind();
 		drawSquareMid(30, 30);
 		GL11.glPopMatrix();
+		setColor(BLACK);
 		//draw VillageScore 0/??
 		uiFont20.drawString(xOffsetUI+px+100, yOffsetUI+py+25, ""+village[(int)pos] + "/" + modelReader.getMaxBuilding(BuildingType.Village));
 		setColor(colorMap.get(player));
 		GL11.glPushMatrix();
 		GL11.glTranslatef(xOffsetUI+px+155, yOffsetUI+py+39, 1);
-		townPCTexture.bind();
-		drawSquareMid(30,30);
-		setColor(BLACK);
 		townTexture.bind();
 		drawSquareMid(30,30);
 		GL11.glPopMatrix();
+		setColor(BLACK);
 		//draw TownScore
 		uiFont20.drawString(xOffsetUI+px+168, yOffsetUI+py+25, ""+town[(int)pos] + "/" + modelReader.getMaxBuilding(BuildingType.Town));
 		setColor(colorMap.get(player));
@@ -792,9 +781,11 @@ public class GameGUI extends View implements Runnable{
 	
 	@Override
 	public void eventRobber() {
-		selectionPoint = Model.getLocationListField(modelReader.getRobberFields());
-		selectionMode = ROBBER;
-		console4 = "You have to move the Robber!";
+		if (!observer) {
+			selectionPoint = Model.getLocationListField(modelReader.getRobberFields());
+			selectionMode = ROBBER;
+			console4 = "You have to move the Robber!";
+		}
 	}
 
 	
@@ -899,15 +890,12 @@ public class GameGUI extends View implements Runnable{
 		
 			streetTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Street.png"));
 			catapultTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Catapult.png"));
-			catapultTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Catapult.png"));
 			robberTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Robber.png"));
 			fieldMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Mark.png"));
 			intersectionMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Mark.png"));
 			pathMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Mark.png"));
 			villageTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Village.png"));
-			villagePCTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/VillagePC.png"));
 			townTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Town.png"));
-			townPCTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/TownPC.png"));
 			
 			
 			uiTextureMap = new HashMap<String,Texture>();
