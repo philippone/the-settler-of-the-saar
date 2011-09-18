@@ -79,17 +79,19 @@ public class GameGUI extends View implements Runnable{
 	private UnicodeFont uiFont40;
 
 	private int selectionMode;
-	private static final int NONE = 0;
-	private static final  int INTERSECTIONS = 1;
-	private static final  int PATHS = 2;
-	private static final  int FIELDS = 3;
+	private static final int NONE 		=	0;
+	private static final  int VILLAGE 	= 	1;
+	private static final  int TOWN 		= 	2;
+	private static final  int STREET 	= 	3;
+	private static final  int CATAPULT 	= 	4;
+	private static final  int ROBBER 	= 	5;
 	private List<Point> selectionPoint;
 	private List<Location> selectionLocation;
 	
 	private int uiMode;
-	private static final int RESOURCE_VIEW = 0;
-	private static final int TRADE_VIEW = 1;
-	private static final int BUILD_VIEW = 2;
+	private static final int RESOURCE_VIEW 	= 	0;
+	private static final int TRADE_VIEW 	= 	1;
+	private static final int BUILD_VIEW 	= 	2;
 	
 	private static int windowWidth;
 	private static int windowHeight;
@@ -500,7 +502,7 @@ public class GameGUI extends View implements Runnable{
 		switch(selectionMode) {
 		case NONE: 
 			break;
-		case FIELDS:
+		case ROBBER:
 			for (Point p : selectionPoint) {
 			    int fx = 0;
 			    int fy = 0;
@@ -522,7 +524,8 @@ public class GameGUI extends View implements Runnable{
 			    GL11.glPopMatrix();
 			}
 			break;
-		case INTERSECTIONS:
+		case VILLAGE:
+		case TOWN:
 			for (Location l : selectionLocation) {
 				int ix = 0;
 				int iy = 0;
@@ -570,8 +573,10 @@ public class GameGUI extends View implements Runnable{
 			    GL11.glPopMatrix();
 			}
 			break;
-		case PATHS:
+		case STREET:
 			break;
+		case CATAPULT:
+			break; //TODO implement it!
 		}
 	}
 	
@@ -909,7 +914,7 @@ public class GameGUI extends View implements Runnable{
 				@Override
 				public void execute() {
 					selectionLocation = Model.getLocationListPath(modelReader.buildableStreetPaths(modelReader.getMe()));
-					selectionMode = PATHS;
+					selectionMode = STREET;
 					
 				}
 			};
@@ -918,14 +923,14 @@ public class GameGUI extends View implements Runnable{
 				@Override
 				public void execute() {
 					selectionLocation = Model.getLocationListIntersection(modelReader.buildableVillageIntersections(modelReader.getMe()));
-					selectionMode = INTERSECTIONS;
+					selectionMode = VILLAGE;
 				}
 			};
 			
-			buildVillageGhost = new Clickable("BuildVillage", xOffsetUI+450, yOffsetUI+155, 2, 185, 77, true, true, true) {
+			buildVillageGhost = new Clickable(null, 0, 0, 0, 0, 0, false, false, false) {
 				@Override
 				public void execute() {
-					controllerAdapter.buildSettlement(intersection, BuildingType.Village)
+					controllerAdapter.buildSettlement(getIntersection(), BuildingType.Village);
 				}
 			};
 			
@@ -933,7 +938,7 @@ public class GameGUI extends View implements Runnable{
 				@Override
 				public void execute() {
 					selectionLocation = Model.getLocationListIntersection(modelReader.buildableTownIntersections(modelReader.getMe()));
-					selectionMode = INTERSECTIONS;
+					selectionMode = TOWN;
 				}
 			};
 						
@@ -941,7 +946,7 @@ public class GameGUI extends View implements Runnable{
 				@Override
 				public void execute() {
 					selectionLocation = Model.getLocationListPath(modelReader.buildableStreetPaths(modelReader.getMe()));
-					selectionMode = PATHS;
+					selectionMode = CATAPULT;
 				}
 			};
 			
@@ -1020,16 +1025,23 @@ public class GameGUI extends View implements Runnable{
 				c.execute();
 			}
 			switch (selectionMode) {
-				case FIELDS:
-					selectionMode = NONE;
-					controllerAdapter.addGuiEvent(setRobberGhost);
+				case ROBBER:
+					Field tmp = getMouseField();
+					if (tmp != null) {
+						setRobberGhost.setField(getMouseField());
+						selectionMode = NONE;
+						controllerAdapter.addGuiEvent(setRobberGhost);
+					}
 					break;
-				case INTERSECTIONS:
+				case VILLAGE:
 					break;
-				case PATHS:
+				case TOWN:
 					break;
+				case CATAPULT:
+					break;
+				case STREET:
+					break; //TODO implement it!
 			}
-			System.out.println(getMouseField());
 		}
 		
 		if (Mouse.isInsideWindow()) {
@@ -1087,7 +1099,7 @@ public class GameGUI extends View implements Runnable{
 			System.exit(0);
 		}
 	}
-	
+
 	public int getOglx() {
 		//Do not touch. took me 2 days to get it to work!
 		return (int) (Mouse.getX()*screenToOpenGLx(z)+(585*aspectRatio)+((1450+z)*-0.415f*aspectRatio))-x+128;
@@ -1138,6 +1150,16 @@ public class GameGUI extends View implements Runnable{
 		else 
 			return null;
 		//TODO evtl verbessern da nur klappt wenn man ca genau in die mitte klickt
+	}
+	
+	public Intersection getMouseIntersection() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public Path getMousePath() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	public static void main(String[] args) throws Exception {		
