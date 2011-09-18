@@ -236,7 +236,7 @@ public class GameGUI extends View implements Runnable{
 	private void setColor(PlayerColors playerColor) {
 		switch(playerColor) {
 		case BLUE:
-			GL11.glColor4f(0.30f,0.30f,1.0f,1.0f); break;
+			GL11.glColor4f(0.50f,0.50f,1.0f,1.0f); break;
 		case RED:
 			GL11.glColor4f(1.0f,0.0f,0.0f,1.0f); break;
 		case YELLOW:
@@ -333,32 +333,35 @@ public class GameGUI extends View implements Runnable{
 					   iy = i.getLocation().getY()*215; 
 					   break;
 				   case 1:
+				   case -1:
 					   ix = i.getLocation().getX()*250-125;
 					   iy = i.getLocation().getY()*215;
 					   break;
 			   }
 			  switch(i.getLocation().getOrientation()) {
 				   case 0:
-					   iy+=-135;
+					   ix+=5;
+					   iy+=-136;
 					   break;
 				   case 1:
-					   ix+=123;
-					   iy+=-70;
+					   ix+=128;
+					   iy+=-80;
 					   break;
 				   case 2:
-					   ix+=123;
+					   ix+=133;
 					   iy+=80;
 					   break;
 				   case 3:
-					   iy+=140;
+					   ix+=20;
+					   iy+=155;
 					   break;
 				   case 4:
-					   ix+=-122;
+					   ix+=-117;
 					   iy+=80;
 					   break;
 				   case 5:
 					   ix+=-122;
-					   iy+=-70;
+					   iy+=-80;
 					   break;
 				   default:
 					   throw new IllegalArgumentException();
@@ -410,39 +413,40 @@ public class GameGUI extends View implements Runnable{
 				   py = p.getLocation().getY()*215; 
 				   break;
 			   case 1:
+			   case -1:
 				   px = p.getLocation().getX()*250-125;
 				   py = p.getLocation().getY()*215;
 				   break;
 		   }
 		  switch(p.getLocation().getOrientation()) {
 			   case 0:
-				   px+=67;
-				   py+=-107;
+				   px+=66;
+				   py+=-108;
 				   po+=30;
 				   break;
 			   case 1:
-				   px+=120;
-				   py+=14;
+				   px+=130;
+				   py+=-1;
 				   po+=90;
 				   break;
 			   case 2:
-				   px+=40;
-				   py+=118;
+				   px+=56;
+				   py+=112;
 				   po+=150;
 				   break;
 			   case 3:
-				   px+=-82;
-				   py+=95;
+				   px+=-52;
+				   py+=115;
 				   po+=210;
 				   break;
 			   case 4:
 				   px+=-128;
-				   py+=-21;
+				   py+=-1;
 				   po+=270;
 				   break;
 			   case 5:
-				   px+=-52;
-				   py+=-115;
+				   px+=-72;
+				   py+=-100;
 				   po+=330;
 				   break;
 			   default:
@@ -468,29 +472,30 @@ public class GameGUI extends View implements Runnable{
 				   py = p.getLocation().getY()*215; 
 				   break;
 			   case 1:
+			   case -1:
 				   px = p.getLocation().getX()*250-125;
 				   py = p.getLocation().getY()*215;
 				   break;
 		   }
 		  switch(p.getLocation().getOrientation()) {
 			   case 0:
-				   px+=67;
-				   py+=-107;
+				   px+=74;
+				   py+=-96;
 				   po+=30;
 				   break;
 			   case 1:
-				   px+=120;
-				   py+=14;
+				   px+=118;
+				   py+=18;
 				   po+=90;
 				   break;
 			   case 2:
-				   px+=40;
-				   py+=118;
+				   px+=38;
+				   py+=116;
 				   po+=150;
 				   break;
 			   case 3:
-				   px+=-82;
-				   py+=95;
+				   px+=-84;
+				   py+=93;
 				   po+=210;
 				   break;
 			   case 4:
@@ -499,8 +504,8 @@ public class GameGUI extends View implements Runnable{
 				   po+=270;
 				   break;
 			   case 5:
-				   px+=-52;
-				   py+=-115;
+				   px+=-47;
+				   py+=-120;
 				   po+=330;
 				   break;
 			   default:
@@ -511,7 +516,7 @@ public class GameGUI extends View implements Runnable{
 			GL11.glRotatef(po, 0, 0, 1);
 		    streetTexture.bind();
 		    setColor(colorMap.get(p.getStreetOwner()));
-		    drawSquareMid(170,20);
+		    drawSquareMid(200,25);
 		    GL11.glPopMatrix();
 	}
 
@@ -703,7 +708,7 @@ public class GameGUI extends View implements Runnable{
 	   renderMarks();
 	   //Render UI
 	   GL11.glPushMatrix();
-	   GL11.glTranslatef(xOffset, 0, zOffsetUI);
+	   GL11.glTranslatef(xOffset, 0, zOffsetUI-5);
 	   setColor(BLACK);
 	   renderUI("Background", xOffsetUI, yOffsetUI, 0, 1500, 305);
 	   renderUI("Console", xOffsetUI+630, yOffsetUI+65, 1, 730, 300);
@@ -1369,8 +1374,9 @@ public class GameGUI extends View implements Runnable{
 				return new long[] {};
 			}
 		};
-		/*WorldRepresentation worldrep = new WorldRepresentation(1, 1, 2, 9, 5, 4,  
-				new byte[] {1},
+		/*WorldRepresentation worldrep = new WorldRepresentation(20, 2, 2, 9, 5, 4,  
+				new byte[] {0,1,2,3,4,5,6,5,4,3,2,1,0,1,2,3,4,5,6,5,
+					        4,3,2,1,0,1,2,3,4,5,6,5,4,3,2,1,0,1,2,3},
 				new byte[] {1,4,
 							2,5,    
 							3,6},
@@ -1378,10 +1384,12 @@ public class GameGUI extends View implements Runnable{
 		
 		Model model = new Model(/*worldrep*/WorldRepresentation.getDefault(), matchinfo, 0);
 		model.matchStart(new long[] {3,2,1,0}, new byte[]   {2,3,4,
-														 6,8,9,10,
-														 11,12,11,10,
-														 9,8,6,5,
-														 2,6,9});
+		 6,8,9,10,
+		 11,12,11,10,
+		 9,8,6,5,
+		 2,6,9});
+		/*model.matchStart(new long[] {3,2,1,0}, new byte[]   {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+															 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2});*/
 		Map<Player,String> names = new HashMap<Player,String>();
 		names.put(model.getTableOrder().get(3), "Ichbinkeinreh");
 		names.put(model.getTableOrder().get(2), "Herbert");
@@ -1389,7 +1397,7 @@ public class GameGUI extends View implements Runnable{
 		names.put(model.getTableOrder().get(0), "Hannes");
 		model.getTableOrder().get(3).modifyResources(new ResourcePackage(100,200,140,130,120));
 		
-		model.buildSettlement(new Location(3,3,0), BuildingType.Village);
+		/*model.buildSettlement(new Location(3,3,0), BuildingType.Village);
 		model.buildStreet(new Location(3,3,0));
 		
 		model.buildSettlement(new Location(3,3,2), BuildingType.Village);
@@ -1411,7 +1419,29 @@ public class GameGUI extends View implements Runnable{
 		model.newRound(2);
 		
 		model.buildStreet(new Location(1,2,2));
-		model.buildStreet(new Location(2,1,1));
+		model.buildStreet(new Location(2,1,1));*/
+		
+//		model.getPath(new Location(-1,-1,0)).createStreet(model.getMe());
+		model.getPath(new Location(-1,-1,1)).createStreet(model.getMe());
+		model.getPath(new Location(-1,-1,2)).createStreet(model.getMe());
+		model.getPath(new Location(-1,-1,3)).createStreet(model.getMe());
+		model.getPath(new Location(-1,-1,4)).createStreet(model.getMe());
+		model.getPath(new Location(-1,-1,5)).createStreet(model.getMe());
+		
+//		model.getPath(new Location(-1,-1,0)).createCatapult(model.getMe());
+//		model.getPath(new Location(-1,-1,1)).createCatapult(model.getMe());
+//		model.getPath(new Location(-1,-1,2)).createCatapult(model.getMe());
+//		model.getPath(new Location(-1,-1,3)).createCatapult(model.getMe());
+//		model.getPath(new Location(-1,-1,4)).createCatapult(model.getMe());
+//		model.getPath(new Location(-1,-1,5)).createCatapult(model.getMe());
+//		
+//		model.getIntersection(new Location(-1,-1,0)).createBuilding(BuildingType.Town, model.getMe());
+//		model.getIntersection(new Location(-1,-1,1)).createBuilding(BuildingType.Town, model.getMe());
+//		model.getIntersection(new Location(-1,-1,2)).createBuilding(BuildingType.Town, model.getMe());
+//		model.getIntersection(new Location(-1,-1,3)).createBuilding(BuildingType.Town, model.getMe());
+//		model.getIntersection(new Location(-1,-1,4)).createBuilding(BuildingType.Town, model.getMe());
+//		model.getIntersection(new Location(-1,-1,5)).createBuilding(BuildingType.Town, model.getMe());
+		
 		
 //		Setting setting = new Setting(Display.getDesktopDisplayMode(), true, PlayerColors.RED);
 		Setting setting = new Setting(new DisplayMode(1024, 550), false, PlayerColors.RED);  /// Display.getDesktopDisplayMode()
