@@ -3,8 +3,6 @@ package de.unisaarland.cs.sopra.common;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import org.lwjgl.opengl.DisplayMode;
-
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 
 public class ButtonListener implements ActionListener {

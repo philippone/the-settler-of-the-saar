@@ -3,7 +3,6 @@ package de.unisaarland.cs.sopra.common.view;
 import static de.unisaarland.cs.sopra.common.PlayerColors.BLACK;
 import static de.unisaarland.cs.sopra.common.PlayerColors.BLUE;
 import static de.unisaarland.cs.sopra.common.PlayerColors.BROWN;
-import static de.unisaarland.cs.sopra.common.PlayerColors.GREEN;
 import static de.unisaarland.cs.sopra.common.PlayerColors.ORANGE;
 import static de.unisaarland.cs.sopra.common.PlayerColors.PURPLE;
 import static de.unisaarland.cs.sopra.common.PlayerColors.RED;
@@ -11,7 +10,6 @@ import static de.unisaarland.cs.sopra.common.PlayerColors.WHITE;
 import static de.unisaarland.cs.sopra.common.PlayerColors.YELLOW;
 
 import java.awt.Font;
-import java.awt.MultipleGradientPaint.ColorSpaceType;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -24,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.CyclicBarrier;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -80,35 +79,54 @@ public class GameGUI extends View implements Runnable{
 	private UnicodeFont uiFont40;
 
 	private int selectionMode;
-	private static final int NONE = 0;
-	private static final  int INTERSECTIONS = 1;
-	private static final  int PATHS = 2;
-	private static final  int FIELDS = 3;
+	private static final int NONE 		=	0;
+	private static final  int VILLAGE 	= 	1;
+	private static final  int TOWN 		= 	2;
+	private static final  int STREET 	= 	3;
+	private static final  int CATAPULT 	= 	4;
+	private static final  int ROBBER 	= 	5;
 	private List<Point> selectionPoint;
 	private List<Location> selectionLocation;
 	
 	private int uiMode;
-	private static final int RESOURCE_VIEW = 0;
-	private static final int TRADE_VIEW = 1;
-	private static final int BUILD_VIEW = 2;
+	private static final int RESOURCE_VIEW 	= 	0;
+	private static final int TRADE_VIEW 	= 	1;
+	private static final int BUILD_VIEW 	= 	2;
 	
 	private static int windowWidth;
 	private static int windowHeight;
 	private static float aspectRatio;
 	private static int xOffset;
 	private static int xOffsetUI, yOffsetUI, zOffsetUI;
-	private static int viewportXwidth;
-	private static int viewportYwidth;
-	private static float screenToOpenGLX;
-	private static float screenToOpenGLY;
 	
 	private int[] village;
 	private int[] town;
 	private int[] catapult;
+	private int[] road;
+	
+	private Clickable claimLongestRoad;
+	private Clickable claimVictory;
+	private Clickable endTurn;
+	private Clickable offerTrade;
+	private Clickable buildStreet;
+	private Clickable buildStreetGhost;
+	private Clickable buildVillage;
+	private Clickable buildVillageGhost;
+	private Clickable buildTown;	
+	private Clickable buildTownGhost;
+	private Clickable buildCatapult;
+	private Clickable buildCatapultGhost;
+	private Clickable setRobberGhost;
+	
+	private boolean observer;
+	private int lastNumberDiced;
 	
 	private Map<Player,PlayerColors> colorMap;
 	
-	public GameGUI(ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player, String> names, Setting setting, String gameTitle) throws Exception {
+	private CyclicBarrier barrier;
+
+	
+	public GameGUI(ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player, String> names, Setting setting, String gameTitle, boolean observer, CyclicBarrier barrier) {
 		super(modelReader, controllerAdapter);
 		this.modelReader.addModelObserver(this);
 		this.playerNames = names;
@@ -119,15 +137,14 @@ public class GameGUI extends View implements Runnable{
 		this.catapult = new int[names.size()];
 		this.village = new int[names.size()];
 		this.town = new int[names.size()];
+		this.road = new int[names.size()];
+		this.observer = observer;
+		this.barrier = barrier;
 		windowWidth = Setting.getDisplayMode().getWidth();
 		windowHeight = Setting.getDisplayMode().getHeight();
 		aspectRatio = ((float)windowWidth)/windowHeight;
-		viewportXwidth = (int)(870*aspectRatio);
-		viewportYwidth = 870;
-		screenToOpenGLX = ((float)viewportXwidth/windowWidth);
-		screenToOpenGLY = ((float)viewportYwidth/windowHeight);
 		xOffset = (int)(366*aspectRatio);
-		xOffsetUI = (int)((viewportXwidth-1075)/2);
+		xOffsetUI = (int)(((870*aspectRatio)-1075)/2);
 		yOffsetUI = 955;
 		zOffsetUI = -950;
 		//center to the area where the first field is drawn
@@ -145,7 +162,7 @@ public class GameGUI extends View implements Runnable{
 		//TODO: set and use min,max for x,y 
 		
 		List<PlayerColors> tmp = new LinkedList<PlayerColors>();
-		tmp.addAll(Arrays.asList(new PlayerColors[] {RED,BLUE,GREEN,YELLOW,ORANGE,BROWN,WHITE,PURPLE,BLACK}));
+		tmp.addAll(Arrays.asList(new PlayerColors[] {RED,BLUE,YELLOW,ORANGE,BROWN,WHITE,PURPLE,BLACK}));
 		tmp.remove(Setting.getPlayerColor());
 		
 		//set color of players
@@ -166,18 +183,55 @@ public class GameGUI extends View implements Runnable{
 		for (Player act :modelReader.getTableOrder()) {
 			this.village[i] = modelReader.getSettlements(act, BuildingType.Village).size();
 			this.town[i] = modelReader.getSettlements(act, BuildingType.Town).size();
-			this.catapult[i++] = modelReader.getCatapults(act).size();
+			this.catapult[i] = modelReader.getCatapults(act).size();
+			List<List<Path>> streets = modelReader.calculateLongestRoads(act);
+			this.road[i++] = streets.size() > 0 ? streets.get(0).size() : 0;
 		}
 	}
 	
+	private static float screenToOpenGLx (int zoom) {
+		float oglwidth = (2000+zoom)*0.82841f*aspectRatio;
+		return oglwidth/windowWidth;
+	}
+	
+	private static float screenToOpenGLy (int zoom) {
+		float oglheight = (2000+zoom)*0.82841f;
+		return oglheight/windowHeight;
+	}
+	
+	private void deactivateUI() {
+		for (Clickable click : Clickable.getRenderList()) {
+			click.setActive(false);
+		}
+	}
+	
+	private void reinitiateUI() {
+		Player me = modelReader.getMe();
+		if (modelReader.affordableSettlements(BuildingType.Village) > 0) 
+			buildVillage.setActive(true);
+		if (modelReader.affordableSettlements(BuildingType.Town) > 0) 
+			buildTown.setActive(true);
+		if (modelReader.affordableCatapultBuild() > 0) 
+			buildCatapult.setActive(true);
+		if (modelReader.affordableStreets() > 0) 
+			buildStreet.setActive(true);
+		if (!modelReader.calculateLongestRoads(me).isEmpty())
+			claimLongestRoad.setActive(true);
+		//TODO evtl ändern wenn sich longestroad funktion ändert
+		if (modelReader.getCurrentVictoryPoints(me) >= modelReader.getMaxVictoryPoints())
+			claimVictory.setActive(true);
+		if (modelReader.getRound() >= 1)
+			endTurn.setActive(true);
+		if (me.getResources().size() >= 1)
+			offerTrade.setActive(true);
+	}
+
 	private void setColor(PlayerColors playerColor) {
 		switch(playerColor) {
 		case BLUE:
 			GL11.glColor4f(0.30f,0.30f,1.0f,1.0f); break;
 		case RED:
 			GL11.glColor4f(1.0f,0.0f,0.0f,1.0f); break;
-		case GREEN:
-			GL11.glColor4f(0.0f,1.0f,0.0f,1.0f); break;
 		case YELLOW:
 			GL11.glColor4f(1.0f,1.0f,0.0f,1.0f); break;
 		case ORANGE:
@@ -383,6 +437,17 @@ public class GameGUI extends View implements Runnable{
 	private void renderPlayerInfo(Player player, long pos) {
 		int px = 10;
 		int py = 10+(int)pos*76;
+		
+		// Trenner
+		if (pos >0) {
+			setColor(BLACK);
+			renderUI("Trenner", xOffsetUI, yOffsetUI+py-10, 2, 410, 2);
+		}
+		if (player == modelReader.getCurrentPlayer()) {
+			GL11.glColor4f(0.15f, 0.15f, 0.15f, 0.15f);
+			renderUI("PlayerBackgroundHighlight", xOffsetUI+px-5, yOffsetUI+py-10, 2, 440, 80);
+			setColor(BLACK);
+		}
 		GL11.glPushMatrix();
 		String name = getName(player);
 		uiFont20.drawString(xOffsetUI+px+30, yOffsetUI+py-3, name);
@@ -391,8 +456,7 @@ public class GameGUI extends View implements Runnable{
 		setColor(BLACK);
 		renderUI("Cup", xOffsetUI+px, yOffsetUI+py+20, 2, 30, 50);
 		// draw currentScorePoints 0/??
-		uiFont20.drawString(xOffsetUI+px+20, yOffsetUI+py+25, ""+modelReader.getCurrentVictoryPoints(player) + "/" + modelReader.getMaxVictoryPoints());
-		//draw Village+ Score
+		uiFont20.drawString(xOffsetUI+px+22, yOffsetUI+py+25, ""+modelReader.getCurrentVictoryPoints(player) + "/" + modelReader.getMaxVictoryPoints());
 		setColor(colorMap.get(player));
 		GL11.glPushMatrix();
 		GL11.glTranslatef(xOffsetUI+px+90, yOffsetUI+py+42, 1);
@@ -400,8 +464,8 @@ public class GameGUI extends View implements Runnable{
 		drawSquareMid(30, 30);
 		GL11.glPopMatrix();
 		setColor(BLACK);
-		uiFont20.drawString(xOffsetUI+px+100, yOffsetUI+py+25, ""+village[(int)pos] + "/" + modelReader.getMaxBuilding(BuildingType.Village));
-		//draw Town + Score
+		//draw VillageScore 0/??
+		uiFont20.drawString(xOffsetUI+px+99, yOffsetUI+py+25, ""+village[(int)pos] + "/" + modelReader.getMaxBuilding(BuildingType.Village));
 		setColor(colorMap.get(player));
 		GL11.glPushMatrix();
 		GL11.glTranslatef(xOffsetUI+px+155, yOffsetUI+py+42, 1);
@@ -409,9 +473,8 @@ public class GameGUI extends View implements Runnable{
 		drawSquareMid(30,30);
 		GL11.glPopMatrix();
 		setColor(BLACK);
-		uiFont20.drawString(xOffsetUI+px+160, yOffsetUI+py+25, ""+town[(int)pos] + "/" + modelReader.getMaxBuilding(BuildingType.Town));
-		setColor(BLACK);
-		//draw Catapult + Score 
+		//draw TownScore
+		uiFont20.drawString(xOffsetUI+px+163, yOffsetUI+py+25, ""+town[(int)pos] + "/" + modelReader.getMaxBuilding(BuildingType.Town));
 		setColor(colorMap.get(player));
 		GL11.glPushMatrix();
 		GL11.glTranslatef(xOffsetUI+px+220, yOffsetUI+py+42, 1);
@@ -419,9 +482,8 @@ public class GameGUI extends View implements Runnable{
 		drawSquareMid(30,30);
 		GL11.glPopMatrix();
 		setColor(BLACK);
-		uiFont20.drawString(xOffsetUI+px+225, yOffsetUI+py+25, ""+catapult[(int)pos] + "/" + modelReader.getMaxCatapult());
-		setColor(BLACK);
-		// draw LongestRoad + Score
+		//draw CatapultScore
+		uiFont20.drawString(xOffsetUI+px+230, yOffsetUI+py+25, ""+catapult[(int)pos] + "/" + modelReader.getMaxCatapult());
 		setColor(colorMap.get(player));
 		GL11.glPushMatrix();
 		GL11.glTranslatef(xOffsetUI+px+270, yOffsetUI+py+37, 1);
@@ -429,16 +491,18 @@ public class GameGUI extends View implements Runnable{
 		drawSquareMid(5,30);
 		GL11.glPopMatrix();
 		setColor(BLACK);
-		uiFont20.drawString(xOffsetUI+px+275, yOffsetUI+py+25, ""+modelReader.calculateLongestRoads(player).size());
-		setColor(BLACK);
-		//GL11.glPopMatrix();
+		// draw LongestRoad (as int)
+		uiFont20.drawString(xOffsetUI+px+277, yOffsetUI+py+24, ""+road[(int)pos]);
+		// draw seperation for players
+		
+		GL11.glPopMatrix();
 	}
 
 	private void renderMarks() {
 		switch(selectionMode) {
 		case NONE: 
 			break;
-		case FIELDS:
+		case ROBBER:
 			for (Point p : selectionPoint) {
 			    int fx = 0;
 			    int fy = 0;
@@ -459,12 +523,60 @@ public class GameGUI extends View implements Runnable{
 			    drawSquareMid(300, 300);
 			    GL11.glPopMatrix();
 			}
-
 			break;
-		case INTERSECTIONS:
+		case VILLAGE:
+		case TOWN:
+			for (Location l : selectionLocation) {
+				int ix = 0;
+				int iy = 0;
+				   switch(l.getY()%2) {
+					   case 0:
+						   ix = l.getX()*250;
+						   iy = l.getY()*215; 
+						   break;
+					   case 1:
+						   ix = l.getX()*250-125;
+						   iy = l.getY()*215;
+						   break;
+				   }
+				  switch(l.getOrientation()) {
+					   case 0:
+						   iy+=-135;
+						   break;
+					   case 1:
+						   ix+=125;
+						   iy+=-70;
+						   break;
+					   case 2:
+						   ix+=125;
+						   iy+=80;
+						   break;
+					   case 3:
+						   iy+=140;
+						   break;
+					   case 4:
+						   ix+=-120;
+						   iy+=80;
+						   break;
+					   case 5:
+						   ix+=-120;
+						   iy+=-70;
+						   break;
+					   default:
+						   throw new IllegalArgumentException();
+				   }
+			    GL11.glPushMatrix();
+			    intersectionMarkTexture.bind();
+			    setColor(BLACK);
+			    GL11.glTranslatef(ix+x, iy+y, 3+z);
+			    drawSquareMid(50, 50);
+			    GL11.glPopMatrix();
+			}
 			break;
-		case PATHS:
+		case STREET:
 			break;
+		case CATAPULT:
+			break; //TODO implement it!
 		}
 	}
 	
@@ -478,7 +590,7 @@ public class GameGUI extends View implements Runnable{
 	
 	private void renderUI(Clickable click) {
 		if (!click.isActive()) {
-			GL11.glColor4f(0.5f, 0.5f, 0.5f, 0.5f);
+			GL11.glColor4f(0.3f, 0.3f, 0.3f, 0.3f);
 			renderUI(click.getName(),click.getX(),click.getY(),click.getZ(),click.getWidth(),click.getHeight());
 			GL11.glColor4f(1, 1, 1, 1);
 		}
@@ -488,112 +600,124 @@ public class GameGUI extends View implements Runnable{
 	}
 	
 	private void render() {
-		   //Clear and center
-		   GL11.glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
-		   GL11.glLoadIdentity();
-		   GL11.glTranslatef(-812.8125f*aspectRatio,820,-2000);
-		   GL11.glRotatef(180, 1, 0, 0);
-		   GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-		   //Render Board
-		   Iterator<Field> iterF = modelReader.getFieldIterator();
-		   while (iterF.hasNext())
-			   renderField(iterF.next());
-		   Iterator<Path> iterP = modelReader.getPathIterator();
-		   while (iterP.hasNext()) 
-			   renderPath(iterP.next());
-		   Iterator<Intersection> iterI = modelReader.getIntersectionIterator();
-		   while (iterI.hasNext()) 
-			   renderIntersection(iterI.next());
-		   //Render Selections
-		   renderMarks(); //TODO: implement markierungen
-		   //Render UI
-		   GL11.glPushMatrix();
-		   GL11.glTranslatef(xOffset, 0, zOffsetUI);
-		   setColor(BLACK);
-		   renderUI("Background", xOffsetUI, yOffsetUI, 0, 1500, 305);
-		   renderUI("Console", xOffsetUI+630, yOffsetUI+65, 1, 730, 300);
-		   setColor(BLACK);
-		   renderUI("LumberScore", xOffsetUI+345, yOffsetUI+65, 1, 95, 77);
-		   uiFont20.drawString(xOffsetUI+396, yOffsetUI+72, ""+modelReader.getResources().getResource(Resource.LUMBER));
-		   setColor(BLACK);
-		   renderUI("BrickScore", xOffsetUI+345, yOffsetUI+110, 1, 95, 77);
-		   uiFont20.drawString(xOffsetUI+396, yOffsetUI+117, ""+modelReader.getResources().getResource(Resource.BRICK));
-		   setColor(BLACK);
-		   renderUI("WoolScore", xOffsetUI+345, yOffsetUI+155, 1, 95, 77);
-		   uiFont20.drawString(xOffsetUI+396, yOffsetUI+162, ""+modelReader.getResources().getResource(Resource.WOOL));
-		   setColor(BLACK);
-		   renderUI("GrainScore", xOffsetUI+345, yOffsetUI+200, 1, 95, 77);
-		   uiFont20.drawString(xOffsetUI+396, yOffsetUI+207, ""+modelReader.getResources().getResource(Resource.GRAIN));
-		   setColor(BLACK);
-		   renderUI("OreScore", xOffsetUI+345, yOffsetUI+245, 1, 95, 77);
-		   uiFont20.drawString(xOffsetUI+396, yOffsetUI+252, ""+modelReader.getResources().getResource(Resource.ORE));
-		   setColor(BLACK);
-		   for (Clickable act : Clickable.getRenderList()) {
-			   if (act.isVisible()) renderUI(act);
-		   }
-		   int i = 0;
-		   for (Player act : modelReader.getTableOrder()) {
-			   if (i > 4) break;
-			   renderPlayerInfo(act, i++);
-		   }
-		   GL11.glPopMatrix();
-		   //Render Fonts on UI
-		   GL11.glPushMatrix();
-		   GL11.glTranslatef(xOffset+20, 400, -950);
-		   debugFont.drawString(300, 0, "Debug:", Color.white);
-		   debugFont.drawString(300, 30, "x: " + x + ", y: " + y + ", z: " + z, Color.white);
-		   debugFont.drawString(300, 60, "mx: " + Mouse.getX() + ", my: " + Mouse.getY() + ", mw: " + Mouse.getEventDWheel(), Color.white);
-		   debugFont.drawString(300, 90, "minX: " + minX + ", minY: " + minY + ", minZ: " + maxX, Color.white);
-		   GL11.glPopMatrix();
+	   //Clear and center
+	   GL11.glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
+	   GL11.glLoadIdentity();
+	   GL11.glTranslatef(-812.8125f*aspectRatio,820,-2000);
+	   GL11.glRotatef(180, 1, 0, 0);
+	   GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+	   //Render Board
+	   Iterator<Field> iterF = modelReader.getFieldIterator();
+	   while (iterF.hasNext())
+		   renderField(iterF.next());
+	   Iterator<Path> iterP = modelReader.getPathIterator();
+	   while (iterP.hasNext()) 
+		   renderPath(iterP.next());
+	   Iterator<Intersection> iterI = modelReader.getIntersectionIterator();
+	   while (iterI.hasNext()) 
+		   renderIntersection(iterI.next());
+	   //Render Selections
+	   renderMarks();
+	   //Render UI
+	   GL11.glPushMatrix();
+	   GL11.glTranslatef(xOffset, 0, zOffsetUI);
+	   setColor(BLACK);
+	   renderUI("Background", xOffsetUI, yOffsetUI, 0, 1500, 305);
+	   renderUI("Console", xOffsetUI+630, yOffsetUI+65, 1, 730, 300);
+	   setColor(BLACK);
+	   renderUI("LumberScore", xOffsetUI+345, yOffsetUI+65, 1, 95, 77);
+	   uiFont20.drawString(xOffsetUI+396, yOffsetUI+72, ""+modelReader.getResources().getResource(Resource.LUMBER));
+	   setColor(BLACK);
+	   renderUI("BrickScore", xOffsetUI+345, yOffsetUI+110, 1, 95, 77);
+	   uiFont20.drawString(xOffsetUI+396, yOffsetUI+117, ""+modelReader.getResources().getResource(Resource.BRICK));
+	   setColor(BLACK);
+	   renderUI("WoolScore", xOffsetUI+345, yOffsetUI+155, 1, 95, 77);
+	   uiFont20.drawString(xOffsetUI+396, yOffsetUI+162, ""+modelReader.getResources().getResource(Resource.WOOL));
+	   setColor(BLACK);
+	   renderUI("GrainScore", xOffsetUI+345, yOffsetUI+200, 1, 95, 77);
+	   uiFont20.drawString(xOffsetUI+396, yOffsetUI+207, ""+modelReader.getResources().getResource(Resource.GRAIN));
+	   setColor(BLACK);
+	   renderUI("OreScore", xOffsetUI+345, yOffsetUI+245, 1, 95, 77);
+	   uiFont20.drawString(xOffsetUI+396, yOffsetUI+252, ""+modelReader.getResources().getResource(Resource.ORE));
+	   setColor(BLACK);
+	   for (Clickable act : Clickable.getRenderList()) {
+		   if (act.isVisible()) renderUI(act);
+	   }
+	   int i = 0;
+	   for (Player act : modelReader.getTableOrder()) {
+		   if (i > 4) break;
+		   renderPlayerInfo(act, i++);
+	   }
+	   
+	   GL11.glPopMatrix();
+	   //Render Fonts on UI
+	   GL11.glPushMatrix();
+	   GL11.glTranslatef(xOffset+20, 400, -950);
+	   debugFont.drawString(300, 0, "Debug:", Color.white);
+	   debugFont.drawString(300, 30, "x: " + x + ", y: " + y + ", z: " + z, Color.white);
+	   debugFont.drawString(300, 60, "mx: " + Mouse.getX() + ", my: " + Mouse.getY() + ", mw: " + Mouse.getEventDWheel(), Color.white);
+	   debugFont.drawString(300, 90, "minX: " + minX + ", minY: " + minY + ", minZ: " + maxX, Color.white);
+	   debugFont.drawString(300, 120, "oglx: " + (Mouse.getX()*screenToOpenGLx(z)+(minX*aspectRatio)) + ", ogly: " + ((windowHeight-Mouse.getY())*screenToOpenGLy(z)+(minY*aspectRatio)), Color.white);
+	   GL11.glPopMatrix();
 
-		   GL11.glPushMatrix();
-		   GL11.glTranslatef(xOffset+xOffsetUI, yOffsetUI, zOffsetUI);
-		   uiFont20.drawString(640, 75, "Round "+modelReader.getRound(), Color.black);
-		   GL11.glPopMatrix();
-		   }
+	   GL11.glPushMatrix();
+	   GL11.glTranslatef(xOffset+xOffsetUI, yOffsetUI, zOffsetUI);
+	   uiFont20.drawString(640, 75, "Round "+modelReader.getRound(), Color.black);
+	   uiFont20.drawString(640, 100, ""+ lastNumberDiced + " was diced", Color.black);
+	   uiFont20.drawString(640, 125, "It's "+ getName(modelReader.getCurrentPlayer()) + "'s turn", Color.black);
+	   GL11.glPopMatrix();
+	}
 
 	public void drawTradeMenu() {
 		//TODO: implement it!
 	}
 	
+	
 	public void drawBuildMenu() {
 		//TODO: implement it!
 	}
+	
 	
 	public void drawResource() {
 		//TODO: implement it!
 	}
 	
+
 	public String getName(Player player) {
 		if (player == null) throw new IllegalArgumentException();
 		return playerNames.get(player);
 	}
 
+	
 	@Override
 	public void updatePath(Path path) {
-		//TODO: implement it!
+		int i = 0;
+		for (Player act : modelReader.getTableOrder()) {
+			List<List<Path>> streets = modelReader.calculateLongestRoads(act);
+			this.road[i++] = streets.size() > 0 ? streets.get(0).size() : 0;
+		}
 	}
 
-	@Override
-	public void updateIntersection(Intersection intersection) {
-		//TODO: implement it!
-	}
 
 	@Override
 	public void updateField(Field field) {
 		//TODO: implement it!
 	}
 
+	
 	@Override
 	public void updateResources() {
 		//TODO: implement it!
+		//überprüfen ob bau-
 	}
 
+	
 	@Override
 	public void updateVictoryPoints() {
 		//TODO: implement it!
 	}
 
+	
 	@Override
 	public void updateCatapultCount() {
 		int i = 0;
@@ -602,6 +726,7 @@ public class GameGUI extends View implements Runnable{
 		}
 	}
 
+	
 	@Override
 	public void updateSettlementCount(BuildingType buildingType) {
 		switch(buildingType) {
@@ -620,34 +745,49 @@ public class GameGUI extends View implements Runnable{
 		}
 	}
 
+	
 	@Override
 	public void eventRobber() {
 		//TODO: implement it!
+		// in selektionsmodus für felder gehn und evtl nachricht auf console
 	}
 
+	
 	@Override
 	public void eventTrade(ResourcePackage resourcePackage) {
 		//TODO: implement it!
+		// handel auf console ausgeben und 2 knöpfe einblenden für annehmen ablehnen
 	}
 
+	
 	@Override
-	public void eventNewRound() {
-		//TODO: implement it!
+	public void eventNewRound(int number) {
+		if (modelReader.getCurrentPlayer() == modelReader.getMe() && !observer) {
+			reinitiateUI();
+		}
+		this.lastNumberDiced = number;
 	}
+	
 
 	@Override
 	public void updateTradePossibilities() {
 		//TODO: implement it!
 	}
+	
 
 	@Override
 	public void eventPlayerLeft(long playerID) {
 		//TODO: implement it!
 	}
 	
+	
 	@Override
 	public void run() {
 		init();
+		try {
+			barrier.await();
+		} catch (Exception e) {e.printStackTrace();} 
+		
 	    boolean finished = false;
 		while (!finished) {
 			  handleInput();
@@ -676,12 +816,13 @@ public class GameGUI extends View implements Runnable{
 		Display.destroy();
 		System.exit(0);
 	}
-	
+		
+
 	@SuppressWarnings("unchecked")
 	private void init() {
 		try {//Display.getDesktopDisplayMode()
 			Display.setDisplayMode(Setting.getDisplayMode());
-			Display.setTitle("Die Siedler von der Saar @ " + gameTitle);
+			Display.setTitle("Die Siedler von der Saar: " + getName(modelReader.getMe()) + "@" + gameTitle);
 			Display.setVSyncEnabled(true);
 			Display.setFullscreen(Setting.isFullscreen());
 			Display.create();
@@ -736,9 +877,10 @@ public class GameGUI extends View implements Runnable{
 			uiTextureMap.put("Console", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/console.png")));
 			uiTextureMap.put("PlayerColor", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Player_Color.png")));
 			uiTextureMap.put("Cup", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Cup.png")));
-
+			uiTextureMap.put("Trenner", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/PlayerTrenner.png")));
+			uiTextureMap.put("PlayerBackgroundHighlight", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/PlayerBackgroundHighlight.png")));
 			
-			Clickable claimLongestRoad = new Clickable("ClaimLongestRoad", xOffsetUI+542, yOffsetUI+22, 2, 373, 77, false, true, true) {
+			claimLongestRoad = new Clickable("ClaimLongestRoad", xOffsetUI+542, yOffsetUI+22, 2, 373, 77, false, true, true) {
 				@Override
 				public void execute() {
 					// vorerst gerade die erste longestRoad
@@ -747,59 +889,73 @@ public class GameGUI extends View implements Runnable{
 				}
 			};
 
-			Clickable claimVictory = new Clickable("ClaimVictory", xOffsetUI+775, yOffsetUI+22, 2, 185, 77, false, false, true) {
+			claimVictory = new Clickable("ClaimVictory", xOffsetUI+775, yOffsetUI+22, 2, 185, 77, false, false, true) {
 				@Override
 				public void execute() {
 					controllerAdapter.claimVictory();
 				}
 			};
 			
-			Clickable endTurn = new Clickable("EndTurn", xOffsetUI+930, yOffsetUI+22, 2, 185, 77, false, false, true) {
+			endTurn = new Clickable("EndTurn", xOffsetUI+930, yOffsetUI+22, 2, 185, 77, false, false, true) {
 				@Override
 				public void execute() {
 					controllerAdapter.endTurn();
 				}
 			};
 			
-			Clickable offerTrade = new Clickable("offerTrade", xOffsetUI+450, yOffsetUI+65, 2, 185, 77, false, true, true) {
+			offerTrade = new Clickable("offerTrade", xOffsetUI+450, yOffsetUI+65, 2, 185, 77, false, true, true) {
 				@Override
 				public void execute() {
 					minX = 42;
 				}
 			};
 			
-			Clickable buildStreet = new Clickable("BuildStreet", xOffsetUI+450, yOffsetUI+110, 2, 185, 77, false, true, true) {
+			buildStreet = new Clickable("BuildStreet", xOffsetUI+450, yOffsetUI+110, 2, 185, 77, false, true, true) {
 				@Override
 				public void execute() {
 					selectionLocation = Model.getLocationListPath(modelReader.buildableStreetPaths(modelReader.getMe()));
-					selectionMode = PATHS;
+					selectionMode = STREET;
 					
 				}
 			};
 			
-			Clickable buildVillage = new Clickable("BuildVillage", xOffsetUI+450, yOffsetUI+155, 2, 185, 77, true, true, true) {
+			buildVillage = new Clickable("BuildVillage", xOffsetUI+450, yOffsetUI+155, 2, 185, 77, true, true, true) {
 				@Override
 				public void execute() {
 					selectionLocation = Model.getLocationListIntersection(modelReader.buildableVillageIntersections(modelReader.getMe()));
-					selectionMode = INTERSECTIONS;
+					selectionMode = VILLAGE;
 				}
 			};
 			
-			Clickable buildTown = new Clickable("BuildTown", xOffsetUI+450, yOffsetUI+200, 2, 185, 77, false, true, true) {
+			buildVillageGhost = new Clickable(null, 0, 0, 0, 0, 0, false, false, false) {
+				@Override
+				public void execute() {
+					controllerAdapter.buildSettlement(getIntersection(), BuildingType.Village);
+				}
+			};
+			
+			buildTown = new Clickable("BuildTown", xOffsetUI+450, yOffsetUI+200, 2, 185, 77, false, true, true) {
 				@Override
 				public void execute() {
 					selectionLocation = Model.getLocationListIntersection(modelReader.buildableTownIntersections(modelReader.getMe()));
-					selectionMode = INTERSECTIONS;
+					selectionMode = TOWN;
 				}
 			};
 						
-			Clickable buildCatapult = new Clickable("BuildCatapult", xOffsetUI+450, yOffsetUI+245, 2, 185, 77, false, true, true) {
+			buildCatapult = new Clickable("BuildCatapult", xOffsetUI+450, yOffsetUI+245, 2, 185, 77, false, true, true) {
 				@Override
 				public void execute() {
 					selectionLocation = Model.getLocationListPath(modelReader.buildableStreetPaths(modelReader.getMe()));
-					selectionMode = PATHS;
+					selectionMode = CATAPULT;
 				}
 			};
+			
+			if (modelReader.getMe() != modelReader.getCurrentPlayer() || observer) {
+				deactivateUI();
+			}
+			else {
+				reinitiateUI();
+			}
 			
 		} catch (Exception e) {e.printStackTrace();}
 		
@@ -855,17 +1011,36 @@ public class GameGUI extends View implements Runnable{
         render();
         //render two/three times to fill the double/triple buffer
 	}
+	
 
 	private void handleInput() {
 		int mx = Mouse.getX();
 		int my = Mouse.getY();
 		
 		if (Mouse.isButtonDown(0)) {
-			for (Clickable c : Clickable.executeModelClicks(mx*screenToOpenGLX, (windowHeight-my)*screenToOpenGLY+380)) {
+			for (Clickable c : Clickable.executeModelClicks(mx*screenToOpenGLx(zOffsetUI), (windowHeight-my)*screenToOpenGLy(zOffsetUI)+380)) {
 				controllerAdapter.addGuiEvent(c);
 			}
-			for (Clickable c : Clickable.executeUIClicks(mx*screenToOpenGLX, (windowHeight-my)*screenToOpenGLY+380)) {
+			for (Clickable c : Clickable.executeUIClicks(mx*screenToOpenGLx(zOffsetUI), (windowHeight-my)*screenToOpenGLy(zOffsetUI)+380)) {
 				c.execute();
+			}
+			switch (selectionMode) {
+				case ROBBER:
+					Field tmp = getMouseField();
+					if (tmp != null) {
+						setRobberGhost.setField(getMouseField());
+						selectionMode = NONE;
+						controllerAdapter.addGuiEvent(setRobberGhost);
+					}
+					break;
+				case VILLAGE:
+					break;
+				case TOWN:
+					break;
+				case CATAPULT:
+					break;
+				case STREET:
+					break; //TODO implement it!
 			}
 		}
 		
@@ -894,30 +1069,30 @@ public class GameGUI extends View implements Runnable{
 		}
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
-			//x+=5;
+			//x+=10;
 			minX+=5;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
-			//x-=5;
+			//x-=10;
 			minX-=5;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
-			//y+=5;
+			//y+=10;
 			minY+=5;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
-			//y-=5;
+			//y-=10;
 			minY-=5;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_N)) {
 			if (z+50 < this.maxZ)
 				z+=50;
-			maxX+=10;
+//			maxX+=10;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_M)) {
 			if (z-50 > this.minZ)
 				z-=50;
-			maxX-=10;
+//			maxX-=10;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
 			Display.destroy();
@@ -925,6 +1100,68 @@ public class GameGUI extends View implements Runnable{
 		}
 	}
 
+	public int getOglx() {
+		//Do not touch. took me 2 days to get it to work!
+		return (int) (Mouse.getX()*screenToOpenGLx(z)+(585*aspectRatio)+((1450+z)*-0.415f*aspectRatio))-x+128;
+	}
+	
+	public int getOgly() {
+		//Do not touch. took me 2 days to get it to work!
+		return (int) ((windowHeight-Mouse.getY())*screenToOpenGLy(z)+592+((1450+z)*-0.415f))-y+148;
+	}
+	
+	public Field getMouseField() {
+		int tmpx = getOglx();
+		int tmpy = getOgly();
+		int ergx,ergy;
+		if (tmpy > 0) {
+			switch((tmpy/215) % 2) {
+			case 1:
+				tmpx-=-125;
+				break;
+			case 0:
+				break;
+			}
+		}
+		else {
+			switch((tmpy/215) % 2) {
+			case -1:
+				break;
+			case 0:
+				tmpx-=-125;
+				break;
+			}
+		}
+		
+		if (tmpx > 0) {
+			ergx = tmpx/250;
+		}
+		else {
+			ergx = tmpx/250-1;
+		}
+		if (tmpy > 0) {
+			ergy = tmpy/215;
+		}
+		else {
+			ergy = tmpy/215-1;
+		}
+		if (ergx >= -1 && ergx < modelReader.getBoardWidth()+1 && ergy >= -1 && ergy < modelReader.getBoardHeight()+1)
+			return modelReader.getField(new Point(ergy, ergx));
+		else 
+			return null;
+		//TODO evtl verbessern da nur klappt wenn man ca genau in die mitte klickt
+	}
+	
+	public Intersection getMouseIntersection() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public Path getMousePath() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	public static void main(String[] args) throws Exception {		
 				
 		String[] list = new String[] {
@@ -1022,7 +1259,7 @@ public class GameGUI extends View implements Runnable{
 		names.put(model.getTableOrder().get(2), "Herbert");
 		names.put(model.getTableOrder().get(1), "Hubert");
 		names.put(model.getTableOrder().get(0), "Hannes");
-		model.getTableOrder().get(0).modifyResources(new ResourcePackage(100,200,140,130,120));
+		model.getTableOrder().get(3).modifyResources(new ResourcePackage(100,200,140,130,120));
 		
 		model.buildSettlement(new Location(3,3,0), BuildingType.Village);
 		model.buildStreet(new Location(3,3,0));
@@ -1041,26 +1278,44 @@ public class GameGUI extends View implements Runnable{
 		model.buildSettlement(new Location(3,3,0), BuildingType.Town);
 		model.buildCatapult(new Location(3,3,0), true);
 		
-		Setting setting = new Setting(Display.getDesktopDisplayMode(), true, PlayerColors.RED);
-//		Setting setting = new Setting(new DisplayMode(1024, 550), false, PlayerColors.RED);  /// Display.getDesktopDisplayMode()
+		model.newRound(2);
+		model.newRound(2);
+		model.newRound(2);
 		
-		GameGUI gameGUI = new GameGUI(model, null, names, setting, "TestSpiel");
+		model.buildStreet(new Location(1,2,2));
+		model.buildStreet(new Location(2,1,1));
+		
+//		Setting setting = new Setting(Display.getDesktopDisplayMode(), true, PlayerColors.RED);
+		Setting setting = new Setting(new DisplayMode(1024, 550), false, PlayerColors.RED);  /// Display.getDesktopDisplayMode()
+		
+		CyclicBarrier barrier = new CyclicBarrier(2);
+		GameGUI gameGUI = new GameGUI(model, null, names, setting, "TestSpiel", false, barrier);
 		new Thread(gameGUI).start();
+		barrier.await();
 	}
+	
 	
 	public static void saveFile(String filename, InputStream inputStr) throws IOException {
 		FileOutputStream fos = new FileOutputStream(filename);
-		   int len = -1;
-		   byte[] buffer = new byte[4096];
-		   while ((len = inputStr.read(buffer)) != -1) {
-		      fos.write(buffer,0,len);
-		   }
-		   fos.close();
-		}
+	    int len = -1;
+	    byte[] buffer = new byte[4096];
+	    while ((len = inputStr.read(buffer)) != -1) {
+	      fos.write(buffer,0,len);
+	    }
+	    fos.close();
+	}
+	
 
 	@Override
 	public void initTurn() {
 		//TODO: implement it!
+	}
+	
+
+	@Override
+	public void updateIntersection(Intersection intersection) {
+		// TODO Auto-generated method stub
+		
 	}
 
 		
@@ -1102,12 +1357,20 @@ public class GameGUI extends View implements Runnable{
 		Setting setting = new Setting(new DisplayMode(1024,580), true, PlayerColors.RED);
 		GameGUI gameGUI = null;
 		try {
-			gameGUI = new GameGUI(model, null, null, setting);
+			gameGUI = new GameGUI(model, null, null, setting, true);
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		new Thread(gameGUI).start();
 		*/
+	
+//	   GL11.glPushMatrix();
+//	   GL11.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);  // (-0.1453125f*(2000+z)      (-0.11875f*(2000+z)
+//	   GL11.glTranslatef(Mouse.getX()*screenToOpenGLx(z)+(585*aspectRatio)+((1450+z)*-0.415f*aspectRatio), (windowHeight-Mouse.getY())*screenToOpenGLy(z)+592+((1450+z)*-0.415f), z);
+//	   fieldMarkTexture.bind();
+//	   drawSquareLeftTop(100, 100);
+//	   //setColor(BLACK);
+//	   GL11.glPopMatrix();
 	
 }

@@ -81,12 +81,6 @@ public interface ModelReader {
 	public int affordableSettlementAttack();
 	
 	/**
-	 * @param villageCount
-	 * @return
-	 */
-	public int affordablePathsAfterVillage(int villageCount);
-	
-	/**
 	 * @param player
 	 * @param buildingType
 	 * @return

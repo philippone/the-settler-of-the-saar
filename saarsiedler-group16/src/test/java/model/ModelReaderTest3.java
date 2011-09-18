@@ -63,19 +63,6 @@ public class ModelReaderTest3 {
 	}
 
 	@Test
-	public void testAffordablePathsAfterVillage() {
-		if (model.affordablePathsAfterVillage(1) < 0) {
-			throw new IllegalArgumentException();
-		}
-		rp1 = model.getCurrentPlayer().getResources().copy();
-		assertEquals(2, model.affordablePathsAfterVillage(1));
-
-		// check whether the players resourcePackage is intact
-
-		assertEquals(rp1, model.getCurrentPlayer().getResources());
-	}
-
-	@Test
 	public void testAffordableSettlementsVillage() {
 		if (model.affordableSettlements(BuildingType.Village) < 0) {
 			throw new IllegalArgumentException();
