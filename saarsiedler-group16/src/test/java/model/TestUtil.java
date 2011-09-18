@@ -11,7 +11,6 @@ import de.unisaarland.cs.sopra.common.model.Board;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Player;
-import de.unisaarland.cs.sopra.common.view.AI;
 import de.unisaarland.cs.st.saarsiedler.comm.Connection;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
@@ -219,8 +218,8 @@ public class TestUtil {
 	}
 	
 	public static ModelObserver getTestView(Player player) throws IOException {
-		ModelReader modelReader = null;
-		ControllerAdapter controllerAdapter = null;
+		//ModelReader modelReader = null;
+		//ControllerAdapter controllerAdapter = null;
 		ModelObserver modelObserver = new TestModelObserver();
 		return modelObserver;
 	}
