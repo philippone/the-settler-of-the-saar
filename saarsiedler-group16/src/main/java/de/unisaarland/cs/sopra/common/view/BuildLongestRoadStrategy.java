@@ -41,11 +41,11 @@ public class BuildLongestRoadStrategy implements Strategy {
 		Player player = mr.getMe();
 		int vpAchieved = player.getVictoryPoints() / mr.getMaxVictoryPoints();
 		if (vpAchieved <= 0.5)
-		return null;
+			return new AIGameStats(player, this, new ResourcePackage(0, 0, 0, 0, 0), 0);
 		int n = streetsNeeded(mr);
-		ResourcePackage resourcePackage = player.getResources().add(new ResourcePackage(-1*n, -1*n, 0, 0, 0));
+		ResourcePackage resourcePackage = player.getResources().copy().add(new ResourcePackage(-1*n, -1*n, 0, 0, 0));
 		int victoryPoints = player.getVictoryPoints() + 2;
-		AIGameStats gameStats = new AIGameStats(player, resourcePackage, victoryPoints);
+		AIGameStats gameStats = new AIGameStats(player, this ,resourcePackage, victoryPoints);
 		return gameStats;
 	}
 }

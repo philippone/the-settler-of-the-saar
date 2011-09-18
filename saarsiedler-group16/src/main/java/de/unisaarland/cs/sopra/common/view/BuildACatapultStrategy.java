@@ -17,11 +17,12 @@ public class BuildACatapultStrategy implements Strategy {
 		// TODO Auto-generated method stub
 		Set<Path> paths=mr.buildableCatapultPaths(mr.getCurrentPlayer());
 		if (mr.getSettlements(mr.getMe(), BuildingType.Town).size() > 0  && mr.affordableCatapultBuild()>0
-				&& paths!=null && paths.size()< mr.getCatapults(mr.getMe()).size() && mr.getCatapults(mr.getMe()).size() < mr.getMaxCatapult()){
+				&& paths!=null  && mr.getCatapults(mr.getMe()).size() < mr.getMaxCatapult()){
+//TODO && paths.size()< mr.getCatapults(mr.getMe()).size()
 			Path bestPath=chooseBestPath(mr);
 			ca.buildCatapult(bestPath);
 			ca.endTurn();
-		}
+		} else 
 		ca.endTurn();
 	}
 	
@@ -72,10 +73,10 @@ public class BuildACatapultStrategy implements Strategy {
 	public AIGameStats getGameStats(ModelReader mr){
 		Player player = mr.getMe();
 		if (mr.getSettlements(player,BuildingType.Town).size() < 1)
-		return null;
-		ResourcePackage resourcePackage = player.getResources().add(new ResourcePackage(-1, 0, -1 ,0 , -1));
+			return new AIGameStats(player, this, new ResourcePackage(0, 0, 0, 0, 0), 0);
+		ResourcePackage resourcePackage = player.getResources().copy().add(new ResourcePackage(-1, 0, -1 ,0 , -1));
 		int victoryPoints = player.getVictoryPoints();
-		AIGameStats gameStats = new AIGameStats(player, resourcePackage, victoryPoints);
+		AIGameStats gameStats = new AIGameStats(player, this, resourcePackage, victoryPoints);
 		return gameStats;
 	}
 

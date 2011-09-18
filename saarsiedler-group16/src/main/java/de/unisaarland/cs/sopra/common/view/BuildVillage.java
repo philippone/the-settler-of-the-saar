@@ -22,6 +22,7 @@ public class BuildVillage implements Strategy {
 
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
+
 		if (mr.affordableSettlements(BuildingType.Village) > 0 && mr.buildableVillageIntersections(mr.getMe()).size() > 0
 				&& mr.buildableVillageIntersections(mr.getMe()).size() <= mr.getMaxBuilding(BuildingType.Village) && mr.getSettlements(mr.getMe(), BuildingType.Village).size() < mr.getMaxBuilding(BuildingType.Village)) {
 			Intersection bestIntersection = evaluateIntersection(mr);
@@ -29,7 +30,10 @@ public class BuildVillage implements Strategy {
 			if (mr.getMe().getVictoryPoints() >= mr.getMaxVictoryPoints())
 				ca.claimVictory();
 			ca.endTurn();
-		} else 
+		} else 	if (mr.buildableVillageIntersections(mr.getMe()).size() < 1) {
+			Strategy buildStreet = new BuildStreetStrategy();
+			buildStreet.execute(mr, ca);
+		} else
 			 ca.endTurn();
 
 	}
@@ -85,14 +89,14 @@ public class BuildVillage implements Strategy {
 		return bestIntersection;
 	}
 	
-	public AIGameStats getGameStats(ModelReader mr){
+	public AIGameStats getGameStats(ModelReader mr) {
 		Player player = mr.getMe();
 		//TODO new function buildableVillages
 		if (mr.getMaxBuilding(BuildingType.Village)-1 < mr.getSettlements(player, BuildingType.Village).size())
-		return null;
-		ResourcePackage resourcePackage = player.getResources().add(new ResourcePackage(-1, -1, -1, -1, 0));
+		return new AIGameStats(player, this, new ResourcePackage(0, 0, 0, 0, 0), 0);
+		ResourcePackage resourcePackage = player.getResources().copy().add(new ResourcePackage(-1, -1, -1, -1, 0));
 		int victoryPoints = player.getVictoryPoints() + 1;
-		AIGameStats gameStats = new AIGameStats(player, resourcePackage, victoryPoints);
+		AIGameStats gameStats = new AIGameStats(player, this, resourcePackage, victoryPoints);
 		return gameStats;
 	}
 	

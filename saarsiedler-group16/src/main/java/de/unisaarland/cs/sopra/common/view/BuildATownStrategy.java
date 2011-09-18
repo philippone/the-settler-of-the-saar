@@ -19,7 +19,6 @@ Strategy s;
 		
 		if (mr.affordableSettlements(BuildingType.Town)>0 
 				&& mr.buildableTownIntersections(mr.getMe()).size() > 0
-				&& mr.buildableTownIntersections(mr.getMe()).size() < mr.getMaxBuilding(BuildingType.Town) 
 				&& mr.getSettlements(mr.getMe(),BuildingType.Town).size()<mr.getMaxBuilding(BuildingType.Town))
 		{
 			Intersection bestIntersection=chooseBestIntersection(mr);
@@ -80,10 +79,10 @@ Strategy s;
 	public AIGameStats getGameStats(ModelReader mr){
 		Player player = mr.getMe();
 		if (mr.buildableTownIntersections(player).size() < 1 || mr.getMaxBuilding(BuildingType.Town)-1 < mr.getSettlements(player, BuildingType.Town).size())
-		return null;
-		ResourcePackage resourcePackage = player.getResources().add(new ResourcePackage(0, 0, 0, -2, -3));
+			return new AIGameStats(player, this, new ResourcePackage(0, 0, 0, 0, 0), 0);
+		ResourcePackage resourcePackage = player.getResources().copy().add(new ResourcePackage(0, 0, 0, -2, -3));
 		int victoryPoints = player.getVictoryPoints() + 1;
-		AIGameStats gameStats = new AIGameStats(player, resourcePackage, victoryPoints);
+		AIGameStats gameStats = new AIGameStats(player, this ,resourcePackage, victoryPoints);
 		return gameStats;
 	}
 }

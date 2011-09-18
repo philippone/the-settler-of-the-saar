@@ -9,4 +9,6 @@ public interface Strategy {
 	
 	public float evaluate(ModelReader mr, ControllerAdapter ca) throws Exception;
 	
+	public AIGameStats getGameStats(ModelReader mr);
+	
 }
