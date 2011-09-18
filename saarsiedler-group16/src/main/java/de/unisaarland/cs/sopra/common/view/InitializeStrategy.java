@@ -1,7 +1,5 @@
 package de.unisaarland.cs.sopra.common.view;
 
-import java.io.IOException;
-
 import java.util.HashSet;
 import java.util.Set;
 
