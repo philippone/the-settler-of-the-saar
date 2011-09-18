@@ -63,13 +63,13 @@ public class GameGUI extends View implements Runnable{
 	private Map<FieldType,Texture> fieldTextureMap;
 	private Map<Integer,Texture> numberTextureMap;
 	private Map<String,Texture> uiTextureMap;
-	private List<Field> renderFieldList;
 	private Texture streetTexture;
 	private Texture catapultTexture;
 	private Texture robberTexture;
 	private Texture pathMarkTexture;
 	private Texture fieldMarkTexture;
 	private Texture intersectionMarkTexture;
+	private Texture intersectionMarkRedTexture;
 	private Texture villageTexture;
 	private Texture townTexture;
 	private int x,y,z;
@@ -80,19 +80,15 @@ public class GameGUI extends View implements Runnable{
 	private UnicodeFont uiFont40;
 
 	private int selectionMode;
-	private static final int NONE 		=	0;
-	private static final  int VILLAGE 	= 	1;
-	private static final  int TOWN 		= 	2;
-	private static final  int STREET 	= 	3;
-	private static final  int CATAPULT 	= 	4;
-	private static final  int ROBBER 	= 	5;
+	private static final int NONE 				=	0;
+	private static final  int VILLAGE 			= 	1;
+	private static final  int TOWN 				= 	2;
+	private static final  int STREET 			= 	3;
+	private static final  int CATAPULT_BUILD 	= 	4;
+	private static final  int CATAPULT_ACTION 	= 	5;
+	private static final  int ROBBER 			=   6;
 	private List<Point> selectionPoint;
 	private List<Location> selectionLocation;
-	
-	private int uiMode;
-	private static final int RESOURCE_VIEW 	= 	0;
-	private static final int TRADE_VIEW 	= 	1;
-	private static final int BUILD_VIEW 	= 	2;
 	
 	private static int windowWidth;
 	private static int windowHeight;
@@ -138,7 +134,6 @@ public class GameGUI extends View implements Runnable{
 		this.modelReader.addModelObserver(this);
 		this.playerNames = names;
 		this.setting = setting;
-		this.uiMode = RESOURCE_VIEW;
 		this.selectionMode = NONE;
 		this.gameTitle = gameTitle;
 		this.catapult = new int[names.size()];
@@ -531,7 +526,7 @@ public class GameGUI extends View implements Runnable{
 		}
 		if (player == modelReader.getCurrentPlayer()) {
 			GL11.glColor4f(0.15f, 0.15f, 0.15f, 0.15f);
-			renderUI("PlayerBackgroundHighlight", xOffsetUI+px-5, yOffsetUI+py-10, 2, 440, 80);
+			renderUI("PlayerBackgroundHighlight", xOffsetUI+px-5, yOffsetUI+py-10, 2, 430, 92);
 			setColor(BLACK);
 		}
 		GL11.glPushMatrix();
@@ -652,15 +647,17 @@ public class GameGUI extends View implements Runnable{
 				   }
 			    GL11.glPushMatrix();
 			    intersectionMarkTexture.bind();
-			    setColor(BLACK);
-			    GL11.glTranslatef(ix+x, iy+y, 3+z);
+			    GL11.glColor4f(0.5f, 0.5f, 0.5f, 0.5f);
+			    GL11.glTranslatef(ix+x+25, iy+y+22, 3+z);
 			    drawSquareMid(150, 150);
 			    GL11.glPopMatrix();
 			}
 			break;
 		case STREET:
 			break;
-		case CATAPULT:
+		case CATAPULT_BUILD:
+			break;
+		case CATAPULT_ACTION:
 			break; //TODO implement it!
 		}
 	}
@@ -873,6 +870,7 @@ public class GameGUI extends View implements Runnable{
 			deactivateUI();
 		}
 		this.lastNumberDiced = number;
+		console4 = "";
 	}
 	
 
@@ -961,6 +959,7 @@ public class GameGUI extends View implements Runnable{
 			robberTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Robber.png"));
 			fieldMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Mark.png"));
 			intersectionMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Mark.png"));
+			intersectionMarkRedTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/MarkRed.png"));
 			pathMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Mark.png"));
 			villageTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Village.png"));
 			townTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Town.png"));
@@ -1061,7 +1060,7 @@ public class GameGUI extends View implements Runnable{
 				@Override
 				public void execute() {
 					selectionLocation = Model.getLocationListPath(modelReader.buildableStreetPaths(modelReader.getMe()));
-					selectionMode = CATAPULT;
+					selectionMode = CATAPULT_BUILD;
 				}
 			};
 			
@@ -1077,6 +1076,7 @@ public class GameGUI extends View implements Runnable{
 		if (!observer) {
 			init = true;
 			buildVillage.setActive(true);
+			console4 = modelReader.getInitVillages() + " initial villages left";
 		}
 		
 		GL11.glDisable(GL11.GL_DEPTH_TEST); // Enables Depth Testing
@@ -1170,12 +1170,17 @@ public class GameGUI extends View implements Runnable{
 						controllerAdapter.addGuiEvent(buildTownGhost);
 					}
 					break;
-				case CATAPULT:
+				case CATAPULT_BUILD:
+					break;
+				case CATAPULT_ACTION:
 					break;
 				case STREET:
 					//if init set init to false
+					//if init actualisiere initvillages zahl 
+					//console4 = modelReader.getInitVillages() + " initial villages left";
 					break; //TODO implement it!
 			}
+			//TODO klick auf catapult verarbeiten und in catapult_action mode gehn
 		}
 		
 		if (Mouse.isInsideWindow()) {
@@ -1285,10 +1290,71 @@ public class GameGUI extends View implements Runnable{
 		//TODO evtl verbessern da nur klappt wenn man ca genau in die mitte klickt
 	}
 	
+	
 	public Intersection getMouseIntersection() {
-		// TODO Auto-generated method stub
-		return null;
+		int tmpx = getOglx();
+		int tmpy = getOgly();
+		int ergx,ergy;
+		int ergo = -1;
+		if (tmpy > 0) {
+			switch((tmpy/215) % 2) {
+			case 1:
+				tmpx-=-125;
+				break;
+			case 0:
+				break;
+			}
+		}
+		else {
+			switch((tmpy/215) % 2) {
+			case -1:
+				break;
+			case 0:
+				tmpx-=-125;
+				break;
+			}
+		}
+		
+		if (tmpx > 0) {
+			ergx = tmpx/250;
+		}
+		else {
+			ergx = tmpx/250-1;
+		}
+		tmpx = Math.abs(tmpx%250);
+		if (tmpy > 0) {
+			ergy = tmpy/215;
+		}
+		else {
+			ergy = tmpy/215-1;
+		}
+		tmpy = Math.abs(tmpy%215);
+		
+		if (tmpx > 65 && tmpx < 185) {
+			if (tmpy < 60)
+				ergo = 0;
+			if (tmpy > 225)
+				ergo = 3;
+		}
+		else if (tmpy > 10 && tmpy < 130) {
+			if (tmpx > 190)
+				ergo = 1;
+			if (tmpx < 60)
+				ergo = 5;
+		}
+		else if (tmpy > 155 && tmpy < 275) {
+			if (tmpx > 190)
+				ergo = 2;
+			if (tmpx < 60)
+				ergo = 4;
+		}
+		
+		if (ergx >= -1 && ergx < modelReader.getBoardWidth()+1 && ergy >= -1 && ergy < modelReader.getBoardHeight()+1 && ergo != -1)
+			return modelReader.getIntersection(new Location(ergy, ergx, ergo));
+		else 
+			return null;
 	}
+	
 	
 	public Path getMousePath() {
 		// TODO Auto-generated method stub
@@ -1463,14 +1529,11 @@ public class GameGUI extends View implements Runnable{
 	    fos.close();
 	}
 	
-
 	@Override
 	public void initTurn() {
 		init = true;
 		buildVillage.setActive(true);
 	}
-
-
 		
 	/*
 		String[] list = new String[] {
