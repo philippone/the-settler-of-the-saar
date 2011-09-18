@@ -8,6 +8,8 @@ import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.FieldType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
+import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public class BuildVillage implements Strategy {
 	private float bestValue = 0;
@@ -83,5 +85,15 @@ public class BuildVillage implements Strategy {
 		return bestIntersection;
 	}
 	
+	public AIGameStats getGameStats(ModelReader mr){
+		Player player = mr.getMe();
+		//TODO new function buildableVillages
+		if (mr.getMaxBuilding(BuildingType.Village)-1 < mr.getSettlements(player, BuildingType.Village).size())
+		return null;
+		ResourcePackage resourcePackage = player.getResources().add(new ResourcePackage(-1, -1, -1, -1, 0));
+		int victoryPoints = player.getVictoryPoints() + 1;
+		AIGameStats gameStats = new AIGameStats(player, resourcePackage, victoryPoints);
+		return gameStats;
+	}
 	
 }

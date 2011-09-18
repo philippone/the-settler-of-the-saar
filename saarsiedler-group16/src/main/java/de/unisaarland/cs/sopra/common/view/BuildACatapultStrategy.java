@@ -8,6 +8,7 @@ import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public class BuildACatapultStrategy implements Strategy {
 
@@ -67,6 +68,15 @@ public class BuildACatapultStrategy implements Strategy {
 			}
 		}
 		return pathValue;
+	}
+	public AIGameStats getGameStats(ModelReader mr){
+		Player player = mr.getMe();
+		if (mr.getSettlements(player,BuildingType.Town).size() < 1)
+		return null;
+		ResourcePackage resourcePackage = player.getResources().add(new ResourcePackage(-1, 0, -1 ,0 , -1));
+		int victoryPoints = player.getVictoryPoints();
+		AIGameStats gameStats = new AIGameStats(player, resourcePackage, victoryPoints);
+		return gameStats;
 	}
 
 }

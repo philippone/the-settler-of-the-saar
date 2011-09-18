@@ -3,9 +3,11 @@ package de.unisaarland.cs.sopra.common.view;
 import java.util.Set;
 
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
+import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 
@@ -65,4 +67,15 @@ public class MoveCatapultStrategy implements Strategy {
 		// TODO: check the trade
 		return 1;
 	}
+	
+	public AIGameStats getGameStats(ModelReader mr){
+		Player player = mr.getMe();
+		if (mr.getCatapults(player).size() < 1)
+		return null;
+		ResourcePackage resourcePackage = player.getResources().add(new ResourcePackage(0, 0, 0 ,-1 ,0));
+		int victoryPoints = player.getVictoryPoints();
+		AIGameStats gameStats = new AIGameStats(player, resourcePackage, victoryPoints);
+		return gameStats;
+	}
+
 }

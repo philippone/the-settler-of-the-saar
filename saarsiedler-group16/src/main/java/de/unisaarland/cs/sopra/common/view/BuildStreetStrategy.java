@@ -6,6 +6,8 @@ import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Intersection;
+import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public class BuildStreetStrategy implements Strategy {
  Path bestStreet;
@@ -53,4 +55,12 @@ Strategy s;
 		return (float) value;
 	}
 	
+	public AIGameStats getGameStats(ModelReader mr){
+		Player player = mr.getMe();
+		if (mr.buildableStreetPaths(player).size() < 1)
+		return null;
+		ResourcePackage resourcePackage = player.getResources().add(new ResourcePackage(-1, -1, 0, 0, 0));
+		AIGameStats gameStats = new AIGameStats( player, resourcePackage, player.getVictoryPoints());
+		return gameStats;
+	}
 }

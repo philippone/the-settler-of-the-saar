@@ -8,6 +8,8 @@ import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.FieldType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
+import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public class BuildATownStrategy implements Strategy {
 Strategy s;
@@ -15,8 +17,10 @@ Strategy s;
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
 		// TODO Auto-generated method stub
 		
-		if (mr.affordableSettlements(BuildingType.Town)>0 && mr.buildableTownIntersections(mr.getMe()).size() > 0
-				&& mr.buildableTownIntersections(mr.getMe()).size() < mr.getMaxBuilding(BuildingType.Town) && mr.getSettlements(mr.getMe(),BuildingType.Town).size()<mr.getMaxBuilding(BuildingType.Town))
+		if (mr.affordableSettlements(BuildingType.Town)>0 
+				&& mr.buildableTownIntersections(mr.getMe()).size() > 0
+				&& mr.buildableTownIntersections(mr.getMe()).size() < mr.getMaxBuilding(BuildingType.Town) 
+				&& mr.getSettlements(mr.getMe(),BuildingType.Town).size()<mr.getMaxBuilding(BuildingType.Town))
 		{
 			Intersection bestIntersection=chooseBestIntersection(mr);
 			ca.buildSettlement(bestIntersection, BuildingType.Town);
@@ -73,4 +77,13 @@ Strategy s;
 		return intersectionValue;
 	}
 	
+	public AIGameStats getGameStats(ModelReader mr){
+		Player player = mr.getMe();
+		if (mr.buildableTownIntersections(player).size() < 1 || mr.getMaxBuilding(BuildingType.Town)-1 < mr.getSettlements(player, BuildingType.Town).size())
+		return null;
+		ResourcePackage resourcePackage = player.getResources().add(new ResourcePackage(0, 0, 0, -2, -3));
+		int victoryPoints = player.getVictoryPoints() + 1;
+		AIGameStats gameStats = new AIGameStats(player, resourcePackage, victoryPoints);
+		return gameStats;
+	}
 }

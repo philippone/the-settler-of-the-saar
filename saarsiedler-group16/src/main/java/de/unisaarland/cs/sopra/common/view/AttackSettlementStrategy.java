@@ -7,6 +7,8 @@ import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public class AttackSettlementStrategy implements Strategy {
 
@@ -56,4 +58,13 @@ public class AttackSettlementStrategy implements Strategy {
 		return 1;
 	}
 
+	public AIGameStats getGameStats(ModelReader mr){
+		Player player = mr.getMe();
+		if (mr.getCatapults(player).size() < 1)
+		return null;
+		ResourcePackage resourcePackage = player.getResources().add(new ResourcePackage(0, 0, 0 ,0 ,-1));
+		int victoryPoints = player.getVictoryPoints();
+		AIGameStats gameStats = new AIGameStats(player, resourcePackage, victoryPoints);
+		return gameStats;
+	}
 }
