@@ -20,9 +20,6 @@ Strategy s;
 	if (mr.affordableStreets() > 0 && mr.buildableStreetPaths(mr.getMe()).size() > 0){
 		bestStreet = evaluateStreet(mr);
 		ca.buildStreet(bestStreet);
-		ca.endTurn();
-	} else {
-		ca.endTurn();
 	}
 
 	}

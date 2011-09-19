@@ -235,20 +235,8 @@ public class AI extends View{
 		}
 	catch (Exception e){ e.printStackTrace(); }
 		
-		
-		/*_______________________________________________________________
-		evaluateBestStrategy();
-		while (!s.instanceOf(DoNothingStrategy)){
-			try{
-				s.execute(modelReader, controllerAdapter);
-			}
-			catch (Exception e){ e.printStackTrace(); }
-			evaluateBestStrategy();
-		} 
-		ca.endTurn();
-		// WARNING: Exceptions + remove endTurn() in strategies 
-		__________________________________________________________________*/
-		
+		// TODO ExecuteLoop
+		controllerAdapter.endTurn();
 		
 	}
 	@Override
