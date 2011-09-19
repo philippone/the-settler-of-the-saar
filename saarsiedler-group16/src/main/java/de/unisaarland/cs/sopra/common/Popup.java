@@ -144,7 +144,7 @@ public void setN(int n){
 
 			returnPackPanel.setLayout(new GridBagLayout());
 			((GridBagLayout)returnPackPanel.getLayout()).columnWidths = new int[] {0, 0};
-			((GridBagLayout)returnPackPanel.getLayout()).rowHeights = new int[] {191, 0, 0};
+			((GridBagLayout)returnPackPanel.getLayout()).rowHeights = new int[] {191, 34, 0};
 			((GridBagLayout)returnPackPanel.getLayout()).columnWeights = new double[] {1.0, 1.0E-4};
 			((GridBagLayout)returnPackPanel.getLayout()).rowWeights = new double[] {1.0, 0.0, 1.0E-4};
 
