@@ -391,11 +391,11 @@ public class Client {
 		popup.returnPackPanel.setVisible(false);
 		int n = rp.size();
 		popup.setVisible(true);
-		popup.lumberMax.setText(""+rp.getResource(Resource.LUMBER));
-		popup.brickMax.setText(""+rp.getResource(Resource.BRICK));
-		popup.woolMax.setText(""+rp.getResource(Resource.WOOL));
-		popup.grainMax.setText(""+rp.getResource(Resource.GRAIN));
-		popup.oreMax.setText(""+rp.getResource(Resource.ORE));
+		popup.lumberMax2.setText(""+rp.getResource(Resource.LUMBER));
+		popup.brickMax2.setText(""+rp.getResource(Resource.BRICK));
+		popup.woolMax2.setText(""+rp.getResource(Resource.WOOL));
+		popup.grainMax2.setText(""+rp.getResource(Resource.GRAIN));
+		popup.oreMax2.setText(""+rp.getResource(Resource.ORE));
 		
 		
 		
@@ -407,5 +407,29 @@ public class Client {
 		popup.setVisible(false);
 		return returnPackage;
 	}
+	
+//	public static boolean incomingTradeOffer(ResourcePackage rp){
+//		returnPackage=null;
+//		popup.setTitle("Accept Trade?");
+//		popup.tradePanel.setVisible(true);
+//		popup.returnPackPanel.setVisible(false);
+//		int n = rp.size();
+//		popup.setVisible(true);
+//		popup.lumberMax2.setText(""+rp.getResource(Resource.LUMBER));
+//		popup.brickMax2.setText(""+rp.getResource(Resource.BRICK));
+//		popup.woolMax2.setText(""+rp.getResource(Resource.WOOL));
+//		popup.grainMax2.setText(""+rp.getResource(Resource.GRAIN));
+//		popup.oreMax2.setText(""+rp.getResource(Resource.ORE));
+//		
+//		
+//		
+//		while(returnPackage==null){
+//			try {
+//				Thread.sleep(100);
+//			} catch (InterruptedException e) {e.printStackTrace();}
+//		}
+//		popup.setVisible(false);
+//		return returnPackage;
+//	}
 }
 
