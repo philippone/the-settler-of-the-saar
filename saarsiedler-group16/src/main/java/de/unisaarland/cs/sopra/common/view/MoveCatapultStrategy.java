@@ -12,7 +12,7 @@ import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 
-public class MoveCatapultStrategy implements Strategy {
+public class MoveCatapultStrategy extends Strategy {
  Path sourcePath;
  //TODO add destination Path
 	@Override
