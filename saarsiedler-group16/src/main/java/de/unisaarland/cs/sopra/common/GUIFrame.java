@@ -62,7 +62,7 @@ public class GUIFrame extends JFrame {
 		setActionListner();
 		playerColorChooser();
 		resolutionChooser();
-		Client.loadSettings();
+//		Client.loadSettings();
 	}
 	private void setActionListner() {
 		menuItemSettings.addActionListener(actLis);

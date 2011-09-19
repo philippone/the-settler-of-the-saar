@@ -50,6 +50,7 @@ public class Client {
 		initOpenGL();
 		setting = new Setting(new DisplayMode(1024, 600), true, PlayerColors.RED);
 		clientGUI = new GUIFrame();
+		loadSettings();
 		
 	}
 	private static void initOpenGL(){
@@ -318,24 +319,33 @@ public class Client {
 		String color = p.getProperty("Color");
 		for(int i=0; i<GUIFrame.farben.length; i++){
 			if(color.equals(GUIFrame.farben[i])){
-				System.out.println(color);
 				Setting.setPlayerColor(GUIFrame.pc[i]);
+				clientGUI.playerColorBox.setSelectedIndex(i);
 			}
 		}
 		String resol = p.getProperty("Resolution");
 		for(int i=0; i<GUIFrame.dmodes.length; i++){
 			if(color.equals(GUIFrame.dmodes[i])){
 				Setting.setDisplayMode(GUIFrame.displaymodes[i]);
+				clientGUI.resolutionBox.setSelectedIndex(i);
 			}
 		}
-		Setting.setName(p.getProperty("Name"));
+		String name = p.getProperty("Name");
+		Setting.setName(name);
+		clientGUI.playerName.setText(name);
 		
 		String fullscreen = p.getProperty("Fullscreen");
 		if(fullscreen.equals("true")){
+			clientGUI.fullscreenToggle.setText("ON");
+			clientGUI.fullscreenToggle.setSelected(true);
+			
+			clientGUI.resolutionBox.setEnabled(false);
 			Setting.setFullscreen(true);
 			Setting.setDisplayMode(Display.getDisplayMode());
+			
 		}
 		else {
+			clientGUI.fullscreenToggle.setText("OFF");
 			Setting.setFullscreen(false);
 		}
 		}
