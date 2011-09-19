@@ -1,13 +1,18 @@
 package de.unisaarland.cs.sopra.common;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.UnknownHostException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.CyclicBarrier;
 
@@ -275,4 +280,45 @@ public class Client {
 		}
 		return ret;
 	}
+	
+	public static void saveSettings(){
+		String color= (String) clientGUI.playerColorBox.getItemAt(clientGUI.playerColorBox.getSelectedIndex());
+		String separator = System.getProperties().getProperty("file.separator ");
+		
+		File f = new File("."+separator+"settings");
+//		File f = new File("options.properties");
+		Properties p = new Properties();
+		 
+		p.setProperty("Color", color);
+//		p.setProperty("host", "localhost");
+		 
+		try {
+			p.storeToXML(new FileOutputStream(f), new Date(System.currentTimeMillis()).toString());
+		} catch (Exception e) {e.printStackTrace();	}
+	}
+	
+	public static void loadSettings(){
+		try
+		{
+		String separator = System.getProperties().getProperty("file.separator ");
+		File f = new File("."+separator+"settings");
+//		File f = new File("options.properties");
+		Properties p = new Properties();
+		p.loadFromXML(new FileInputStream(f));
+		 
+		String color = p.getProperty("Color");
+		System.out.println(color);
+		for(int i=0; i<clientGUI.farben.length; i++){
+			if(color.equals(clientGUI.farben[i])){
+				Setting.setPlayerColor(clientGUI.pc[i]);
+			}
+		}
+		System.out.println("durch");
+//		host = p.getProperty("host");
+		}
+		catch (Exception e)	{e.printStackTrace();
+			System.out.println("No options found, using default!");
+		}
+	}
 }
+

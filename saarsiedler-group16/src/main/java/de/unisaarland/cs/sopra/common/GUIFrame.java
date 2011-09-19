@@ -4,6 +4,7 @@
 
 package de.unisaarland.cs.sopra.common;
 
+import java.awt.*;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -47,16 +48,20 @@ public class GUIFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private ButtonListener actLis;
 	public long focusedWordID;
-//	public PlayerColors selectedColor;
+	public final PlayerColors[] pc; 
+	public final String [] farben; 
 	
 	public GUIFrame() {
 		actLis = new ButtonListener(this);
+		pc = new PlayerColors[]{PlayerColors.RED, PlayerColors.BLUE,PlayerColors.YELLOW,PlayerColors.ORANGE,PlayerColors.BROWN,PlayerColors.WHITE,PlayerColors.PURPLE,PlayerColors.BLACK};
+		farben = new String[]{"RED","BLUE","YELLOW","ORANGE","BROWN","WHITE","PURPLE","BLACK"};
 		this.setVisible(true);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		initComponents();
 		setActionListner();
 		playerColorChooser();
 		resolutionChooser();
+		Client.loadSettings();
 	}
 	private void setActionListner() {
 		menuItemSettings.addActionListener(actLis);
@@ -131,8 +136,6 @@ public class GUIFrame extends JFrame {
 	}
 	
 	public void playerColorChooser(){
-		final PlayerColors[] pc = new PlayerColors[]{PlayerColors.RED, PlayerColors.BLUE,PlayerColors.YELLOW,PlayerColors.ORANGE,PlayerColors.BROWN,PlayerColors.WHITE,PlayerColors.PURPLE,PlayerColors.BLACK};
-		String [] farben = new String[]{"RED","BLUE","YELLOW","ORANGE","BROWN","WHITE","PURPLE","BLACK"};
 		for ( String s : farben)
 		      playerColorBox.addItem( s );
 		playerColorBox.addItemListener(new ItemListener() {
@@ -244,7 +247,6 @@ public class GUIFrame extends JFrame {
 
 		//======== menuPanel ========
 		{
-			menuPanel.setVisible(false);
 
 			// JFormDesigner evaluation mark
 			menuPanel.setBorder(new javax.swing.border.CompoundBorder(
@@ -405,6 +407,7 @@ public class GUIFrame extends JFrame {
 
 		//======== settingsPanel ========
 		{
+			settingsPanel.setVisible(false);
 			settingsPanel.setLayout(new GridBagLayout());
 			((GridBagLayout)settingsPanel.getLayout()).columnWidths = new int[] {0, 0, 106, 256, 0};
 			((GridBagLayout)settingsPanel.getLayout()).rowHeights = new int[] {492, 0};
