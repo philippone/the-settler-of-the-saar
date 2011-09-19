@@ -26,13 +26,17 @@ public class Popup extends JFrame {
 		label3 = new JLabel();
 		label4 = new JLabel();
 		label5 = new JLabel();
-		label6 = new JLabel();
-		label7 = new JLabel();
-		label8 = new JLabel();
-		label9 = new JLabel();
-		label10 = new JLabel();
+		lumberMax = new JLabel();
+		brickMax = new JLabel();
+		woolMax = new JLabel();
+		grainMax = new JLabel();
+		oreMax = new JLabel();
 		separator1 = new JSeparator();
-		comboBox1 = new JComboBox();
+		lumberTradeBox = new JComboBox();
+		brickTradeBox = new JComboBox();
+		woolTradeBox = new JComboBox();
+		grainTradeBox = new JComboBox();
+		oreTradeBox = new JComboBox();
 		buttonBar = new JPanel();
 		okButton = new JButton();
 
@@ -64,68 +68,80 @@ public class Popup extends JFrame {
 				((GridBagLayout)contentPanel.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
 				//---- label1 ----
-				label1.setText("text");
+				label1.setText("Lumber:");
 				contentPanel.add(label1, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- label2 ----
-				label2.setText("text");
+				label2.setText("Brick:");
 				contentPanel.add(label2, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- label3 ----
-				label3.setText("text");
+				label3.setText("Wool:");
 				contentPanel.add(label3, new GridBagConstraints(3, 1, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- label4 ----
-				label4.setText("text");
+				label4.setText("Grain:");
 				contentPanel.add(label4, new GridBagConstraints(4, 1, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- label5 ----
-				label5.setText("text");
+				label5.setText("Ore:");
 				contentPanel.add(label5, new GridBagConstraints(5, 1, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
-				//---- label6 ----
-				label6.setText("text");
-				contentPanel.add(label6, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
+				//---- lumberMax ----
+				lumberMax.setText("text");
+				contentPanel.add(lumberMax, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
-				//---- label7 ----
-				label7.setText("text");
-				contentPanel.add(label7, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0,
+				//---- brickMax ----
+				brickMax.setText("text");
+				contentPanel.add(brickMax, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
-				//---- label8 ----
-				label8.setText("text");
-				contentPanel.add(label8, new GridBagConstraints(3, 2, 1, 1, 0.0, 0.0,
+				//---- woolMax ----
+				woolMax.setText("text");
+				contentPanel.add(woolMax, new GridBagConstraints(3, 2, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
-				//---- label9 ----
-				label9.setText("text");
-				contentPanel.add(label9, new GridBagConstraints(4, 2, 1, 1, 0.0, 0.0,
+				//---- grainMax ----
+				grainMax.setText("text");
+				contentPanel.add(grainMax, new GridBagConstraints(4, 2, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
-				//---- label10 ----
-				label10.setText("text");
-				contentPanel.add(label10, new GridBagConstraints(5, 2, 1, 1, 0.0, 0.0,
+				//---- oreMax ----
+				oreMax.setText("text");
+				contentPanel.add(oreMax, new GridBagConstraints(5, 2, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 				contentPanel.add(separator1, new GridBagConstraints(0, 3, 6, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
-				contentPanel.add(comboBox1, new GridBagConstraints(1, 4, 1, 1, 0.0, 0.0,
+				contentPanel.add(lumberTradeBox, new GridBagConstraints(1, 4, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 0, 5), 0, 0));
+				contentPanel.add(brickTradeBox, new GridBagConstraints(2, 4, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 0, 5), 0, 0));
+				contentPanel.add(woolTradeBox, new GridBagConstraints(3, 4, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 0, 5), 0, 0));
+				contentPanel.add(grainTradeBox, new GridBagConstraints(4, 4, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 0, 5), 0, 0));
+				contentPanel.add(oreTradeBox, new GridBagConstraints(5, 4, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 5), 0, 0));
 			}
@@ -161,13 +177,17 @@ public class Popup extends JFrame {
 	private JLabel label3;
 	private JLabel label4;
 	private JLabel label5;
-	private JLabel label6;
-	private JLabel label7;
-	private JLabel label8;
-	private JLabel label9;
-	private JLabel label10;
+	public JLabel lumberMax;
+	public JLabel brickMax;
+	public JLabel woolMax;
+	public JLabel grainMax;
+	public JLabel oreMax;
 	private JSeparator separator1;
-	private JComboBox comboBox1;
+	private JComboBox lumberTradeBox;
+	private JComboBox brickTradeBox;
+	private JComboBox woolTradeBox;
+	private JComboBox grainTradeBox;
+	private JComboBox oreTradeBox;
 	private JPanel buttonBar;
 	private JButton okButton;
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
