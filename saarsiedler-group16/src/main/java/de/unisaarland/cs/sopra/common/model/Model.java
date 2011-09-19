@@ -714,13 +714,51 @@ public class Model implements ModelReader, ModelWriter {
 	}
 	
 	public Set<Path> attackableCatapults(Path path){
-		Set<Path> s = new HashSet<Path>();
-		return s;
+		Set<Path> attackableCatapults = new HashSet<Path>();
+		Set<Path> sp1 = getPathsFromPath(path);
+		for (Path p1 : sp1) {
+			if (p1.hasCatapult() && p1.getCatapultOwner() != getMe()) {
+				Set<Intersection> iset1 = getIntersectionsFromPath(path);
+				Set<Intersection> iset2 = getIntersectionsFromPath(p1);
+				Intersection interBetweenPaths = null;
+				// finds the intersection between both paths
+				for (Intersection inter1 : iset1) {
+					for (Intersection inter2 : iset2) {
+						if (inter1 == inter2)
+							interBetweenPaths = inter1;
+					}
+				}
+				if (!interBetweenPaths.hasOwner() || interBetweenPaths.getOwner() == getMe()) {
+					attackableCatapults.add(p1);
+				}
+				
+			}
+		}
+		return attackableCatapults;
 	}
 	
 	public Set<Path> catapultMovePaths(Path path){
-		Set<Path> s = new HashSet<Path>();
-		return s;
+		Set<Path> attackableCatapults = new HashSet<Path>();
+		Set<Path> sp1 = getPathsFromPath(path);
+		for (Path p1 : sp1) {
+			if (!p1.hasCatapult()) {
+				Set<Intersection> iset1 = getIntersectionsFromPath(path);
+				Set<Intersection> iset2 = getIntersectionsFromPath(p1);
+				Intersection interBetweenPaths = null;
+				// finds the intersection between both paths
+				for (Intersection inter1 : iset1) {
+					for (Intersection inter2 : iset2) {
+						if (inter1 == inter2)
+							interBetweenPaths = inter1;
+					}
+				}
+				if (!interBetweenPaths.hasOwner() || interBetweenPaths.getOwner() == getMe()) {
+					attackableCatapults.add(p1);
+				}
+				
+			}
+		}
+		return attackableCatapults;
 	}
 	
 
