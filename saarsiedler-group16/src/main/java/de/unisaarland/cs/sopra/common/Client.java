@@ -53,7 +53,7 @@ public class Client {
 	
 	public static void main(String[] args) throws UnknownHostException, IOException {
 		initOpenGL();
-		setting = new Setting(new DisplayMode(1024, 600), true, PlayerColors.RED);
+		setting = new Setting(new DisplayMode(1024, 600), true, PlayerColors.BLUE);
 		clientGUI = new GUIFrame();
 		popup = new Popup();
 		loadSettings();
