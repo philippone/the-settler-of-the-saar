@@ -4,11 +4,18 @@ import java.util.Set;
 
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
+import de.unisaarland.cs.sopra.common.model.Catapult;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.Resource;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
-public class AttackSettlementStrategy implements Strategy {
+public class AttackSettlementStrategy extends Strategy {
+
+	public AttackSettlementStrategy() {
+		super(0, Catapult.getAttackbuildingprice());
+	}
 
 	Path sourcePath;
 	@Override
@@ -55,5 +62,16 @@ public class AttackSettlementStrategy implements Strategy {
 		// TODO: check the trade
 		return 1;
 	}
+	
+	public boolean tradePossible(ModelReader mr){
+		ResourcePackage resourcePackage = mr.getMe().getResources().copy();
+		if (resourcePackage.getResource(Resource.ORE) > 0){
+			resourcePackage.add(new ResourcePackage(0, 0, 0, 0, -1));
+		}
 
+		if (resourcePackage.getPositiveResourcesCount() > 0)
+			return true;
+		else
+		return false;
+	}
 }

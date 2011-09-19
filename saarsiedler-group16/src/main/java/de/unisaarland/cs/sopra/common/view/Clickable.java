@@ -3,6 +3,11 @@ package de.unisaarland.cs.sopra.common.view;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.unisaarland.cs.sopra.common.model.Field;
+import de.unisaarland.cs.sopra.common.model.Intersection;
+import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.Player;
+
 public abstract class Clickable {
 	private static List<Clickable> model = new LinkedList<Clickable>();
 	private static List<Clickable> ui = new LinkedList<Clickable>();
@@ -10,6 +15,12 @@ public abstract class Clickable {
 	private int x, y, z, width, height;
 	private boolean active, visible;
 	private String name;
+	
+	private Intersection intersection;
+	private Field field;
+	private Field field2;
+	private Path path;
+	private Player player;
 	
 	public static List<Clickable> executeModelClicks(float xogl, float yogl) {
 		List<Clickable> liste = new LinkedList<Clickable>();
@@ -122,6 +133,46 @@ public abstract class Clickable {
 
 	public boolean isVisible() {
 		return visible;
+	}
+	
+	public void setIntersection(Intersection intersection) {
+		this.intersection = intersection;
+	}
+
+	public void setField(Field field) {
+		this.field = field;
+	}
+
+	public void setPath(Path path) {
+		this.path = path;
+	}
+
+	public Intersection getIntersection() {
+		return intersection;
+	}
+
+	public Field getField() {
+		return field;
+	}
+
+	public Path getPath() {
+		return path;
+	}
+
+	public void setField2(Field field2) {
+		this.field2 = field2;
+	}
+
+	public Field getField2() {
+		return field2;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
+
+	public Player getPlayer() {
+		return player;
 	}
 	
 }

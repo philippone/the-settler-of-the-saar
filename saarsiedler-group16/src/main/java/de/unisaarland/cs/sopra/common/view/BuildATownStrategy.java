@@ -8,18 +8,28 @@ import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.FieldType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
+import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.Resource;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
-public class BuildATownStrategy implements Strategy {
-Strategy s;
+public class BuildATownStrategy extends Strategy {
+	
+	public BuildATownStrategy() {
+		super(BuildingType.Village.getVictoryPoints(), BuildingType.Town.getPrice());
+	}
+
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
 		// TODO Auto-generated method stub
 		
-		if (mr.affordableSettlements(BuildingType.Town)>0 && mr.buildableTownIntersections(mr.getMe()).size() > 0
-				&& mr.buildableTownIntersections(mr.getMe()).size() < mr.getMaxBuilding(BuildingType.Town) && mr.getSettlements(mr.getMe(),BuildingType.Town).size()<mr.getMaxBuilding(BuildingType.Town))
+		if (mr.affordableSettlements(BuildingType.Town)>0 
+				&& mr.buildableTownIntersections(mr.getMe()).size() > 0
+				&& mr.getSettlements(mr.getMe(),BuildingType.Town).size()<mr.getMaxBuilding(BuildingType.Town))
 		{
 			Intersection bestIntersection=chooseBestIntersection(mr);
 			ca.buildSettlement(bestIntersection, BuildingType.Town);
+			if (mr.getMe().getVictoryPoints() >= mr.getMaxVictoryPoints())
+				ca.claimVictory();
 			 ca.endTurn();
 		} else 
 			 ca.endTurn();
@@ -71,4 +81,26 @@ Strategy s;
 		return intersectionValue;
 	}
 	
+	public boolean tradePossible(ModelReader mr){
+		ResourcePackage resourcePackage = mr.getMe().getResources().copy();
+		if (resourcePackage.getResource(Resource.GRAIN) > 0){
+			resourcePackage.add(new ResourcePackage(0, 0, 0, -1, 0));
+		}
+		if (resourcePackage.getResource(Resource.GRAIN) > 0){
+			resourcePackage.add(new ResourcePackage(0, 0, 0, -1, 0));
+		}
+		if (resourcePackage.getResource(Resource.ORE) > 0){
+			resourcePackage.add(new ResourcePackage(0, 0, 0, 0, -1));
+		}
+		if (resourcePackage.getResource(Resource.ORE) > 0){
+			resourcePackage.add(new ResourcePackage(0, 0, 0, 0, -1));
+		}
+		if (resourcePackage.getResource(Resource.ORE) > 0){
+			resourcePackage.add(new ResourcePackage(0, 0, 0, 0, -1));
+		}
+		if (resourcePackage.getPositiveResourcesCount() > 0)
+			return true;
+		else
+		return false;
+	}
 }

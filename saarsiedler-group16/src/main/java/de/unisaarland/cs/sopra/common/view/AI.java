@@ -2,7 +2,11 @@ package de.unisaarland.cs.sopra.common.view;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.lang.reflect.Array;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.CyclicBarrier;
 
 import org.lwjgl.opengl.DisplayMode;
 
@@ -16,6 +20,7 @@ import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 import de.unisaarland.cs.st.saarsiedler.comm.Connection;
 import de.unisaarland.cs.st.saarsiedler.comm.GameEvent;
@@ -24,6 +29,7 @@ import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 
 public class AI extends View{
+	
 	
 	public static void main(String[] args){
 		
@@ -99,15 +105,24 @@ public class AI extends View{
 			byte[] number = ((GameEvent.MatchStart) ge).getNumbers();
 			m.matchStart(players, number);
 			Setting setting = new Setting(new DisplayMode(1024,580), true, PlayerColors.RED);
+			Map<Player, String> plToNames = new HashMap<Player, String>();
+			Iterator<Player> iterPl = m.getTableOrder().iterator();
+			for (long l : players) {  // erstellt Player-> names map
+				try {
+					System.out.println(c.getPlayerInfo(l).getName());
+					plToNames.put(iterPl.next(), c.getPlayerInfo(l).getName());
+				} catch (IOException e) {e.printStackTrace();}
+			}
+			CyclicBarrier barrier = new CyclicBarrier(2);
 			GameGUI gameGUI = null;
 			try {
-				gameGUI = new GameGUI(m, null, null, setting, "K(A)I");
+				gameGUI = new GameGUI(m, null, plToNames, setting, "K(A)I", true, barrier);
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			new Thread(gameGUI).start();
-			//Thread.sleep(5000);
+			barrier.await();
 			cont.mainLoop();
 			System.out.println("Das Spiel war erfolgreich! =)");
 		} catch (Exception e){
@@ -125,12 +140,12 @@ public class AI extends View{
 	}
 	
 	public void evaluateBestStrategy(){
-
-		float strategyValue=(float) Math.random()*3;
-		if (strategyValue<1) s=new BuildStreetStrategy();
-		if (strategyValue>2) s=new BuildATownStrategy();
-		if (strategyValue==2) s=new BuildACatapultStrategy();
-		if (strategyValue>1 && strategyValue<2) s=new BuildVillage();
+		
+//		float strategyValue=(float) Math.random()*3;
+//		if (strategyValue<1) s=new BuildStreetStrategy();
+//		if (strategyValue>2) s=new BuildATownStrategy();
+//		if (strategyValue==2) s=new BuildACatapultStrategy();
+//		if (strategyValue>1 && strategyValue<2) s=new BuildVillage();
 		//float strategyValue=(float) Math.random()*4;
 		//if (strategyValue<1) s=new BuildStreetStrategy();
 		//if (strategyValue>1 && strategyValue<2) s=new BuildVillage();
@@ -181,7 +196,6 @@ public class AI extends View{
 	
 	public void executeBestStrategy() {
 		try{
-			
 			//Thread.sleep(5000);
 
 		s.execute(modelReader, controllerAdapter);
@@ -265,7 +279,7 @@ public class AI extends View{
 	}
 
 	@Override
-	public void eventNewRound() {
+	public void eventNewRound(int number) {
 		if (modelReader.getMe() == modelReader.getCurrentPlayer()){
 			evaluateBestStrategy();
 			executeBestStrategy();

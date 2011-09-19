@@ -33,7 +33,7 @@ public class Model implements ModelReader, ModelWriter {
 	private boolean reversedPlayersList;
 	private long meID;
 	private Player me;
-	private int initPlayer = 0;						//akt player in der initPhase
+	private int initPlayer = 0;						    //akt player in der initPhase
 	private Intersection initLastVillageIntersection;	//fuer initPhase zur berechnung der erlaubeten street(welche dann den current player durchwechselt)
 
 	/**
@@ -219,8 +219,10 @@ public class Model implements ModelReader, ModelWriter {
 		List<Path> road1=new ArrayList<Path>();
 		List<Intersection>roadExtremities=searchRoadExtremities(road, player);
 		// returning the intersections trough what we can continue the road
-		Intersection i=roadExtremities.get(0);
+		Intersection i;
+		if (roadExtremities.size()>0) i=roadExtremities.get(0);
 		// we'll rank the road from this extremity
+		else i=getIntersectionsFromPath(road.iterator().next()).iterator().next();
 		Set<Path>sp=getPathsFromIntersection(i);
 		Path p1=road.get(0);
 		for (Path p2:sp){
@@ -482,7 +484,15 @@ public class Model implements ModelReader, ModelWriter {
 	 * @return The List of Player sorted in TableOrder
 	 */
 	public List<Player> getTableOrder() {
-		return this.players;
+		if (!reversedPlayersList) {
+			return this.players;
+		}
+		else {
+			List<Player> tmp = new LinkedList<Player>(this.players);
+			Collections.reverse(tmp);
+			return tmp;
+		}
+			
 	}
 
 	@Override
@@ -674,24 +684,6 @@ public class Model implements ModelReader, ModelWriter {
 	@Override
 	public int affordableSettlementAttack() {
 		return affordableThings(Catapult.getAttackbuildingprice());
-	}
-
-	/**
-	 * @return shows how many Streets are affordable ,when you buy a Village
-	 *         first
-	 */
-	@Override
-	public int affordablePathsAfterVillage(int villageCount) {
-		ResourcePackage rp = getCurrentPlayer().getResources().copy();
-		rp.add(BuildingType.Village.getPrice());
-		if (rp.hasNegativeResources())
-			return 0;
-		int ret = -1;
-		while (!rp.hasNegativeResources()) {
-			ret++;
-			rp.add(Street.getPrice());
-		}
-		return ret;
 	}
 
 	/*
@@ -1196,7 +1188,7 @@ public class Model implements ModelReader, ModelWriter {
 			ob.updateResources();
 		}
 		for (ModelObserver ob : modelObserver) {
-			ob.eventNewRound();
+			ob.eventNewRound(number);
 		}
 	}
 

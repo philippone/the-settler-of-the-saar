@@ -4,25 +4,31 @@ import java.util.Set;
 
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
-import de.unisaarland.cs.sopra.common.model.Field;
-import de.unisaarland.cs.sopra.common.model.FieldType;
+import de.unisaarland.cs.sopra.common.model.Catapult;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.Resource;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
-public class BuildACatapultStrategy implements Strategy {
+public class BuildACatapultStrategy extends Strategy {
+
+	public BuildACatapultStrategy() {
+		super(0, Catapult.getBuildingprice());
+	}
 
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
 		// TODO Auto-generated method stub
 		Set<Path> paths=mr.buildableCatapultPaths(mr.getCurrentPlayer());
 		if (mr.getSettlements(mr.getMe(), BuildingType.Town).size() > 0  && mr.affordableCatapultBuild()>0
-				&& paths!=null && paths.size()< mr.getCatapults(mr.getMe()).size() && mr.getCatapults(mr.getMe()).size() < mr.getMaxCatapult()){
+				&& paths!=null  && mr.getCatapults(mr.getMe()).size() < mr.getMaxCatapult()){
+//TODO && paths.size()< mr.getCatapults(mr.getMe()).size()
 			Path bestPath=chooseBestPath(mr);
 			ca.buildCatapult(bestPath);
 			ca.endTurn();
-		}
+		} else 
 		ca.endTurn();
 	}
 	
@@ -69,6 +75,23 @@ public class BuildACatapultStrategy implements Strategy {
 			}
 		}
 		return pathValue;
+	}
+	
+	public boolean tradePossible(ModelReader mr){
+		ResourcePackage resourcePackage = mr.getMe().getResources().copy();
+		if (resourcePackage.getResource(Resource.LUMBER) > 0){
+			resourcePackage.add(new ResourcePackage(-1, 0, 0, 0, 0));
+		}
+		if (resourcePackage.getResource(Resource.WOOL) > 0){
+			resourcePackage.add(new ResourcePackage(0, 0, -1, 0, 0));
+		}
+		if (resourcePackage.getResource(Resource.ORE) > 0){
+			resourcePackage.add(new ResourcePackage(0, 0, 0, 0, -1));
+		}
+		if (resourcePackage.getPositiveResourcesCount() > 0)
+			return true;
+		else
+		return false;
 	}
 
 }

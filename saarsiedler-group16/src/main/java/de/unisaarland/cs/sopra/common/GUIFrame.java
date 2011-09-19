@@ -4,15 +4,35 @@
 
 package de.unisaarland.cs.sopra.common;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.IOException;
 
-import javax.swing.*;
-import javax.swing.table.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
 
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -21,6 +41,10 @@ import org.lwjgl.opengl.DisplayMode;
  * @author Hans Lange der
  */
 public class GUIFrame extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ButtonListener actLis;
 	public long focusedWordID;
 //	public PlayerColors selectedColor;
@@ -107,8 +131,8 @@ public class GUIFrame extends JFrame {
 	}
 	
 	public void playerColorChooser(){
-		final PlayerColors[] pc = new PlayerColors[]{PlayerColors.RED, PlayerColors.BLUE,PlayerColors.GREEN,PlayerColors.YELLOW,PlayerColors.ORANGE,PlayerColors.BROWN,PlayerColors.WHITE,PlayerColors.PURPLE,PlayerColors.BLACK};
-		String [] farben = new String[]{"RED","BLUE","GREEN","YELLOW","ORANGE","BROWN","WHITE","PURPLE","BLACK"};
+		final PlayerColors[] pc = new PlayerColors[]{PlayerColors.RED, PlayerColors.BLUE,PlayerColors.YELLOW,PlayerColors.ORANGE,PlayerColors.BROWN,PlayerColors.WHITE,PlayerColors.PURPLE,PlayerColors.BLACK};
+		String [] farben = new String[]{"RED","BLUE","YELLOW","ORANGE","BROWN","WHITE","PURPLE","BLACK"};
 		for ( String s : farben)
 		      playerColorBox.addItem( s );
 		playerColorBox.addItemListener(new ItemListener() {

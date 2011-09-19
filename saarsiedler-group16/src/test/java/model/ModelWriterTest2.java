@@ -17,7 +17,6 @@ import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Point;
-import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public class ModelWriterTest2 {
@@ -231,21 +230,6 @@ public class ModelWriterTest2 {
 	}
 	
 	@Test
-	public void robberMovedTestSelf() {
-		TestModelObserver modelObserver = new TestModelObserver();
-		model.addModelObserver(modelObserver);
-		Point p1 = new Point(1,2);
-		Point p2 = new Point(1,1);
-		Player player1 = model.getTableOrder().get(0);
-		model.robberMoved(p1, p2, 0, Resource.LUMBER);
-		assertFalse("Robber shouldn't be on field 1,2", model.getField(p1).hasRobber());
-		assertTrue("Robber should be on field 1,1", model.getField(p2).hasRobber());
-		assertTrue(modelObserver.updateFieldCalled != null);
-		assertTrue(modelObserver.updateResourcesCalled);
-		assertEquals("Resources not right expected 100,100,100,100,100",player1.getResources(), new ResourcePackage(99,100,100,100,100));
-	}
-	
-	@Test
 	public void robberMovedTestOther() {
 		TestModelObserver modelObserver = new TestModelObserver();
 		model.addModelObserver(modelObserver);
@@ -314,7 +298,7 @@ public class ModelWriterTest2 {
 		model.addModelObserver(modelObserver);
 		model.newRound(8);
 		assertTrue("The modelobserver method updateResources should be called", modelObserver.updateResourcesCalled) ;
-		assertEquals("resources were not updated correctly", model.getTableOrder().get(0).getResources(), new ResourcePackage(101,100,100,100,100));
+		assertEquals("resources were not updated correctly", model.getTableOrder().get(0).getResources(), new ResourcePackage(102,100,100,100,100));
 	}
 
 }

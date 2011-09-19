@@ -10,15 +10,24 @@ import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 
-public class MoveCatapultStrategy implements Strategy {
- Path sourcePath;
+public class MoveCatapultStrategy extends Strategy {
+	
+	public MoveCatapultStrategy() {
+		//TODO hier nochmal draufschauen, ob attackprice = moveprice
+		super(0, Catapult.getAttackcatapultprice());
+	}
+
+	Path sourcePath;
+ 
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
 		if (!(mr.getMe().getResources().copy().add(new ResourcePackage(0,0,0,-1,0))).hasNegativeResources()){
 		Path destinationPath = evaluateStreet(mr);
 		ca.moveCatapult(sourcePath, destinationPath);
 		ca.endTurn();
-	} ca.endTurn();
+	} else {
+		ca.endTurn();
+	  }
 }
 	public float evaluateStreetValue(ModelReader mr, Path p) {
 		if (p.hasCatapult() && p.getCatapultOwner() != mr.getMe()) {
@@ -55,15 +64,5 @@ public class MoveCatapultStrategy implements Strategy {
 		}
 		return bestPath;
 	}
-
-
-	public float evaluate(ModelReader mr,ControllerAdapter ca) {
-
-		//TODO return -1 if not enough resources
-		if (mr.getCatapults(mr.getMe()).size() < 1) {
-			return -1;
-		}
-		// TODO: check the trade
-		return 1;
-	}
+	
 }

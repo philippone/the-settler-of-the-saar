@@ -8,8 +8,17 @@ import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.FieldType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
+import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.Resource;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
-public class BuildVillage implements Strategy {
+public class BuildVillageStrategy extends Strategy {
+	
+	
+	public BuildVillageStrategy() {
+		super(BuildingType.Village.getVictoryPoints(), BuildingType.Village.getPrice());
+	}
+
 	private float bestValue = 0;
 	private Intersection bestIntersection = null;
 	private float intersectionValue = (float)(0.0);
@@ -20,12 +29,18 @@ public class BuildVillage implements Strategy {
 
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
+
 		if (mr.affordableSettlements(BuildingType.Village) > 0 && mr.buildableVillageIntersections(mr.getMe()).size() > 0
 				&& mr.buildableVillageIntersections(mr.getMe()).size() <= mr.getMaxBuilding(BuildingType.Village) && mr.getSettlements(mr.getMe(), BuildingType.Village).size() < mr.getMaxBuilding(BuildingType.Village)) {
 			Intersection bestIntersection = evaluateIntersection(mr);
 			ca.buildSettlement(bestIntersection, BuildingType.Village);
+			if (mr.getMe().getVictoryPoints() >= mr.getMaxVictoryPoints())
+				ca.claimVictory();
 			ca.endTurn();
-		} else 
+		} else 	if (mr.buildableVillageIntersections(mr.getMe()).size() < 1) {
+			Strategy buildStreet = new BuildStreetStrategy();
+			buildStreet.execute(mr, ca);
+		} else
 			 ca.endTurn();
 
 	}
@@ -81,5 +96,24 @@ public class BuildVillage implements Strategy {
 		return bestIntersection;
 	}
 	
+	public boolean tradePossible(ModelReader mr){
+		ResourcePackage resourcePackage = mr.getMe().getResources().copy();
+		if (resourcePackage.getResource(Resource.LUMBER) > 0){
+			resourcePackage.add(new ResourcePackage(-1, 0, 0, 0, 0));
+		}
+		if (resourcePackage.getResource(Resource.BRICK) > 0){
+			resourcePackage.add(new ResourcePackage(0, -1, 0, 0, 0));
+		}
+		if (resourcePackage.getResource(Resource.WOOL) > 0){
+			resourcePackage.add(new ResourcePackage(0, 0, -1, 0, 0));
+		}
+		if (resourcePackage.getResource(Resource.GRAIN) > 0){
+			resourcePackage.add(new ResourcePackage(0, 0, 0, -1, 0));
+		}
+		if (resourcePackage.getPositiveResourcesCount() > 0)
+			return true;
+		else
+		return false;
+	}
 	
 }

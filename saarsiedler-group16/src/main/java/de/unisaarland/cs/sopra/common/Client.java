@@ -1,5 +1,6 @@
 package de.unisaarland.cs.sopra.common;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.UnknownHostException;
@@ -7,6 +8,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.CyclicBarrier;
 
 import javax.swing.table.DefaultTableModel;
 
@@ -19,10 +22,14 @@ import de.unisaarland.cs.sopra.common.model.ModelWriter;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.view.AI;
 import de.unisaarland.cs.sopra.common.view.GameGUI;
-import de.unisaarland.cs.st.saarsiedler.comm.*;
+import de.unisaarland.cs.st.saarsiedler.comm.Connection;
+import de.unisaarland.cs.st.saarsiedler.comm.GameEvent;
 import de.unisaarland.cs.st.saarsiedler.comm.GameEvent.EventType;
 import de.unisaarland.cs.st.saarsiedler.comm.GameEvent.MatchStart;
-import de.unisaarland.cs.st.saarsiedler.comm.results.*;
+import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
+import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
+import de.unisaarland.cs.st.saarsiedler.comm.results.ChangeReadyResult;
+import de.unisaarland.cs.st.saarsiedler.comm.results.JoinResult;
 
 public class Client {
 	
@@ -39,6 +46,7 @@ public class Client {
 		setting = new Setting(new DisplayMode(1024, 600), true, PlayerColors.RED);
 	}
 	private static void initOpenGL(){
+		
 		String[] list = new String[] {
 				"jinput-dx8_64.dll", "jinput-dx8.dll", "jinput-raw_64.dll",
 				"jinput-raw.dll", "libjinput-linux.so", "libjinput-linux64.so",
@@ -46,11 +54,23 @@ public class Client {
 				"liblwjgl64.so", "libopenal.so", "libopenal64.so",
 				"lwjgl.dll", "lwjgl64.dll", "openal.dylib", "OpenAL32.dll", "OpenAL64.dll" };
 		String tmpdir = System.getProperty("java.io.tmpdir");
-		for (String act : list) {
-			InputStream input = ClassLoader.getSystemClassLoader().getResourceAsStream("native/" + act);
-			try {
-				GameGUI.saveFile(tmpdir + "/" + act, input);
-			} catch (IOException e) {e.printStackTrace();	}
+		
+		boolean everythingIsBad = true;
+		while (everythingIsBad) {
+			everythingIsBad = false;
+			for (String act : list) {
+				InputStream input = ClassLoader.getSystemClassLoader().getResourceAsStream("native/" + act);
+				Random r = new Random();
+	
+				try {
+					GameGUI.saveFile(tmpdir + "/" + act, input);
+				} catch (IOException e) {
+					tmpdir = System.getProperty("java.io.tmpdir") + r.nextInt();
+					new File(tmpdir).mkdirs();
+					everythingIsBad = true;
+					break;
+				}
+			}
 		}
 		String seperator;
 		if (System.getProperty("sun.desktop") != null && System.getProperty("sun.desktop").equals("windows")) seperator = ";";
@@ -59,11 +79,11 @@ public class Client {
 		java.lang.reflect.Field vvv = null;
 		try {
 			vvv = ClassLoader.class.getDeclaredField("sys_paths");
-		} catch (Exception e1) {e1.printStackTrace();	}
+		} catch (Exception e) { e.printStackTrace(); }
 		vvv.setAccessible(true); 
 		try {
 			vvv.set(null, null);
-		} catch (Exception e1) {e1.printStackTrace();}		
+		} catch (Exception e) { e.printStackTrace(); }
 	}
 	
 	public static void joinMatch(boolean asObserver) {
@@ -135,7 +155,7 @@ public class Client {
 		return new AI(model, new ControllerAdapter(controller, model));
 	}
 	
-	public static GameGUI buildGameGUI(Controller controller, Model model, long[] playerIDs) {
+	public static GameGUI buildGameGUI(Controller controller, Model model, long[] playerIDs, boolean AIisPlaying, CyclicBarrier barrier) {
 		Map<Player, String> plToNames = new HashMap<Player, String>();
 		Iterator<Player> iterPl = model.getTableOrder().iterator();
 		for (long l : playerIDs) {  // erstellt Player-> names map
@@ -144,10 +164,7 @@ public class Client {
 				plToNames.put(iterPl.next(), connection.getPlayerInfo(l).getName());
 			} catch (IOException e) {e.printStackTrace();}
 		}
-		try {
-			return new GameGUI(model, new ControllerAdapter(controller, model), plToNames , setting, matchInfo.getTitle());
-		} catch (Exception e) {e.printStackTrace();	}
-		throw new IllegalStateException("couldnt build GameGui");
+		return new GameGUI(model, new ControllerAdapter(controller, model), plToNames , setting, matchInfo.getTitle(), AIisPlaying, barrier);
 	}
 	
 	public static void changeSettings(DisplayMode mode, boolean fullscreen,PlayerColors playerColor, String name){
@@ -157,38 +174,53 @@ public class Client {
 	
 	public static void initializeMatch() {					
 		GameEvent event = null;
-		try {
-			event = connection.getNextEvent(0);
-		} catch (Exception e) {e.printStackTrace();	}
-		//wenn event hier noch null ist, dann wurde kein event geliefert
-		if(event==null) throw new IllegalStateException("kein event erhalten");
-		if(!(event.getType()!=EventType.MATCH_END)) throw new IllegalArgumentException("sollte ein MatchStart liefert");
-		MatchStart startEvent = ((MatchStart)event);
+		boolean jetztgehtslos = false;
+		MatchStart startEvent = null;
+		while(!jetztgehtslos) {
+			try {
+				event = connection.getNextEvent(0);
+			} catch (Exception e) {e.printStackTrace();	}
+			if (event==null) {
+				throw new IllegalStateException("kein event erhalten");
+			}
+			else if ((event.getType()==EventType.MATCH_START)) {
+				startEvent = ((MatchStart)event);
+				jetztgehtslos = true;
+			}
+			else if ((event.getType()==EventType.PLAYER_LEFT)) {
+				//TODO: handle player left
+			}
+			else {
+				System.out.println(event);
+				throw new IllegalArgumentException("illegal event returned");
+			}
+		}
 		
 		Model m = buildModel();
 		Controller c = buildController(m);
-		AI ai;
+		
 		if(joinAsAI)
-			 ai = buildAI(c, m);
+			 buildAI(c, m);
 		
 		long[] players = startEvent.getPlayerIds();
 		byte[] number = startEvent.getNumbers();
 		m.matchStart(players, number);
 		
 		GameGUI gameGUI = null;
-		
+		CyclicBarrier barrier = new CyclicBarrier(2);
 		try {
-			gameGUI = buildGameGUI(c, m, players);
+			gameGUI = buildGameGUI(c, m, players, joinAsAI, barrier);
 		} catch (Exception e1) {e1.printStackTrace();
 		}
 		
 		clientGUI.setVisible(false); // versteckt die ClientGui
 		new Thread(gameGUI).start();
-		
-		System.out.println("Das Spiel war erfolgreich! =)");
-//		new Thread(gui).start();
 		try {
-			Thread.sleep(5000);
+			barrier.await();
+		} catch (Exception e) {e.printStackTrace();}
+		
+		System.out.println("Das Spiel wurde erfolgreich gestartet! =)");
+		try {
 			c.mainLoop();
 		} catch (Exception e) {e.printStackTrace();
 		}

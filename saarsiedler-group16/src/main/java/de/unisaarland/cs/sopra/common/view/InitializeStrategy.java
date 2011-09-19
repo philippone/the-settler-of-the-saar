@@ -1,7 +1,5 @@
 package de.unisaarland.cs.sopra.common.view;
 
-import java.io.IOException;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,8 +11,16 @@ import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Resource;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
-public class InitializeStrategy implements Strategy {
+public class InitializeStrategy extends Strategy {
+	
+	
+	public InitializeStrategy() {
+		super(0, new ResourcePackage());
+	}
+
+
 	private Set<Resource> playersResources = new HashSet<Resource>();
 
 	@Override
@@ -72,31 +78,31 @@ public class InitializeStrategy implements Strategy {
 				if (playersResources.contains(Resource.LUMBER))	{
 					resourceValue = (float) (resourceValue + 0.145);
 				} 
-				resourceValue = (float) (resourceValue + 0.39);
+				resourceValue = (float) (resourceValue + 0.5);
 			}
 			else 			if (type==FieldType.HILLS){
 				if (playersResources.contains(Resource.BRICK))	{
 					resourceValue = (float) (resourceValue + 0.145);
 				} 
-				resourceValue = (float) (resourceValue + 0.39);
-			}
-			else 			if (type==FieldType.MOUNTAINS){
-				if (playersResources.contains(Resource.ORE))	{
-					resourceValue = (float) (resourceValue + 0.145);
-				} 
-				resourceValue = (float) (resourceValue + 0.23);
+				resourceValue = (float) (resourceValue + 0.5);
 			}
 			else 			if (type==FieldType.PASTURE){
 				if (playersResources.contains(Resource.WOOL))	{
 					resourceValue = (float) (resourceValue + 0.145);
 				} 
-				resourceValue = (float) (resourceValue + 0.23);
-			} 
+				resourceValue = (float) (resourceValue + 0.5);
+			}
 			else 			if (type==FieldType.FIELDS){
 				if (playersResources.contains(Resource.GRAIN))	{
 					resourceValue = (float) (resourceValue + 0.145);
 				} 
-				resourceValue = (float) (resourceValue + 0.23);
+				resourceValue = (float) (resourceValue + 0.5);
+			} 
+			else 			if (type==FieldType.MOUNTAINS){
+				if (playersResources.contains(Resource.ORE))	{
+					resourceValue = (float) (resourceValue + 0.145);
+				} 
+				resourceValue = (float) (resourceValue + 0.25);
 			}
 			
 		}
@@ -119,11 +125,6 @@ public class InitializeStrategy implements Strategy {
 //	}
 	
 	
-	public int evaluate(){
-		// TODO implement this method
-		return 0;
-	}
-	
 	public void setPlayersResources(ModelReader mr,Intersection i){
 		Set<Field> fieldSet = mr.getFieldsFromIntersection(i);
 		for (Field f : fieldSet){
@@ -132,12 +133,4 @@ public class InitializeStrategy implements Strategy {
 			
 	}
 
-
-
-	@Override
-	public float evaluate(ModelReader mr, ControllerAdapter ca)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 }
