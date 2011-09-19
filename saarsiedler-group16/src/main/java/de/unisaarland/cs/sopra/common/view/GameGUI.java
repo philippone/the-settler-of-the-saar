@@ -71,6 +71,7 @@ public class GameGUI extends View implements Runnable{
 	private Texture catapultTexture;
 	private Texture robberTexture;
 	private Texture pathMarkTexture;
+	private Texture pathMarkTextureRed;
 	private Texture fieldMarkTexture;
 	private Texture intersectionMarkTexture;
 	private Texture intersectionMarkRedTexture;
@@ -1151,6 +1152,7 @@ public class GameGUI extends View implements Runnable{
 			intersectionMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Mark.png"));
 			intersectionMarkRedTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/MarkRed.png"));
 			pathMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Mark.png"));
+			pathMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/MarkRed.png"));
 			villageTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Village.png"));
 			townTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Town.png"));
 			
