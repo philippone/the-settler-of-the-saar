@@ -62,6 +62,20 @@ public class Popup extends JFrame {
 				}
 			}
 		});
+		okButton3.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Client.acceptTrade = 1;
+			}
+		});
+		cancelButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Client.acceptTrade = -1;
+			}
+		});
 	}
 public void setN(int n){
 	this.n=n;
@@ -123,6 +137,23 @@ public void setN(int n){
 		buttonBar2 = new JPanel();
 		warning2 = new JLabel();
 		okButton2 = new JButton();
+		incomingTradePanel = new JPanel();
+		contentPanel3 = new JPanel();
+		topLabel3 = new JLabel();
+		label11 = new JLabel();
+		label12 = new JLabel();
+		label13 = new JLabel();
+		label14 = new JLabel();
+		label15 = new JLabel();
+		lumberMax3 = new JLabel();
+		brickMax3 = new JLabel();
+		woolMax3 = new JLabel();
+		grainMax3 = new JLabel();
+		oreMax3 = new JLabel();
+		separator3 = new JSeparator();
+		buttonBar3 = new JPanel();
+		okButton3 = new JButton();
+		cancelButton = new JButton();
 
 		//======== this ========
 		setAlwaysOnTop(true);
@@ -317,6 +348,7 @@ public void setN(int n){
 		//======== tradePanel ========
 		{
 			tradePanel.setBorder(new EmptyBorder(12, 12, 12, 12));
+			tradePanel.setVisible(false);
 			tradePanel.setLayout(new GridBagLayout());
 			((GridBagLayout)tradePanel.getLayout()).columnWidths = new int[] {0, 0};
 			((GridBagLayout)tradePanel.getLayout()).rowHeights = new int[] {139, 34, 0};
@@ -465,7 +497,7 @@ public void setN(int n){
 			{
 				buttonBar2.setBorder(new EmptyBorder(12, 0, 0, 0));
 				buttonBar2.setLayout(new GridBagLayout());
-				((GridBagLayout)buttonBar2.getLayout()).columnWidths = new int[] {139, 96, 134};
+				((GridBagLayout)buttonBar2.getLayout()).columnWidths = new int[] {139, 110, 134};
 				((GridBagLayout)buttonBar2.getLayout()).rowHeights = new int[] {25, 0};
 				((GridBagLayout)buttonBar2.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
 
@@ -479,7 +511,7 @@ public void setN(int n){
 
 				//---- okButton2 ----
 				okButton2.setText("OK");
-				buttonBar2.add(okButton2, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
+				buttonBar2.add(okButton2, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 5), 0, 0));
 			}
@@ -488,6 +520,119 @@ public void setN(int n){
 				new Insets(0, 0, 0, 0), 0, 0));
 		}
 		contentPane.add(tradePanel, BorderLayout.NORTH);
+
+		//======== incomingTradePanel ========
+		{
+			incomingTradePanel.setBorder(new EmptyBorder(12, 12, 12, 12));
+			incomingTradePanel.setLayout(new GridBagLayout());
+			((GridBagLayout)incomingTradePanel.getLayout()).columnWidths = new int[] {0, 0};
+			((GridBagLayout)incomingTradePanel.getLayout()).rowHeights = new int[] {139, 34, 0};
+			((GridBagLayout)incomingTradePanel.getLayout()).columnWeights = new double[] {1.0, 1.0E-4};
+			((GridBagLayout)incomingTradePanel.getLayout()).rowWeights = new double[] {1.0, 0.0, 1.0E-4};
+
+			//======== contentPanel3 ========
+			{
+				contentPanel3.setLayout(new GridBagLayout());
+				((GridBagLayout)contentPanel3.getLayout()).columnWidths = new int[] {0, 65, 65, 65, 65, 65, 0, 0};
+				((GridBagLayout)contentPanel3.getLayout()).rowHeights = new int[] {17, 0, 0, 0, 0, 0, 17, 0};
+				((GridBagLayout)contentPanel3.getLayout()).columnWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+				((GridBagLayout)contentPanel3.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+				contentPanel3.add(topLabel3, new GridBagConstraints(2, 1, 3, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- label11 ----
+				label11.setText("Lumber:");
+				contentPanel3.add(label11, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- label12 ----
+				label12.setText("Brick:");
+				contentPanel3.add(label12, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- label13 ----
+				label13.setText("Wool:");
+				contentPanel3.add(label13, new GridBagConstraints(3, 2, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- label14 ----
+				label14.setText("Grain:");
+				contentPanel3.add(label14, new GridBagConstraints(4, 2, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- label15 ----
+				label15.setText("Ore:");
+				contentPanel3.add(label15, new GridBagConstraints(5, 2, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- lumberMax3 ----
+				lumberMax3.setText("text");
+				contentPanel3.add(lumberMax3, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- brickMax3 ----
+				brickMax3.setText("text");
+				contentPanel3.add(brickMax3, new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- woolMax3 ----
+				woolMax3.setText("text");
+				contentPanel3.add(woolMax3, new GridBagConstraints(3, 3, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- grainMax3 ----
+				grainMax3.setText("text");
+				contentPanel3.add(grainMax3, new GridBagConstraints(4, 3, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- oreMax3 ----
+				oreMax3.setText("text");
+				contentPanel3.add(oreMax3, new GridBagConstraints(5, 3, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+				contentPanel3.add(separator3, new GridBagConstraints(0, 4, 6, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+			}
+			incomingTradePanel.add(contentPanel3, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+				new Insets(0, 0, 0, 0), 0, 0));
+
+			//======== buttonBar3 ========
+			{
+				buttonBar3.setBorder(new EmptyBorder(12, 0, 0, 0));
+				buttonBar3.setLayout(new GridBagLayout());
+				((GridBagLayout)buttonBar3.getLayout()).columnWidths = new int[] {139, 96, 134};
+				((GridBagLayout)buttonBar3.getLayout()).rowHeights = new int[] {25, 0};
+				((GridBagLayout)buttonBar3.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
+
+				//---- okButton3 ----
+				okButton3.setText("OK");
+				buttonBar3.add(okButton3, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 0, 5), 0, 0));
+
+				//---- cancelButton ----
+				cancelButton.setText("Cancel");
+				buttonBar3.add(cancelButton, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 0, 0), 0, 0));
+			}
+			incomingTradePanel.add(buttonBar3, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+				new Insets(0, 0, 0, 0), 0, 0));
+		}
+		contentPane.add(incomingTradePanel, BorderLayout.SOUTH);
 		pack();
 		setLocationRelativeTo(null);
 		// JFormDesigner - End of component initialization  //GEN-END:initComponents
@@ -549,5 +694,22 @@ public void setN(int n){
 	private JPanel buttonBar2;
 	private JLabel warning2;
 	private JButton okButton2;
+	public JPanel incomingTradePanel;
+	private JPanel contentPanel3;
+	private JLabel topLabel3;
+	private JLabel label11;
+	private JLabel label12;
+	private JLabel label13;
+	private JLabel label14;
+	private JLabel label15;
+	public JLabel lumberMax3;
+	public JLabel brickMax3;
+	public JLabel woolMax3;
+	public JLabel grainMax3;
+	public JLabel oreMax3;
+	private JSeparator separator3;
+	private JPanel buttonBar3;
+	private JButton okButton3;
+	private JButton cancelButton;
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
 }

@@ -50,6 +50,7 @@ public class Client {
 	public static boolean joinAsAI;
 	static ResourcePackage returnPackage;
 	private static Popup popup;
+	public static int acceptTrade;
 	
 	public static void main(String[] args) throws UnknownHostException, IOException {
 		initOpenGL();
@@ -362,6 +363,7 @@ public class Client {
 	
 	public static ResourcePackage returnResources(ResourcePackage rp){
 		returnPackage=null;
+		popup.incomingTradePanel.setVisible(false);
 		popup.tradePanel.setVisible(false);
 		popup.returnPackPanel.setVisible(true);
 		int n = rp.size();
@@ -372,8 +374,6 @@ public class Client {
 		popup.woolMax.setText(""+rp.getResource(Resource.WOOL));
 		popup.grainMax.setText(""+rp.getResource(Resource.GRAIN));
 		popup.oreMax.setText(""+rp.getResource(Resource.ORE));
-		
-		
 		
 		while(returnPackage==null){
 			try {
@@ -387,6 +387,7 @@ public class Client {
 	public static ResourcePackage tradeOffer(ResourcePackage rp){
 		returnPackage=null;
 		popup.setTitle("Make a Trade Offer");
+		popup.incomingTradePanel.setVisible(false);
 		popup.tradePanel.setVisible(true);
 		popup.returnPackPanel.setVisible(false);
 		int n = rp.size();
@@ -397,8 +398,6 @@ public class Client {
 		popup.grainMax2.setText(""+rp.getResource(Resource.GRAIN));
 		popup.oreMax2.setText(""+rp.getResource(Resource.ORE));
 		
-		
-		
 		while(returnPackage==null){
 			try {
 				Thread.sleep(100);
@@ -408,28 +407,28 @@ public class Client {
 		return returnPackage;
 	}
 	
-//	public static boolean incomingTradeOffer(ResourcePackage rp){
-//		returnPackage=null;
-//		popup.setTitle("Accept Trade?");
-//		popup.tradePanel.setVisible(true);
-//		popup.returnPackPanel.setVisible(false);
-//		int n = rp.size();
-//		popup.setVisible(true);
-//		popup.lumberMax2.setText(""+rp.getResource(Resource.LUMBER));
-//		popup.brickMax2.setText(""+rp.getResource(Resource.BRICK));
-//		popup.woolMax2.setText(""+rp.getResource(Resource.WOOL));
-//		popup.grainMax2.setText(""+rp.getResource(Resource.GRAIN));
-//		popup.oreMax2.setText(""+rp.getResource(Resource.ORE));
-//		
-//		
-//		
-//		while(returnPackage==null){
-//			try {
-//				Thread.sleep(100);
-//			} catch (InterruptedException e) {e.printStackTrace();}
-//		}
-//		popup.setVisible(false);
-//		return returnPackage;
-//	}
+	public static boolean incomingTradeOffer(ResourcePackage rp){
+		returnPackage=null;
+		popup.setTitle("Accept Trade?");
+		popup.tradePanel.setVisible(false);
+		popup.returnPackPanel.setVisible(false);
+		popup.incomingTradePanel.setVisible(true);
+		int n = rp.size();
+		popup.setVisible(true);
+		popup.lumberMax2.setText(""+rp.getResource(Resource.LUMBER));
+		popup.brickMax2.setText(""+rp.getResource(Resource.BRICK));
+		popup.woolMax2.setText(""+rp.getResource(Resource.WOOL));
+		popup.grainMax2.setText(""+rp.getResource(Resource.GRAIN));
+		popup.oreMax2.setText(""+rp.getResource(Resource.ORE));
+		
+		while(acceptTrade==0){
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {e.printStackTrace();}
+		}
+		popup.setVisible(false);
+		if(acceptTrade>0)return true;
+		else return false;
+	}
 }
 
