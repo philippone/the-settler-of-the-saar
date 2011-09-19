@@ -103,7 +103,8 @@ public class GameGUI extends View implements Runnable{
 	private static final int ROBBER_PLAYER_SELECT 	=   8;
 	private List<Point> selectionPoint;
 	private List<Location> selectionLocation;
-	private List<Location> selectionLocation2; //For catapults_attacks //TODO use it
+	private List<Location> selectionLocation2; //For move catapult
+	private List<Location> selectionLocation3; //For attackable settlements
 	
 	private static int windowWidth;
 	private static int windowHeight;
@@ -688,10 +689,13 @@ public class GameGUI extends View implements Runnable{
 			break;
 		case STREET:
 		case CATAPULT_BUILD:
-			renderPathMark(true,selectionLocation);
+			renderPathMark(false, selectionLocation);
 			break;
 		case CATAPULT_ACTION:
-			break; //TODO implement it!
+			renderPathMark(true, selectionLocation);
+			renderPathMark(false, selectionLocation2);
+			renderIntersectionMark(true, selectionLocation3);
+			break;
 		}
 	}
 	
