@@ -1216,7 +1216,7 @@ public class GameGUI extends View implements Runnable{
 			offerTrade = new Clickable("offerTrade", xOffsetUI+450, yOffsetUI+65, 2, 185, 77, false, true, true) {
 				@Override
 				public void execute() {
-					//TODO implement it!
+					//TODO Client.tradeOffer(modelReader.getResources(), modelReader.getHarborTypes(modelReader.getMe()));
 				}
 			};
 			
