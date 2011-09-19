@@ -36,7 +36,6 @@ public class Model implements ModelReader, ModelWriter {
 	private Player me;
 	private int initPlayer = 0;						    //akt player in der initPhase
 	private Intersection initLastVillageIntersection;	//fuer initPhase zur berechnung der erlaubeten street(welche dann den current player durchwechselt)
-	private boolean pull;
 
 	/**
 	 * @param worldRepresentation
