@@ -43,6 +43,7 @@ import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.FieldType;
+import de.unisaarland.cs.sopra.common.model.HarborType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.Model;
@@ -61,8 +62,10 @@ public class GameGUI extends View implements Runnable{
 	private String gameTitle;
 	private Setting setting;
 	private Map<FieldType,Texture> fieldTextureMap;
+	private Map<HarborType, Texture> harbroTextureMap;
 	private Map<Integer,Texture> numberTextureMap;
 	private Map<String,Texture> uiTextureMap;
+	
 	private Texture streetTexture;
 	private Texture catapultTexture;
 	private Texture robberTexture;
@@ -72,6 +75,7 @@ public class GameGUI extends View implements Runnable{
 	private Texture intersectionMarkRedTexture;
 	private Texture villageTexture;
 	private Texture townTexture;
+	
 	private int x,y,z;
 	private int maxX, maxY, maxZ;
 	private int minX, minY, minZ;
@@ -407,8 +411,40 @@ public class GameGUI extends View implements Runnable{
 	
 	private void renderHarbor(Path p) {
 		// TODO Auto-generated method stub
-		
+		int o = p.getLocation().getOrientation();
+		for (Field f: modelReader.getFieldsFromPath(p)) {
+			if (f.getFieldType().equals(FieldType.WATER)) {
+				int x = f.getLocation().getX();
+				int y = f.getLocation().getY();
+				int orient = o;
+				if (x == p.getLocation().getX() && y == p.getLocation().getY()) {
+					if (orient <3) {
+						orient += 3;
+					}
+					else {
+						orient -=3;
+					}
+				HarborType h = p.getHarborType();
+				//renderHarborType(h, x,y,o);
+				switch(orient) {
+					case 0:
+						break;
+					case 1:
+						break;
+					case 2:
+						break;
+					case 3:
+						break;
+					case 4:
+						break;
+					case 5:
+						break;
+				}
+				}
+			}
+		}
 	}
+	
 
 	private void renderCatapult(Path p) {
 		int px = 0;
@@ -1046,6 +1082,14 @@ public class GameGUI extends View implements Runnable{
 			villageTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Village.png"));
 			townTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Town.png"));
 			
+			
+			harbroTextureMap = new HashMap<HarborType,Texture>();
+			harbroTextureMap.put(HarborType.GENERAL_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/General_Harbor.png")));
+			harbroTextureMap.put(HarborType.BRICK_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Brick_Harbor.png")));
+			harbroTextureMap.put(HarborType.GRAIN_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Grain_Harbor.png")));
+			harbroTextureMap.put(HarborType.LUMBER_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Lumber_Harbor.png")));
+			harbroTextureMap.put(HarborType.ORE_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Ore_Harbor.png")));
+			harbroTextureMap.put(HarborType.WOOL_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Wool_Harbor.png")));
 			
 			uiTextureMap = new HashMap<String,Texture>();
 			uiTextureMap.put("Background", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/menue_background.png")));
