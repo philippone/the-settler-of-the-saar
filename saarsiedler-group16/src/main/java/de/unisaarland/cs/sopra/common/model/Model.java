@@ -293,7 +293,7 @@ public class Model implements ModelReader, ModelWriter {
 
 	private List<List<Path>> keepOnlyLongestRoads(List<List<Path>> roadList) {
 		List<List<Path>> roadList1 = new ArrayList<List<Path>>();
-		int maxsize = 5;
+		int maxsize = 1;
 		for (List<Path> road1 : roadList) {
 			if (road1 != null)
 				maxsize = Math.max(maxsize, road1.size());
