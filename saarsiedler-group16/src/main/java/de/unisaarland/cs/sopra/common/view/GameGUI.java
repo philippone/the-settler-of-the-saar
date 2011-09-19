@@ -445,33 +445,33 @@ public class GameGUI extends View implements Runnable{
 			   }
 			  switch(orient) {
 				   case 0:
-					   px+=74;
-					   py+=-96;
+					   px+=95;  // 74
+					   py+=-35;  // -96
 					   po+=30;
 					   break;
 				   case 1:
-					   px+=118;
-					   py+=18;
+					   px+=68;
+					   py+=63;
 					   po+=90;
 					   break;
 				   case 2:
-					   px+=38;
-					   py+=116;
+					   px+=-27;
+					   py+=91;
 					   po+=150;
 					   break;
 				   case 3:
-					   px+=-84;
-					   py+=93;
+					   px+=-99;
+					   py+=23;
 					   po+=210;
 					   break;
 				   case 4:
-					   px+=-128;
-					   py+=-21;
+					   px+=-78;
+					   py+=-71;
 					   po+=270;
 					   break;
 				   case 5:
-					   px+=-47;
-					   py+=-120;
+					   px+=18;
+					   py+=-100;
 					   po+=330;
 					   break;
 				   default:
@@ -483,7 +483,7 @@ public class GameGUI extends View implements Runnable{
 				GL11.glRotatef(po-90, 0, 0, 1);
 				setColor(BLACK);
 				harborTexture.bind();
-			    drawSquareMid(200,300);
+			    drawSquareMid(170,312);
 			    GL11.glPopMatrix();
 				}
 				}

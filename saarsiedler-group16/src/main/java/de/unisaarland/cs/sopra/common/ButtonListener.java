@@ -13,7 +13,6 @@ public class ButtonListener implements ActionListener {
 //	private Client client;
 	private boolean readyStatus;
 	public boolean joinAsObserver;
-	private boolean fullscreen;
 
 	public ButtonListener(GUIFrame guiFrame) {
 		this.gui = guiFrame;
@@ -99,17 +98,17 @@ public class ButtonListener implements ActionListener {
 				Client.saveSettings();
 			}
 			if (arg0.getSource() == gui.fullscreenToggle){
-				fullscreen=!fullscreen;
-				Setting.setFullscreen(fullscreen);
-				if(fullscreen){
+				if(!Setting.isFullscreen()){
 					gui.fullscreenToggle.setText("ON");
 					gui.resolutionBox.setSelectedIndex(0);
 					gui.resolutionBox.setEnabled(false);
 					Setting.setDisplayMode(Display.getDisplayMode());
+					Setting.setFullscreen(true);
 				}
 				else{
 					gui.fullscreenToggle.setText("OFF");
 					gui.resolutionBox.setEnabled(true);
+					Setting.setFullscreen(false);
 				}
 			}
 		//

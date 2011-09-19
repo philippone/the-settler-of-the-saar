@@ -235,20 +235,8 @@ public class AI extends View{
 		}
 	catch (Exception e){ e.printStackTrace(); }
 		
-		
-		/*_______________________________________________________________
-		evaluateBestStrategy();
-		while (!s.instanceOf(DoNothingStrategy)){
-			try{
-				s.execute(modelReader, controllerAdapter);
-			}
-			catch (Exception e){ e.printStackTrace(); }
-			evaluateBestStrategy();
-		} 
-		ca.endTurn();
-		// WARNING: Exceptions + remove endTurn() in strategies 
-		__________________________________________________________________*/
-		
+		// TODO ExecuteLoop
+		controllerAdapter.endTurn();
 		
 	}
 	@Override
@@ -297,11 +285,14 @@ public class AI extends View{
 	@Override
 	// a seven was diced
 	public void eventRobber() {
-		s = new MoveRobberStrategy();
-		executeBestStrategy();
-		// s=new MoveRobberStrategy
-		// s.execute(modelReader,controllerAdapter);
-		// WARNING Try Catch block
+		s=new MoveRobberStrategy();
+		try {
+			s.execute(modelReader,controllerAdapter);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	@Override
@@ -327,7 +318,12 @@ public class AI extends View{
 	@Override
 	public void initTurn() { 
 		s = new InitializeStrategy();
-		executeBestStrategy();
+		try {
+			s.execute(modelReader, controllerAdapter);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 }
