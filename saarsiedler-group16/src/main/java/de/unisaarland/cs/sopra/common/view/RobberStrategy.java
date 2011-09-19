@@ -6,8 +6,12 @@ import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
-public class RobberStrategy implements Strategy {
+public class RobberStrategy extends Strategy {
 
+	public RobberStrategy() {
+		super(0, new ResourcePackage());
+	}
+	
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca)  throws Exception{
 		ResourcePackage myrp = mr.getMe().getResources().copy();
@@ -55,16 +59,6 @@ public class RobberStrategy implements Strategy {
 	public int evaluate(){
 		// TODO implement this method
 		return 0;
-	}
-	@Override
-	public float evaluate(ModelReader mr, ControllerAdapter ca)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
-	public AIGameStats getGameStats(ModelReader mr) {
-		return null;
 	}
 
 }

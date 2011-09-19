@@ -2,8 +2,15 @@ package de.unisaarland.cs.sopra.common.view;
 
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
-public class TradeStrategy implements Strategy {
+//TODO nochmal überlegen ob das wirklich ne Strategie ist.
+
+public class TradeStrategy extends Strategy {
+
+	public TradeStrategy() {
+		super(0, new ResourcePackage());
+	}
 
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) {
@@ -19,20 +26,5 @@ public class TradeStrategy implements Strategy {
 		}
 
 	}
-	
-	@Override
-	public float evaluate(ModelReader mr, ControllerAdapter ca)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
-	@Override
-	public AIGameStats getGameStats(ModelReader mr) {
-		return null;
-	}
-	
-
-	
 
 }

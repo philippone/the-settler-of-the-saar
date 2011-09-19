@@ -9,26 +9,31 @@ import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
+import de.unisaarland.cs.sopra.common.model.Street;
 
-public class BuildStreetStrategy implements Strategy {
- Path bestStreet;
- float bestStreetValue = 0;
- ResourcePackage resourcePackageTrade, tradeOffer;
-Strategy s;
+public class BuildStreetStrategy extends Strategy {
+	
+	public BuildStreetStrategy() {
+		super(0, Street.getPrice());
+	}
+
+	Path bestStreet;
+ 	float bestStreetValue = 0;
+ 	ResourcePackage resourcePackageTrade, tradeOffer;
+ 
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
-	if (mr.affordableStreets() > 0 && mr.buildableStreetPaths(mr.getMe()).size() > 0){
-		bestStreet = evaluateStreet(mr);
-		ca.buildStreet(bestStreet);
-	}
-
-	}
-	
-	public float evaluate(ModelReader mr, ControllerAdapter ca) throws Exception {
-		if (!(mr.affordableStreets() > 0 
-			&& mr.buildableStreetPaths(mr.getMe()).size() > 0)) return -1;
-		// TODO: check the trade
-		return 1;
+		if (mr.affordableStreets() > 0 && mr.buildableStreetPaths(mr.getMe()).size() > 0){
+			bestStreet = evaluateStreet(mr);
+			ca.buildStreet(bestStreet);
+			ca.endTurn();
+		} else {
+			ca.endTurn();
+		}
+		if (mr.affordableStreets() > 0 && mr.buildableStreetPaths(mr.getMe()).size() > 0){
+			bestStreet = evaluateStreet(mr);
+			ca.buildStreet(bestStreet);
+		}
 	}
 	
 	public Path evaluateStreet(ModelReader mr){
@@ -52,15 +57,6 @@ Strategy s;
 			else value=value+0.15;
 		}
 		return (float) value;
-	}
-	
-	public AIGameStats getGameStats(ModelReader mr){
-		Player player = mr.getMe();
-		if (mr.buildableStreetPaths(player).size() < 1)
-			return new AIGameStats(player, this, new ResourcePackage(0, 0, 0, 0, 0), 0);
-		ResourcePackage resourcePackage = player.getResources().copy().add(new ResourcePackage(-1, -1, 0, 0, 0));
-		AIGameStats gameStats = new AIGameStats( player, this, resourcePackage, player.getVictoryPoints());
-		return gameStats;
 	}
 	
 	public boolean tradePossible(ModelReader mr){

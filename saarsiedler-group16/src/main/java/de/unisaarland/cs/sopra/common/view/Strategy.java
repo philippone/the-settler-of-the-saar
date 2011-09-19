@@ -2,13 +2,26 @@ package de.unisaarland.cs.sopra.common.view;
 
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
-public interface Strategy {
+public abstract class Strategy {
 
-	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception;
+	private final int victoryPoints;
+	private final ResourcePackage price;
 	
-	public float evaluate(ModelReader mr, ControllerAdapter ca) throws Exception;
+	public Strategy(int victoryPoints, ResourcePackage price){
+		this.victoryPoints = victoryPoints;
+		this.price = price;
+	}
 	
-	public AIGameStats getGameStats(ModelReader mr);
+	public abstract void execute(ModelReader mr, ControllerAdapter ca) throws Exception;
+
+	public int getVictoryPoints() {
+		return victoryPoints;
+	}
+
+	public ResourcePackage getPrice() {
+		return price;
+	}
 	
 }

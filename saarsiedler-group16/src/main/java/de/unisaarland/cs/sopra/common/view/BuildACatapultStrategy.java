@@ -4,6 +4,7 @@ import java.util.Set;
 
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
+import de.unisaarland.cs.sopra.common.model.Catapult;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
@@ -11,7 +12,11 @@ import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
-public class BuildACatapultStrategy implements Strategy {
+public class BuildACatapultStrategy extends Strategy {
+
+	public BuildACatapultStrategy() {
+		super(0, Catapult.getBuildingprice());
+	}
 
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
@@ -68,15 +73,6 @@ public class BuildACatapultStrategy implements Strategy {
 			}
 		}
 		return pathValue;
-	}
-	public AIGameStats getGameStats(ModelReader mr){
-		Player player = mr.getMe();
-		if (mr.getSettlements(player,BuildingType.Town).size() < 1)
-			return new AIGameStats(player, this, new ResourcePackage(0, 0, 0, 0, 0), 0);
-		ResourcePackage resourcePackage = player.getResources().copy().add(new ResourcePackage(-1, 0, -1 ,0 , -1));
-		int victoryPoints = player.getVictoryPoints();
-		AIGameStats gameStats = new AIGameStats(player, this, resourcePackage, victoryPoints);
-		return gameStats;
 	}
 	
 	public boolean tradePossible(ModelReader mr){

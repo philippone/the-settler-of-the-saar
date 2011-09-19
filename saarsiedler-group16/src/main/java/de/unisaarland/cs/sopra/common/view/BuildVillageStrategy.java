@@ -12,7 +12,13 @@ import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
-public class BuildVillage implements Strategy {
+public class BuildVillageStrategy extends Strategy {
+	
+	
+	public BuildVillageStrategy() {
+		super(BuildingType.Village.getVictoryPoints(), BuildingType.Village.getPrice());
+	}
+
 	private float bestValue = 0;
 	private Intersection bestIntersection = null;
 	private float intersectionValue = (float)(0.0);
@@ -30,10 +36,13 @@ public class BuildVillage implements Strategy {
 			ca.buildSettlement(bestIntersection, BuildingType.Village);
 			if (mr.getMe().getVictoryPoints() >= mr.getMaxVictoryPoints())
 				ca.claimVictory();
+			ca.endTurn();
 		} else 	if (mr.buildableVillageIntersections(mr.getMe()).size() < 1) {
 			Strategy buildStreet = new BuildStreetStrategy();
 			buildStreet.execute(mr, ca);
-		} 
+		} else
+			 ca.endTurn();
+
 	}
 	public float evaluate(ModelReader mr, ControllerAdapter ca) throws Exception {
 		if (!(mr.affordableSettlements(BuildingType.Village) > 0
@@ -85,17 +94,6 @@ public class BuildVillage implements Strategy {
 				
 		}
 		return bestIntersection;
-	}
-	
-	public AIGameStats getGameStats(ModelReader mr) {
-		Player player = mr.getMe();
-		//TODO new function buildableVillages
-		if (mr.getMaxBuilding(BuildingType.Village)-1 < mr.getSettlements(player, BuildingType.Village).size())
-		return new AIGameStats(player, this, new ResourcePackage(0, 0, 0, 0, 0), 0);
-		ResourcePackage resourcePackage = player.getResources().copy().add(new ResourcePackage(-1, -1, -1, -1, 0));
-		int victoryPoints = player.getVictoryPoints() + 1;
-		AIGameStats gameStats = new AIGameStats(player, this, resourcePackage, victoryPoints);
-		return gameStats;
 	}
 	
 	public boolean tradePossible(ModelReader mr){
