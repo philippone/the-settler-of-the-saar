@@ -20,12 +20,7 @@ public class TradeStrategy implements Strategy {
 
 	}
 	
-	@Override
-	public float evaluate(ModelReader mr, ControllerAdapter ca)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+
 	
 	@Override
 	public AIGameStats getGameStats(ModelReader mr) {

@@ -7,7 +7,6 @@ public interface Strategy {
 
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception;
 	
-	public float evaluate(ModelReader mr, ControllerAdapter ca) throws Exception;
 	
 	public AIGameStats getGameStats(ModelReader mr);
 	

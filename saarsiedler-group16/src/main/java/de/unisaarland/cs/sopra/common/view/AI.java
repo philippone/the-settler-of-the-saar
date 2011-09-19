@@ -165,7 +165,15 @@ public class AI extends View{
 				bestStrategy = gameStats[k].getStrategy();
 				bestStatsIdx = k;
 			} else if (gameStats[bestStatsIdx].getVictoryPoints() == gameStats[k].getVictoryPoints()) {
-				if (gameStats[bestStatsIdx].getResources().size() < gameStats[k].getResources().size()) {
+				if ((gameStats[bestStatsIdx].getResources().hasNegativeResources())) {
+					if (gameStats[k].getResources().hasNegativeResources()){
+						if (gameStats[bestStatsIdx].getResources().size() < gameStats[k].getResources().size()){
+							bestStrategy = gameStats[k].getStrategy();
+							bestStatsIdx = k;
+						}
+						bestStrategy = gameStats[k].getStrategy();
+						bestStatsIdx = k;
+					}
 					bestStrategy = gameStats[k].getStrategy();
 					bestStatsIdx = k;
 				}

@@ -14,6 +14,7 @@ import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public class MoveCatapultStrategy implements Strategy {
  Path sourcePath;
+ //TODO add destination Path
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
 		if (!(mr.getMe().getResources().copy().add(new ResourcePackage(0,0,0,-1,0))).hasNegativeResources()){

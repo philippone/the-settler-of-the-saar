@@ -113,12 +113,7 @@ public class MoveRobberStrategy implements Strategy{
 		}
 		return victim;
 	}
-	@Override
-	public float evaluate(ModelReader mr, ControllerAdapter ca)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+
 	
 	public AIGameStats getGameStats(ModelReader mr) {
 		return null;

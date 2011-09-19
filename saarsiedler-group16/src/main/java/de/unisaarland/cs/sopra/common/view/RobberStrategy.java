@@ -52,16 +52,8 @@ public class RobberStrategy implements Strategy {
 
 			}
 	}
-	public int evaluate(){
-		// TODO implement this method
-		return 0;
-	}
-	@Override
-	public float evaluate(ModelReader mr, ControllerAdapter ca)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+
+
 	
 	public AIGameStats getGameStats(ModelReader mr) {
 		return null;
