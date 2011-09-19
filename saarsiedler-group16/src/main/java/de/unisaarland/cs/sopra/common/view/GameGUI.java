@@ -217,6 +217,7 @@ public class GameGUI extends View implements Runnable{
 		for (Clickable click : Clickable.getRenderList()) {
 			click.setActive(false);
 		}
+		quit.setActive(true);
 	}
 	
 	private void reinitiateUI() {
@@ -1747,7 +1748,7 @@ public class GameGUI extends View implements Runnable{
 //		model.getField(new Point(2,2)).setRobber(true);
 		
 //		Setting setting = new Setting(Display.getDesktopDisplayMode(), true, PlayerColors.RED);
-		Setting setting = new Setting(new DisplayMode(1024, 550), false, PlayerColors.RED);  /// Display.getDesktopDisplayMode()
+		Setting setting = new Setting(new DisplayMode(1024, 520), false, PlayerColors.RED);  /// Display.getDesktopDisplayMode()
 		
 		CyclicBarrier barrier = new CyclicBarrier(2);
 		GameGUI gameGUI = new GameGUI(model, null, names, setting, "TestSpiel", false, barrier);
