@@ -1,18 +1,24 @@
 package de.unisaarland.cs.sopra.common;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.UnknownHostException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.CyclicBarrier;
 
 import javax.swing.table.DefaultTableModel;
 
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
 import de.unisaarland.cs.sopra.common.controller.Controller;
@@ -42,8 +48,10 @@ public class Client {
 	
 	public static void main(String[] args) throws UnknownHostException, IOException {
 		initOpenGL();
-		clientGUI = new GUIFrame();
 		setting = new Setting(new DisplayMode(1024, 600), true, PlayerColors.RED);
+		clientGUI = new GUIFrame();
+		loadSettings();
+		
 	}
 	private static void initOpenGL(){
 		
@@ -275,4 +283,75 @@ public class Client {
 		}
 		return ret;
 	}
+	
+	public static void saveSettings(){
+		String color= (String) clientGUI.playerColorBox.getItemAt(clientGUI.playerColorBox.getSelectedIndex());
+		String resol= (String) clientGUI.resolutionBox.getItemAt(clientGUI.resolutionBox.getSelectedIndex());
+		String separator = System.getProperties().getProperty("file.separator ");
+		
+		File f = new File("."+separator+"settings");
+//		File f = new File("options.properties");
+		Properties p = new Properties();
+		 
+		p.setProperty("Color", color);
+		p.setProperty("Resolution", resol);
+		p.setProperty("Name", Setting.getName());
+		
+		if( Setting.isFullscreen() )
+			p.setProperty("Fullscreen","true");
+		else 
+			p.setProperty("Fullscreen","false");
+		 
+		try {
+			p.storeToXML(new FileOutputStream(f), new Date(System.currentTimeMillis()).toString());
+		} catch (Exception e) {e.printStackTrace();	}
+	}
+	
+	public static void loadSettings(){
+		try
+		{
+		String separator = System.getProperties().getProperty("file.separator ");
+		File f = new File("."+separator+"settings");
+//		File f = new File("options.properties");
+		Properties p = new Properties();
+		p.loadFromXML(new FileInputStream(f));
+		 
+		String color = p.getProperty("Color");
+		for(int i=0; i<GUIFrame.farben.length; i++){
+			if(color.equals(GUIFrame.farben[i])){
+				Setting.setPlayerColor(GUIFrame.pc[i]);
+				clientGUI.playerColorBox.setSelectedIndex(i);
+			}
+		}
+		String resol = p.getProperty("Resolution");
+		for(int i=0; i<GUIFrame.dmodes.length; i++){
+			if(color.equals(GUIFrame.dmodes[i])){
+				Setting.setDisplayMode(GUIFrame.displaymodes[i]);
+				clientGUI.resolutionBox.setSelectedIndex(i);
+			}
+		}
+		String name = p.getProperty("Name");
+		Setting.setName(name);
+		clientGUI.playerName.setText(name);
+		
+		String fullscreen = p.getProperty("Fullscreen");
+		if(fullscreen.equals("true")){
+			clientGUI.fullscreenToggle.setText("ON");
+			clientGUI.fullscreenToggle.setSelected(true);
+			
+			clientGUI.resolutionBox.setEnabled(false);
+			Setting.setFullscreen(true);
+			Setting.setDisplayMode(Display.getDisplayMode());
+			
+		}
+		else {
+			clientGUI.fullscreenToggle.setText("OFF");
+			Setting.setFullscreen(false);
+		}
+		}
+		catch (Exception e)	{
+			System.out.println("No options found, using default!");
+		}
+	}
 }
+

@@ -27,9 +27,7 @@ public class BuildACatapultStrategy extends Strategy {
 //TODO && paths.size()< mr.getCatapults(mr.getMe()).size()
 			Path bestPath=chooseBestPath(mr);
 			ca.buildCatapult(bestPath);
-			ca.endTurn();
-		} else 
-		ca.endTurn();
+		} 
 	}
 	
 	public float evaluate(ModelReader mr, ControllerAdapter ca) throws Exception{

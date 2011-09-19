@@ -30,9 +30,7 @@ public class BuildATownStrategy extends Strategy {
 			ca.buildSettlement(bestIntersection, BuildingType.Town);
 			if (mr.getMe().getVictoryPoints() >= mr.getMaxVictoryPoints())
 				ca.claimVictory();
-			 ca.endTurn();
-		} else 
-			 ca.endTurn();
+		} 
 	}	
 	
 	public float evaluate(ModelReader mr, ControllerAdapter ca) throws Exception{

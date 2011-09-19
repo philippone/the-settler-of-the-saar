@@ -24,10 +24,7 @@ public class MoveCatapultStrategy extends Strategy {
 		if (!(mr.getMe().getResources().copy().add(new ResourcePackage(0,0,0,-1,0))).hasNegativeResources()){
 		Path destinationPath = evaluateStreet(mr);
 		ca.moveCatapult(sourcePath, destinationPath);
-		ca.endTurn();
-	} else {
-		ca.endTurn();
-	  }
+	} 
 }
 	public float evaluateStreetValue(ModelReader mr, Path p) {
 		if (p.hasCatapult() && p.getCatapultOwner() != mr.getMe()) {

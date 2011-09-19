@@ -3,6 +3,8 @@ package de.unisaarland.cs.sopra.common;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import org.lwjgl.opengl.Display;
+
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 
 public class ButtonListener implements ActionListener {
@@ -11,7 +13,6 @@ public class ButtonListener implements ActionListener {
 //	private Client client;
 	private boolean readyStatus;
 	public boolean joinAsObserver;
-	private boolean fullscreen;
 
 	public ButtonListener(GUIFrame guiFrame) {
 		this.gui = guiFrame;
@@ -94,18 +95,20 @@ public class ButtonListener implements ActionListener {
 				Setting.setName(gui.playerName.getText());
 				gui.settingsPanel.setVisible(false);
 				gui.menuPanel.setVisible(true);
+				Client.saveSettings();
 			}
 			if (arg0.getSource() == gui.fullscreenToggle){
-				fullscreen=!fullscreen;
-				Setting.setFullscreen(fullscreen);
-				if(fullscreen){
+				if(!Setting.isFullscreen()){
 					gui.fullscreenToggle.setText("ON");
 					gui.resolutionBox.setSelectedIndex(0);
 					gui.resolutionBox.setEnabled(false);
+					Setting.setDisplayMode(Display.getDisplayMode());
+					Setting.setFullscreen(true);
 				}
 				else{
 					gui.fullscreenToggle.setText("OFF");
 					gui.resolutionBox.setEnabled(true);
+					Setting.setFullscreen(false);
 				}
 			}
 		//

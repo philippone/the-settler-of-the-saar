@@ -30,6 +30,10 @@ public class BuildStreetStrategy extends Strategy {
 		} else {
 			ca.endTurn();
 		}
+		if (mr.affordableStreets() > 0 && mr.buildableStreetPaths(mr.getMe()).size() > 0){
+			bestStreet = evaluateStreet(mr);
+			ca.buildStreet(bestStreet);
+		}
 	}
 	
 	public Path evaluateStreet(ModelReader mr){
