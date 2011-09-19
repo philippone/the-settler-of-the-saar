@@ -29,7 +29,6 @@ import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 
 public class AI extends View{
-	private AIGameStats[] gameStats;
 	
 	
 	public static void main(String[] args){
@@ -82,7 +81,7 @@ public class AI extends View{
 			WorldRepresentation wr = WorldRepresentation.getDefault();
 
 // ---------Create Code-----------
-		MatchInformation mi = c.newMatch("K(a)I!", 2, wr, false);
+		MatchInformation mi = c.newMatch("K(a)I!", 1, wr, false);
 // -------------------------------	
 
 // --------Join Code---------
@@ -136,51 +135,11 @@ public class AI extends View{
 	
 	public AI(ModelReader modelReader, ControllerAdapter controllerAdapter){
 		super(modelReader, controllerAdapter);
-		s=new DoNothingStrategy();
 		modelReader.addModelObserver(this);
 	}
 	
 	public void evaluateBestStrategy(){
 
-		gameStats = new AIGameStats[6];
-		Strategy s2 = new BuildStreetStrategy();
-		gameStats[0] = s2.getGameStats(modelReader);
-		Strategy s3 = new BuildVillage();
-		gameStats[1] = s3.getGameStats(modelReader);
-		Strategy s4 = new BuildATownStrategy();
-		gameStats[2] = s4.getGameStats(modelReader);
-		Strategy s5 = new BuildACatapultStrategy();
-		gameStats[3] = s5.getGameStats(modelReader);
-		Strategy s6 = new MoveCatapultStrategy();
-		gameStats[4] = s6.getGameStats(modelReader);
-		Strategy s7 = new AttackSettlementStrategy();
-		gameStats[5] = s7.getGameStats(modelReader);
-		//Strategy s8 = new BuildLongestRoadStrategy();
-		//gameStats[6] = s8.getGameStats(modelReader);
-			
-		Strategy bestStrategy = gameStats[0].getStrategy();
-		int bestStatsIdx = 0;
-		for (int k = 1; k < 6; k++) {
-			if (gameStats[bestStatsIdx].getVictoryPoints() < gameStats[k].getVictoryPoints()) {
-				bestStrategy = gameStats[k].getStrategy();
-				bestStatsIdx = k;
-			} else if (gameStats[bestStatsIdx].getVictoryPoints() == gameStats[k].getVictoryPoints()) {
-				if ((gameStats[bestStatsIdx].getResources().hasNegativeResources())) {
-					if (gameStats[k].getResources().hasNegativeResources()){
-						if (gameStats[bestStatsIdx].getResources().size() < gameStats[k].getResources().size()){
-							bestStrategy = gameStats[k].getStrategy();
-							bestStatsIdx = k;
-						}
-						bestStrategy = gameStats[k].getStrategy();
-						bestStatsIdx = k;
-					}
-					bestStrategy = gameStats[k].getStrategy();
-					bestStatsIdx = k;
-				}
-			}
-		}
-		s = bestStrategy;
-		
 //		float strategyValue=(float) Math.random()*3;
 //		if (strategyValue<1) s=new BuildStreetStrategy();
 //		if (strategyValue>2) s=new BuildATownStrategy();
@@ -236,27 +195,15 @@ public class AI extends View{
 	
 	public void executeBestStrategy() {
 		try{
-			Thread.sleep(1000);
+			//Thread.sleep(5000);
 
 		s.execute(modelReader, controllerAdapter);
 		//s1.execute(modelReader, controllerAdapter);
 		}
 	catch (Exception e){ e.printStackTrace(); }
 		
-		
-		/*_______________________________________________________________
-		evaluateBestStrategy();
-		while (!s.instanceOf(DoNothingStrategy)){
-			try{
-				s.execute(modelReader, controllerAdapter);
-			}
-			catch (Exception e){ e.printStackTrace(); }
-			evaluateBestStrategy();
-		} 
-		ca.endTurn();
-		// WARNING: Exceptions + remove endTurn() in strategies 
-		__________________________________________________________________*/
-		
+		// TODO ExecuteLoop
+		controllerAdapter.endTurn();
 		
 	}
 	@Override
@@ -305,11 +252,14 @@ public class AI extends View{
 	@Override
 	// a seven was diced
 	public void eventRobber() {
-		s = new MoveRobberStrategy();
-		executeBestStrategy();
-		// s=new MoveRobberStrategy
-		// s.execute(modelReader,controllerAdapter);
-		// WARNING Try Catch block
+		s=new MoveRobberStrategy();
+		try {
+			s.execute(modelReader,controllerAdapter);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	@Override
@@ -335,7 +285,12 @@ public class AI extends View{
 	@Override
 	public void initTurn() { 
 		s = new InitializeStrategy();
-		executeBestStrategy();
+		try {
+			s.execute(modelReader, controllerAdapter);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 }

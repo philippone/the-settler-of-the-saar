@@ -12,8 +12,12 @@ import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
-public class BuildATownStrategy implements Strategy {
-Strategy s;
+public class BuildATownStrategy extends Strategy {
+	
+	public BuildATownStrategy() {
+		super(BuildingType.Village.getVictoryPoints(), BuildingType.Town.getPrice());
+	}
+
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
 		// TODO Auto-generated method stub
@@ -26,9 +30,7 @@ Strategy s;
 			ca.buildSettlement(bestIntersection, BuildingType.Town);
 			if (mr.getMe().getVictoryPoints() >= mr.getMaxVictoryPoints())
 				ca.claimVictory();
-			 ca.endTurn();
-		} else 
-			 ca.endTurn();
+		} 
 	}	
 	
 	public float evaluate(ModelReader mr, ControllerAdapter ca) throws Exception{
@@ -75,16 +77,6 @@ Strategy s;
 		}
 		intersectionValue=resourceValue+numberValue;
 		return intersectionValue;
-	}
-	
-	public AIGameStats getGameStats(ModelReader mr){
-		Player player = mr.getMe();
-		if (mr.buildableTownIntersections(player).size() < 1 || mr.getMaxBuilding(BuildingType.Town)-1 < mr.getSettlements(player, BuildingType.Town).size())
-			return new AIGameStats(player, this, new ResourcePackage(0, 0, 0, 0, 0), 0);
-		ResourcePackage resourcePackage = player.getResources().copy().add(new ResourcePackage(0, 0, 0, -2, -3));
-		int victoryPoints = player.getVictoryPoints() + 1;
-		AIGameStats gameStats = new AIGameStats(player, this ,resourcePackage, victoryPoints);
-		return gameStats;
 	}
 	
 	public boolean tradePossible(ModelReader mr){

@@ -1,6 +1,5 @@
 package de.unisaarland.cs.sopra.common.view;
 
-import java.io.IOException;
 import java.util.Set;
 
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
@@ -11,8 +10,13 @@ import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
-public class MoveRobberStrategy implements Strategy{
+public class MoveRobberStrategy extends Strategy{
 
+	public MoveRobberStrategy() {
+		super(0, new ResourcePackage());
+	}
+	
+	
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
 		ResourcePackage myrp = mr.getMe().getResources().copy();
@@ -112,11 +116,8 @@ public class MoveRobberStrategy implements Strategy{
 			if (i.hasOwner() && i.getOwner()!=player) {victim=i.getOwner(); break;}
 		}
 		return victim;
+
 	}
 
-	
-	public AIGameStats getGameStats(ModelReader mr) {
-		return null;
-	}
 
 }

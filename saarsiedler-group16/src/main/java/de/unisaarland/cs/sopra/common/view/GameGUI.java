@@ -43,6 +43,7 @@ import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.FieldType;
+import de.unisaarland.cs.sopra.common.model.HarborType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.Model;
@@ -61,8 +62,10 @@ public class GameGUI extends View implements Runnable{
 	private String gameTitle;
 	private Setting setting;
 	private Map<FieldType,Texture> fieldTextureMap;
+	private Map<HarborType, Texture> harbroTextureMap;
 	private Map<Integer,Texture> numberTextureMap;
 	private Map<String,Texture> uiTextureMap;
+	
 	private Texture streetTexture;
 	private Texture catapultTexture;
 	private Texture robberTexture;
@@ -72,6 +75,7 @@ public class GameGUI extends View implements Runnable{
 	private Texture intersectionMarkRedTexture;
 	private Texture villageTexture;
 	private Texture townTexture;
+	
 	private int x,y,z;
 	private int maxX, maxY, maxZ;
 	private int minX, minY, minZ;
@@ -217,10 +221,12 @@ public class GameGUI extends View implements Runnable{
 		for (Clickable click : Clickable.getRenderList()) {
 			click.setActive(false);
 		}
+		quit.setActive(true);
 	}
 	
 	private void reinitiateUI() {
 		Player me = modelReader.getMe();
+		List<List<Path>> lr = modelReader.calculateLongestRoads(me);
 		if (modelReader.affordableSettlements(BuildingType.Village) > 0) 
 			buildVillage.setActive(true);
 		if (modelReader.affordableSettlements(BuildingType.Town) > 0) 
@@ -229,7 +235,7 @@ public class GameGUI extends View implements Runnable{
 			buildCatapult.setActive(true);
 		if (modelReader.affordableStreets() > 0) 
 			buildStreet.setActive(true);
-		if (!modelReader.calculateLongestRoads(me).isEmpty())
+		if (!lr.isEmpty() && lr.get(0).size() >= 5)
 			claimLongestRoad.setActive(true);
 		//TODO evtl ändern wenn sich longestroad funktion ändert
 		if (modelReader.getCurrentVictoryPoints(me) >= modelReader.getMaxVictoryPoints())
@@ -407,8 +413,83 @@ public class GameGUI extends View implements Runnable{
 	
 	private void renderHarbor(Path p) {
 		// TODO Auto-generated method stub
+		int o = p.getLocation().getOrientation();
+		for (Field f: modelReader.getFieldsFromPath(p)) {
+			if (f.getFieldType().equals(FieldType.WATER)) {
+				int xField = f.getLocation().getX();
+				int yField = f.getLocation().getY();
+				int orient = o;
+				if (xField != p.getLocation().getX() || yField != p.getLocation().getY()) {
+					if (orient <3) {
+						orient += 3;
+					}
+					else {
+						orient -=3;
+					}
+				}
+				
+				HarborType h = p.getHarborType();
+				int px = 0;
+				int py = 0;
+				int po = 0;
+				switch(yField%2) {
+				   case 0:
+					   px = xField*250;
+					   py = yField*215; 
+					   break;
+				   case 1:
+				   case -1:
+					   px = xField*250-125;
+					   py = yField*215;
+					   break;
+			   }
+			  switch(orient) {
+				   case 0:
+					   px+=95;  // 74
+					   py+=-35;  // -96
+					   po+=30;
+					   break;
+				   case 1:
+					   px+=68;
+					   py+=63;
+					   po+=90;
+					   break;
+				   case 2:
+					   px+=-27;
+					   py+=91;
+					   po+=150;
+					   break;
+				   case 3:
+					   px+=-99;
+					   py+=23;
+					   po+=210;
+					   break;
+				   case 4:
+					   px+=-78;
+					   py+=-71;
+					   po+=270;
+					   break;
+				   case 5:
+					   px+=18;
+					   py+=-100;
+					   po+=330;
+					   break;
+				   default:
+					   throw new IllegalArgumentException();
+			   }
+			  	Texture harborTexture = harbroTextureMap.get(h);
+				GL11.glPushMatrix();
+				GL11.glTranslatef(px+x, py+y, 1+z);
+				GL11.glRotatef(po-90, 0, 0, 1);
+				setColor(BLACK);
+				harborTexture.bind();
+			    drawSquareMid(170,312);
+			    GL11.glPopMatrix();
+				}
+				}
+			}
 		
-	}
+	
 
 	private void renderCatapult(Path p) {
 		int px = 0;
@@ -883,7 +964,8 @@ public class GameGUI extends View implements Runnable{
 	
 	@Override
 	public void updateResources() {
-		reinitiateUI();
+		if (!observer)
+			reinitiateUI();
 	}
 
 	
@@ -1046,6 +1128,14 @@ public class GameGUI extends View implements Runnable{
 			villageTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Village.png"));
 			townTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Town.png"));
 			
+			
+			harbroTextureMap = new HashMap<HarborType,Texture>();
+			harbroTextureMap.put(HarborType.GENERAL_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/General_Harbor.png")));
+			harbroTextureMap.put(HarborType.BRICK_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Brick_Harbor.png")));
+			harbroTextureMap.put(HarborType.GRAIN_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Grain_Harbor.png")));
+			harbroTextureMap.put(HarborType.LUMBER_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Lumber_Harbor.png")));
+			harbroTextureMap.put(HarborType.ORE_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Ore_Harbor.png")));
+			harbroTextureMap.put(HarborType.WOOL_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Wool_Harbor.png")));
 			
 			uiTextureMap = new HashMap<String,Texture>();
 			uiTextureMap.put("Background", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/menue_background.png")));
@@ -1747,7 +1837,7 @@ public class GameGUI extends View implements Runnable{
 //		model.getField(new Point(2,2)).setRobber(true);
 		
 //		Setting setting = new Setting(Display.getDesktopDisplayMode(), true, PlayerColors.RED);
-		Setting setting = new Setting(new DisplayMode(1024, 550), false, PlayerColors.RED);  /// Display.getDesktopDisplayMode()
+		Setting setting = new Setting(new DisplayMode(1024, 520), false, PlayerColors.RED);  /// Display.getDesktopDisplayMode()
 		
 		CyclicBarrier barrier = new CyclicBarrier(2);
 		GameGUI gameGUI = new GameGUI(model, null, names, setting, "TestSpiel", false, barrier);

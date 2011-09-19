@@ -11,8 +11,16 @@ import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Resource;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
-public class InitializeStrategy implements Strategy {
+public class InitializeStrategy extends Strategy {
+	
+	
+	public InitializeStrategy() {
+		super(0, new ResourcePackage());
+	}
+
+
 	private Set<Resource> playersResources = new HashSet<Resource>();
 
 	@Override
@@ -117,11 +125,6 @@ public class InitializeStrategy implements Strategy {
 //	}
 	
 	
-	public int evaluate(){
-		// TODO implement this method
-		return 0;
-	}
-	
 	public void setPlayersResources(ModelReader mr,Intersection i){
 		Set<Field> fieldSet = mr.getFieldsFromIntersection(i);
 		for (Field f : fieldSet){
@@ -129,11 +132,5 @@ public class InitializeStrategy implements Strategy {
 		}
 			
 	}
-
-	public AIGameStats getGameStats(ModelReader mr) {
-		return null;
-	}
-
-
 
 }

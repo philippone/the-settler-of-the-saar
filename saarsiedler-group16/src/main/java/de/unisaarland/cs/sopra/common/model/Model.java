@@ -219,8 +219,10 @@ public class Model implements ModelReader, ModelWriter {
 		List<Path> road1=new ArrayList<Path>();
 		List<Intersection>roadExtremities=searchRoadExtremities(road, player);
 		// returning the intersections trough what we can continue the road
-		Intersection i=roadExtremities.get(0);
+		Intersection i;
+		if (roadExtremities.size()>0) i=roadExtremities.get(0);
 		// we'll rank the road from this extremity
+		else i=getIntersectionsFromPath(road.iterator().next()).iterator().next();
 		Set<Path>sp=getPathsFromIntersection(i);
 		Path p1=road.get(0);
 		for (Path p2:sp){
@@ -291,7 +293,7 @@ public class Model implements ModelReader, ModelWriter {
 
 	private List<List<Path>> keepOnlyLongestRoads(List<List<Path>> roadList) {
 		List<List<Path>> roadList1 = new ArrayList<List<Path>>();
-		int maxsize = 5;
+		int maxsize = 1;
 		for (List<Path> road1 : roadList) {
 			if (road1 != null)
 				maxsize = Math.max(maxsize, road1.size());
