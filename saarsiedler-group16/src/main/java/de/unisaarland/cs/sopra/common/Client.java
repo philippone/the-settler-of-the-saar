@@ -325,7 +325,7 @@ public class Client {
 		}
 		String resol = p.getProperty("Resolution");
 		for(int i=0; i<GUIFrame.dmodes.length; i++){
-			if(color.equals(GUIFrame.dmodes[i])){
+			if(resol.equals(GUIFrame.dmodes[i])){
 				Setting.setDisplayMode(GUIFrame.displaymodes[i]);
 				clientGUI.resolutionBox.setSelectedIndex(i);
 			}
@@ -341,8 +341,7 @@ public class Client {
 			
 			clientGUI.resolutionBox.setEnabled(false);
 			Setting.setFullscreen(true);
-			Setting.setDisplayMode(Display.getDisplayMode());
-			
+			Setting.setDisplayMode(Display.getDisplayMode());	
 		}
 		else {
 			clientGUI.fullscreenToggle.setText("OFF");
