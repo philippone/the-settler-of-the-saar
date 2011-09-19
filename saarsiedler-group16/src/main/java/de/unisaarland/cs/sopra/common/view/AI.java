@@ -104,7 +104,7 @@ public class AI extends View{
 			long[] players = ((GameEvent.MatchStart) ge).getPlayerIds();
 			byte[] number = ((GameEvent.MatchStart) ge).getNumbers();
 			m.matchStart(players, number);
-			Setting setting = new Setting(new DisplayMode(1024,580), true, PlayerColors.RED);
+			Setting setting = new Setting(new DisplayMode(1024,580), true, PlayerColors.BLUE);
 			Map<Player, String> plToNames = new HashMap<Player, String>();
 			Iterator<Player> iterPl = m.getTableOrder().iterator();
 			for (long l : players) {  // erstellt Player-> names map
@@ -166,7 +166,7 @@ public class AI extends View{
 			} else if (strategies[bestStatsIdx].getVictoryPoints() == strategies[k].getVictoryPoints()) {
 				if (!modelReader.getMe().checkResourcesSufficient(strategies[bestStatsIdx].getPrice())) {
 					if (!modelReader.getMe().checkResourcesSufficient(strategies[k].getPrice())){
-						if (strategies[bestStatsIdx].getPrice().size() < strategies[k].getPrice().size()){
+						if (strategies[bestStatsIdx].getPrice().size() >= strategies[k].getPrice().size()){
 							bestStrategy = strategies[k];
 							bestStatsIdx = k;
 						}
@@ -234,14 +234,12 @@ public class AI extends View{
 	}
 	
 	public void executeBestStrategy() {
-		Strategy bestOne = null;
+		Strategy bestOne = evaluateBestStrategy();
 		try{
-			do {
-				//Thread.sleep(5000);
-				bestOne = evaluateBestPossibleStrategy();
+			while(modelReader.getMe().checkResourcesSufficient(bestOne.getPrice())){
 				bestOne.execute(modelReader, controllerAdapter);
-				//s1.execute(modelReader, controllerAdapter);
-			} while (bestOne != null);
+				bestOne = evaluateBestStrategy();
+			}
 		}
 		catch (Exception e){ e.printStackTrace(); }
 		controllerAdapter.endTurn();

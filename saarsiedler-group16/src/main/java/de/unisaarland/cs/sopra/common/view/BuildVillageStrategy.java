@@ -98,8 +98,7 @@ public class BuildVillageStrategy extends Strategy {
 	
 	@Override
 	public boolean useable(ModelReader mr) {
-		if (mr.buildableVillageIntersections(mr.getMe()).size() > 0
-				&& mr.getMaxBuilding(BuildingType.Village) > mr.getSettlements(mr.getMe(), BuildingType.Village).size()) {
+		if (mr.getMaxBuilding(BuildingType.Village) > mr.getSettlements(mr.getMe(), BuildingType.Village).size()) {
 			return true;
 		}
 		return false;

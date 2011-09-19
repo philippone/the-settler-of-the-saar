@@ -5,6 +5,7 @@ import java.util.List;
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 import de.unisaarland.cs.sopra.common.model.Street;
 
 public class BuildLongestRoadStrategy extends Strategy {
@@ -26,6 +27,13 @@ public class BuildLongestRoadStrategy extends Strategy {
 		//TODO check how many victory Points we wet have to achieve
 	}
 
+	@Override
+	public ResourcePackage getPrice(){
+		//TODO implement this method
+		return null;
+	}
+	
+	
 	@Override
 	public boolean useable(ModelReader mr) {
 		double vp = mr.getMe().getVictoryPoints() / mr.getMaxVictoryPoints();
