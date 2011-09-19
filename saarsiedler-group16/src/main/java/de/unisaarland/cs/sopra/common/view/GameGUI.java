@@ -97,11 +97,10 @@ public class GameGUI extends View implements Runnable{
 	private static final int TOWN 					= 	2;
 	private static final int STREET 				= 	3;
 	private static final int CATAPULT_BUILD 		= 	4;
-	private static final int CATAPULT_ACTION_SRC 	= 	5;
-	private static final int CATAPULT_ACTION_DST 	= 	6;
-	private static final int ROBBER_SELECT		 	=   7;
-	private static final int ROBBER_PLACE 			=   8;
-	private static final int ROBBER_PLAYER_SELECT 	=   9;
+	private static final int CATAPULT_ACTION_DST 	= 	5;
+	private static final int ROBBER_SELECT		 	=   6;
+	private static final int ROBBER_PLACE 			=   7;
+	private static final int ROBBER_PLAYER_SELECT 	=   8;
 	private List<Point> selectionPoint;
 	private List<Location> selectionLocation;
 	private List<Location> selectionLocation2; //For move catapult
@@ -690,9 +689,6 @@ public class GameGUI extends View implements Runnable{
 			break;
 		case STREET:
 		case CATAPULT_BUILD:
-			renderPathMark(false, selectionLocation);
-			break;
-		case CATAPULT_ACTION_SRC:
 			renderPathMark(false, selectionLocation);
 			break;
 		case CATAPULT_ACTION_DST:
@@ -1403,6 +1399,17 @@ public class GameGUI extends View implements Runnable{
 				c.execute();
 			}
 			switch (selectionMode) {
+				case NONE:
+					Path source = getMousePath();
+					if (source != null && modelReader.getCatapults(modelReader.getMe()).contains(Model.getLocation(source))) {
+						catapultActionGhost.setPath(source);
+						selectionLocation = Model.getLocationListPath(modelReader.attackableCatapults(source));
+						selectionLocation2 = Model.getLocationListPath(modelReader.catapultMovePaths(source));
+						selectionLocation3 = Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Village, source));
+						selectionLocation3.addAll(Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Town, source)));
+						selectionMode = CATAPULT_ACTION_DST;
+					}
+					break;
 				case ROBBER_SELECT:
 					Field robberSRC = getMouseField();
 					if (robberSRC != null && selectionPoint.contains(Model.getLocation(robberSRC))) {
@@ -1478,25 +1485,13 @@ public class GameGUI extends View implements Runnable{
 						controllerAdapter.addGuiEvent(buildCatapultGhost);
 					}
 					break;
-				case CATAPULT_ACTION_SRC:
-					Path source = getMousePath();
-					if (source != null && selectionLocation.contains(Model.getLocation(source))) {
-						catapultActionGhost.setPath(source);
-						selectionLocation = Model.getLocationListPath(modelReader.attackableCatapults(source));
-						selectionLocation2 = Model.getLocationListPath(modelReader.catapultMovePaths(source));
-						selectionLocation3 = Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Village));
-						selectionLocation3.addAll(Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Town)));
-						selectionMode = CATAPULT_ACTION_DST;
-					}
-					controllerAdapter.addGuiEvent(buildStreetGhost);
-					break;
 				case CATAPULT_ACTION_DST:
 					Path destination = getMousePath();
 					if (destination != null && selectionLocation.contains(Model.getLocation(destination))) {
 						catapultActionGhost.setPath2(destination);
 						selectionMode = NONE;
+						controllerAdapter.addGuiEvent(buildStreetGhost);
 					}
-					controllerAdapter.addGuiEvent(buildStreetGhost);
 					break;	
 				case STREET:
 					Path street = getMousePath();
@@ -1516,7 +1511,6 @@ public class GameGUI extends View implements Runnable{
 					//if init set init to false
 					break; //TODO implement it!
 			}
-			//TODO klick auf catapult verarbeiten und in catapult_action mode gehn
 		}
 		
 		

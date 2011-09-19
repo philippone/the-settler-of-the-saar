@@ -708,7 +708,8 @@ public class Model implements ModelReader, ModelWriter {
 	}
 	
 	public Set<Intersection> attackableSettlements(BuildingType bt, Path path){
-		Set<Intersection> s = new HashSet<Intersection>();
+		Set<Intersection> s = attackableSettlements(getMe(), bt);
+		s.retainAll(board.getIntersectionsFromPath(path));
 		return s;
 	}
 	
