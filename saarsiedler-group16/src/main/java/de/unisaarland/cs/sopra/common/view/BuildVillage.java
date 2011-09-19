@@ -30,13 +30,10 @@ public class BuildVillage implements Strategy {
 			ca.buildSettlement(bestIntersection, BuildingType.Village);
 			if (mr.getMe().getVictoryPoints() >= mr.getMaxVictoryPoints())
 				ca.claimVictory();
-			ca.endTurn();
 		} else 	if (mr.buildableVillageIntersections(mr.getMe()).size() < 1) {
 			Strategy buildStreet = new BuildStreetStrategy();
 			buildStreet.execute(mr, ca);
-		} else
-			 ca.endTurn();
-
+		} 
 	}
 	public float evaluate(ModelReader mr, ControllerAdapter ca) throws Exception {
 		if (!(mr.affordableSettlements(BuildingType.Village) > 0

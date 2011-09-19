@@ -414,36 +414,79 @@ public class GameGUI extends View implements Runnable{
 		int o = p.getLocation().getOrientation();
 		for (Field f: modelReader.getFieldsFromPath(p)) {
 			if (f.getFieldType().equals(FieldType.WATER)) {
-				int x = f.getLocation().getX();
-				int y = f.getLocation().getY();
+				int xField = f.getLocation().getX();
+				int yField = f.getLocation().getY();
 				int orient = o;
-				if (x == p.getLocation().getX() && y == p.getLocation().getY()) {
+				if (xField != p.getLocation().getX() || yField != p.getLocation().getY()) {
 					if (orient <3) {
 						orient += 3;
 					}
 					else {
 						orient -=3;
 					}
+				}
+				
 				HarborType h = p.getHarborType();
-				//renderHarborType(h, x,y,o);
-				switch(orient) {
-					case 0:
-						break;
-					case 1:
-						break;
-					case 2:
-						break;
-					case 3:
-						break;
-					case 4:
-						break;
-					case 5:
-						break;
+				int px = 0;
+				int py = 0;
+				int po = 0;
+				switch(yField%2) {
+				   case 0:
+					   px = xField*250;
+					   py = yField*215; 
+					   break;
+				   case 1:
+				   case -1:
+					   px = xField*250-125;
+					   py = yField*215;
+					   break;
+			   }
+			  switch(orient) {
+				   case 0:
+					   px+=95;  // 74
+					   py+=-35;  // -96
+					   po+=30;
+					   break;
+				   case 1:
+					   px+=68;
+					   py+=63;
+					   po+=90;
+					   break;
+				   case 2:
+					   px+=-27;
+					   py+=91;
+					   po+=150;
+					   break;
+				   case 3:
+					   px+=-99;
+					   py+=23;
+					   po+=210;
+					   break;
+				   case 4:
+					   px+=-78;
+					   py+=-71;
+					   po+=270;
+					   break;
+				   case 5:
+					   px+=18;
+					   py+=-100;
+					   po+=330;
+					   break;
+				   default:
+					   throw new IllegalArgumentException();
+			   }
+			  	Texture harborTexture = harbroTextureMap.get(h);
+				GL11.glPushMatrix();
+				GL11.glTranslatef(px+x, py+y, 1+z);
+				GL11.glRotatef(po-90, 0, 0, 1);
+				setColor(BLACK);
+				harborTexture.bind();
+			    drawSquareMid(170,312);
+			    GL11.glPopMatrix();
 				}
 				}
 			}
-		}
-	}
+		
 	
 
 	private void renderCatapult(Path p) {
