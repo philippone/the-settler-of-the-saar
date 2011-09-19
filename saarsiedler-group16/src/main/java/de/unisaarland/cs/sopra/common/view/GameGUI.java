@@ -1472,6 +1472,10 @@ public class GameGUI extends View implements Runnable{
 					Path source = getMousePath();
 					if (source != null && selectionLocation.contains(Model.getLocation(source))) {
 						catapultActionGhost.setPath(source);
+						selectionLocation = Model.getLocationListPath(modelReader.attackableCatapults(source));
+						selectionLocation2 = Model.getLocationListPath(modelReader.catapultMovePaths(source));
+						selectionLocation3 = Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Village));
+						selectionLocation3.addAll(Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Town)));
 						selectionMode = CATAPULT_ACTION_DST;
 					}
 					controllerAdapter.addGuiEvent(buildStreetGhost);
