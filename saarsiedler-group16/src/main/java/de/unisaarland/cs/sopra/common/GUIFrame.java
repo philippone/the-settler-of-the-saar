@@ -48,11 +48,13 @@ public class GUIFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private ButtonListener actLis;
 	public long focusedWordID;
-	public final PlayerColors[] pc = new PlayerColors[]{PlayerColors.RED, PlayerColors.BLUE,PlayerColors.YELLOW,PlayerColors.ORANGE,PlayerColors.BROWN,PlayerColors.WHITE,PlayerColors.PURPLE,PlayerColors.BLACK};
-	public final String [] farben = new String[]{"RED","BLUE","YELLOW","ORANGE","BROWN","WHITE","PURPLE","BLACK"};
+	public final PlayerColors[] pc; 
+	public final String [] farben; 
 	
 	public GUIFrame() {
 		actLis = new ButtonListener(this);
+		pc = new PlayerColors[]{PlayerColors.RED, PlayerColors.BLUE,PlayerColors.YELLOW,PlayerColors.ORANGE,PlayerColors.BROWN,PlayerColors.WHITE,PlayerColors.PURPLE,PlayerColors.BLACK};
+		farben = new String[]{"RED","BLUE","YELLOW","ORANGE","BROWN","WHITE","PURPLE","BLACK"};
 		this.setVisible(true);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		initComponents();

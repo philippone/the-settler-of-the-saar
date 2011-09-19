@@ -285,8 +285,8 @@ public class Client {
 		String color= (String) clientGUI.playerColorBox.getItemAt(clientGUI.playerColorBox.getSelectedIndex());
 		String separator = System.getProperties().getProperty("file.separator ");
 		
-//		File f = new File("."+separator+"settings000");
-		File f = new File("options.properties");
+		File f = new File("."+separator+"settings");
+//		File f = new File("options.properties");
 		Properties p = new Properties();
 		 
 		p.setProperty("Color", color);
@@ -300,19 +300,24 @@ public class Client {
 	public static void loadSettings(){
 		try
 		{
-		File f = new File("options.properties");
+		String separator = System.getProperties().getProperty("file.separator ");
+		File f = new File("."+separator+"settings");
+//		File f = new File("options.properties");
 		Properties p = new Properties();
 		p.loadFromXML(new FileInputStream(f));
 		 
 		String color = p.getProperty("Color");
+		System.out.println(color);
 		for(int i=0; i<clientGUI.farben.length; i++){
 			if(color.equals(clientGUI.farben[i])){
 				Setting.setPlayerColor(clientGUI.pc[i]);
 			}
 		}
+		System.out.println("durch");
 //		host = p.getProperty("host");
 		}
-		catch (Exception e)	{System.out.println("No options found, using default!");
+		catch (Exception e)	{e.printStackTrace();
+			System.out.println("No options found, using default!");
 		}
 	}
 }
