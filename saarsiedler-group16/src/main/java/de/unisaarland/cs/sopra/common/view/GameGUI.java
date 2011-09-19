@@ -122,13 +122,9 @@ public class GameGUI extends View implements Runnable{
 	private Clickable endTurn;
 	private Clickable offerTrade;
 	private Clickable buildStreet;
-	private Clickable buildStreetGhost;
 	private Clickable buildVillage;
-	private Clickable buildVillageGhost;
 	private Clickable buildTown;	
-	private Clickable buildTownGhost;
 	private Clickable buildCatapult;
-	private Clickable buildCatapultGhost;
 	private Clickable catapultActionGhost;
 	private Clickable setRobberGhost;
 	private Clickable returnResourcesGhost;
@@ -240,7 +236,7 @@ public class GameGUI extends View implements Runnable{
 			buildCatapult.setActive(true);
 		if (modelReader.affordableStreets() > 0) 
 			buildStreet.setActive(true);
-		if (!lr.isEmpty() && lr.get(0).size() >= 5)
+		if (!lr.isEmpty() && lr.get(0).size() > (modelReader.getLongestClaimedRoad() != null ? modelReader.getLongestClaimedRoad().size() : 4)  )
 			claimLongestRoad.setActive(true);
 		if (modelReader.getCurrentVictoryPoints(me) >= modelReader.getMaxVictoryPoints())
 			claimVictory.setActive(true);
@@ -880,6 +876,13 @@ public class GameGUI extends View implements Runnable{
 	   setColor(BLACK);
 	   renderUI("Background", xOffsetUI, yOffsetUI, 0, 1500, 305);
 	   renderUI("Console", xOffsetUI+630, yOffsetUI+65, 1, 730, 300);
+	   
+	   GL11.glPushMatrix();
+	   GL11.glTranslatef((int)(Mouse.getX()*screenToOpenGLx(zOffsetUI)+25), (int)((windowHeight-Mouse.getY())*screenToOpenGLy(zOffsetUI)+380), 0);
+	   uiTextureMap.get("PlayerBackgroundHighlight").bind();
+	   drawSquareLeftTop(100, 100);
+	   GL11.glPopMatrix();
+	   
 	   setColor(BLACK);
 	   renderUI("LumberScore", xOffsetUI+345, yOffsetUI+65, 1, 95, 77);
 	   uiFont20.drawString(xOffsetUI+396, yOffsetUI+72, ""+modelReader.getResources().getResource(Resource.LUMBER));
@@ -913,7 +916,7 @@ public class GameGUI extends View implements Runnable{
 	   debugFont.drawString(300, 30, "x: " + x + ", y: " + y + ", z: " + z, Color.white);
 	   debugFont.drawString(300, 60, "mx: " + Mouse.getX() + ", my: " + Mouse.getY() + ", mw: " + Mouse.getEventDWheel(), Color.white);
 	   debugFont.drawString(300, 90, "minX: " + minX + ", minY: " + minY + ", minZ: " + maxX, Color.white);
-	   debugFont.drawString(300, 120, "oglx: " + (Mouse.getX()*screenToOpenGLx(z)+(minX*aspectRatio)) + ", ogly: " + ((windowHeight-Mouse.getY())*screenToOpenGLy(z)+(minY*aspectRatio)), Color.white);
+	   debugFont.drawString(300, 120, "oglx: " + (int)(Mouse.getX()*screenToOpenGLx(zOffsetUI)+25) + ", ogly: " + (int)((windowHeight-Mouse.getY())*screenToOpenGLy(zOffsetUI)+380) );
 	   GL11.glPopMatrix();
 
 	   GL11.glPushMatrix();
@@ -1078,19 +1081,13 @@ public class GameGUI extends View implements Runnable{
 		
 	    boolean finished = false;
 		while (!finished) {
-			try {
-				Display.makeCurrent();
-			} catch (LWJGLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
 			  handleInput();
 		      // Always call Window.update(), all the time - it does some behind the
 		      // scenes work, and also displays the rendered output
 			  Display.update();
 			  render();
 		      // Check for close requests
-		      /*if (Display.isCloseRequested()) {
+		      if (Display.isCloseRequested()) {
 			  finished = true;
 		      } 
 		      else if (Display.isActive()) {
@@ -1106,7 +1103,7 @@ public class GameGUI extends View implements Runnable{
 		      }
 		      if (Display.isVisible() || Display.isDirty()) {
 		          render();
-		      }*/
+		      }
 		}
 		Display.destroy();
 		System.exit(0);
@@ -1118,7 +1115,6 @@ public class GameGUI extends View implements Runnable{
 		try {//Display.getDesktopDisplayMode()
 			Display.setDisplayMode(Setting.getDisplayMode());
 			Display.setTitle("Die Siedler von der Saar: " + getName(modelReader.getMe()) + "@" + gameTitle);
-			Display.setVSyncEnabled(true);
 			Display.setFullscreen(Setting.isFullscreen());
 			Display.create();
 			
@@ -1155,7 +1151,6 @@ public class GameGUI extends View implements Runnable{
 			villageTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Village.png"));
 			townTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Town.png"));
 			
-			
 			harborTextureMap = new HashMap<HarborType,Texture>();
 			harborTextureMap.put(HarborType.GENERAL_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/General_Harbor.png")));
 			harborTextureMap.put(HarborType.BRICK_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Brick_Harbor.png")));
@@ -1186,43 +1181,67 @@ public class GameGUI extends View implements Runnable{
 			uiTextureMap.put("PlayerBackgroundHighlight", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/PlayerBackgroundHighlight.png")));
 			uiTextureMap.put("Quit", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_Quit.png")));
 			
-			claimLongestRoad = new Clickable("ClaimLongestRoad", xOffsetUI+450, yOffsetUI+22, 2, 373, 77, false, true, true) {
+			claimLongestRoad = new Clickable("ClaimLongestRoad", xOffsetUI+450, yOffsetUI+22, 2, 373, 77, false, true) {
 				@Override
-				public void execute() {
-					// vorerst gerade die erste longestRoad
-					List<List<Path>> road = modelReader.calculateLongestRoads(modelReader.getMe());
-					controllerAdapter.claimLongestRoad(road.get(0));
+				public void executeUI() {
+					//öffne auswahl and set road or not TODO
+					List<Path> road = modelReader.calculateLongestRoads(modelReader.getMe()).get(0);
+					if (road != null) {
+						this.setActive(false);
+						this.setRoad(road);
+						controllerAdapter.addGuiEvent(this);
+					}
+				}
+				@Override
+				public void executeController() {
+					controllerAdapter.claimLongestRoad(getRoad());
 				}
 			};
 
-			claimVictory = new Clickable("ClaimVictory", xOffsetUI+673, yOffsetUI+22, 2, 185, 77, false, false, true) {
+			claimVictory = new Clickable("ClaimVictory", xOffsetUI+673, yOffsetUI+22, 2, 185, 77, false, true) {
 				@Override
-				public void execute() {
-					controllerAdapter.claimVictory();
+				public void executeUI() {
 					this.setActive(false);
+					controllerAdapter.addGuiEvent(this);
 					//TODO evtl nen gz du hast gewonnen screen proggen
 				}
-			};
-			
-			endTurn = new Clickable("EndTurn", xOffsetUI+828, yOffsetUI+22, 2, 185, 77, false, false, true) {
 				@Override
-				public void execute() {
-					controllerAdapter.endTurn();
+				public void executeController() {
+					controllerAdapter.claimVictory();
+				}
+			};
+		
+			endTurn = new Clickable("EndTurn", xOffsetUI+828, yOffsetUI+22, 2, 185, 77, false, true) {
+				@Override
+				public void executeUI() {
 					this.setActive(false);
+					controllerAdapter.addGuiEvent(this);
+				}
+				@Override
+				public void executeController() {
+					controllerAdapter.endTurn();
 				}
 			};
 			
-			offerTrade = new Clickable("offerTrade", xOffsetUI+450, yOffsetUI+65, 2, 185, 77, false, true, true) {
+			offerTrade = new Clickable("offerTrade", xOffsetUI+450, yOffsetUI+65, 2, 185, 77, false, true) {
 				@Override
-				public void execute() {
-					Client.tradeOffer(modelReader.getResources(), modelReader.getHarborTypes(modelReader.getMe()));
+				public void executeUI() {
+					ResourcePackage res = Client.tradeOffer(modelReader.getResources(), modelReader.getHarborTypes(modelReader.getMe()));
 					//TODO offertrade ghost schreiben und füllen
+					//anzahl der handel mitzählen?!
+					if (res != null) {
+						controllerAdapter.addGuiEvent(this);
+					}
+				}
+				@Override
+				public void executeController() {
+					controllerAdapter.offerTrade(getRes());
 				}
 			};
 			
-			buildStreet = new Clickable("BuildStreet", xOffsetUI+450, yOffsetUI+110, 2, 185, 77, false, true, true) {
+			buildStreet = new Clickable("BuildStreet", xOffsetUI+450, yOffsetUI+110, 2, 185, 77, false, true) {
 				@Override
-				public void execute() {
+				public void executeUI() {
 					if (selectionMode == STREET) {
 						selectionMode = NONE;
 					}
@@ -1231,18 +1250,15 @@ public class GameGUI extends View implements Runnable{
 						selectionMode = STREET;
 					}
 				}
-			};
-			
-			buildStreetGhost = new Clickable(null, 0, 0, 0, 0, 0, false, false, false) {
 				@Override
-				public void execute() {
+				public void executeController() {
 					controllerAdapter.buildStreet(getPath());
 				}
 			};
 			
-			buildVillage = new Clickable("BuildVillage", xOffsetUI+450, yOffsetUI+155, 2, 185, 77, false, true, true) {
+			buildVillage = new Clickable("BuildVillage", xOffsetUI+450, yOffsetUI+155, 2, 185, 77, false, true) {
 				@Override
-				public void execute() {
+				public void executeUI() {
 					if (selectionMode == VILLAGE) {
 						selectionMode = NONE;
 					}
@@ -1251,18 +1267,15 @@ public class GameGUI extends View implements Runnable{
 						selectionMode = VILLAGE;
 					}
 				}
-			};
-			
-			buildVillageGhost = new Clickable(null, 0, 0, 0, 0, 0, false, false, false) {
 				@Override
-				public void execute() {
+				public void executeController() {
 					controllerAdapter.buildSettlement(getIntersection(), BuildingType.Village);
 				}
 			};
 			
-			buildTown = new Clickable("BuildTown", xOffsetUI+450, yOffsetUI+200, 2, 185, 77, false, true, true) {
+			buildTown = new Clickable("BuildTown", xOffsetUI+450, yOffsetUI+200, 2, 185, 77, false, true) {
 				@Override
-				public void execute() {
+				public void executeUI() {
 					if (selectionMode == TOWN) {
 						selectionMode = NONE;
 					}
@@ -1271,18 +1284,15 @@ public class GameGUI extends View implements Runnable{
 						selectionMode = TOWN;
 					}
 				}
-			};
-			
-			buildTownGhost = new Clickable(null, 0, 0, 0, 0, 0, false, false, false) {
 				@Override
-				public void execute() {
+				public void executeController() {
 					controllerAdapter.buildSettlement(getIntersection(), BuildingType.Town);
 				}
 			};
 						
-			buildCatapult = new Clickable("BuildCatapult", xOffsetUI+450, yOffsetUI+245, 2, 185, 77, false, true, true) {
+			buildCatapult = new Clickable("BuildCatapult", xOffsetUI+450, yOffsetUI+245, 2, 185, 77, false, true) {
 				@Override
-				public void execute() {
+				public void executeUI() {
 					if (selectionMode == CATAPULT_BUILD) {
 						selectionMode = NONE;
 					}
@@ -1291,42 +1301,47 @@ public class GameGUI extends View implements Runnable{
 						selectionMode = CATAPULT_BUILD;
 					}
 				}
-			};
-			
-			buildCatapultGhost = new Clickable(null, 0, 0, 0, 0, 0, false, false, false) {
 				@Override
-				public void execute() {
+				public void executeController() {
 					controllerAdapter.buildCatapult(getPath());
 				}
 			};
 			
-			catapultActionGhost = new Clickable(null, 0, 0, 0, 0, 0, false, false, false) {
+			catapultActionGhost = new Clickable(null, 0, 0, 0, 0, 0, false, false) {
 				@Override
-				public void execute() {
+				public void executeUI() {}
+				@Override
+				public void executeController() {
 					controllerAdapter.moveCatapult(getPath(), getPath2());
 				}
 			};
 			
-			setRobberGhost = new Clickable(null, 0, 0, 0, 0, 0, false, false, false) {
+			setRobberGhost = new Clickable(null, 0, 0, 0, 0, 0, false, false) {
 				@Override
-				public void execute() {
+				public void executeUI() {}
+				@Override
+				public void executeController() {
 					controllerAdapter.moveRobber(getField(), getField2(), getPlayer());
 				}
 			};
 			
-			returnResourcesGhost = new Clickable(null, 0, 0, 0, 0, 0, false, false, false) {
+			returnResourcesGhost = new Clickable(null, 0, 0, 0, 0, 0, false, false) {
 				@Override
-				public void execute() {
+				public void executeUI() {}
+				@Override
+				public void executeController() {
 					controllerAdapter.returnResources(getRes());
 				}
 			};
 			
-			quit = new Clickable("Quit", xOffsetUI+983, yOffsetUI+22, 2, 100, 77, true, true, true) {
+			quit = new Clickable("Quit", xOffsetUI+983, yOffsetUI+22, 2, 100, 77, true, true) {
 				@Override
-				public void execute() {
+				public void executeUI() {
 					Display.destroy();
 					System.exit(0);	
 				}
+				@Override
+				public void executeController() {}
 			};
 			
 		} catch (Exception e) {e.printStackTrace();}
@@ -1392,11 +1407,8 @@ public class GameGUI extends View implements Runnable{
 		
 		if (Mouse.isButtonDown(0) && System.currentTimeMillis() - lastinputcheck > 500) {
 			this.lastinputcheck = System.currentTimeMillis();
-			for (Clickable c : Clickable.executeModelClicks(mx*screenToOpenGLx(zOffsetUI), (windowHeight-my)*screenToOpenGLy(zOffsetUI)+380)) {
-				controllerAdapter.addGuiEvent(c);
-			}
-			for (Clickable c : Clickable.executeUIClicks(mx*screenToOpenGLx(zOffsetUI), (windowHeight-my)*screenToOpenGLy(zOffsetUI)+380)) {
-				c.execute();
+			for (Clickable c : Clickable.executeClicks(mx*screenToOpenGLx(zOffsetUI), (windowHeight-my)*screenToOpenGLy(zOffsetUI)+380)) {
+				c.executeUI();
 			}
 			switch (selectionMode) {
 				case NONE:
@@ -1456,7 +1468,7 @@ public class GameGUI extends View implements Runnable{
 				case VILLAGE:
 					Intersection village = getMouseIntersection();
 					if (village != null && selectionLocation.contains(Model.getLocation(village))) {
-						buildVillageGhost.setIntersection(village);
+						buildVillage.setIntersection(village);
 						selectionMode = NONE;
 						console4 = "";
 						if (init) {
@@ -1464,25 +1476,25 @@ public class GameGUI extends View implements Runnable{
 							buildVillage.setActive(false);
 							console4 = (modelReader.getInitVillages()-modelReader.getSettlements(modelReader.getMe(), BuildingType.Village).size()-1) + " initial villages left";
 						}
-						controllerAdapter.addGuiEvent(buildVillageGhost);
+						controllerAdapter.addGuiEvent(buildVillage);
 					}
 					break;
 				case TOWN:
 					Intersection town = getMouseIntersection();
 					if (town != null && selectionLocation.contains(Model.getLocation(town))) {
-						buildTownGhost.setIntersection(town);
+						buildTown.setIntersection(town);
 						selectionMode = NONE;
 						console4 = "";
-						controllerAdapter.addGuiEvent(buildTownGhost);
+						controllerAdapter.addGuiEvent(buildTown);
 					}
 					break;
 				case CATAPULT_BUILD:
 					Path path = getMousePath();
 					if (path != null && selectionLocation.contains(Model.getLocation(path))) {
-						buildCatapultGhost.setPath(path);
+						buildCatapult.setPath(path);
 						selectionMode = NONE;
 						console4 = "";
-						controllerAdapter.addGuiEvent(buildCatapultGhost);
+						controllerAdapter.addGuiEvent(buildCatapult);
 					}
 					break;
 				case CATAPULT_ACTION_DST:
@@ -1490,13 +1502,13 @@ public class GameGUI extends View implements Runnable{
 					if (destination != null && selectionLocation.contains(Model.getLocation(destination))) {
 						catapultActionGhost.setPath2(destination);
 						selectionMode = NONE;
-						controllerAdapter.addGuiEvent(buildStreetGhost);
+						controllerAdapter.addGuiEvent(buildStreet);
 					}
 					break;	
 				case STREET:
 					Path street = getMousePath();
 					if (street != null && selectionLocation.contains(Model.getLocation(street))) {
-						buildStreetGhost.setPath(street);
+						buildStreet.setPath(street);
 						selectionMode = NONE;
 						if (init) {
 							buildStreet.setActive(false);
@@ -1505,7 +1517,7 @@ public class GameGUI extends View implements Runnable{
 						}
 						else 
 							console4 = "";
-						controllerAdapter.addGuiEvent(buildStreetGhost);
+						controllerAdapter.addGuiEvent(buildStreet);
 					}
 					//if init dont change console4 else ""
 					//if init set init to false
@@ -1914,7 +1926,7 @@ public class GameGUI extends View implements Runnable{
 	public static void saveFile(String filename, InputStream inputStr) throws IOException {
 		FileOutputStream fos = new FileOutputStream(filename);
 	    int len = -1;
-	    byte[] buffer = new byte[4096];
+	    byte[] buffer = new byte[4194304]; //4MB
 	    while ((len = inputStr.read(buffer)) != -1) {
 	      fos.write(buffer,0,len);
 	    }

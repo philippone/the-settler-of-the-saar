@@ -359,7 +359,7 @@ public class Controller {
 			}
 			Iterator<Clickable> iter = guiEvents.iterator();
 			while (iter.hasNext()) {
-				iter.next().execute();
+				iter.next().executeController();
 				iter.remove();
 			}
 			Thread.sleep(100);
