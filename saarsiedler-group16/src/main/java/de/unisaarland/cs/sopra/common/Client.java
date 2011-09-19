@@ -26,6 +26,7 @@ import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.ModelWriter;
 import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 import de.unisaarland.cs.sopra.common.view.AI;
 import de.unisaarland.cs.sopra.common.view.GameGUI;
 import de.unisaarland.cs.st.saarsiedler.comm.Connection;
@@ -353,6 +354,12 @@ public class Client {
 		catch (Exception e)	{
 			System.out.println("No options found, using default!");
 		}
+	}
+	
+	public static ResourcePackage returnResources(ResourcePackage rp){
+		new Popup();
+		
+		return null;
 	}
 }
 
