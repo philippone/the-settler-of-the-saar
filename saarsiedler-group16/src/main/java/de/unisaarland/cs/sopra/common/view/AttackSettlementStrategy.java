@@ -8,6 +8,7 @@ import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public class AttackSettlementStrategy implements Strategy {
@@ -66,5 +67,17 @@ public class AttackSettlementStrategy implements Strategy {
 		int victoryPoints = player.getVictoryPoints();
 		AIGameStats gameStats = new AIGameStats(player, this, resourcePackage, victoryPoints);
 		return gameStats;
+	}
+	
+	public boolean tradePossible(ModelReader mr){
+		ResourcePackage resourcePackage = mr.getMe().getResources().copy();
+		if (resourcePackage.getResource(Resource.ORE) > 0){
+			resourcePackage.add(new ResourcePackage(0, 0, 0, 0, -1));
+		}
+
+		if (resourcePackage.getPositiveResourcesCount() > 0)
+			return true;
+		else
+		return false;
 	}
 }

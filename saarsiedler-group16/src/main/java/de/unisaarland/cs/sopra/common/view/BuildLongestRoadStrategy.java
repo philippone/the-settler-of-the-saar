@@ -7,6 +7,7 @@ import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public class BuildLongestRoadStrategy implements Strategy {
@@ -47,5 +48,19 @@ public class BuildLongestRoadStrategy implements Strategy {
 		int victoryPoints = player.getVictoryPoints() + 2;
 		AIGameStats gameStats = new AIGameStats(player, this ,resourcePackage, victoryPoints);
 		return gameStats;
+	}
+	
+	public boolean tradePossible(ModelReader mr){
+		ResourcePackage resourcePackage = mr.getMe().getResources().copy();
+		if (resourcePackage.getResource(Resource.LUMBER) > 0){
+			resourcePackage.add(new ResourcePackage(-1, 0, 0, 0, 0));
+		}
+		if (resourcePackage.getResource(Resource.BRICK) > 0){
+			resourcePackage.add(new ResourcePackage(0, -1, 0, 0, 0));
+		}
+		if (resourcePackage.getPositiveResourcesCount() > 0)
+			return true;
+		else
+		return false;
 	}
 }

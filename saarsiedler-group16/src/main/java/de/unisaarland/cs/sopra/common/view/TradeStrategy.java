@@ -27,8 +27,12 @@ public class TradeStrategy implements Strategy {
 		return 0;
 	}
 	
+	@Override
 	public AIGameStats getGameStats(ModelReader mr) {
 		return null;
 	}
+	
+
+	
 
 }
