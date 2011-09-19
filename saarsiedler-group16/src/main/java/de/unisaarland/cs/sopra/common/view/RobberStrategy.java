@@ -59,9 +59,8 @@ public class RobberStrategy extends Strategy {
 
 	
 	@Override
-	public boolean useable() {
-		//TODO implement this operation
-		throw new UnsupportedOperationException();
+	public boolean useable(ModelReader mr) {
+	return true;
 	}
 
 

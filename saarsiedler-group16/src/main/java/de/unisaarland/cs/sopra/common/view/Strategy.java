@@ -26,7 +26,7 @@ public abstract class Strategy {
 	 * This has nothing to do with the resources!
 	 * @return Tests wheter it is possible to execute the strategy
 	 */
-	public abstract boolean useable();
+	public abstract boolean useable(ModelReader mr);
 	
 	public int getVictoryPoints() {
 		return victoryPoints;

@@ -131,9 +131,9 @@ public class InitializeStrategy extends Strategy {
 	*/
 	
 	@Override
-	public boolean useable() {
+	public boolean useable(ModelReader mr) {
 		//TODO implement this operation
-		throw new UnsupportedOperationException();
+		return true;
 	}
 
 }

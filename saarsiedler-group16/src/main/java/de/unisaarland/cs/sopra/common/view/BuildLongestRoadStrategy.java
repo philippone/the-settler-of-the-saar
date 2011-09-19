@@ -27,9 +27,12 @@ public class BuildLongestRoadStrategy extends Strategy {
 	}
 
 	@Override
-	public boolean useable() {
-		//TODO implement this operation
-		throw new UnsupportedOperationException();
+	public boolean useable(ModelReader mr) {
+		double vp = mr.getMe().getVictoryPoints() / mr.getMaxVictoryPoints();
+			if ( vp <= 0.5) {
+				return false;
+			}
+			return true;
 	}
 	
 }

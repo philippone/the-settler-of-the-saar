@@ -63,9 +63,10 @@ public class BuildStreetStrategy extends Strategy {
 
 	
 	@Override
-	public boolean useable() {
-		//TODO implement this operation
-		throw new UnsupportedOperationException();
+	public boolean useable(ModelReader mr) {
+			if (mr.buildableStreetPaths(mr.getMe()).size() > 0)
+				return true;
+			return false;
 	}
 
 }
