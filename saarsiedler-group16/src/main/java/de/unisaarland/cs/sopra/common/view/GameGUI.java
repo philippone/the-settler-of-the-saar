@@ -37,6 +37,7 @@ import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
+import de.unisaarland.cs.sopra.common.Client;
 import de.unisaarland.cs.sopra.common.PlayerColors;
 import de.unisaarland.cs.sopra.common.Setting;
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
@@ -932,7 +933,7 @@ public class GameGUI extends View implements Runnable{
 	public void drawResource() {
 		//TODO: implement it!
 	}
-	
+	//remove red and black from playercolors
 
 	public String getName(Player player) {
 		if (player == null) throw new IllegalArgumentException();
@@ -1034,7 +1035,6 @@ public class GameGUI extends View implements Runnable{
 			deactivateUI();
 		}
 		this.lastNumberDiced = number;
-		console4 = "";
 	}
 	
 
@@ -1283,7 +1283,7 @@ public class GameGUI extends View implements Runnable{
 				@Override
 				public void execute() {
 					Display.destroy();
-					System.exit(0);
+					System.exit(0);	
 				}
 			};
 			
