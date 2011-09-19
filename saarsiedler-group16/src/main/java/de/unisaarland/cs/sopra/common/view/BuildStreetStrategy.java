@@ -89,4 +89,10 @@ public class BuildStreetStrategy extends Strategy {
 			return tradeOffer;
 		}
 	}
+	
+	@Override
+	public boolean useable() {
+		//TODO implement this operation
+		throw new UnsupportedOperationException();
+	}
 }

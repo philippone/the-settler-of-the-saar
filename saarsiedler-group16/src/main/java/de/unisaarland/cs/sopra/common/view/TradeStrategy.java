@@ -26,5 +26,11 @@ public class TradeStrategy extends Strategy {
 		}
 
 	}
+	
+	@Override
+	public boolean useable() {
+		//TODO implement this operation
+		throw new UnsupportedOperationException();
+	}
 
 }

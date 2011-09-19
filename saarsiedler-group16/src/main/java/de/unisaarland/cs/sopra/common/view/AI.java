@@ -208,14 +208,6 @@ public class AI extends View{
 		controllerAdapter.endTurn();
 	}
 	
-	public Strategy evaluateBestPossibleStrategy(){
-		Strategy s = evaluateBestStrategy();
-		// TODO auf elitzas entscheidung warten
-		TradeOffer to = new TradeOffer();
-		if (modelReader.getMe().checkResourcesSufficient(s.getPrice())) return s;
-		else return null;
-	}
-	
 	
 	@Override
 	public void updatePath(Path path) {

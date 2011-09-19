@@ -115,4 +115,10 @@ public class MoveRobberStrategy extends Strategy{
 		return victim;
 	}
 
+	@Override
+	public boolean useable() {
+		//TODO implement this operation
+		throw new UnsupportedOperationException();
+	}
+	
 }

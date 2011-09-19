@@ -14,8 +14,18 @@ public abstract class Strategy {
 		this.price = price;
 	}
 	
+	/**
+	 * Executes itself. Therefore useable() has to return true.
+	 */
 	public abstract void execute(ModelReader mr, ControllerAdapter ca) throws Exception;
 
+	/**
+	 * Tests wheter it is possible to execute the strategy.
+	 * This has nothing to do with the resources!
+	 * @return Tests wheter it is possible to execute the strategy
+	 */
+	public abstract boolean useable();
+	
 	public int getVictoryPoints() {
 		return victoryPoints;
 	}
