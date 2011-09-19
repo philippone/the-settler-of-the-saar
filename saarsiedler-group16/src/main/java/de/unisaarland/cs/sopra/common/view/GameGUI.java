@@ -850,7 +850,6 @@ public class GameGUI extends View implements Runnable{
 		GL11.glPopMatrix();
 	}
 	
-	
 	private void renderUI(Clickable click) {
 		if (!click.isActive()) {
 			GL11.glColor4f(0.3f, 0.3f, 0.3f, 0.3f);
@@ -861,8 +860,6 @@ public class GameGUI extends View implements Runnable{
 			renderUI(click.getName(),click.getX(),click.getY(),click.getZ(),click.getWidth(),click.getHeight());
 		}
 	}
-	
-	
 	
 	private void render() {
 	   //Clear and center
@@ -953,7 +950,6 @@ public class GameGUI extends View implements Runnable{
 	public void drawResource() {
 		//TODO: implement it!
 	}
-	//remove red and black from playercolors
 
 	public String getName(Player player) {
 		if (player == null) throw new IllegalArgumentException();
