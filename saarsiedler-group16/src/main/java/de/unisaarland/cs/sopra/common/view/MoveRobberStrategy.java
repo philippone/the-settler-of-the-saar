@@ -44,9 +44,6 @@ public class MoveRobberStrategy extends Strategy{
 				e.printStackTrace();
 
 			} 
-
-			
-
 		}
 
 		if (mr.getMe() == mr.getCurrentPlayer()){

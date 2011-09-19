@@ -56,9 +56,5 @@ public class RobberStrategy extends Strategy {
 
 			}
 	}
-	public int evaluate(){
-		// TODO implement this method
-		return 0;
-	}
 
 }

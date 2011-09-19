@@ -135,6 +135,7 @@ public class AI extends View{
 	
 	public AI(ModelReader modelReader, ControllerAdapter controllerAdapter){
 		super(modelReader, controllerAdapter);
+
 		modelReader.addModelObserver(this);
 	}
 	
@@ -194,18 +195,28 @@ public class AI extends View{
 	}
 	
 	public void executeBestStrategy() {
+		Strategy bestOne = null;
 		try{
-			//Thread.sleep(5000);
-
-		s.execute(modelReader, controllerAdapter);
-		//s1.execute(modelReader, controllerAdapter);
+			do {
+				//Thread.sleep(5000);
+				bestOne = evaluateBestPossibleStrategy();
+				bestOne.execute(modelReader, controllerAdapter);
+				//s1.execute(modelReader, controllerAdapter);
+			} while (bestOne != null);
 		}
-	catch (Exception e){ e.printStackTrace(); }
-		
-		// TODO ExecuteLoop
+		catch (Exception e){ e.printStackTrace(); }
 		controllerAdapter.endTurn();
-		
 	}
+	
+	public Strategy evaluateBestPossibleStrategy(){
+		Strategy s = evaluateBestStrategy();
+		// TODO auf elitzas entscheidung warten
+		TradeOffer to = new TradeOffer();
+		if (modelReader.getMe().checkResourcesSufficient(s.getPrice())) return s;
+		else return null;
+	}
+	
+	
 	@Override
 	public void updatePath(Path path) {
 		// TODO
