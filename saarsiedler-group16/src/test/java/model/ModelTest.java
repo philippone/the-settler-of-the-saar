@@ -250,7 +250,7 @@ public class ModelTest {
 		model.buildStreet(new Location(2,1,2));
 		//longest Road claim
 		List<List<Path>> longestRoad = model.calculateLongestRoads(model.getCurrentPlayer());
-		model.longestRoadClaimed(Model.getLocationList(longestRoad.get(0)));
+		model.longestRoadClaimed(Model.getLocationListPath(longestRoad.get(0)));
 		
 		// neue Runde (Gegner an der Reihe)
 		model.newRound(6);
@@ -292,7 +292,7 @@ public class ModelTest {
 		model.buildStreet(new Location(2,1,2));
 		//longest Road claim
 		List<List<Path>> longestRoad = model.calculateLongestRoads(model.getCurrentPlayer());
-		model.longestRoadClaimed(Model.getLocationList(longestRoad.get(0)));
+		model.longestRoadClaimed(Model.getLocationListPath(longestRoad.get(0)));
 		
 		// neue Runde (Gegner an der Reihe)
 		model.newRound(6);

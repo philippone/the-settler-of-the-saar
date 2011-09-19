@@ -1,6 +1,7 @@
 package de.unisaarland.cs.sopra.common.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -123,11 +124,37 @@ public class Model implements ModelReader, ModelWriter {
 	/**
 	 * @return Locations of the Paths in the List
 	 */
-	public static List<Location> getLocationList(List<Path> pathlist) {
-		if (pathlist == null)
+	public static List<Location> getLocationListPath(Collection<Path> list) {
+		if (list == null)
 			throw new IllegalArgumentException();
 		List<Location> tmp = new LinkedList<Location>();
-		for (Path act : pathlist) {
+		for (Path act : list) {
+			tmp.add(act.getLocation());
+		}
+		return tmp;
+	}
+	
+	/**
+	 * @return Locations of the Intersections in the List
+	 */
+	public static List<Location> getLocationListIntersection(Collection<Intersection> list) {
+		if (list == null)
+			throw new IllegalArgumentException();
+		List<Location> tmp = new LinkedList<Location>();
+		for (Intersection act : list) {
+			tmp.add(act.getLocation());
+		}
+		return tmp;
+	}
+	
+	/**
+	 * @return Locations of the Paths in the List
+	 */
+	public static List<Point> getLocationListField(Collection<Field> list) {
+		if (list == null)
+			throw new IllegalArgumentException();
+		List<Point> tmp = new LinkedList<Point>();
+		for (Field act : list) {
 			tmp.add(act.getLocation());
 		}
 		return tmp;
@@ -1290,12 +1317,14 @@ public class Model implements ModelReader, ModelWriter {
 			if (!dest.hasCatapult())
 				throw new IllegalStateException(
 						"Wird nicht gebaut, obwohl kein Gegner vorhanden ist");
+		}
+		if (me == getCurrentPlayer()) {
 			if (!getCurrentPlayer().checkResourcesSufficient(
 					Catapult.getBuildingprice()))
 				throw new IllegalArgumentException(
 						"Player has no resources to built a Catapult");
+			getCurrentPlayer().modifyResources(Catapult.getBuildingprice());
 		}
-		getCurrentPlayer().modifyResources(Catapult.getBuildingprice());
 		for (ModelObserver ob : modelObserver) {
 			ob.updateResources();
 			ob.updateCatapultCount();
@@ -1392,11 +1421,16 @@ public class Model implements ModelReader, ModelWriter {
 					ob.updateVictoryPoints();
 					ob.updateIntersection(i);
 				}
-				initLastVillageIntersection = i;
+				if (me == getCurrentPlayer()) {
+					initLastVillageIntersection = i;
+				}
 			} else
 			throw new IllegalStateException("geb wurde nicht gebaut, da i nicht in buildableIn...");
 		} else {
-			if (isBuildable(i, buildingType) && (isAffordable(buildingType)) && getSettlements(getCurrentPlayer(), buildingType).size() < getMaxBuilding(buildingType)) {
+			if (me == getCurrentPlayer() && !isAffordable(buildingType)) {
+				throw new IllegalArgumentException("Not enough resources");
+			}
+			if (isBuildable(i, buildingType) && getSettlements(getCurrentPlayer(), buildingType).size() < getMaxBuilding(buildingType)) {
 				getCurrentPlayer().modifyResources(buildingType.getPrice());
 				i.createBuilding(buildingType, getCurrentPlayer());
 				getCurrentPlayer().setVictoryPoints(getCurrentPlayer().getVictoryPoints() + 1);
@@ -1589,8 +1623,8 @@ public class Model implements ModelReader, ModelWriter {
 			getField(sourceField).setRobber(false);
 			getField(destinationField).setRobber(true);
 			if (playerMap.containsKey(victimPlayer)) {
-				playerMap.get(victimPlayer).getResources()
-						.modifyResource(stolenResource, -1);
+				playerMap.get(victimPlayer).getResources().modifyResource(stolenResource, -1);
+				getCurrentPlayer().getResources().modifyResource(stolenResource, 1);
 				for (ModelObserver ob : modelObserver) {
 					if (me == getCurrentPlayer())
 						ob.updateResources();

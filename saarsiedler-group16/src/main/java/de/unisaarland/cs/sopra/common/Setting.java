@@ -25,6 +25,9 @@ public class Setting {
 	public static DisplayMode getDisplayMode() {
 		return mode;
 	}
+	public static void setDisplayMode(DisplayMode d){
+		mode = d;
+	}
 
 	public static void setPlayerColor(PlayerColors playerColor) {
 		Setting.playerColor = playerColor;
@@ -34,8 +37,12 @@ public class Setting {
 		return playerColor;
 	}
 	
+	
 	public static void setName(String n) {
 		Setting.name = n;
+	}
+	public static String getName(){
+		return name;
 	}
 	
 }

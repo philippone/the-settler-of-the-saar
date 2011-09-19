@@ -3,6 +3,8 @@ package de.unisaarland.cs.sopra.common;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import org.lwjgl.opengl.DisplayMode;
+
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 
 public class ButtonListener implements ActionListener {
@@ -11,6 +13,7 @@ public class ButtonListener implements ActionListener {
 //	private Client client;
 	private boolean readyStatus;
 	public boolean joinAsObserver;
+	private boolean fullscreen;
 
 	public ButtonListener(GUIFrame guiFrame) {
 		this.gui = guiFrame;
@@ -49,7 +52,7 @@ public class ButtonListener implements ActionListener {
 				gui.menuPanel.setVisible(false);
 				gui.lobbyPanel.setVisible(true);
 				Client.setUpListUpdater();
-				Client.changeName("Player-Gruppe-16");
+				Client.changeName(Setting.getName());
 				
 			}
 			if (arg0.getSource() == gui.playAsAI){
@@ -59,7 +62,7 @@ public class ButtonListener implements ActionListener {
 				gui.menuPanel.setVisible(false);
 				gui.lobbyPanel.setVisible(true);
 				Client.setUpListUpdater();
-				Client.changeName("AI-Gruppe-16");
+				Client.changeName(Setting.getName());
 			}
 			if (arg0.getSource() == gui.exit_menu){
 				System.exit(0);
@@ -90,8 +93,22 @@ public class ButtonListener implements ActionListener {
 			
 		//Settings
 			if (arg0.getSource() == gui.back_Settings){
+				Setting.setName(gui.playerName.getText());
 				gui.settingsPanel.setVisible(false);
 				gui.menuPanel.setVisible(true);
+			}
+			if (arg0.getSource() == gui.fullscreenToggle){
+				fullscreen=!fullscreen;
+				Setting.setFullscreen(fullscreen);
+				if(fullscreen){
+					gui.fullscreenToggle.setText("ON");
+					gui.resolutionBox.setSelectedIndex(0);
+					gui.resolutionBox.setEnabled(false);
+				}
+				else{
+					gui.fullscreenToggle.setText("OFF");
+					gui.resolutionBox.setEnabled(true);
+				}
 			}
 		//
 		

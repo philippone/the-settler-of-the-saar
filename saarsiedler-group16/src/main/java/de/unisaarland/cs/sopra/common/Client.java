@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.swing.table.DefaultTableModel;
 
@@ -35,9 +34,37 @@ public class Client {
 	public static boolean joinAsAI;
 	
 	public static void main(String[] args) throws UnknownHostException, IOException {
+		initOpenGL();
 		clientGUI = new GUIFrame();
+		setting = new Setting(new DisplayMode(1024, 600), true, PlayerColors.RED);
 	}
-	
+	private static void initOpenGL(){
+		String[] list = new String[] {
+				"jinput-dx8_64.dll", "jinput-dx8.dll", "jinput-raw_64.dll",
+				"jinput-raw.dll", "libjinput-linux.so", "libjinput-linux64.so",
+				"libjinput-osx.jnilib", "liblwjgl.jnilib", "liblwjgl.so",
+				"liblwjgl64.so", "libopenal.so", "libopenal64.so",
+				"lwjgl.dll", "lwjgl64.dll", "openal.dylib", "OpenAL32.dll", "OpenAL64.dll" };
+		String tmpdir = System.getProperty("java.io.tmpdir");
+		for (String act : list) {
+			InputStream input = ClassLoader.getSystemClassLoader().getResourceAsStream("native/" + act);
+			try {
+				GameGUI.saveFile(tmpdir + "/" + act, input);
+			} catch (IOException e) {e.printStackTrace();	}
+		}
+		String seperator;
+		if (System.getProperty("sun.desktop") != null && System.getProperty("sun.desktop").equals("windows")) seperator = ";";
+		else seperator = ":";
+		System.setProperty("java.library.path", System.getProperty("java.library.path") + seperator + tmpdir);
+		java.lang.reflect.Field vvv = null;
+		try {
+			vvv = ClassLoader.class.getDeclaredField("sys_paths");
+		} catch (Exception e1) {e1.printStackTrace();	}
+		vvv.setAccessible(true); 
+		try {
+			vvv.set(null, null);
+		} catch (Exception e1) {e1.printStackTrace();}		
+	}
 	
 	public static void joinMatch(boolean asObserver) {
 		try {
@@ -113,6 +140,7 @@ public class Client {
 		Iterator<Player> iterPl = model.getTableOrder().iterator();
 		for (long l : playerIDs) {  // erstellt Player-> names map
 			try {
+				System.out.println(connection.getPlayerInfo(l).getName());
 				plToNames.put(iterPl.next(), connection.getPlayerInfo(l).getName());
 			} catch (IOException e) {e.printStackTrace();}
 		}
@@ -120,6 +148,11 @@ public class Client {
 			return new GameGUI(model, new ControllerAdapter(controller, model), plToNames , setting, matchInfo.getTitle());
 		} catch (Exception e) {e.printStackTrace();	}
 		throw new IllegalStateException("couldnt build GameGui");
+	}
+	
+	public static void changeSettings(DisplayMode mode, boolean fullscreen,PlayerColors playerColor, String name){
+		setting = new Setting(mode, fullscreen, playerColor);
+		Setting.setName(name);
 	}
 	
 	public static void initializeMatch() {					
@@ -142,33 +175,6 @@ public class Client {
 		byte[] number = startEvent.getNumbers();
 		m.matchStart(players, number);
 		
-		String[] list = new String[] {
-				"jinput-dx8_64.dll", "jinput-dx8.dll", "jinput-raw_64.dll",
-				"jinput-raw.dll", "libjinput-linux.so", "libjinput-linux64.so",
-				"libjinput-osx.jnilib", "liblwjgl.jnilib", "liblwjgl.so",
-				"liblwjgl64.so", "libopenal.so", "libopenal64.so",
-				"lwjgl.dll", "lwjgl64.dll", "openal.dylib", "OpenAL32.dll", "OpenAL64.dll" };
-		String tmpdir = System.getProperty("java.io.tmpdir");
-		for (String act : list) {
-			InputStream input = ClassLoader.getSystemClassLoader().getResourceAsStream("native/" + act);
-			try {
-				GameGUI.saveFile(tmpdir + "/" + act, input);
-			} catch (IOException e) {e.printStackTrace();	}
-		}
-		String seperator;
-		if (System.getProperty("sun.desktop") != null && System.getProperty("sun.desktop").equals("windows")) seperator = ";";
-		else seperator = ":";
-		System.setProperty("java.library.path", System.getProperty("java.library.path") + seperator + tmpdir);
-		java.lang.reflect.Field vvv = null;
-		try {
-			vvv = ClassLoader.class.getDeclaredField("sys_paths");
-		} catch (Exception e1) {e1.printStackTrace();	}
-		vvv.setAccessible(true); 
-		try {
-			vvv.set(null, null);
-		} catch (Exception e1) {e1.printStackTrace();}		
-		
-		Setting setting = new Setting(new DisplayMode(1024, 600), true, PlayerColors.RED);
 		GameGUI gameGUI = null;
 		
 		try {

@@ -52,9 +52,8 @@ public class AttackSettlementStrategy implements Strategy {
 		if (!(mr.getCatapults(mr.getMe()).size()>0
 				&& (mr.attackableSettlements(mr.getMe(), BuildingType.Town).size()>0)
 				&& (mr.attackableSettlements(mr.getMe(), BuildingType.Village).size()>0))) return -1;
-		float value=0;
-		value=evaluateIntersection(mr,chooseTarget(mr));
-		return value;
+		// TODO: check the trade
+		return 1;
 	}
 
 }

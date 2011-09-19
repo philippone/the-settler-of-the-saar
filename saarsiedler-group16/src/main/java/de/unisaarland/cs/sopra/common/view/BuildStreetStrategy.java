@@ -5,6 +5,7 @@ import java.util.Set;
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.Intersection;
 
 public class BuildStreetStrategy implements Strategy {
  Path bestStreet;
@@ -25,9 +26,8 @@ Strategy s;
 	public float evaluate(ModelReader mr, ControllerAdapter ca) throws Exception {
 		if (!(mr.affordableStreets() > 0 
 			&& mr.buildableStreetPaths(mr.getMe()).size() > 0)) return -1;
-		float value=0;
-		value=evaluateStreetValue(mr,evaluateStreet(mr));
-		return value/4;
+		// TODO: check the trade
+		return 1;
 	}
 	
 	public Path evaluateStreet(ModelReader mr){
@@ -44,7 +44,13 @@ Strategy s;
 	}
 	
 	public float evaluateStreetValue(ModelReader mr,Path p){
-		return 1;
+		double value=0;
+		Set<Intersection> intersections=mr.getIntersectionsFromPath(p);
+		for (Intersection i: intersections){
+			if (i.hasOwner()) value=value+0.1;
+			else value=value+0.15;
+		}
+		return (float) value;
 	}
 	
 }

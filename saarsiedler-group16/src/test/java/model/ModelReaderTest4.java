@@ -121,7 +121,7 @@ public class ModelReaderTest4 {
 		model2.getPath(new Location(2,0,2)).createStreet(currentPlayer);
 		//longest Road claim
 		List<List<Path>> longestRoad = model2.calculateLongestRoads(currentPlayer);
-		model2.longestRoadClaimed(Model.getLocationList(longestRoad.get(0)));
+		model2.longestRoadClaimed(Model.getLocationListPath(longestRoad.get(0)));
 		
 		assertEquals(longestRoad.get(0), model2.getLongestClaimedRoad());
 	}
