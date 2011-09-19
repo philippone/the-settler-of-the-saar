@@ -1033,8 +1033,8 @@ public class GameGUI extends View implements Runnable{
 
 	@Override
 	public void eventTrade(ResourcePackage resourcePackage) {
-		//TODO: implement it!
-		// handel auf console ausgeben und 2 knöpfe einblenden für annehmen ablehnen
+		Client.incomingTradeOffer(resourcePackage);
+		//TODO ghost knopf und behandeln!
 	}
 
 	@Override
@@ -1215,7 +1215,8 @@ public class GameGUI extends View implements Runnable{
 			offerTrade = new Clickable("offerTrade", xOffsetUI+450, yOffsetUI+65, 2, 185, 77, false, true, true) {
 				@Override
 				public void execute() {
-					//TODO Client.tradeOffer(modelReader.getResources(), modelReader.getHarborTypes(modelReader.getMe()));
+					Client.tradeOffer(modelReader.getResources(), modelReader.getHarborTypes(modelReader.getMe()));
+					//TODO offertrade ghost schreiben und füllen
 				}
 			};
 			

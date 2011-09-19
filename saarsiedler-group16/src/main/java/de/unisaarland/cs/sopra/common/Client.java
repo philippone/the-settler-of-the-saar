@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.CyclicBarrier;
 
 import javax.swing.table.DefaultTableModel;
@@ -22,6 +23,7 @@ import org.lwjgl.opengl.DisplayMode;
 
 import de.unisaarland.cs.sopra.common.controller.Controller;
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
+import de.unisaarland.cs.sopra.common.model.HarborType;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.ModelWriter;
 import de.unisaarland.cs.sopra.common.model.Player;
@@ -383,7 +385,8 @@ public class Client {
 		return returnPackage;
 	}
 	
-	public static ResourcePackage tradeOffer(ResourcePackage rp){
+	public static ResourcePackage tradeOffer(ResourcePackage rp, Set<HarborType> set){
+		//TODO use the set to show trade possibilites
 		returnPackage=null;
 		popup.setTitle("Make a Trade Offer");
 		popup.incomingTradePanel.setVisible(false);
