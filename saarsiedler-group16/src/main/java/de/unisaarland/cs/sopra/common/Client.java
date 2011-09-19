@@ -219,7 +219,7 @@ public class Client {
 			barrier.await();
 		} catch (Exception e) {e.printStackTrace();}
 		
-		System.out.println("Das Spiel war erfolgreich! =)");
+		System.out.println("Das Spiel wurde erfolgreich gestartet! =)");
 		try {
 			c.mainLoop();
 		} catch (Exception e) {e.printStackTrace();
