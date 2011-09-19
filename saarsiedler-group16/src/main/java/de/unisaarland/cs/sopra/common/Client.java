@@ -26,12 +26,15 @@ import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.ModelWriter;
 import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.Resource;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 import de.unisaarland.cs.sopra.common.view.AI;
 import de.unisaarland.cs.sopra.common.view.GameGUI;
 import de.unisaarland.cs.st.saarsiedler.comm.Connection;
 import de.unisaarland.cs.st.saarsiedler.comm.GameEvent;
 import de.unisaarland.cs.st.saarsiedler.comm.GameEvent.EventType;
 import de.unisaarland.cs.st.saarsiedler.comm.GameEvent.MatchStart;
+import de.unisaarland.cs.st.saarsiedler.comm.GameEvent.PlayerLeft;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 import de.unisaarland.cs.st.saarsiedler.comm.results.ChangeReadyResult;
@@ -197,6 +200,7 @@ public class Client {
 			}
 			else if ((event.getType()==EventType.PLAYER_LEFT)) {
 				//TODO: handle player left
+				System.out.println("Client "+((PlayerLeft)event).getClientId()+" LEFT");
 			}
 			else {
 				System.out.println(event);
@@ -351,6 +355,20 @@ public class Client {
 		catch (Exception e)	{
 			System.out.println("No options found, using default!");
 		}
+	}
+	
+	public static ResourcePackage returnResources(ResourcePackage rp){
+		Popup p= new Popup();
+		p.lumberMax.setText(""+rp.getResource(Resource.LUMBER));
+		p.brickMax.setText(""+rp.getResource(Resource.BRICK));
+		p.woolMax.setText(""+rp.getResource(Resource.WOOL));
+		p.grainMax.setText(""+rp.getResource(Resource.GRAIN));
+		p.oreMax.setText(""+rp.getResource(Resource.ORE));
+		
+		int n = rp.getPositiveResourcesCount();
+		
+		
+		return null;
 	}
 }
 
