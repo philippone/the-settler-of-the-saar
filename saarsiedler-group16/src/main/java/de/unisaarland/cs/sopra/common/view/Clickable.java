@@ -20,6 +20,7 @@ public abstract class Clickable {
 	private Field field;
 	private Field field2;
 	private Path path;
+	private Path path2;
 	private Player player;
 	
 	public static List<Clickable> executeModelClicks(float xogl, float yogl) {
@@ -173,6 +174,14 @@ public abstract class Clickable {
 
 	public Player getPlayer() {
 		return player;
+	}
+
+	public Path getPath2() {
+		return path2;
+	}
+
+	public void setPath2(Path path2) {
+		this.path2 = path2;
 	}
 	
 }

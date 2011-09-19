@@ -300,4 +300,10 @@ public interface ModelReader {
 	 */
 	public List<List<Path>> calculateLongestRoads(Player player);
 	
+	public Set<Intersection> attackableSettlements(BuildingType bt, Path path);
+	
+	public Set<Path> attackableCatapults(Path path);
+	
+	public Set<Path> catapultMovePaths(Path path);
+	
 }

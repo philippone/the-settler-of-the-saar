@@ -91,5 +91,11 @@ public class BuildACatapultStrategy extends Strategy {
 		else
 		return false;
 	}
+	
+	@Override
+	public boolean useable() {
+		//TODO implement this operation
+		throw new UnsupportedOperationException();
+	}
 
 }

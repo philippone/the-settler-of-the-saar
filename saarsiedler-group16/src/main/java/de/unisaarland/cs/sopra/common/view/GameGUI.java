@@ -5,7 +5,6 @@ import static de.unisaarland.cs.sopra.common.PlayerColors.BLUE;
 import static de.unisaarland.cs.sopra.common.PlayerColors.BROWN;
 import static de.unisaarland.cs.sopra.common.PlayerColors.ORANGE;
 import static de.unisaarland.cs.sopra.common.PlayerColors.PURPLE;
-import static de.unisaarland.cs.sopra.common.PlayerColors.RED;
 import static de.unisaarland.cs.sopra.common.PlayerColors.WHITE;
 import static de.unisaarland.cs.sopra.common.PlayerColors.YELLOW;
 
@@ -38,6 +37,7 @@ import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
+import de.unisaarland.cs.sopra.common.Client;
 import de.unisaarland.cs.sopra.common.PlayerColors;
 import de.unisaarland.cs.sopra.common.Setting;
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
@@ -63,7 +63,7 @@ public class GameGUI extends View implements Runnable{
 	private String gameTitle;
 	private Setting setting;
 	private Map<FieldType,Texture> fieldTextureMap;
-	private Map<HarborType, Texture> harbroTextureMap;
+	private Map<HarborType, Texture> harborTextureMap;
 	private Map<Integer,Texture> numberTextureMap;
 	private Map<String,Texture> uiTextureMap;
 	
@@ -71,6 +71,7 @@ public class GameGUI extends View implements Runnable{
 	private Texture catapultTexture;
 	private Texture robberTexture;
 	private Texture pathMarkTexture;
+	private Texture pathMarkTextureRed;
 	private Texture fieldMarkTexture;
 	private Texture intersectionMarkTexture;
 	private Texture intersectionMarkRedTexture;
@@ -96,13 +97,14 @@ public class GameGUI extends View implements Runnable{
 	private static final int TOWN 					= 	2;
 	private static final int STREET 				= 	3;
 	private static final int CATAPULT_BUILD 		= 	4;
-	private static final int CATAPULT_ACTION 		= 	5;
+	private static final int CATAPULT_ACTION_DST 	= 	5;
 	private static final int ROBBER_SELECT		 	=   6;
 	private static final int ROBBER_PLACE 			=   7;
 	private static final int ROBBER_PLAYER_SELECT 	=   8;
 	private List<Point> selectionPoint;
 	private List<Location> selectionLocation;
-	private List<Location> selectionLocation2; //For catapults_attacks //TODO use it
+	private List<Location> selectionLocation2; //For move catapult
+	private List<Location> selectionLocation3; //For attackable settlements
 	
 	private static int windowWidth;
 	private static int windowHeight;
@@ -127,6 +129,7 @@ public class GameGUI extends View implements Runnable{
 	private Clickable buildTownGhost;
 	private Clickable buildCatapult;
 	private Clickable buildCatapultGhost;
+	private Clickable catapultActionGhost;
 	private Clickable setRobberGhost;
 	private Clickable quit;
 	
@@ -181,7 +184,7 @@ public class GameGUI extends View implements Runnable{
 		//TODO: set and use min,max for x,y 
 		
 		List<PlayerColors> tmp = new LinkedList<PlayerColors>();
-		tmp.addAll(Arrays.asList(new PlayerColors[] {RED,BLUE,YELLOW,ORANGE,BROWN,WHITE,PURPLE,BLACK}));
+		tmp.addAll(Arrays.asList(new PlayerColors[] {YELLOW,ORANGE,WHITE,PURPLE,BLUE,BROWN}));
 		tmp.remove(Setting.getPlayerColor());
 		
 		//set color of players
@@ -251,8 +254,6 @@ public class GameGUI extends View implements Runnable{
 		switch(playerColor) {
 		case BLUE:
 			GL11.glColor4f(0.2f,0.2f,1.0f,1.0f); break;
-		case RED:
-			GL11.glColor4f(1.0f,0.0f,0.0f,1.0f); break;
 		case YELLOW:
 			GL11.glColor4f(1.0f,1.0f,0.0f,1.0f); break;
 		case ORANGE:
@@ -478,7 +479,7 @@ public class GameGUI extends View implements Runnable{
 				   default:
 					   throw new IllegalArgumentException();
 			   }
-			  	Texture harborTexture = harbroTextureMap.get(h);
+			  	Texture harborTexture = harborTextureMap.get(h);
 				GL11.glPushMatrix();
 				GL11.glTranslatef(px+x, py+y, 1+z);
 				GL11.glRotatef(po-90, 0, 0, 1);
@@ -490,8 +491,6 @@ public class GameGUI extends View implements Runnable{
 				}
 			}
 		
-	
-
 	private void renderCatapult(Path p) {
 		int px = 0;
 		int py = 0;
@@ -549,7 +548,6 @@ public class GameGUI extends View implements Runnable{
 		    drawSquareMid(70, 70);
 		    GL11.glPopMatrix();
 	}
-	
 	
 	private void renderStreet(Path p) {
 		int px = 0;
@@ -690,10 +688,12 @@ public class GameGUI extends View implements Runnable{
 			break;
 		case STREET:
 		case CATAPULT_BUILD:
-			renderPathMark(true,selectionLocation);
+			renderPathMark(false, selectionLocation);
 			break;
-		case CATAPULT_ACTION:
-			break; //TODO implement it!
+		case CATAPULT_ACTION_DST:
+			renderPathMark(true, selectionLocation);
+			renderIntersectionMark(true, selectionLocation3);
+			renderPathMark(false, selectionLocation2);
 		}
 	}
 	
@@ -777,7 +777,7 @@ public class GameGUI extends View implements Runnable{
 			    if (!red) 
 			    	pathMarkTexture.bind();
 			    else
-			    	pathMarkTexture.bind();
+			    	pathMarkTextureRed.bind();
 			    GL11.glColor4f(0.5f, 0.5f, 0.5f, 0.5f);
 			    drawSquareMid(200,25);
 			    GL11.glPopMatrix();
@@ -844,7 +844,6 @@ public class GameGUI extends View implements Runnable{
 		GL11.glPopMatrix();
 	}
 	
-	
 	private void renderUI(Clickable click) {
 		if (!click.isActive()) {
 			GL11.glColor4f(0.3f, 0.3f, 0.3f, 0.3f);
@@ -855,8 +854,6 @@ public class GameGUI extends View implements Runnable{
 			renderUI(click.getName(),click.getX(),click.getY(),click.getZ(),click.getWidth(),click.getHeight());
 		}
 	}
-	
-	
 	
 	private void render() {
 	   //Clear and center
@@ -947,7 +944,6 @@ public class GameGUI extends View implements Runnable{
 	public void drawResource() {
 		//TODO: implement it!
 	}
-	
 
 	public String getName(Player player) {
 		if (player == null) throw new IllegalArgumentException();
@@ -1049,7 +1045,6 @@ public class GameGUI extends View implements Runnable{
 			deactivateUI();
 		}
 		this.lastNumberDiced = number;
-		console4 = "";
 	}
 	
 
@@ -1154,17 +1149,18 @@ public class GameGUI extends View implements Runnable{
 			intersectionMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Mark.png"));
 			intersectionMarkRedTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/MarkRed.png"));
 			pathMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Mark.png"));
+			pathMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/MarkRed.png"));
 			villageTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Village.png"));
 			townTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Town.png"));
 			
 			
-			harbroTextureMap = new HashMap<HarborType,Texture>();
-			harbroTextureMap.put(HarborType.GENERAL_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/General_Harbor.png")));
-			harbroTextureMap.put(HarborType.BRICK_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Brick_Harbor.png")));
-			harbroTextureMap.put(HarborType.GRAIN_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Grain_Harbor.png")));
-			harbroTextureMap.put(HarborType.LUMBER_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Lumber_Harbor.png")));
-			harbroTextureMap.put(HarborType.ORE_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Ore_Harbor.png")));
-			harbroTextureMap.put(HarborType.WOOL_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Wool_Harbor.png")));
+			harborTextureMap = new HashMap<HarborType,Texture>();
+			harborTextureMap.put(HarborType.GENERAL_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/General_Harbor.png")));
+			harborTextureMap.put(HarborType.BRICK_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Brick_Harbor.png")));
+			harborTextureMap.put(HarborType.GRAIN_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Grain_Harbor.png")));
+			harborTextureMap.put(HarborType.LUMBER_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Lumber_Harbor.png")));
+			harborTextureMap.put(HarborType.ORE_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Ore_Harbor.png")));
+			harborTextureMap.put(HarborType.WOOL_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Wool_Harbor.png")));
 			
 			uiTextureMap = new HashMap<String,Texture>();
 			uiTextureMap.put("Background", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/menue_background.png")));
@@ -1301,6 +1297,13 @@ public class GameGUI extends View implements Runnable{
 				}
 			};
 			
+			catapultActionGhost = new Clickable(null, 0, 0, 0, 0, 0, false, false, false) {
+				@Override
+				public void execute() {
+					controllerAdapter.moveCatapult(getPath(), getPath2());
+				}
+			};
+			
 			setRobberGhost = new Clickable(null, 0, 0, 0, 0, 0, false, false, false) {
 				@Override
 				public void execute() {
@@ -1312,7 +1315,7 @@ public class GameGUI extends View implements Runnable{
 				@Override
 				public void execute() {
 					Display.destroy();
-					System.exit(0);
+					System.exit(0);	
 				}
 			};
 			
@@ -1386,6 +1389,17 @@ public class GameGUI extends View implements Runnable{
 				c.execute();
 			}
 			switch (selectionMode) {
+				case NONE:
+					Path source = getMousePath();
+					if (source != null && modelReader.getCatapults(modelReader.getMe()).contains(Model.getLocation(source))) {
+						catapultActionGhost.setPath(source);
+						selectionLocation = Model.getLocationListPath(modelReader.attackableCatapults(source));
+						selectionLocation2 = Model.getLocationListPath(modelReader.catapultMovePaths(source));
+						selectionLocation3 = Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Village, source));
+						selectionLocation3.addAll(Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Town, source)));
+						selectionMode = CATAPULT_ACTION_DST;
+					}
+					break;
 				case ROBBER_SELECT:
 					Field robberSRC = getMouseField();
 					if (robberSRC != null && selectionPoint.contains(Model.getLocation(robberSRC))) {
@@ -1461,8 +1475,14 @@ public class GameGUI extends View implements Runnable{
 						controllerAdapter.addGuiEvent(buildCatapultGhost);
 					}
 					break;
-				case CATAPULT_ACTION:
-					break;
+				case CATAPULT_ACTION_DST:
+					Path destination = getMousePath();
+					if (destination != null && selectionLocation.contains(Model.getLocation(destination))) {
+						catapultActionGhost.setPath2(destination);
+						selectionMode = NONE;
+						controllerAdapter.addGuiEvent(buildStreetGhost);
+					}
+					break;	
 				case STREET:
 					Path street = getMousePath();
 					if (street != null && selectionLocation.contains(Model.getLocation(street))) {
@@ -1481,7 +1501,6 @@ public class GameGUI extends View implements Runnable{
 					//if init set init to false
 					break; //TODO implement it!
 			}
-			//TODO klick auf catapult verarbeiten und in catapult_action mode gehn
 		}
 		
 		
@@ -1873,7 +1892,7 @@ public class GameGUI extends View implements Runnable{
 //		model.getField(new Point(2,2)).setRobber(true);
 		
 //		Setting setting = new Setting(Display.getDesktopDisplayMode(), true, PlayerColors.RED);
-		Setting setting = new Setting(new DisplayMode(1024, 520), false, PlayerColors.RED);  /// Display.getDesktopDisplayMode()
+		Setting setting = new Setting(new DisplayMode(1024, 520), false, PlayerColors.YELLOW);  /// Display.getDesktopDisplayMode()
 		
 		CyclicBarrier barrier = new CyclicBarrier(2);
 		GameGUI gameGUI = new GameGUI(model, null, names, setting, "TestSpiel", false, barrier);

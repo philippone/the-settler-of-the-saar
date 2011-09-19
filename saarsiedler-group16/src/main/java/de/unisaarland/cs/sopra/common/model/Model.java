@@ -484,14 +484,11 @@ public class Model implements ModelReader, ModelWriter {
 	 * @return The List of Player sorted in TableOrder
 	 */
 	public List<Player> getTableOrder() {
-		if (!reversedPlayersList) {
-			return this.players;
+		if (reversedPlayersList) {
+			reversedPlayersList = false;
+			Collections.reverse(this.players);
 		}
-		else {
-			List<Player> tmp = new LinkedList<Player>(this.players);
-			Collections.reverse(tmp);
-			return tmp;
-		}
+		return this.players;
 			
 	}
 
@@ -624,7 +621,6 @@ public class Model implements ModelReader, ModelWriter {
 			ret++;
 			rp.add(price);
 		}
-
 		return ret;
 	}
 
@@ -710,6 +706,23 @@ public class Model implements ModelReader, ModelWriter {
 		}
 		return attackableSettlements;
 	}
+	
+	public Set<Intersection> attackableSettlements(BuildingType bt, Path path){
+		Set<Intersection> s = attackableSettlements(getMe(), bt);
+		s.retainAll(board.getIntersectionsFromPath(path));
+		return s;
+	}
+	
+	public Set<Path> attackableCatapults(Path path){
+		Set<Path> s = new HashSet<Path>();
+		return s;
+	}
+	
+	public Set<Path> catapultMovePaths(Path path){
+		Set<Path> s = new HashSet<Path>();
+		return s;
+	}
+	
 
 	/*
 	 * (non-Javadoc)
@@ -975,7 +988,7 @@ public class Model implements ModelReader, ModelWriter {
 	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#getHarborTypes(de.
 	 * unisaarland.cs.sopra.common.model.Player)
 	 */
-	@Override //TODO evtl ueberarbeiten da langsam
+	@Override
 	public Set<HarborType> getHarborTypes(Player player) {
 		Set<HarborType> sht = new HashSet<HarborType>();
 		Iterator<Path> iter = getPathIterator();
