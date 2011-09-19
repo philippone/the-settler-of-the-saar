@@ -62,4 +62,10 @@ public class MoveCatapultStrategy extends Strategy {
 		return bestPath;
 	}
 	
+	@Override
+	public boolean useable() {
+		//TODO implement this operation
+		throw new UnsupportedOperationException();
+	}
+	
 }

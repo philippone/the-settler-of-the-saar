@@ -44,9 +44,6 @@ public class MoveRobberStrategy extends Strategy{
 				e.printStackTrace();
 
 			} 
-
-			
-
 		}
 
 		if (mr.getMe() == mr.getCurrentPlayer()){
@@ -118,4 +115,10 @@ public class MoveRobberStrategy extends Strategy{
 		return victim;
 	}
 
+	@Override
+	public boolean useable() {
+		//TODO implement this operation
+		throw new UnsupportedOperationException();
+	}
+	
 }

@@ -56,9 +56,11 @@ public class RobberStrategy extends Strategy {
 
 			}
 	}
-	public int evaluate(){
-		// TODO implement this method
-		return 0;
+	
+	@Override
+	public boolean useable() {
+		//TODO implement this operation
+		throw new UnsupportedOperationException();
 	}
 
 }

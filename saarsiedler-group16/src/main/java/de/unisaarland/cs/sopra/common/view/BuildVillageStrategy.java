@@ -96,24 +96,10 @@ public class BuildVillageStrategy extends Strategy {
 		return bestIntersection;
 	}
 	
-	public boolean tradePossible(ModelReader mr){
-		ResourcePackage resourcePackage = mr.getMe().getResources().copy();
-		if (resourcePackage.getResource(Resource.LUMBER) > 0){
-			resourcePackage.add(new ResourcePackage(-1, 0, 0, 0, 0));
-		}
-		if (resourcePackage.getResource(Resource.BRICK) > 0){
-			resourcePackage.add(new ResourcePackage(0, -1, 0, 0, 0));
-		}
-		if (resourcePackage.getResource(Resource.WOOL) > 0){
-			resourcePackage.add(new ResourcePackage(0, 0, -1, 0, 0));
-		}
-		if (resourcePackage.getResource(Resource.GRAIN) > 0){
-			resourcePackage.add(new ResourcePackage(0, 0, 0, -1, 0));
-		}
-		if (resourcePackage.getPositiveResourcesCount() > 0)
-			return true;
-		else
-		return false;
+	@Override
+	public boolean useable() {
+		//TODO implement this operation
+		throw new UnsupportedOperationException();
 	}
 	
 }
