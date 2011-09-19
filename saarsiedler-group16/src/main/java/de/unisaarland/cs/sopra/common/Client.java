@@ -2,7 +2,6 @@ package de.unisaarland.cs.sopra.common;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.CyclicBarrier;
 
 import javax.swing.table.DefaultTableModel;
@@ -23,6 +23,7 @@ import org.lwjgl.opengl.DisplayMode;
 
 import de.unisaarland.cs.sopra.common.controller.Controller;
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
+import de.unisaarland.cs.sopra.common.model.HarborType;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.ModelWriter;
 import de.unisaarland.cs.sopra.common.model.Player;
@@ -384,13 +385,13 @@ public class Client {
 		return returnPackage;
 	}
 	
-	public static ResourcePackage tradeOffer(ResourcePackage rp){
+	public static ResourcePackage tradeOffer(ResourcePackage rp, Set<HarborType> set){
+		//TODO use the set to show trade possibilites
 		returnPackage=null;
 		popup.setTitle("Make a Trade Offer");
 		popup.incomingTradePanel.setVisible(false);
 		popup.tradePanel.setVisible(true);
 		popup.returnPackPanel.setVisible(false);
-		int n = rp.size();
 		popup.setVisible(true);
 		popup.lumberMax2.setText(""+rp.getResource(Resource.LUMBER));
 		popup.brickMax2.setText(""+rp.getResource(Resource.BRICK));
@@ -413,13 +414,12 @@ public class Client {
 		popup.tradePanel.setVisible(false);
 		popup.returnPackPanel.setVisible(false);
 		popup.incomingTradePanel.setVisible(true);
-		int n = rp.size();
 		popup.setVisible(true);
-		popup.lumberMax2.setText(""+rp.getResource(Resource.LUMBER));
-		popup.brickMax2.setText(""+rp.getResource(Resource.BRICK));
-		popup.woolMax2.setText(""+rp.getResource(Resource.WOOL));
-		popup.grainMax2.setText(""+rp.getResource(Resource.GRAIN));
-		popup.oreMax2.setText(""+rp.getResource(Resource.ORE));
+		popup.lumberMax3.setText(""+rp.getResource(Resource.LUMBER));
+		popup.brickMax3.setText(""+rp.getResource(Resource.BRICK));
+		popup.woolMax3.setText(""+rp.getResource(Resource.WOOL));
+		popup.grainMax3.setText(""+rp.getResource(Resource.GRAIN));
+		popup.oreMax3.setText(""+rp.getResource(Resource.ORE));
 		
 		while(acceptTrade==0){
 			try {
