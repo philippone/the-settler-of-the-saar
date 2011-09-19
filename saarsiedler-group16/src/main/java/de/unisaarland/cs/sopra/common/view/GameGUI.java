@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CyclicBarrier;
 
+import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -673,151 +674,165 @@ public class GameGUI extends View implements Runnable{
 	}
 
 	private void renderMarks() {
-		boolean red = false;
 		switch(selectionMode) {
 		case NONE: 
 			break;
 		case ROBBER_SELECT:
 		case ROBBER_PLACE:
-			for (Point p : selectionPoint) {
-			    int fx = 0;
-			    int fy = 0;
-			    switch(p.getY()%2) {
-			    case 0:
-				   fx = p.getX()*250;
-				   fy = p.getY()*215; 
-				   break;
-			    case 1:
-				   fx = p.getX()*250-125;
-				   fy = p.getY()*215;
-				   break;
-			    }
-			    GL11.glPushMatrix();
-			    fieldMarkTexture.bind();
-			    GL11.glColor4f(0.5f, 0.5f, 0.5f, 0.5f);
-			    GL11.glTranslatef(fx+x, fy+y, 2+z);
-			    drawSquareMid(300, 300);
-			    GL11.glPopMatrix();
-			}
+			renderFieldMark(selectionLocation);
 			break;
 		case ROBBER_PLAYER_SELECT:
-			red = true;
+			renderIntersectionMark(true, selectionLocation);
+			break;
 		case VILLAGE:
 		case TOWN:
-			for (Location l : selectionLocation) {
-				int ix = 0;
-				int iy = 0;
-				   switch(l.getY()%2) {
-					   case 0:
-						   ix = l.getX()*250;
-						   iy = l.getY()*215; 
-						   break;
-					   case 1:
-						   ix = l.getX()*250-125;
-						   iy = l.getY()*215;
-						   break;
-				   }
-				  switch(l.getOrientation()) {
-					   case 0:
-						   iy+=-135;
-						   break;
-					   case 1:
-						   ix+=125;
-						   iy+=-70;
-						   break;
-					   case 2:
-						   ix+=125;
-						   iy+=80;
-						   break;
-					   case 3:
-						   iy+=140;
-						   break;
-					   case 4:
-						   ix+=-120;
-						   iy+=80;
-						   break;
-					   case 5:
-						   ix+=-120;
-						   iy+=-70;
-						   break;
-					   default:
-						   throw new IllegalArgumentException();
-				   }
-			    GL11.glPushMatrix();
-			    if (!red)
-			    	intersectionMarkTexture.bind();
-			    else
-			    	intersectionMarkRedTexture.bind();
-			    GL11.glColor4f(0.5f, 0.5f, 0.5f, 0.5f);
-			    GL11.glTranslatef(ix+x+25, iy+y+22, 3+z);
-			    drawSquareMid(150, 150);
-			    GL11.glPopMatrix();
-			}
+			 renderIntersectionMark(false, selectionLocation);
 			break;
 		case STREET:
-			for (Location l : selectionLocation) {
-				int px = 0;
-				int py = 0;
-				int po = 0;
-			
-				  switch(l.getY()%2) {
-					   case 0:
-						   px = l.getX()*250;
-						   py = l.getY()*215; 
-						   break;
-					   case 1:
-					   case -1:
-						   px = l.getX()*250-125;
-						   py = l.getY()*215;
-						   break;
-				   }
-				  switch(l.getOrientation()) {
-					   case 0:
-						   px+=74;
-						   py+=-96;
-						   po+=30;
-						   break;
-					   case 1:
-						   px+=118;
-						   py+=18;
-						   po+=90;
-						   break;
-					   case 2:
-						   px+=38;
-						   py+=116;
-						   po+=150;
-						   break;
-					   case 3:
-						   px+=-84;
-						   py+=93;
-						   po+=210;
-						   break;
-					   case 4:
-						   px+=-128;
-						   py+=-21;
-						   po+=270;
-						   break;
-					   case 5:
-						   px+=-47;
-						   py+=-120;
-						   po+=330;
-						   break;
-					   default:
-						   throw new IllegalArgumentException();
-				   }
-					GL11.glPushMatrix();
-					GL11.glTranslatef(px+x, py+y, 1+z);
-					GL11.glRotatef(po, 0, 0, 1);
-				    pathMarkTexture.bind();
-				    GL11.glColor4f(0.9f, 0.9f, 0.9f, 0.9f);
-				    drawSquareMid(200,25);
-				    GL11.glPopMatrix();
-			}
-			break;
 		case CATAPULT_BUILD:
+			renderPathMark(true,selectionLocation);
 			break;
 		case CATAPULT_ACTION:
 			break; //TODO implement it!
+		}
+	}
+	
+	private void renderFieldMark(List<Location> selectionLocation) {
+		for (Point p : selectionPoint) {
+		    int fx = 0;
+		    int fy = 0;
+		    switch(p.getY()%2) {
+		    case 0:
+			   fx = p.getX()*250;
+			   fy = p.getY()*215; 
+			   break;
+		    case 1:
+			   fx = p.getX()*250-125;
+			   fy = p.getY()*215;
+			   break;
+		    }
+		    GL11.glPushMatrix();
+		    fieldMarkTexture.bind();
+		    GL11.glColor4f(0.5f, 0.5f, 0.5f, 0.5f);
+		    GL11.glTranslatef(fx+x, fy+y, 2+z);
+		    drawSquareMid(300, 300);
+		    GL11.glPopMatrix();
+		}
+	}
+	
+	private void renderPathMark(boolean red, List<Location> selectionLocation) {
+		for (Location l : selectionLocation) {
+			int px = 0;
+			int py = 0;
+			int po = 0;
+		
+			  switch(l.getY()%2) {
+				   case 0:
+					   px = l.getX()*250;
+					   py = l.getY()*215; 
+					   break;
+				   case 1:
+				   case -1:
+					   px = l.getX()*250-125;
+					   py = l.getY()*215;
+					   break;
+			   }
+			  switch(l.getOrientation()) {
+				   case 0:
+					   px+=74;
+					   py+=-96;
+					   po+=30;
+					   break;
+				   case 1:
+					   px+=118;
+					   py+=18;
+					   po+=90;
+					   break;
+				   case 2:
+					   px+=38;
+					   py+=116;
+					   po+=150;
+					   break;
+				   case 3:
+					   px+=-84;
+					   py+=93;
+					   po+=210;
+					   break;
+				   case 4:
+					   px+=-128;
+					   py+=-21;
+					   po+=270;
+					   break;
+				   case 5:
+					   px+=-47;
+					   py+=-120;
+					   po+=330;
+					   break;
+				   default:
+					   throw new IllegalArgumentException();
+			   }
+				GL11.glPushMatrix();
+				GL11.glTranslatef(px+x, py+y, 1+z);
+				GL11.glRotatef(po, 0, 0, 1);
+			    if (!red) 
+			    	pathMarkTexture.bind();
+			    else
+			    	pathMarkTexture.bind();
+			    GL11.glColor4f(0.5f, 0.5f, 0.5f, 0.5f);
+			    drawSquareMid(200,25);
+			    GL11.glPopMatrix();
+		}
+	}
+	
+	private void renderIntersectionMark(boolean red, List<Location> selectionLocation) {
+		for (Location l : selectionLocation) {
+			int ix = 0;
+			int iy = 0;
+			   switch(l.getY()%2) {
+				   case 0:
+					   ix = l.getX()*250;
+					   iy = l.getY()*215; 
+					   break;
+				   case 1:
+					   ix = l.getX()*250-125;
+					   iy = l.getY()*215;
+					   break;
+			   }
+			  switch(l.getOrientation()) {
+				   case 0:
+					   iy+=-135;
+					   break;
+				   case 1:
+					   ix+=125;
+					   iy+=-70;
+					   break;
+				   case 2:
+					   ix+=125;
+					   iy+=80;
+					   break;
+				   case 3:
+					   iy+=140;
+					   break;
+				   case 4:
+					   ix+=-120;
+					   iy+=80;
+					   break;
+				   case 5:
+					   ix+=-120;
+					   iy+=-70;
+					   break;
+				   default:
+					   throw new IllegalArgumentException();
+			   }
+		    GL11.glPushMatrix();
+		    if (!red)
+		    	intersectionMarkTexture.bind();
+		    else
+		    	intersectionMarkRedTexture.bind();
+		    GL11.glColor4f(0.5f, 0.5f, 0.5f, 0.5f);
+		    GL11.glTranslatef(ix+x+25, iy+y+22, 3+z);
+		    drawSquareMid(150, 150);
+		    GL11.glPopMatrix();
 		}
 	}
 	
@@ -1054,17 +1069,31 @@ public class GameGUI extends View implements Runnable{
 	public void run() {
 		init();
 		try {
+			Display.makeCurrent();
+		} catch (LWJGLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		try {
 			barrier.await();
 		} catch (Exception e) {e.printStackTrace();} 
 		
 	    boolean finished = false;
 		while (!finished) {
+			try {
+				Display.makeCurrent();
+			} catch (LWJGLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			  handleInput();
 		      // Always call Window.update(), all the time - it does some behind the
 		      // scenes work, and also displays the rendered output
 			  Display.update();
+			  render();
 		      // Check for close requests
-		      if (Display.isCloseRequested()) {
+		      /*if (Display.isCloseRequested()) {
 			  finished = true;
 		      } 
 		      else if (Display.isActive()) {
@@ -1080,7 +1109,7 @@ public class GameGUI extends View implements Runnable{
 		      }
 		      if (Display.isVisible() || Display.isDirty()) {
 		          render();
-		      }
+		      }*/
 		}
 		Display.destroy();
 		System.exit(0);
@@ -1259,7 +1288,7 @@ public class GameGUI extends View implements Runnable{
 						selectionMode = NONE;
 					}
 					else {
-						selectionLocation = Model.getLocationListPath(modelReader.buildableStreetPaths(modelReader.getMe()));
+						selectionLocation = Model.getLocationListPath(modelReader.buildableCatapultPaths(modelReader.getMe()));
 						selectionMode = CATAPULT_BUILD;
 					}
 				}
@@ -1424,6 +1453,13 @@ public class GameGUI extends View implements Runnable{
 					}
 					break;
 				case CATAPULT_BUILD:
+					Path path = getMousePath();
+					if (path != null && selectionLocation.contains(Model.getLocation(path))) {
+						buildCatapultGhost.setPath(path);
+						selectionMode = NONE;
+						console4 = "";
+						controllerAdapter.addGuiEvent(buildCatapultGhost);
+					}
 					break;
 				case CATAPULT_ACTION:
 					break;
