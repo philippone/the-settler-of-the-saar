@@ -5,7 +5,6 @@ import static de.unisaarland.cs.sopra.common.PlayerColors.BLUE;
 import static de.unisaarland.cs.sopra.common.PlayerColors.BROWN;
 import static de.unisaarland.cs.sopra.common.PlayerColors.ORANGE;
 import static de.unisaarland.cs.sopra.common.PlayerColors.PURPLE;
-import static de.unisaarland.cs.sopra.common.PlayerColors.RED;
 import static de.unisaarland.cs.sopra.common.PlayerColors.WHITE;
 import static de.unisaarland.cs.sopra.common.PlayerColors.YELLOW;
 
@@ -186,7 +185,7 @@ public class GameGUI extends View implements Runnable{
 		//TODO: set and use min,max for x,y 
 		
 		List<PlayerColors> tmp = new LinkedList<PlayerColors>();
-		tmp.addAll(Arrays.asList(new PlayerColors[] {RED,BLUE,YELLOW,ORANGE,BROWN,WHITE,PURPLE,BLACK}));
+		tmp.addAll(Arrays.asList(new PlayerColors[] {YELLOW,ORANGE,WHITE,PURPLE,BLUE,BROWN}));
 		tmp.remove(Setting.getPlayerColor());
 		
 		//set color of players
@@ -256,8 +255,6 @@ public class GameGUI extends View implements Runnable{
 		switch(playerColor) {
 		case BLUE:
 			GL11.glColor4f(0.2f,0.2f,1.0f,1.0f); break;
-		case RED:
-			GL11.glColor4f(1.0f,0.0f,0.0f,1.0f); break;
 		case YELLOW:
 			GL11.glColor4f(1.0f,1.0f,0.0f,1.0f); break;
 		case ORANGE:
@@ -851,7 +848,6 @@ public class GameGUI extends View implements Runnable{
 		GL11.glPopMatrix();
 	}
 	
-	
 	private void renderUI(Clickable click) {
 		if (!click.isActive()) {
 			GL11.glColor4f(0.3f, 0.3f, 0.3f, 0.3f);
@@ -862,8 +858,6 @@ public class GameGUI extends View implements Runnable{
 			renderUI(click.getName(),click.getX(),click.getY(),click.getZ(),click.getWidth(),click.getHeight());
 		}
 	}
-	
-	
 	
 	private void render() {
 	   //Clear and center
@@ -954,7 +948,6 @@ public class GameGUI extends View implements Runnable{
 	public void drawResource() {
 		//TODO: implement it!
 	}
-	//remove red and black from playercolors
 
 	public String getName(Player player) {
 		if (player == null) throw new IllegalArgumentException();
@@ -1901,7 +1894,7 @@ public class GameGUI extends View implements Runnable{
 //		model.getField(new Point(2,2)).setRobber(true);
 		
 //		Setting setting = new Setting(Display.getDesktopDisplayMode(), true, PlayerColors.RED);
-		Setting setting = new Setting(new DisplayMode(1024, 520), false, PlayerColors.RED);  /// Display.getDesktopDisplayMode()
+		Setting setting = new Setting(new DisplayMode(1024, 520), false, PlayerColors.YELLOW);  /// Display.getDesktopDisplayMode()
 		
 		CyclicBarrier barrier = new CyclicBarrier(2);
 		GameGUI gameGUI = new GameGUI(model, null, names, setting, "TestSpiel", false, barrier);
