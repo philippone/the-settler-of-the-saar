@@ -26,6 +26,7 @@ import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.ModelWriter;
 import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 import de.unisaarland.cs.sopra.common.view.AI;
 import de.unisaarland.cs.sopra.common.view.GameGUI;
@@ -357,7 +358,15 @@ public class Client {
 	}
 	
 	public static ResourcePackage returnResources(ResourcePackage rp){
-		new Popup();
+		Popup p= new Popup();
+		p.lumberMax.setText(""+rp.getResource(Resource.LUMBER));
+		p.brickMax.setText(""+rp.getResource(Resource.BRICK));
+		p.woolMax.setText(""+rp.getResource(Resource.WOOL));
+		p.grainMax.setText(""+rp.getResource(Resource.GRAIN));
+		p.oreMax.setText(""+rp.getResource(Resource.ORE));
+		
+		int n = rp.getPositiveResourcesCount();
+		
 		
 		return null;
 	}
