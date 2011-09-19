@@ -415,11 +415,11 @@ public class Client {
 		popup.incomingTradePanel.setVisible(true);
 		int n = rp.size();
 		popup.setVisible(true);
-		popup.lumberMax2.setText(""+rp.getResource(Resource.LUMBER));
-		popup.brickMax2.setText(""+rp.getResource(Resource.BRICK));
-		popup.woolMax2.setText(""+rp.getResource(Resource.WOOL));
-		popup.grainMax2.setText(""+rp.getResource(Resource.GRAIN));
-		popup.oreMax2.setText(""+rp.getResource(Resource.ORE));
+		popup.lumberMax3.setText(""+rp.getResource(Resource.LUMBER));
+		popup.brickMax3.setText(""+rp.getResource(Resource.BRICK));
+		popup.woolMax3.setText(""+rp.getResource(Resource.WOOL));
+		popup.grainMax3.setText(""+rp.getResource(Resource.GRAIN));
+		popup.oreMax3.setText(""+rp.getResource(Resource.ORE));
 		
 		while(acceptTrade==0){
 			try {
