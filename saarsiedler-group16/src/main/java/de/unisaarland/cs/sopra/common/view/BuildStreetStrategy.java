@@ -6,10 +6,14 @@ import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Intersection;
+import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.Resource;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public class BuildStreetStrategy implements Strategy {
  Path bestStreet;
  float bestStreetValue = 0;
+ ResourcePackage resourcePackageTrade, tradeOffer;
 Strategy s;
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
@@ -53,4 +57,43 @@ Strategy s;
 		return (float) value;
 	}
 	
+	public AIGameStats getGameStats(ModelReader mr){
+		Player player = mr.getMe();
+		if (mr.buildableStreetPaths(player).size() < 1)
+			return new AIGameStats(player, this, new ResourcePackage(0, 0, 0, 0, 0), 0);
+		ResourcePackage resourcePackage = player.getResources().copy().add(new ResourcePackage(-1, -1, 0, 0, 0));
+		AIGameStats gameStats = new AIGameStats( player, this, resourcePackage, player.getVictoryPoints());
+		return gameStats;
+	}
+	
+	public boolean tradePossible(ModelReader mr){
+		resourcePackageTrade = mr.getMe().getResources().copy();
+		if (resourcePackageTrade.getResource(Resource.LUMBER) > 0){
+			resourcePackageTrade.add(new ResourcePackage(-1, 0, 0, 0, 0));
+		}
+		if (resourcePackageTrade.getResource(Resource.BRICK) > 0){
+			resourcePackageTrade.add(new ResourcePackage(0, -1, 0, 0, 0));
+		}
+		if (resourcePackageTrade.getPositiveResourcesCount() > 0)
+			return true;
+		else
+		return false;
+	}
+	
+	public ResourcePackage tradeOffer(ModelReader mr){
+		//trade one for one 
+		Resource max = Resource.LUMBER;
+		for (Resource r : Resource.values())
+			max = resourcePackageTrade.getResource(r)>resourcePackageTrade.getResource(max)?r:max;
+		if (resourcePackageTrade.getResource(Resource.LUMBER) < 1){
+			tradeOffer = resourcePackageTrade.add(new ResourcePackage(1, 0, 0, 0, 0));
+			tradeOffer.modifyResource(max, -1);
+			return tradeOffer;
+		}
+		else {
+			tradeOffer = resourcePackageTrade.add(new ResourcePackage(0, 1, 0, 0, 0));
+			tradeOffer.modifyResource(max, -1);
+			return tradeOffer;
+		}
+	}
 }

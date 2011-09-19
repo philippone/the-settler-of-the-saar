@@ -3,9 +3,12 @@ package de.unisaarland.cs.sopra.common.view;
 import java.util.Set;
 
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
+import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 
@@ -17,7 +20,9 @@ public class MoveCatapultStrategy implements Strategy {
 		Path destinationPath = evaluateStreet(mr);
 		ca.moveCatapult(sourcePath, destinationPath);
 		ca.endTurn();
-	} ca.endTurn();
+	} else {
+		ca.endTurn();
+	  }
 }
 	public float evaluateStreetValue(ModelReader mr, Path p) {
 		if (p.hasCatapult() && p.getCatapultOwner() != mr.getMe()) {
@@ -64,5 +69,27 @@ public class MoveCatapultStrategy implements Strategy {
 		}
 		// TODO: check the trade
 		return 1;
+	}
+	
+	public AIGameStats getGameStats(ModelReader mr){
+		Player player = mr.getMe();
+		if (mr.getCatapults(player).size() < 1)
+			return new AIGameStats(player, this, new ResourcePackage(0, 0, 0, 0, 0), 0);
+		ResourcePackage resourcePackage = player.getResources().copy().add(new ResourcePackage(0, 0, 0 ,-1 ,0));
+		int victoryPoints = player.getVictoryPoints();
+		AIGameStats gameStats = new AIGameStats(player, this, resourcePackage, victoryPoints);
+		return gameStats;
+	}
+
+	public boolean tradePossible(ModelReader mr){
+		ResourcePackage resourcePackage = mr.getMe().getResources().copy();
+		if (resourcePackage.getResource(Resource.GRAIN) > 0){
+			resourcePackage.add(new ResourcePackage(0, 0, 0, -1, 0));
+		}
+
+		if (resourcePackage.getPositiveResourcesCount() > 0)
+			return true;
+		else
+		return false;
 	}
 }

@@ -43,6 +43,7 @@ import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.FieldType;
+import de.unisaarland.cs.sopra.common.model.HarborType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.Model;
@@ -61,16 +62,20 @@ public class GameGUI extends View implements Runnable{
 	private String gameTitle;
 	private Setting setting;
 	private Map<FieldType,Texture> fieldTextureMap;
-	private HashMap<BuildingType, Texture> intersectionTextureMap;
+	private Map<HarborType, Texture> harbroTextureMap;
 	private Map<Integer,Texture> numberTextureMap;
 	private Map<String,Texture> uiTextureMap;
-	private List<Field> renderFieldList;
+	
 	private Texture streetTexture;
 	private Texture catapultTexture;
 	private Texture robberTexture;
 	private Texture pathMarkTexture;
 	private Texture fieldMarkTexture;
 	private Texture intersectionMarkTexture;
+	private Texture intersectionMarkRedTexture;
+	private Texture villageTexture;
+	private Texture townTexture;
+	
 	private int x,y,z;
 	private int maxX, maxY, maxZ;
 	private int minX, minY, minZ;
@@ -78,20 +83,25 @@ public class GameGUI extends View implements Runnable{
 	private UnicodeFont uiFont20;
 	private UnicodeFont uiFont40;
 
+	private int gameMode;
+	private static final int NORMAL = 0;
+	private static final int RETURN_RESOURCES = 1;
+	//TODO trade, longestroad, etc
+	
+	
 	private int selectionMode;
-	private static final int NONE 		=	0;
-	private static final  int VILLAGE 	= 	1;
-	private static final  int TOWN 		= 	2;
-	private static final  int STREET 	= 	3;
-	private static final  int CATAPULT 	= 	4;
-	private static final  int ROBBER 	= 	5;
+	private static final int NONE 					=	0;
+	private static final int VILLAGE 				= 	1;
+	private static final int TOWN 					= 	2;
+	private static final int STREET 				= 	3;
+	private static final int CATAPULT_BUILD 		= 	4;
+	private static final int CATAPULT_ACTION 		= 	5;
+	private static final int ROBBER_SELECT		 	=   6;
+	private static final int ROBBER_PLACE 			=   7;
+	private static final int ROBBER_PLAYER_SELECT 	=   8;
 	private List<Point> selectionPoint;
 	private List<Location> selectionLocation;
-	
-	private int uiMode;
-	private static final int RESOURCE_VIEW 	= 	0;
-	private static final int TRADE_VIEW 	= 	1;
-	private static final int BUILD_VIEW 	= 	2;
+	private List<Location> selectionLocation2; //For catapults_attacks //TODO use it
 	
 	private static int windowWidth;
 	private static int windowHeight;
@@ -117,6 +127,7 @@ public class GameGUI extends View implements Runnable{
 	private Clickable buildCatapult;
 	private Clickable buildCatapultGhost;
 	private Clickable setRobberGhost;
+	private Clickable quit;
 	
 	private boolean observer;
 	private int lastNumberDiced;
@@ -130,6 +141,8 @@ public class GameGUI extends View implements Runnable{
 	private String console6 = "";
 	private String console7 = "";
 	private boolean init;
+	
+	private long lastinputcheck;
 
 	
 	public GameGUI(ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player, String> names, Setting setting, String gameTitle, boolean observer, CyclicBarrier barrier) {
@@ -137,7 +150,6 @@ public class GameGUI extends View implements Runnable{
 		this.modelReader.addModelObserver(this);
 		this.playerNames = names;
 		this.setting = setting;
-		this.uiMode = RESOURCE_VIEW;
 		this.selectionMode = NONE;
 		this.gameTitle = gameTitle;
 		this.catapult = new int[names.size()];
@@ -235,7 +247,7 @@ public class GameGUI extends View implements Runnable{
 	private void setColor(PlayerColors playerColor) {
 		switch(playerColor) {
 		case BLUE:
-			GL11.glColor4f(0.30f,0.30f,1.0f,1.0f); break;
+			GL11.glColor4f(0.2f,0.2f,1.0f,1.0f); break;
 		case RED:
 			GL11.glColor4f(1.0f,0.0f,0.0f,1.0f); break;
 		case YELLOW:
@@ -300,15 +312,16 @@ public class GameGUI extends View implements Runnable{
 		   if (f.hasRobber()) {
 			   if(f.getFieldType().equals(FieldType.DESERT) || f.getFieldType().equals(FieldType.WATER)) {
 				   drawSquareMid(300, 300);
+				   GL11.glTranslatef(20, 0, 0);
 				   robberTexture.bind();
-				   drawSquareMid(60, 60);
+				   drawSquareMid(160, 160);
 			   }
 			   else {
 			   drawSquareMid(300, 300);
-			   GL11.glTranslatef(-50, 0, 0);
+			   GL11.glTranslatef(-30, 20, 0);
 			   robberTexture.bind();
-			   drawSquareMid(60, 60);
-			   GL11.glTranslatef(100, 0, 0);
+			   drawSquareMid(160, 160);
+			   GL11.glTranslatef(60, -20, 0);
 			   }
 		   }
 		   else {
@@ -332,115 +345,225 @@ public class GameGUI extends View implements Runnable{
 					   iy = i.getLocation().getY()*215; 
 					   break;
 				   case 1:
+				   case -1:
 					   ix = i.getLocation().getX()*250-125;
 					   iy = i.getLocation().getY()*215;
 					   break;
 			   }
 			  switch(i.getLocation().getOrientation()) {
 				   case 0:
-					   iy+=-135;
+					   ix+=5;
+					   iy+=-136;
 					   break;
 				   case 1:
-					   ix+=123;
-					   iy+=-70;
+					   ix+=128;
+					   iy+=-80;
 					   break;
 				   case 2:
-					   ix+=123;
+					   ix+=133;
 					   iy+=80;
 					   break;
 				   case 3:
-					   iy+=140;
+					   ix+=20;
+					   iy+=155;
 					   break;
 				   case 4:
-					   ix+=-122;
+					   ix+=-117;
 					   iy+=80;
 					   break;
 				   case 5:
 					   ix+=-122;
-					   iy+=-70;
+					   iy+=-80;
 					   break;
 				   default:
 					   throw new IllegalArgumentException();
 			   }
 			   GL11.glPushMatrix();
-			   intersectionTextureMap.get(i.getBuildingType()).bind();
-			   setColor(colorMap.get(i.getOwner()));
-			   GL11.glTranslatef(ix+x, iy+y, 1+z);
-			   drawSquareMid(125, 125);
+			   switch (i.getBuildingType()) {
+			   case Village:
+				   setColor(colorMap.get(i.getOwner()));
+				   GL11.glTranslatef(ix+x, iy+y, 1+z);
+				   villageTexture.bind();
+				   drawSquareMid(125, 125);
+				   break;
+			   case Town:
+				   setColor(colorMap.get(i.getOwner()));
+				   GL11.glTranslatef(ix+x, iy+y, 1+z);
+				   townTexture.bind();
+				   drawSquareMid(125, 125);
+				   break;
+			   }
 			   GL11.glPopMatrix();
 		}
 	}
 
 	private void renderPath(Path p) {
+		if (p.hasStreet()) {
+			renderStreet(p);
+		}
+		if (p.hasCatapult()) {
+			renderCatapult(p);
+		}
+		if (p.getHarborType() != null) {
+			renderHarbor(p);
+		}
+	}
+	
+	private void renderHarbor(Path p) {
+		// TODO Auto-generated method stub
+		int o = p.getLocation().getOrientation();
+		for (Field f: modelReader.getFieldsFromPath(p)) {
+			if (f.getFieldType().equals(FieldType.WATER)) {
+				int x = f.getLocation().getX();
+				int y = f.getLocation().getY();
+				int orient = o;
+				if (x == p.getLocation().getX() && y == p.getLocation().getY()) {
+					if (orient <3) {
+						orient += 3;
+					}
+					else {
+						orient -=3;
+					}
+				HarborType h = p.getHarborType();
+				//renderHarborType(h, x,y,o);
+				switch(orient) {
+					case 0:
+						break;
+					case 1:
+						break;
+					case 2:
+						break;
+					case 3:
+						break;
+					case 4:
+						break;
+					case 5:
+						break;
+				}
+				}
+			}
+		}
+	}
+	
+
+	private void renderCatapult(Path p) {
 		int px = 0;
 		int py = 0;
 		int po = 0;
-		if (p.hasStreet() || p.hasCatapult()) {
-			   switch(p.getLocation().getY()%2) {
-				   case 0:
-					   px = p.getLocation().getX()*250;
-					   py = p.getLocation().getY()*215; 
-					   break;
-				   case 1:
-					   px = p.getLocation().getX()*250-125;
-					   py = p.getLocation().getY()*215;
-					   break;
-			   }
-			  switch(p.getLocation().getOrientation()) {
-				   case 0:
-					   px+=67;
-					   py+=-107;
-					   po+=30;
-					   break;
-				   case 1:
-					   px+=120;
-					   py+=14;
-					   po+=90;
-					   break;
-				   case 2:
-					   px+=40;
-					   py+=118;
-					   po+=150;
-					   break;
-				   case 3:
-					   px+=-82;
-					   py+=95;
-					   po+=210;
-					   break;
-				   case 4:
-					   px+=-128;
-					   py+=-21;
-					   po+=270;
-					   break;
-				   case 5:
-					   px+=-52;
-					   py+=-115;
-					   po+=330;
-					   break;
-				   default:
-					   throw new IllegalArgumentException();
-			   }
-		}
-		if (p.hasStreet()) {	
-			GL11.glPushMatrix();
-			GL11.glTranslatef(px+x, py+y, 1+z);
-			GL11.glRotatef(po, 0, 0, 1);
-		    streetTexture.bind();
-		    setColor(colorMap.get(p.getStreetOwner()));
-		    drawSquareMid(170,20);
-		    GL11.glPopMatrix();
-		}
-		if (p.hasCatapult()) {	
+	
+		  switch(p.getLocation().getY()%2) {
+			   case 0:
+				   px = p.getLocation().getX()*250;
+				   py = p.getLocation().getY()*215; 
+				   break;
+			   case 1:
+			   case -1:
+				   px = p.getLocation().getX()*250-125;
+				   py = p.getLocation().getY()*215;
+				   break;
+		   }
+		  switch(p.getLocation().getOrientation()) {
+			   case 0:
+				   px+=66;
+				   py+=-108;
+				   po+=30;
+				   break;
+			   case 1:
+				   px+=130;
+				   py+=-1;
+				   po+=90;
+				   break;
+			   case 2:
+				   px+=56;
+				   py+=112;
+				   po+=150;
+				   break;
+			   case 3:
+				   px+=-52;
+				   py+=115;
+				   po+=210;
+				   break;
+			   case 4:
+				   px+=-128;
+				   py+=-1;
+				   po+=270;
+				   break;
+			   case 5:
+				   px+=-72;
+				   py+=-100;
+				   po+=330;
+				   break;
+			   default:
+				   throw new IllegalArgumentException();
+		   }
 			GL11.glPushMatrix();
 			GL11.glTranslatef(px+x, py+y, 1+z);
 		    catapultTexture.bind();
 		    setColor(colorMap.get(p.getCatapultOwner()));
 		    drawSquareMid(70, 70);
 		    GL11.glPopMatrix();
-		}
 	}
 	
 	
+	private void renderStreet(Path p) {
+		int px = 0;
+		int py = 0;
+		int po = 0;
+	
+		  switch(p.getLocation().getY()%2) {
+			   case 0:
+				   px = p.getLocation().getX()*250;
+				   py = p.getLocation().getY()*215; 
+				   break;
+			   case 1:
+			   case -1:
+				   px = p.getLocation().getX()*250-125;
+				   py = p.getLocation().getY()*215;
+				   break;
+		   }
+		  switch(p.getLocation().getOrientation()) {
+			   case 0:
+				   px+=74;
+				   py+=-96;
+				   po+=30;
+				   break;
+			   case 1:
+				   px+=118;
+				   py+=18;
+				   po+=90;
+				   break;
+			   case 2:
+				   px+=38;
+				   py+=116;
+				   po+=150;
+				   break;
+			   case 3:
+				   px+=-84;
+				   py+=93;
+				   po+=210;
+				   break;
+			   case 4:
+				   px+=-128;
+				   py+=-21;
+				   po+=270;
+				   break;
+			   case 5:
+				   px+=-47;
+				   py+=-120;
+				   po+=330;
+				   break;
+			   default:
+				   throw new IllegalArgumentException();
+		   }
+			GL11.glPushMatrix();
+			GL11.glTranslatef(px+x, py+y, 1+z);
+			GL11.glRotatef(po, 0, 0, 1);
+		    streetTexture.bind();
+		    setColor(colorMap.get(p.getStreetOwner()));
+		    drawSquareMid(200,25);
+		    GL11.glPopMatrix();
+	}
+
 	private void renderPlayerInfo(Player player, long pos) {
 		int px = 10;
 		int py = 10+(int)pos*76;
@@ -452,7 +575,7 @@ public class GameGUI extends View implements Runnable{
 		}
 		if (player == modelReader.getCurrentPlayer()) {
 			GL11.glColor4f(0.15f, 0.15f, 0.15f, 0.15f);
-			renderUI("PlayerBackgroundHighlight", xOffsetUI+px-5, yOffsetUI+py-10, 2, 440, 80);
+			renderUI("PlayerBackgroundHighlight", xOffsetUI+px-5, yOffsetUI+py-10, 2, 430, 92);
 			setColor(BLACK);
 		}
 		GL11.glPushMatrix();
@@ -467,7 +590,7 @@ public class GameGUI extends View implements Runnable{
 		setColor(colorMap.get(player));
 		GL11.glPushMatrix();
 		GL11.glTranslatef(xOffsetUI+px+90, yOffsetUI+py+39, 1);
-		intersectionTextureMap.get(BuildingType.Village).bind();
+		villageTexture.bind();
 		drawSquareMid(30, 30);
 		GL11.glPopMatrix();
 		setColor(BLACK);
@@ -476,7 +599,7 @@ public class GameGUI extends View implements Runnable{
 		setColor(colorMap.get(player));
 		GL11.glPushMatrix();
 		GL11.glTranslatef(xOffsetUI+px+155, yOffsetUI+py+39, 1);
-		intersectionTextureMap.get(BuildingType.Town).bind();
+		townTexture.bind();
 		drawSquareMid(30,30);
 		GL11.glPopMatrix();
 		setColor(BLACK);
@@ -505,10 +628,12 @@ public class GameGUI extends View implements Runnable{
 	}
 
 	private void renderMarks() {
+		boolean red = false;
 		switch(selectionMode) {
 		case NONE: 
 			break;
-		case ROBBER:
+		case ROBBER_SELECT:
+		case ROBBER_PLACE:
 			for (Point p : selectionPoint) {
 			    int fx = 0;
 			    int fy = 0;
@@ -524,12 +649,14 @@ public class GameGUI extends View implements Runnable{
 			    }
 			    GL11.glPushMatrix();
 			    fieldMarkTexture.bind();
-			    setColor(BLACK);
+			    GL11.glColor4f(0.5f, 0.5f, 0.5f, 0.5f);
 			    GL11.glTranslatef(fx+x, fy+y, 2+z);
 			    drawSquareMid(300, 300);
 			    GL11.glPopMatrix();
 			}
 			break;
+		case ROBBER_PLAYER_SELECT:
+			red = true;
 		case VILLAGE:
 		case TOWN:
 			for (Location l : selectionLocation) {
@@ -572,16 +699,79 @@ public class GameGUI extends View implements Runnable{
 						   throw new IllegalArgumentException();
 				   }
 			    GL11.glPushMatrix();
-			    intersectionMarkTexture.bind();
-			    setColor(BLACK);
-			    GL11.glTranslatef(ix+x, iy+y, 3+z);
+			    if (!red)
+			    	intersectionMarkTexture.bind();
+			    else
+			    	intersectionMarkRedTexture.bind();
+			    GL11.glColor4f(0.5f, 0.5f, 0.5f, 0.5f);
+			    GL11.glTranslatef(ix+x+25, iy+y+22, 3+z);
 			    drawSquareMid(150, 150);
 			    GL11.glPopMatrix();
 			}
 			break;
 		case STREET:
+			for (Location l : selectionLocation) {
+				int px = 0;
+				int py = 0;
+				int po = 0;
+			
+				  switch(l.getY()%2) {
+					   case 0:
+						   px = l.getX()*250;
+						   py = l.getY()*215; 
+						   break;
+					   case 1:
+					   case -1:
+						   px = l.getX()*250-125;
+						   py = l.getY()*215;
+						   break;
+				   }
+				  switch(l.getOrientation()) {
+					   case 0:
+						   px+=74;
+						   py+=-96;
+						   po+=30;
+						   break;
+					   case 1:
+						   px+=118;
+						   py+=18;
+						   po+=90;
+						   break;
+					   case 2:
+						   px+=38;
+						   py+=116;
+						   po+=150;
+						   break;
+					   case 3:
+						   px+=-84;
+						   py+=93;
+						   po+=210;
+						   break;
+					   case 4:
+						   px+=-128;
+						   py+=-21;
+						   po+=270;
+						   break;
+					   case 5:
+						   px+=-47;
+						   py+=-120;
+						   po+=330;
+						   break;
+					   default:
+						   throw new IllegalArgumentException();
+				   }
+					GL11.glPushMatrix();
+					GL11.glTranslatef(px+x, py+y, 1+z);
+					GL11.glRotatef(po, 0, 0, 1);
+				    pathMarkTexture.bind();
+				    GL11.glColor4f(0.9f, 0.9f, 0.9f, 0.9f);
+				    drawSquareMid(200,25);
+				    GL11.glPopMatrix();
+			}
 			break;
-		case CATAPULT:
+		case CATAPULT_BUILD:
+			break;
+		case CATAPULT_ACTION:
 			break; //TODO implement it!
 		}
 	}
@@ -629,7 +819,7 @@ public class GameGUI extends View implements Runnable{
 	   renderMarks();
 	   //Render UI
 	   GL11.glPushMatrix();
-	   GL11.glTranslatef(xOffset, 0, zOffsetUI);
+	   GL11.glTranslatef(xOffset, 0, zOffsetUI-5);
 	   setColor(BLACK);
 	   renderUI("Background", xOffsetUI, yOffsetUI, 0, 1500, 305);
 	   renderUI("Console", xOffsetUI+630, yOffsetUI+65, 1, 730, 300);
@@ -729,8 +919,7 @@ public class GameGUI extends View implements Runnable{
 	
 	@Override
 	public void updateResources() {
-		//TODO: implement it!
-		//überprüfen ob bau-
+		reinitiateUI();
 	}
 
 	
@@ -770,28 +959,36 @@ public class GameGUI extends View implements Runnable{
 	
 	@Override
 	public void eventRobber() {
-		selectionPoint = Model.getLocationListField(modelReader.getRobberFields());
-		selectionMode = ROBBER;
-		console4 = "You have to move the Robber!";
+		deactivateUI();
+		if (!observer) {
+			if (modelReader.getMe().getResources().size() > 7) {
+				//TODO: handle return resources über gamemode bzw erstmal über swing!
+			}
+			if (modelReader.getMe() == modelReader.getCurrentPlayer()) {
+				selectionPoint = Model.getLocationListField(modelReader.getRobberFields());
+				selectionMode = ROBBER_SELECT;
+				console4 = "You have to select a Robber to move!";
+			}
+		}
 	}
 
-	
 	@Override
 	public void eventTrade(ResourcePackage resourcePackage) {
 		//TODO: implement it!
 		// handel auf console ausgeben und 2 knöpfe einblenden für annehmen ablehnen
 	}
 
-	
 	@Override
 	public void eventNewRound(int number) {
-		if (modelReader.getCurrentPlayer() == modelReader.getMe() && !observer) {
+		if (modelReader.getCurrentPlayer() == modelReader.getMe() && !observer
+			&& !(selectionMode == ROBBER_SELECT || selectionMode == ROBBER_PLACE || selectionMode == ROBBER_PLAYER_SELECT) ) {
 			reinitiateUI();
 		}
 		else {
 			deactivateUI();
 		}
 		this.lastNumberDiced = number;
+		console4 = "";
 	}
 	
 
@@ -803,7 +1000,7 @@ public class GameGUI extends View implements Runnable{
 
 	@Override
 	public void eventPlayerLeft(long playerID) {
-		//TODO: implement it!
+		playerNames.put(modelReader.getPlayerMap().get(playerID),"Left the Game");
 	}
 	
 	
@@ -862,9 +1059,6 @@ public class GameGUI extends View implements Runnable{
 			fieldTextureMap.put(FieldType.HILLS, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Hills.png")));
 			fieldTextureMap.put(FieldType.PASTURE, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Pasture.png")));
 			fieldTextureMap.put(FieldType.WATER, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Water.png")));
-			intersectionTextureMap = new HashMap<BuildingType,Texture>();
-			intersectionTextureMap.put(BuildingType.Village, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Village.png")));
-			intersectionTextureMap.put(BuildingType.Town, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Town.png")));
 			
 			numberTextureMap = new HashMap<Integer,Texture>();
 			numberTextureMap.put(2, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/2.png")));
@@ -880,10 +1074,22 @@ public class GameGUI extends View implements Runnable{
 		
 			streetTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Street.png"));
 			catapultTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Catapult.png"));
-			robberTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Robber.png"));
+			robberTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Robber.png"));
 			fieldMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Mark.png"));
 			intersectionMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Mark.png"));
+			intersectionMarkRedTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/MarkRed.png"));
 			pathMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Mark.png"));
+			villageTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Village.png"));
+			townTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Town.png"));
+			
+			
+			harbroTextureMap = new HashMap<HarborType,Texture>();
+			harbroTextureMap.put(HarborType.GENERAL_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/General_Harbor.png")));
+			harbroTextureMap.put(HarborType.BRICK_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Brick_Harbor.png")));
+			harbroTextureMap.put(HarborType.GRAIN_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Grain_Harbor.png")));
+			harbroTextureMap.put(HarborType.LUMBER_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Lumber_Harbor.png")));
+			harbroTextureMap.put(HarborType.ORE_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Ore_Harbor.png")));
+			harbroTextureMap.put(HarborType.WOOL_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Wool_Harbor.png")));
 			
 			uiTextureMap = new HashMap<String,Texture>();
 			uiTextureMap.put("Background", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/menue_background.png")));
@@ -905,8 +1111,9 @@ public class GameGUI extends View implements Runnable{
 			uiTextureMap.put("Cup", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Cup.png")));
 			uiTextureMap.put("Trenner", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/PlayerTrenner.png")));
 			uiTextureMap.put("PlayerBackgroundHighlight", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/PlayerBackgroundHighlight.png")));
+			uiTextureMap.put("Quit", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_Quit.png")));
 			
-			claimLongestRoad = new Clickable("ClaimLongestRoad", xOffsetUI+542, yOffsetUI+22, 2, 373, 77, false, true, true) {
+			claimLongestRoad = new Clickable("ClaimLongestRoad", xOffsetUI+450, yOffsetUI+22, 2, 373, 77, false, true, true) {
 				@Override
 				public void execute() {
 					// vorerst gerade die erste longestRoad
@@ -915,41 +1122,60 @@ public class GameGUI extends View implements Runnable{
 				}
 			};
 
-			claimVictory = new Clickable("ClaimVictory", xOffsetUI+775, yOffsetUI+22, 2, 185, 77, false, false, true) {
+			claimVictory = new Clickable("ClaimVictory", xOffsetUI+673, yOffsetUI+22, 2, 185, 77, false, false, true) {
 				@Override
 				public void execute() {
 					controllerAdapter.claimVictory();
+					this.setActive(false);
+					//TODO evtl nen gz du hast gewonnen screen proggen
 				}
 			};
 			
-			endTurn = new Clickable("EndTurn", xOffsetUI+930, yOffsetUI+22, 2, 185, 77, false, false, true) {
+			endTurn = new Clickable("EndTurn", xOffsetUI+828, yOffsetUI+22, 2, 185, 77, false, false, true) {
 				@Override
 				public void execute() {
 					controllerAdapter.endTurn();
+					this.setActive(false);
 				}
 			};
 			
 			offerTrade = new Clickable("offerTrade", xOffsetUI+450, yOffsetUI+65, 2, 185, 77, false, true, true) {
 				@Override
 				public void execute() {
-					minX = 42;
+					//TODO implement it!
 				}
 			};
 			
 			buildStreet = new Clickable("BuildStreet", xOffsetUI+450, yOffsetUI+110, 2, 185, 77, false, true, true) {
 				@Override
 				public void execute() {
-					selectionLocation = Model.getLocationListPath(modelReader.buildableStreetPaths(modelReader.getMe()));
-					selectionMode = STREET;
-					
+					if (selectionMode == STREET) {
+						selectionMode = NONE;
+					}
+					else {
+						selectionLocation = Model.getLocationListPath(modelReader.buildableStreetPaths(modelReader.getMe()));
+						selectionMode = STREET;
+					}
+				}
+			};
+			
+			buildStreetGhost = new Clickable(null, 0, 0, 0, 0, 0, false, false, false) {
+				@Override
+				public void execute() {
+					controllerAdapter.buildStreet(getPath());
 				}
 			};
 			
 			buildVillage = new Clickable("BuildVillage", xOffsetUI+450, yOffsetUI+155, 2, 185, 77, false, true, true) {
 				@Override
 				public void execute() {
-					selectionLocation = Model.getLocationListIntersection(modelReader.buildableVillageIntersections(modelReader.getMe()));
-					selectionMode = VILLAGE;
+					if (selectionMode == VILLAGE) {
+						selectionMode = NONE;
+					}
+					else {
+						selectionLocation = Model.getLocationListIntersection(modelReader.buildableVillageIntersections(modelReader.getMe()));
+						selectionMode = VILLAGE;
+					}
 				}
 			};
 			
@@ -963,8 +1189,13 @@ public class GameGUI extends View implements Runnable{
 			buildTown = new Clickable("BuildTown", xOffsetUI+450, yOffsetUI+200, 2, 185, 77, false, true, true) {
 				@Override
 				public void execute() {
-					selectionLocation = Model.getLocationListIntersection(modelReader.buildableTownIntersections(modelReader.getMe()));
-					selectionMode = TOWN;
+					if (selectionMode == TOWN) {
+						selectionMode = NONE;
+					}
+					else {
+						selectionLocation = Model.getLocationListIntersection(modelReader.buildableTownIntersections(modelReader.getMe()));
+						selectionMode = TOWN;
+					}
 				}
 			};
 			
@@ -978,8 +1209,13 @@ public class GameGUI extends View implements Runnable{
 			buildCatapult = new Clickable("BuildCatapult", xOffsetUI+450, yOffsetUI+245, 2, 185, 77, false, true, true) {
 				@Override
 				public void execute() {
-					selectionLocation = Model.getLocationListPath(modelReader.buildableStreetPaths(modelReader.getMe()));
-					selectionMode = CATAPULT;
+					if (selectionMode == CATAPULT_BUILD) {
+						selectionMode = NONE;
+					}
+					else {
+						selectionLocation = Model.getLocationListPath(modelReader.buildableStreetPaths(modelReader.getMe()));
+						selectionMode = CATAPULT_BUILD;
+					}
 				}
 			};
 			
@@ -990,11 +1226,27 @@ public class GameGUI extends View implements Runnable{
 				}
 			};
 			
+			setRobberGhost = new Clickable(null, 0, 0, 0, 0, 0, false, false, false) {
+				@Override
+				public void execute() {
+					controllerAdapter.moveRobber(getField(), getField2(), getPlayer());
+				}
+			};
+			
+			quit = new Clickable("Quit", xOffsetUI+983, yOffsetUI+22, 2, 100, 77, true, true, true) {
+				@Override
+				public void execute() {
+					Display.destroy();
+					System.exit(0);
+				}
+			};
+			
 		} catch (Exception e) {e.printStackTrace();}
 		
 		if (!observer) {
 			init = true;
 			buildVillage.setActive(true);
+			console4 = modelReader.getInitVillages() + " initial villages left";
 		}
 		
 		GL11.glDisable(GL11.GL_DEPTH_TEST); // Enables Depth Testing
@@ -1049,7 +1301,9 @@ public class GameGUI extends View implements Runnable{
 		int mx = Mouse.getX();
 		int my = Mouse.getY();
 		
-		if (Mouse.isButtonDown(0)) {
+		
+		if (Mouse.isButtonDown(0) && System.currentTimeMillis() - lastinputcheck > 500) {
+			this.lastinputcheck = System.currentTimeMillis();
 			for (Clickable c : Clickable.executeModelClicks(mx*screenToOpenGLx(zOffsetUI), (windowHeight-my)*screenToOpenGLy(zOffsetUI)+380)) {
 				controllerAdapter.addGuiEvent(c);
 			}
@@ -1057,13 +1311,47 @@ public class GameGUI extends View implements Runnable{
 				c.execute();
 			}
 			switch (selectionMode) {
-				case ROBBER:
-					Field robber = getMouseField();
-					if (robber != null && selectionPoint.contains(Model.getLocation(robber))) {
-						setRobberGhost.setField(robber);
+				case ROBBER_SELECT:
+					Field robberSRC = getMouseField();
+					if (robberSRC != null && selectionPoint.contains(Model.getLocation(robberSRC))) {
+						setRobberGhost.setField(robberSRC);
+						selectionPoint = Model.getLocationListField(modelReader.canPlaceRobber());
+						selectionMode = ROBBER_PLACE;
+						console4 = "Now place the Robber on another Field!";
+					}
+					break;
+				case ROBBER_PLACE:
+					Field robberDST = getMouseField();
+					if (robberDST != null && selectionPoint.contains(Model.getLocation(robberDST))) {
+						setRobberGhost.setField2(robberDST);
+						selectionLocation = Model.getLocationListIntersection(modelReader.getIntersectionsFromField(robberDST));
+						
+						//remove my own intersections from list
+						Iterator<Location> iter = selectionLocation.iterator();
+						while (iter.hasNext()) {
+							Intersection tmp = modelReader.getIntersection(iter.next());
+							if (tmp.hasOwner() && tmp.getOwner() == modelReader.getMe()) {
+								iter.remove();
+							}
+						}
+						
+						selectionMode = ROBBER_PLAYER_SELECT;
+						console4 = "Now choose a Player to Rob or";
+						console5 = "click on an empty Intersection";
+						console6 = "to rob nobody";
+					}
+					break;
+				case ROBBER_PLAYER_SELECT:
+					Intersection player = getMouseIntersection();
+					if (player != null && selectionLocation.contains(Model.getLocation(player))) {
+						if (player.hasOwner())
+							setRobberGhost.setPlayer(player.getOwner());
 						selectionMode = NONE;
 						console4 = "";
+						console5 = "";
+						console6 = "";
 						controllerAdapter.addGuiEvent(setRobberGhost);
+						reinitiateUI();
 					}
 					break;
 				case VILLAGE:
@@ -1072,11 +1360,12 @@ public class GameGUI extends View implements Runnable{
 						buildVillageGhost.setIntersection(village);
 						selectionMode = NONE;
 						console4 = "";
-						controllerAdapter.addGuiEvent(buildVillageGhost);
 						if (init) {
 							buildStreet.setActive(true);
 							buildVillage.setActive(false);
+							console4 = (modelReader.getInitVillages()-modelReader.getSettlements(modelReader.getMe(), BuildingType.Village).size()-1) + " initial villages left";
 						}
+						controllerAdapter.addGuiEvent(buildVillageGhost);
 					}
 					break;
 				case TOWN:
@@ -1088,13 +1377,31 @@ public class GameGUI extends View implements Runnable{
 						controllerAdapter.addGuiEvent(buildTownGhost);
 					}
 					break;
-				case CATAPULT:
+				case CATAPULT_BUILD:
+					break;
+				case CATAPULT_ACTION:
 					break;
 				case STREET:
+					Path street = getMousePath();
+					if (street != null && selectionLocation.contains(Model.getLocation(street))) {
+						buildStreetGhost.setPath(street);
+						selectionMode = NONE;
+						if (init) {
+							buildStreet.setActive(false);
+							buildVillage.setActive(false);
+							init = false;
+						}
+						else 
+							console4 = "";
+						controllerAdapter.addGuiEvent(buildStreetGhost);
+					}
+					//if init dont change console4 else ""
 					//if init set init to false
 					break; //TODO implement it!
 			}
+			//TODO klick auf catapult verarbeiten und in catapult_action mode gehn
 		}
+		
 		
 		if (Mouse.isInsideWindow()) {
 			if (mx < 50) {
@@ -1147,8 +1454,7 @@ public class GameGUI extends View implements Runnable{
 //			maxX-=10;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
-			Display.destroy();
-			System.exit(0);
+			selectionMode = NONE;
 		}
 	}
 
@@ -1204,14 +1510,135 @@ public class GameGUI extends View implements Runnable{
 		//TODO evtl verbessern da nur klappt wenn man ca genau in die mitte klickt
 	}
 	
+	
 	public Intersection getMouseIntersection() {
-		// TODO Auto-generated method stub
-		return null;
+		int tmpx = getOglx();
+		int tmpy = getOgly();
+		int ergx,ergy;
+		int ergo = -1;
+		if (tmpy > 0) {
+			switch((tmpy/215) % 2) {
+			case 1:
+				tmpx-=-125;
+				break;
+			case 0:
+				break;
+			}
+		}
+		else {
+			switch((tmpy/215) % 2) {
+			case -1:
+				break;
+			case 0:
+				tmpx-=-125;
+				break;
+			}
+		}
+		
+		if (tmpx > 0) {
+			ergx = tmpx/250;
+		}
+		else {
+			ergx = tmpx/250-1;
+		}
+		tmpx = Math.abs(tmpx%250);
+		if (tmpy > 0) {
+			ergy = tmpy/215;
+		}
+		else {
+			ergy = tmpy/215-1;
+		}
+		tmpy = Math.abs(tmpy%215);
+		
+		if (tmpx > 65 && tmpx < 185) {
+			if (tmpy < 60)
+				ergo = 0;
+			if (tmpy > 225)
+				ergo = 3;
+		}
+		else if (tmpy > 10 && tmpy < 130) {
+			if (tmpx > 190)
+				ergo = 1;
+			if (tmpx < 60)
+				ergo = 5;
+		}
+		else if (tmpy > 155 && tmpy < 275) {
+			if (tmpx > 190)
+				ergo = 2;
+			if (tmpx < 60)
+				ergo = 4;
+		}
+		
+		if (ergx >= -1 && ergx < modelReader.getBoardWidth()+1 && ergy >= -1 && ergy < modelReader.getBoardHeight()+1 && ergo != -1)
+			return modelReader.getIntersection(new Location(ergy, ergx, ergo));
+		else 
+			return null;
 	}
 	
+	
 	public Path getMousePath() {
-		// TODO Auto-generated method stub
-		return null;
+		int tmpx = getOglx();
+		int tmpy = getOgly();
+		int ergx,ergy;
+		int ergo = -1;
+		if (tmpy > 0) {
+			switch((tmpy/215) % 2) {
+			case 1:
+				tmpx-=-125;
+				break;
+			case 0:
+				break;
+			}
+		}
+		else {
+			switch((tmpy/215) % 2) {
+			case -1:
+				break;
+			case 0:
+				tmpx-=-125;
+				break;
+			}
+		}
+		
+		if (tmpx > 0) {
+			ergx = tmpx/250;
+		}
+		else {
+			ergx = tmpx/250-1;
+		}
+		tmpx = Math.abs(tmpx%250);
+		if (tmpy > 0) {
+			ergy = tmpy/215;
+		}
+		else {
+			ergy = tmpy/215-1;
+		}
+		tmpy = Math.abs(tmpy%215);
+		
+		if (tmpy < 70) {
+			if (tmpx < 125)
+				ergo = 5;
+			else 
+				ergo = 0;
+		}
+		else if (tmpy >= 70 && tmpy < 215) {
+			if (tmpx < 60)
+				ergo = 4;
+			if (tmpx > 190)
+				ergo = 1;
+		}
+		else {
+			if (tmpx < 125)
+				ergo = 3;
+			else
+				ergo = 2;
+		}
+		
+		if (ergx >= -1 && ergx < modelReader.getBoardWidth()+1 && ergy >= -1 && ergy < modelReader.getBoardHeight()+1 && ergo != -1)
+			return modelReader.getPath(new Location(ergy, ergx, ergo));
+//			System.out.println(modelReader.getPath(new Location(ergy, ergx, ergo)));
+		else 
+			return null;
 	}
 	
 	public static void main(String[] args) throws Exception {		
@@ -1293,8 +1720,9 @@ public class GameGUI extends View implements Runnable{
 				return new long[] {};
 			}
 		};
-		/*WorldRepresentation worldrep = new WorldRepresentation(1, 1, 2, 9, 5, 4,  
-				new byte[] {1},
+		/*WorldRepresentation worldrep = new WorldRepresentation(20, 2, 2, 9, 5, 4,  
+				new byte[] {0,1,2,3,4,5,6,5,4,3,2,1,0,1,2,3,4,5,6,5,
+					        4,3,2,1,0,1,2,3,4,5,6,5,4,3,2,1,0,1,2,3},
 				new byte[] {1,4,
 							2,5,    
 							3,6},
@@ -1302,10 +1730,12 @@ public class GameGUI extends View implements Runnable{
 		
 		Model model = new Model(/*worldrep*/WorldRepresentation.getDefault(), matchinfo, 0);
 		model.matchStart(new long[] {3,2,1,0}, new byte[]   {2,3,4,
-														 6,8,9,10,
-														 11,12,11,10,
-														 9,8,6,5,
-														 2,6,9});
+		 6,8,9,10,
+		 11,12,11,10,
+		 9,8,6,5,
+		 2,6,9});
+		/*model.matchStart(new long[] {3,2,1,0}, new byte[]   {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+															 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2});*/
 		Map<Player,String> names = new HashMap<Player,String>();
 		names.put(model.getTableOrder().get(3), "Ichbinkeinreh");
 		names.put(model.getTableOrder().get(2), "Herbert");
@@ -1337,6 +1767,29 @@ public class GameGUI extends View implements Runnable{
 		model.buildStreet(new Location(1,2,2));
 		model.buildStreet(new Location(2,1,1));
 		
+//		model.getPath(new Location(-1,-1,0)).createStreet(model.getMe());
+//		model.getPath(new Location(-1,-1,1)).createStreet(model.getMe());
+//		model.getPath(new Location(-1,-1,2)).createStreet(model.getMe());
+//		model.getPath(new Location(-1,-1,3)).createStreet(model.getMe());
+//		model.getPath(new Location(-1,-1,4)).createStreet(model.getMe());
+//		model.getPath(new Location(-1,-1,5)).createStreet(model.getMe());
+		
+//		model.getPath(new Location(-1,-1,0)).createCatapult(model.getMe());
+//		model.getPath(new Location(-1,-1,1)).createCatapult(model.getMe());
+//		model.getPath(new Location(-1,-1,2)).createCatapult(model.getMe());
+//		model.getPath(new Location(-1,-1,3)).createCatapult(model.getMe());
+//		model.getPath(new Location(-1,-1,4)).createCatapult(model.getMe());
+//		model.getPath(new Location(-1,-1,5)).createCatapult(model.getMe());
+//		
+//		model.getIntersection(new Location(-1,-1,0)).createBuilding(BuildingType.Town, model.getMe());
+//		model.getIntersection(new Location(-1,-1,1)).createBuilding(BuildingType.Town, model.getMe());
+//		model.getIntersection(new Location(-1,-1,2)).createBuilding(BuildingType.Town, model.getMe());
+//		model.getIntersection(new Location(-1,-1,3)).createBuilding(BuildingType.Town, model.getMe());
+//		model.getIntersection(new Location(-1,-1,4)).createBuilding(BuildingType.Town, model.getMe());
+//		model.getIntersection(new Location(-1,-1,5)).createBuilding(BuildingType.Town, model.getMe());
+		
+//		model.getField(new Point(2,2)).setRobber(true);
+		
 //		Setting setting = new Setting(Display.getDesktopDisplayMode(), true, PlayerColors.RED);
 		Setting setting = new Setting(new DisplayMode(1024, 550), false, PlayerColors.RED);  /// Display.getDesktopDisplayMode()
 		
@@ -1357,14 +1810,11 @@ public class GameGUI extends View implements Runnable{
 	    fos.close();
 	}
 	
-
 	@Override
 	public void initTurn() {
 		init = true;
 		buildVillage.setActive(true);
 	}
-
-
 		
 	/*
 		String[] list = new String[] {

@@ -8,6 +8,8 @@ import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.Resource;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public class BuildACatapultStrategy implements Strategy {
 
@@ -16,11 +18,12 @@ public class BuildACatapultStrategy implements Strategy {
 		// TODO Auto-generated method stub
 		Set<Path> paths=mr.buildableCatapultPaths(mr.getCurrentPlayer());
 		if (mr.getSettlements(mr.getMe(), BuildingType.Town).size() > 0  && mr.affordableCatapultBuild()>0
-				&& paths!=null && paths.size()< mr.getCatapults(mr.getMe()).size() && mr.getCatapults(mr.getMe()).size() < mr.getMaxCatapult()){
+				&& paths!=null  && mr.getCatapults(mr.getMe()).size() < mr.getMaxCatapult()){
+//TODO && paths.size()< mr.getCatapults(mr.getMe()).size()
 			Path bestPath=chooseBestPath(mr);
 			ca.buildCatapult(bestPath);
 			ca.endTurn();
-		}
+		} else 
 		ca.endTurn();
 	}
 	
@@ -67,6 +70,32 @@ public class BuildACatapultStrategy implements Strategy {
 			}
 		}
 		return pathValue;
+	}
+	public AIGameStats getGameStats(ModelReader mr){
+		Player player = mr.getMe();
+		if (mr.getSettlements(player,BuildingType.Town).size() < 1)
+			return new AIGameStats(player, this, new ResourcePackage(0, 0, 0, 0, 0), 0);
+		ResourcePackage resourcePackage = player.getResources().copy().add(new ResourcePackage(-1, 0, -1 ,0 , -1));
+		int victoryPoints = player.getVictoryPoints();
+		AIGameStats gameStats = new AIGameStats(player, this, resourcePackage, victoryPoints);
+		return gameStats;
+	}
+	
+	public boolean tradePossible(ModelReader mr){
+		ResourcePackage resourcePackage = mr.getMe().getResources().copy();
+		if (resourcePackage.getResource(Resource.LUMBER) > 0){
+			resourcePackage.add(new ResourcePackage(-1, 0, 0, 0, 0));
+		}
+		if (resourcePackage.getResource(Resource.WOOL) > 0){
+			resourcePackage.add(new ResourcePackage(0, 0, -1, 0, 0));
+		}
+		if (resourcePackage.getResource(Resource.ORE) > 0){
+			resourcePackage.add(new ResourcePackage(0, 0, 0, 0, -1));
+		}
+		if (resourcePackage.getPositiveResourcesCount() > 0)
+			return true;
+		else
+		return false;
 	}
 
 }

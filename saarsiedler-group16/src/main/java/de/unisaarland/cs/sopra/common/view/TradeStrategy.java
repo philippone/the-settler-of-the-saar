@@ -26,4 +26,13 @@ public class TradeStrategy implements Strategy {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	
+	@Override
+	public AIGameStats getGameStats(ModelReader mr) {
+		return null;
+	}
+	
+
+	
+
 }

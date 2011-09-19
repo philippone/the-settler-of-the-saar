@@ -8,6 +8,9 @@ import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.FieldType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
+import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.Resource;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public class BuildVillage implements Strategy {
 	private float bestValue = 0;
@@ -20,6 +23,7 @@ public class BuildVillage implements Strategy {
 
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
+
 		if (mr.affordableSettlements(BuildingType.Village) > 0 && mr.buildableVillageIntersections(mr.getMe()).size() > 0
 				&& mr.buildableVillageIntersections(mr.getMe()).size() <= mr.getMaxBuilding(BuildingType.Village) && mr.getSettlements(mr.getMe(), BuildingType.Village).size() < mr.getMaxBuilding(BuildingType.Village)) {
 			Intersection bestIntersection = evaluateIntersection(mr);
@@ -27,7 +31,10 @@ public class BuildVillage implements Strategy {
 			if (mr.getMe().getVictoryPoints() >= mr.getMaxVictoryPoints())
 				ca.claimVictory();
 			ca.endTurn();
-		} else 
+		} else 	if (mr.buildableVillageIntersections(mr.getMe()).size() < 1) {
+			Strategy buildStreet = new BuildStreetStrategy();
+			buildStreet.execute(mr, ca);
+		} else
 			 ca.endTurn();
 
 	}
@@ -83,5 +90,35 @@ public class BuildVillage implements Strategy {
 		return bestIntersection;
 	}
 	
+	public AIGameStats getGameStats(ModelReader mr) {
+		Player player = mr.getMe();
+		//TODO new function buildableVillages
+		if (mr.getMaxBuilding(BuildingType.Village)-1 < mr.getSettlements(player, BuildingType.Village).size())
+		return new AIGameStats(player, this, new ResourcePackage(0, 0, 0, 0, 0), 0);
+		ResourcePackage resourcePackage = player.getResources().copy().add(new ResourcePackage(-1, -1, -1, -1, 0));
+		int victoryPoints = player.getVictoryPoints() + 1;
+		AIGameStats gameStats = new AIGameStats(player, this, resourcePackage, victoryPoints);
+		return gameStats;
+	}
+	
+	public boolean tradePossible(ModelReader mr){
+		ResourcePackage resourcePackage = mr.getMe().getResources().copy();
+		if (resourcePackage.getResource(Resource.LUMBER) > 0){
+			resourcePackage.add(new ResourcePackage(-1, 0, 0, 0, 0));
+		}
+		if (resourcePackage.getResource(Resource.BRICK) > 0){
+			resourcePackage.add(new ResourcePackage(0, -1, 0, 0, 0));
+		}
+		if (resourcePackage.getResource(Resource.WOOL) > 0){
+			resourcePackage.add(new ResourcePackage(0, 0, -1, 0, 0));
+		}
+		if (resourcePackage.getResource(Resource.GRAIN) > 0){
+			resourcePackage.add(new ResourcePackage(0, 0, 0, -1, 0));
+		}
+		if (resourcePackage.getPositiveResourcesCount() > 0)
+			return true;
+		else
+		return false;
+	}
 	
 }
