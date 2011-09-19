@@ -36,7 +36,7 @@ public class ButtonListener implements ActionListener {
 				gui.createPanel.setVisible(false);
 				gui.joinPanel.setVisible(false);
 				gui.settingsPanel.setVisible(true);
-				Client.closeConnection();
+//				Client.closeConnection();
 			}
 		//
 		

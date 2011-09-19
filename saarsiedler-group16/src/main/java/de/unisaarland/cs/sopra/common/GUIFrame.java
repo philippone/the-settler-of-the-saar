@@ -93,31 +93,6 @@ public class GUIFrame extends JFrame {
 //				selectedColor = (PlayerColors)playerColorBox.getSelectedItem();
 //			}
 //		});
-		resolutionBox.addFocusListener(new FocusListener() {
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-		worldRepoBox.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent e) {
-				focusedWordID = -1L;
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {
-				focusedWordID = worldRepoBox.getSelectedIndex();
-			}
-		});
 		gameTable.addFocusListener(new FocusListener() {
 			@Override
 			public void focusLost(FocusEvent e) {

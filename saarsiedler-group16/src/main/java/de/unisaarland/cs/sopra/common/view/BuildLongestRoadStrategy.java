@@ -26,4 +26,10 @@ public class BuildLongestRoadStrategy extends Strategy {
 		//TODO check how many victory Points we wet have to achieve
 	}
 
+	@Override
+	public boolean useable() {
+		//TODO implement this operation
+		throw new UnsupportedOperationException();
+	}
+	
 }

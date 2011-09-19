@@ -59,19 +59,13 @@ public class BuildStreetStrategy extends Strategy {
 		return (float) value;
 	}
 	
-	public boolean tradePossible(ModelReader mr){
-		resourcePackageTrade = mr.getMe().getResources().copy();
-		if (resourcePackageTrade.getResource(Resource.LUMBER) > 0){
-			resourcePackageTrade.add(new ResourcePackage(-1, 0, 0, 0, 0));
-		}
-		if (resourcePackageTrade.getResource(Resource.BRICK) > 0){
-			resourcePackageTrade.add(new ResourcePackage(0, -1, 0, 0, 0));
-		}
-		if (resourcePackageTrade.getPositiveResourcesCount() > 0)
-			return true;
-		else
-		return false;
-	}
+
+
 	
+	@Override
+	public boolean useable() {
+		//TODO implement this operation
+		throw new UnsupportedOperationException();
+	}
 
 }
