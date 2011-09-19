@@ -131,6 +131,7 @@ public class GameGUI extends View implements Runnable{
 	private Clickable buildCatapult;
 	private Clickable buildCatapultGhost;
 	private Clickable setRobberGhost;
+	private Clickable returnResourcesGhost;
 	private Clickable quit;
 	
 	private boolean observer;
@@ -1022,7 +1023,9 @@ public class GameGUI extends View implements Runnable{
 		deactivateUI();
 		if (!observer) {
 			if (modelReader.getMe().getResources().size() > 7) {
-				//TODO: handle return resources über gamemode bzw erstmal über swing!
+				ResourcePackage res = Client.returnResources(modelReader.getResources().copy());
+				returnResourcesGhost.setRes(res);
+				controllerAdapter.addGuiEvent(returnResourcesGhost);
 			}
 			if (modelReader.getMe() == modelReader.getCurrentPlayer()) {
 				selectionPoint = Model.getLocationListField(modelReader.getRobberFields());
@@ -1304,6 +1307,13 @@ public class GameGUI extends View implements Runnable{
 				@Override
 				public void execute() {
 					controllerAdapter.moveRobber(getField(), getField2(), getPlayer());
+				}
+			};
+			
+			returnResourcesGhost = new Clickable(null, 0, 0, 0, 0, 0, false, false, false) {
+				@Override
+				public void execute() {
+					controllerAdapter.returnResources(getRes());
 				}
 			};
 			
