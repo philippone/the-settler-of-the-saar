@@ -22,7 +22,7 @@ public class GameListUpdater implements MatchListUpdater {
 		Client.refreshGameList();
 		if (Client.matchInfo != null) { 
 			Client.refreshPlayerList();
-			System.out.println("refresh PlayerList");
+//			System.out.println("refresh PlayerList");
 		}
 	}
 
