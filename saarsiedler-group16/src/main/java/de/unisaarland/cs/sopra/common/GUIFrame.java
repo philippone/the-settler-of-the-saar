@@ -50,8 +50,8 @@ public class GUIFrame extends JFrame {
 	public long focusedWordID;
 	public final static PlayerColors[] pc= new PlayerColors[]{PlayerColors.RED, PlayerColors.BLUE,PlayerColors.YELLOW,PlayerColors.ORANGE,PlayerColors.BROWN,PlayerColors.WHITE,PlayerColors.PURPLE,PlayerColors.BLACK};
 	public final static String [] farben = new String[]{"RED","BLUE","YELLOW","ORANGE","BROWN","WHITE","PURPLE","BLACK"};
-	public final static DisplayMode[] displaymodes = new DisplayMode[]{Display.getDisplayMode(), new DisplayMode(1024, 600), new DisplayMode(800, 600)};
-	public final static String [] dmodes = new String[]{"AUTO","1024x600","800x600"};
+	public final static DisplayMode[] displaymodes = new DisplayMode[]{Display.getDisplayMode(), new DisplayMode(1024, 530), new DisplayMode(800, 600)};
+	public final static String [] dmodes = new String[]{"AUTO","1024x530","800x600"};
 	
 	
 	public GUIFrame() {
