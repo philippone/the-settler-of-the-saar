@@ -63,7 +63,7 @@ public class GameGUI extends View implements Runnable{
 	private String gameTitle;
 	private Setting setting;
 	private Map<FieldType,Texture> fieldTextureMap;
-	private Map<HarborType, Texture> harbroTextureMap;
+	private Map<HarborType, Texture> harborTextureMap;
 	private Map<Integer,Texture> numberTextureMap;
 	private Map<String,Texture> uiTextureMap;
 	
@@ -478,7 +478,7 @@ public class GameGUI extends View implements Runnable{
 				   default:
 					   throw new IllegalArgumentException();
 			   }
-			  	Texture harborTexture = harbroTextureMap.get(h);
+			  	Texture harborTexture = harborTextureMap.get(h);
 				GL11.glPushMatrix();
 				GL11.glTranslatef(px+x, py+y, 1+z);
 				GL11.glRotatef(po-90, 0, 0, 1);
@@ -490,8 +490,6 @@ public class GameGUI extends View implements Runnable{
 				}
 			}
 		
-	
-
 	private void renderCatapult(Path p) {
 		int px = 0;
 		int py = 0;
@@ -549,7 +547,6 @@ public class GameGUI extends View implements Runnable{
 		    drawSquareMid(70, 70);
 		    GL11.glPopMatrix();
 	}
-	
 	
 	private void renderStreet(Path p) {
 		int px = 0;
@@ -777,7 +774,7 @@ public class GameGUI extends View implements Runnable{
 			    if (!red) 
 			    	pathMarkTexture.bind();
 			    else
-			    	pathMarkTexture.bind();
+			    	pathMarkTextureRed.bind();
 			    GL11.glColor4f(0.5f, 0.5f, 0.5f, 0.5f);
 			    drawSquareMid(200,25);
 			    GL11.glPopMatrix();
@@ -1158,13 +1155,13 @@ public class GameGUI extends View implements Runnable{
 			townTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Town.png"));
 			
 			
-			harbroTextureMap = new HashMap<HarborType,Texture>();
-			harbroTextureMap.put(HarborType.GENERAL_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/General_Harbor.png")));
-			harbroTextureMap.put(HarborType.BRICK_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Brick_Harbor.png")));
-			harbroTextureMap.put(HarborType.GRAIN_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Grain_Harbor.png")));
-			harbroTextureMap.put(HarborType.LUMBER_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Lumber_Harbor.png")));
-			harbroTextureMap.put(HarborType.ORE_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Ore_Harbor.png")));
-			harbroTextureMap.put(HarborType.WOOL_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Wool_Harbor.png")));
+			harborTextureMap = new HashMap<HarborType,Texture>();
+			harborTextureMap.put(HarborType.GENERAL_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/General_Harbor.png")));
+			harborTextureMap.put(HarborType.BRICK_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Brick_Harbor.png")));
+			harborTextureMap.put(HarborType.GRAIN_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Grain_Harbor.png")));
+			harborTextureMap.put(HarborType.LUMBER_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Lumber_Harbor.png")));
+			harborTextureMap.put(HarborType.ORE_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Ore_Harbor.png")));
+			harborTextureMap.put(HarborType.WOOL_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Wool_Harbor.png")));
 			
 			uiTextureMap = new HashMap<String,Texture>();
 			uiTextureMap.put("Background", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/menue_background.png")));
