@@ -1149,7 +1149,7 @@ public class GameGUI extends View implements Runnable{
 			intersectionMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Mark.png"));
 			intersectionMarkRedTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/MarkRed.png"));
 			pathMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Mark.png"));
-			pathMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/MarkRed.png"));
+			pathMarkTextureRed = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/MarkRed.png"));
 			villageTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Village.png"));
 			townTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Town.png"));
 			
