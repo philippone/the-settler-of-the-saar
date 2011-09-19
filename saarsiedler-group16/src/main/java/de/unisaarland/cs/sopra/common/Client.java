@@ -48,11 +48,14 @@ public class Client {
 	private static Setting setting;
 	private static WorldRepresentation worldRepo;
 	public static boolean joinAsAI;
+	static ResourcePackage returnPackage;
+	private static Popup popupReturn;
 	
 	public static void main(String[] args) throws UnknownHostException, IOException {
 		initOpenGL();
 		setting = new Setting(new DisplayMode(1024, 600), true, PlayerColors.RED);
 		clientGUI = new GUIFrame();
+		popupReturn = new Popup();
 		loadSettings();
 		
 	}
@@ -358,17 +361,25 @@ public class Client {
 	}
 	
 	public static ResourcePackage returnResources(ResourcePackage rp){
-		Popup p= new Popup();
-		p.lumberMax.setText(""+rp.getResource(Resource.LUMBER));
-		p.brickMax.setText(""+rp.getResource(Resource.BRICK));
-		p.woolMax.setText(""+rp.getResource(Resource.WOOL));
-		p.grainMax.setText(""+rp.getResource(Resource.GRAIN));
-		p.oreMax.setText(""+rp.getResource(Resource.ORE));
-		
+		returnPackage=null;
 		int n = rp.getPositiveResourcesCount();
+		popupReturn.setN(n);
+		popupReturn.setVisible(true);
+		popupReturn.lumberMax.setText(""+rp.getResource(Resource.LUMBER));
+		popupReturn.brickMax.setText(""+rp.getResource(Resource.BRICK));
+		popupReturn.woolMax.setText(""+rp.getResource(Resource.WOOL));
+		popupReturn.grainMax.setText(""+rp.getResource(Resource.GRAIN));
+		popupReturn.oreMax.setText(""+rp.getResource(Resource.ORE));
 		
 		
-		return null;
+		
+		while(returnPackage==null){
+//			try {
+//				Thread.sleep(100);
+//			} catch (InterruptedException e) {e.printStackTrace();}
+		}
+		popupReturn.setVisible(false);
+		return returnPackage;
 	}
 }
 
