@@ -105,5 +105,7 @@ public interface ModelWriter {
 	 * @param player
 	 */
 	public void setMe(Player player);
+
+	public boolean writeSomethingReallyUnspecifiedToModel();
 	
-}
+	}

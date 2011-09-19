@@ -242,7 +242,6 @@ public class GameGUI extends View implements Runnable{
 			buildStreet.setActive(true);
 		if (!lr.isEmpty() && lr.get(0).size() >= 5)
 			claimLongestRoad.setActive(true);
-		//TODO evtl ändern wenn sich longestroad funktion ändert
 		if (modelReader.getCurrentVictoryPoints(me) >= modelReader.getMaxVictoryPoints())
 			claimVictory.setActive(true);
 		if (modelReader.getRound() >= 1)

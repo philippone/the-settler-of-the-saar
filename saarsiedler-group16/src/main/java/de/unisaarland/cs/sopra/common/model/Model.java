@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import de.unisaarland.cs.sopra.common.ModelObserver;
+import de.unisaarland.cs.sopra.common.controller.Controller;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 import de.unisaarland.cs.st.saarsiedler.comm.results.AttackResult;
@@ -35,6 +36,7 @@ public class Model implements ModelReader, ModelWriter {
 	private Player me;
 	private int initPlayer = 0;						    //akt player in der initPhase
 	private Intersection initLastVillageIntersection;	//fuer initPhase zur berechnung der erlaubeten street(welche dann den current player durchwechselt)
+	private boolean pull;
 
 	/**
 	 * @param worldRepresentation
@@ -1438,6 +1440,7 @@ public class Model implements ModelReader, ModelWriter {
 					java.util.Collections.reverse(players);
 					reversedPlayersList = false;
 				}
+				Controller.somethingReallyImportant = true;
 			}
 		}
 	}
@@ -1880,6 +1883,11 @@ public class Model implements ModelReader, ModelWriter {
 		for (ModelObserver act : modelObserver) {
 			if (getCurrentPlayer() == getMe()) act.initTurn();
 		}
+	}
+
+	@Override
+	public boolean writeSomethingReallyUnspecifiedToModel() {
+		return me == getCurrentPlayer();
 	}
 
 }

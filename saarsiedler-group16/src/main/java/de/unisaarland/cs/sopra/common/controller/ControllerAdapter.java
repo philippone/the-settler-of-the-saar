@@ -15,8 +15,6 @@ public class ControllerAdapter {
 	private Model model;
 	private Controller controller;
 	
-	
-	
 	/**
 	 * @param controller
 	 * @param model
