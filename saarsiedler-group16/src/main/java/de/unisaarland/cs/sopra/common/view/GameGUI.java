@@ -690,9 +690,8 @@ public class GameGUI extends View implements Runnable{
 			break;
 		case STREET:
 		case CATAPULT_BUILD:
-			renderPathMark(selectionLocation);
+			renderPathMark(true,selectionLocation);
 			break;
-
 		case CATAPULT_ACTION:
 			break; //TODO implement it!
 		}
@@ -721,7 +720,7 @@ public class GameGUI extends View implements Runnable{
 		}
 	}
 	
-	private void renderPathMark(List<Location> selectionLocation) {
+	private void renderPathMark(boolean red, List<Location> selectionLocation) {
 		for (Location l : selectionLocation) {
 			int px = 0;
 			int py = 0;
@@ -775,8 +774,11 @@ public class GameGUI extends View implements Runnable{
 				GL11.glPushMatrix();
 				GL11.glTranslatef(px+x, py+y, 1+z);
 				GL11.glRotatef(po, 0, 0, 1);
-			    pathMarkTexture.bind();
-			    GL11.glColor4f(0.9f, 0.9f, 0.9f, 0.9f);
+			    if (!red) 
+			    	pathMarkTexture.bind();
+			    else
+			    	pathMarkTexture.bind();
+			    GL11.glColor4f(0.5f, 0.5f, 0.5f, 0.5f);
 			    drawSquareMid(200,25);
 			    GL11.glPopMatrix();
 		}
