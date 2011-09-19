@@ -130,6 +130,7 @@ public class GameGUI extends View implements Runnable{
 	private Clickable buildTownGhost;
 	private Clickable buildCatapult;
 	private Clickable buildCatapultGhost;
+	private Clickable catapultActionGhost;
 	private Clickable setRobberGhost;
 	private Clickable returnResourcesGhost;
 	private Clickable quit;
@@ -1303,6 +1304,13 @@ public class GameGUI extends View implements Runnable{
 				}
 			};
 			
+			catapultActionGhost = new Clickable(null, 0, 0, 0, 0, 0, false, false, false) {
+				@Override
+				public void execute() {
+					controllerAdapter.moveCatapult(getPath(), getPath2());
+				}
+			};
+			
 			setRobberGhost = new Clickable(null, 0, 0, 0, 0, 0, false, false, false) {
 				@Override
 				public void execute() {
@@ -1470,8 +1478,26 @@ public class GameGUI extends View implements Runnable{
 						controllerAdapter.addGuiEvent(buildCatapultGhost);
 					}
 					break;
-				case CATAPULT_ACTION:
+				case CATAPULT_ACTION_SRC:
+					Path source = getMousePath();
+					if (source != null && selectionLocation.contains(Model.getLocation(source))) {
+						catapultActionGhost.setPath(source);
+						selectionLocation = Model.getLocationListPath(modelReader.attackableCatapults(source));
+						selectionLocation2 = Model.getLocationListPath(modelReader.catapultMovePaths(source));
+						selectionLocation3 = Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Village));
+						selectionLocation3.addAll(Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Town)));
+						selectionMode = CATAPULT_ACTION_DST;
+					}
+					controllerAdapter.addGuiEvent(buildStreetGhost);
 					break;
+				case CATAPULT_ACTION_DST:
+					Path destination = getMousePath();
+					if (destination != null && selectionLocation.contains(Model.getLocation(destination))) {
+						catapultActionGhost.setPath2(destination);
+						selectionMode = NONE;
+					}
+					controllerAdapter.addGuiEvent(buildStreetGhost);
+					break;	
 				case STREET:
 					Path street = getMousePath();
 					if (street != null && selectionLocation.contains(Model.getLocation(street))) {
