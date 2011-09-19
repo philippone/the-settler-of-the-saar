@@ -32,6 +32,7 @@ import de.unisaarland.cs.st.saarsiedler.comm.Connection;
 import de.unisaarland.cs.st.saarsiedler.comm.GameEvent;
 import de.unisaarland.cs.st.saarsiedler.comm.GameEvent.EventType;
 import de.unisaarland.cs.st.saarsiedler.comm.GameEvent.MatchStart;
+import de.unisaarland.cs.st.saarsiedler.comm.GameEvent.PlayerLeft;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 import de.unisaarland.cs.st.saarsiedler.comm.results.ChangeReadyResult;
@@ -197,6 +198,7 @@ public class Client {
 			}
 			else if ((event.getType()==EventType.PLAYER_LEFT)) {
 				//TODO: handle player left
+				System.out.println("Client "+((PlayerLeft)event).getClientId()+" LEFT");
 			}
 			else {
 				System.out.println(event);
