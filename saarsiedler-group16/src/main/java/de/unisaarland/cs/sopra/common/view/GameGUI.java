@@ -98,10 +98,11 @@ public class GameGUI extends View implements Runnable{
 	private static final int TOWN 					= 	2;
 	private static final int STREET 				= 	3;
 	private static final int CATAPULT_BUILD 		= 	4;
-	private static final int CATAPULT_ACTION 		= 	5;
-	private static final int ROBBER_SELECT		 	=   6;
-	private static final int ROBBER_PLACE 			=   7;
-	private static final int ROBBER_PLAYER_SELECT 	=   8;
+	private static final int CATAPULT_ACTION_SRC 	= 	5;
+	private static final int CATAPULT_ACTION_DST 	= 	6;
+	private static final int ROBBER_SELECT		 	=   7;
+	private static final int ROBBER_PLACE 			=   8;
+	private static final int ROBBER_PLAYER_SELECT 	=   9;
 	private List<Point> selectionPoint;
 	private List<Location> selectionLocation;
 	private List<Location> selectionLocation2; //For move catapult
@@ -692,11 +693,13 @@ public class GameGUI extends View implements Runnable{
 		case CATAPULT_BUILD:
 			renderPathMark(false, selectionLocation);
 			break;
-		case CATAPULT_ACTION:
-			renderPathMark(true, selectionLocation);
-			renderPathMark(false, selectionLocation2);
-			renderIntersectionMark(true, selectionLocation3);
+		case CATAPULT_ACTION_SRC:
+			renderPathMark(false, selectionLocation);
 			break;
+		case CATAPULT_ACTION_DST:
+			renderPathMark(true, selectionLocation);
+			renderIntersectionMark(true, selectionLocation3);
+			renderPathMark(false, selectionLocation2);
 		}
 	}
 	
