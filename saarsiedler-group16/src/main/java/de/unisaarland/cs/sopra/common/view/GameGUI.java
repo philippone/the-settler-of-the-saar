@@ -226,6 +226,7 @@ public class GameGUI extends View implements Runnable{
 	
 	private void reinitiateUI() {
 		Player me = modelReader.getMe();
+		List<List<Path>> lr = modelReader.calculateLongestRoads(me);
 		if (modelReader.affordableSettlements(BuildingType.Village) > 0) 
 			buildVillage.setActive(true);
 		if (modelReader.affordableSettlements(BuildingType.Town) > 0) 
@@ -234,7 +235,7 @@ public class GameGUI extends View implements Runnable{
 			buildCatapult.setActive(true);
 		if (modelReader.affordableStreets() > 0) 
 			buildStreet.setActive(true);
-		if (!modelReader.calculateLongestRoads(me).isEmpty())
+		if (!lr.isEmpty() && lr.get(0).size() >= 5)
 			claimLongestRoad.setActive(true);
 		//TODO evtl ändern wenn sich longestroad funktion ändert
 		if (modelReader.getCurrentVictoryPoints(me) >= modelReader.getMaxVictoryPoints())
@@ -963,7 +964,8 @@ public class GameGUI extends View implements Runnable{
 	
 	@Override
 	public void updateResources() {
-		reinitiateUI();
+		if (!observer)
+			reinitiateUI();
 	}
 
 	
