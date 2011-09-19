@@ -22,7 +22,7 @@ public class Popup extends JFrame {
 		initComponents();
 		topLabel.setText("You have to choose "+n+" Resources!");
 		topLabel2.setText("Make a valid offer!");
-		
+		topLabel3.setText("Accept Trade-Offer?");
 		okButton.addActionListener(new ActionListener() {
 			
 			@Override
