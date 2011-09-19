@@ -7,6 +7,7 @@ import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public abstract class Clickable {
 	private static List<Clickable> model = new LinkedList<Clickable>();
@@ -22,6 +23,7 @@ public abstract class Clickable {
 	private Path path;
 	private Path path2;
 	private Player player;
+	private ResourcePackage res;
 	
 	public static List<Clickable> executeModelClicks(float xogl, float yogl) {
 		List<Clickable> liste = new LinkedList<Clickable>();
@@ -182,6 +184,14 @@ public abstract class Clickable {
 
 	public void setPath2(Path path2) {
 		this.path2 = path2;
+	}
+
+	public ResourcePackage getRes() {
+		return res;
+	}
+
+	public void setRes(ResourcePackage res) {
+		this.res = res;
 	}
 	
 }

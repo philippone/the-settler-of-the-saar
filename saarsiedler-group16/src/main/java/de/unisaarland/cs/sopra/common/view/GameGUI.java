@@ -131,6 +131,7 @@ public class GameGUI extends View implements Runnable{
 	private Clickable buildCatapultGhost;
 	private Clickable catapultActionGhost;
 	private Clickable setRobberGhost;
+	private Clickable returnResourcesGhost;
 	private Clickable quit;
 	
 	private boolean observer;
@@ -241,7 +242,6 @@ public class GameGUI extends View implements Runnable{
 			buildStreet.setActive(true);
 		if (!lr.isEmpty() && lr.get(0).size() >= 5)
 			claimLongestRoad.setActive(true);
-		//TODO evtl ändern wenn sich longestroad funktion ändert
 		if (modelReader.getCurrentVictoryPoints(me) >= modelReader.getMaxVictoryPoints())
 			claimVictory.setActive(true);
 		if (modelReader.getRound() >= 1)
@@ -1019,7 +1019,9 @@ public class GameGUI extends View implements Runnable{
 		deactivateUI();
 		if (!observer) {
 			if (modelReader.getMe().getResources().size() > 7) {
-				//TODO: handle return resources über gamemode bzw erstmal über swing!
+				ResourcePackage res = Client.returnResources(modelReader.getResources().copy());
+				returnResourcesGhost.setRes(res);
+				controllerAdapter.addGuiEvent(returnResourcesGhost);
 			}
 			if (modelReader.getMe() == modelReader.getCurrentPlayer()) {
 				selectionPoint = Model.getLocationListField(modelReader.getRobberFields());
@@ -1149,7 +1151,7 @@ public class GameGUI extends View implements Runnable{
 			intersectionMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Mark.png"));
 			intersectionMarkRedTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/MarkRed.png"));
 			pathMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Mark.png"));
-			pathMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/MarkRed.png"));
+			pathMarkTextureRed = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/MarkRed.png"));
 			villageTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Village.png"));
 			townTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Town.png"));
 			
@@ -1213,7 +1215,7 @@ public class GameGUI extends View implements Runnable{
 			offerTrade = new Clickable("offerTrade", xOffsetUI+450, yOffsetUI+65, 2, 185, 77, false, true, true) {
 				@Override
 				public void execute() {
-					//TODO implement it!
+					//TODO Client.tradeOffer(modelReader.getResources(), modelReader.getHarborTypes(modelReader.getMe()));
 				}
 			};
 			
@@ -1308,6 +1310,13 @@ public class GameGUI extends View implements Runnable{
 				@Override
 				public void execute() {
 					controllerAdapter.moveRobber(getField(), getField2(), getPlayer());
+				}
+			};
+			
+			returnResourcesGhost = new Clickable(null, 0, 0, 0, 0, 0, false, false, false) {
+				@Override
+				public void execute() {
+					controllerAdapter.returnResources(getRes());
 				}
 			};
 			

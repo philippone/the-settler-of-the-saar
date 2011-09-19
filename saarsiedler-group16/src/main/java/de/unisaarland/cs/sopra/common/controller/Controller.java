@@ -26,6 +26,7 @@ public class Controller {
 	private Resource r;
 	private boolean endOfGame;
 	private Queue<Clickable> guiEvents;
+	public static boolean somethingReallyImportant = false;
 
 	/**
 	 * @param connection
@@ -243,6 +244,7 @@ public class Controller {
 	 */
 	public void endTurn() throws IllegalStateException, IOException {
 		connection.endTurn();
+		Controller.somethingReallyImportant = true;
 	}
 
 	/**
@@ -343,21 +345,24 @@ public class Controller {
 	/**
 	 * @throws IllegalStateException
 	 * @throws IOException
+	 * @throws InterruptedException 
 	 */
-	public void mainLoop() throws IllegalStateException, IOException {
+	public void mainLoop() throws Exception {
 		while(!endOfGame){
-			GameEvent e = connection.getNextEvent(100);
-			
+			while (!modelWriter.writeSomethingReallyUnspecifiedToModel() || somethingReallyImportant) {
+				somethingReallyImportant = false;
+				GameEvent e = connection.getNextEvent(100);
+				if (e != null) {
+					System.out.println(e);
+					handleEvent(e);
+				}
+			}
 			Iterator<Clickable> iter = guiEvents.iterator();
 			while (iter.hasNext()) {
 				iter.next().execute();
 				iter.remove();
 			}
-			
-			if (e != null) {
-			System.out.println(e);
-			handleEvent(e);
-			}
+			Thread.sleep(100);
 		}
 	}
 	
