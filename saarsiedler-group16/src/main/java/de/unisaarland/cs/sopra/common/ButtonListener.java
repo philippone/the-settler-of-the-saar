@@ -30,6 +30,7 @@ public class ButtonListener implements ActionListener {
 				System.exit(0);
 			}
 			if (arg0.getSource() == gui.menuItemSettings){
+				Client.loadSettings();
 				gui.lobbyPanel.setVisible(false);
 				gui.menuPanel.setVisible(false);
 				gui.createPanel.setVisible(false);
@@ -41,6 +42,7 @@ public class ButtonListener implements ActionListener {
 		
 		//StartMenu	
 			if (arg0.getSource() == gui.settings_menu){
+				Client.loadSettings();
 				gui.menuPanel.setVisible(false);
 				gui.settingsPanel.setVisible(true);
 			}
