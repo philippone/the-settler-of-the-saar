@@ -18,6 +18,7 @@ import java.util.concurrent.CyclicBarrier;
 
 import javax.swing.table.DefaultTableModel;
 
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
 import de.unisaarland.cs.sopra.common.controller.Controller;
@@ -47,8 +48,9 @@ public class Client {
 	
 	public static void main(String[] args) throws UnknownHostException, IOException {
 		initOpenGL();
-		clientGUI = new GUIFrame();
 		setting = new Setting(new DisplayMode(1024, 600), true, PlayerColors.RED);
+		clientGUI = new GUIFrame();
+		
 	}
 	private static void initOpenGL(){
 		
@@ -283,6 +285,7 @@ public class Client {
 	
 	public static void saveSettings(){
 		String color= (String) clientGUI.playerColorBox.getItemAt(clientGUI.playerColorBox.getSelectedIndex());
+		String resol= (String) clientGUI.resolutionBox.getItemAt(clientGUI.resolutionBox.getSelectedIndex());
 		String separator = System.getProperties().getProperty("file.separator ");
 		
 		File f = new File("."+separator+"settings");
@@ -290,7 +293,13 @@ public class Client {
 		Properties p = new Properties();
 		 
 		p.setProperty("Color", color);
-//		p.setProperty("host", "localhost");
+		p.setProperty("Resolution", resol);
+		p.setProperty("Name", Setting.getName());
+		
+		if( Setting.isFullscreen() )
+			p.setProperty("Fullscreen","true");
+		else 
+			p.setProperty("Fullscreen","false");
 		 
 		try {
 			p.storeToXML(new FileOutputStream(f), new Date(System.currentTimeMillis()).toString());
@@ -307,16 +316,30 @@ public class Client {
 		p.loadFromXML(new FileInputStream(f));
 		 
 		String color = p.getProperty("Color");
-		System.out.println(color);
-		for(int i=0; i<clientGUI.farben.length; i++){
-			if(color.equals(clientGUI.farben[i])){
-				Setting.setPlayerColor(clientGUI.pc[i]);
+		for(int i=0; i<GUIFrame.farben.length; i++){
+			if(color.equals(GUIFrame.farben[i])){
+				System.out.println(color);
+				Setting.setPlayerColor(GUIFrame.pc[i]);
 			}
 		}
-		System.out.println("durch");
-//		host = p.getProperty("host");
+		String resol = p.getProperty("Resolution");
+		for(int i=0; i<GUIFrame.dmodes.length; i++){
+			if(color.equals(GUIFrame.dmodes[i])){
+				Setting.setDisplayMode(GUIFrame.displaymodes[i]);
+			}
 		}
-		catch (Exception e)	{e.printStackTrace();
+		Setting.setName(p.getProperty("Name"));
+		
+		String fullscreen = p.getProperty("Fullscreen");
+		if(fullscreen.equals("true")){
+			Setting.setFullscreen(true);
+			Setting.setDisplayMode(Display.getDisplayMode());
+		}
+		else {
+			Setting.setFullscreen(false);
+		}
+		}
+		catch (Exception e)	{
 			System.out.println("No options found, using default!");
 		}
 	}

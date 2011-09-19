@@ -48,13 +48,14 @@ public class GUIFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private ButtonListener actLis;
 	public long focusedWordID;
-	public final PlayerColors[] pc; 
-	public final String [] farben; 
+	public final static PlayerColors[] pc= new PlayerColors[]{PlayerColors.RED, PlayerColors.BLUE,PlayerColors.YELLOW,PlayerColors.ORANGE,PlayerColors.BROWN,PlayerColors.WHITE,PlayerColors.PURPLE,PlayerColors.BLACK};
+	public final static String [] farben = new String[]{"RED","BLUE","YELLOW","ORANGE","BROWN","WHITE","PURPLE","BLACK"};
+	public final static DisplayMode[] displaymodes = new DisplayMode[]{Display.getDisplayMode(), new DisplayMode(1024, 600), new DisplayMode(800, 600)};
+	public final static String [] dmodes = new String[]{"AUTO","1024x600","800x600"};
+	
 	
 	public GUIFrame() {
 		actLis = new ButtonListener(this);
-		pc = new PlayerColors[]{PlayerColors.RED, PlayerColors.BLUE,PlayerColors.YELLOW,PlayerColors.ORANGE,PlayerColors.BROWN,PlayerColors.WHITE,PlayerColors.PURPLE,PlayerColors.BLACK};
-		farben = new String[]{"RED","BLUE","YELLOW","ORANGE","BROWN","WHITE","PURPLE","BLACK"};
 		this.setVisible(true);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		initComponents();
@@ -152,9 +153,7 @@ public class GUIFrame extends JFrame {
 	}
 	
 	public void resolutionChooser(){
-		final DisplayMode[] displaymodes = new DisplayMode[]{Display.getDisplayMode(), new DisplayMode(1024, 600), new DisplayMode(800, 600)};
-		String [] farben = new String[]{"AUTO","1024x600","800x600"};
-		for ( String s : farben)
+		for ( String s : dmodes)
 		      resolutionBox.addItem( s );
 		resolutionBox.addItemListener(new ItemListener() {
 			@Override
