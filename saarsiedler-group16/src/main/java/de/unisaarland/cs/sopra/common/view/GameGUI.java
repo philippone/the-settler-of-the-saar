@@ -912,6 +912,7 @@ public class GameGUI extends View implements Runnable{
 	   debugFont.drawString(300, 60, "mx: " + Mouse.getX() + ", my: " + Mouse.getY() + ", mw: " + Mouse.getEventDWheel(), Color.white);
 	   debugFont.drawString(300, 90, "minX: " + minX + ", minY: " + minY + ", minZ: " + maxX, Color.white);
 	   debugFont.drawString(300, 120, "oglx: " + (int)(Mouse.getX()*screenToOpenGLx(zOffsetUI)+25) + ", ogly: " + (int)((windowHeight-Mouse.getY())*screenToOpenGLy(zOffsetUI)+380) );
+	   debugFont.drawString(300, 150, "selectionmode: " + selectionMode );
 	   GL11.glPopMatrix();
 
 	   GL11.glPushMatrix();
@@ -1248,7 +1249,8 @@ public class GameGUI extends View implements Runnable{
 					}
 					else {
 						selectionLocation = Model.getLocationListPath(modelReader.buildableStreetPaths(modelReader.getMe()));
-						selectionMode = STREET;
+						if (selectionLocation.size() != 0)
+							selectionMode = STREET;
 					}
 				}
 				@Override
@@ -1265,7 +1267,8 @@ public class GameGUI extends View implements Runnable{
 					}
 					else {
 						selectionLocation = Model.getLocationListIntersection(modelReader.buildableVillageIntersections(modelReader.getMe()));
-						selectionMode = VILLAGE;
+						if (selectionLocation.size() != 0)
+							selectionMode = VILLAGE;
 					}
 				}
 				@Override
@@ -1282,7 +1285,8 @@ public class GameGUI extends View implements Runnable{
 					}
 					else {
 						selectionLocation = Model.getLocationListIntersection(modelReader.buildableTownIntersections(modelReader.getMe()));
-						selectionMode = TOWN;
+						if (selectionLocation.size() != 0)
+							selectionMode = TOWN;
 					}
 				}
 				@Override
@@ -1299,7 +1303,8 @@ public class GameGUI extends View implements Runnable{
 					}
 					else {
 						selectionLocation = Model.getLocationListPath(modelReader.buildableCatapultPaths(modelReader.getMe()));
-						selectionMode = CATAPULT_BUILD;
+						if (selectionLocation.size() != 0)
+							selectionMode = CATAPULT_BUILD;
 					}
 				}
 				@Override
@@ -1348,7 +1353,7 @@ public class GameGUI extends View implements Runnable{
 				@Override
 				public void executeUI() {
 					Display.destroy();
-					System.exit(0);	
+					Client.backToLobby();
 				}
 				@Override
 				public void executeController() {}
@@ -1356,7 +1361,7 @@ public class GameGUI extends View implements Runnable{
 			
 		} catch (Exception e) {e.printStackTrace();}
 		
-		if (!observer) {
+		if (!observer && modelReader.getMe() == modelReader.getCurrentPlayer()) {
 			init = true;
 			buildVillage.setActive(true);
 			console4 = modelReader.getInitVillages() + " initial villages left";
@@ -1415,7 +1420,7 @@ public class GameGUI extends View implements Runnable{
 		int my = Mouse.getY();
 		
 		
-		if (Mouse.isButtonDown(0) && System.currentTimeMillis() - lastinputcheck > 500) {
+		if (Mouse.isButtonDown(0) && System.currentTimeMillis() - lastinputcheck > 250) {
 			this.lastinputcheck = System.currentTimeMillis();
 			for (Clickable c : Clickable.executeClicks(mx*screenToOpenGLx(zOffsetUI)+25, (windowHeight-my)*screenToOpenGLy(zOffsetUI)+380)) {
 				c.executeUI();
@@ -1543,10 +1548,10 @@ public class GameGUI extends View implements Runnable{
 			else if (mx > windowWidth-50) {
 				x-=5;
 			}
-			if (my < 50) {
+			if (my < 50 && (mx < 100 || mx > windowWidth-100)) {
 				y-=5;
 			}
-			else if (my > windowHeight-50) {
+			else if (my > windowHeight-50 ) {
 				y+=5;
 			}
 		}
@@ -1565,16 +1570,16 @@ public class GameGUI extends View implements Runnable{
 			minX+=5;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
-			//x-=10;
-			minX-=5;
+			x-=10;
+//			minX-=5;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
-			//y+=10;
-			minY+=5;
+			y+=10;
+//			minY+=5;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
-			//y-=10;
-			minY-=5;
+			y-=10;
+//			minY-=5;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_N)) {
 			if (z+50 < this.maxZ)
