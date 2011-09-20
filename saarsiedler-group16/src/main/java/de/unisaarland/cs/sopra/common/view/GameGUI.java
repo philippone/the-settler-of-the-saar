@@ -1039,7 +1039,7 @@ public class GameGUI extends View implements Runnable{
 
 	@Override
 	public void eventTrade(ResourcePackage resourcePackage) {
-		boolean decision = Client.incomingTradeOffer(resourcePackage);
+		boolean decision = Client.incomingTradeOffer(modelReader.getResources().copy(),resourcePackage);
 		respondTrade.setDecision(decision);
 		controllerAdapter.addGuiEvent(respondTrade);
 	}
@@ -1071,47 +1071,34 @@ public class GameGUI extends View implements Runnable{
 	
 	@Override
 	public void run() {
-		init();
 		try {
-			Display.makeCurrent();
-		} catch (LWJGLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		try {
+			init();
 			barrier.await();
-		} catch (Exception e) {e.printStackTrace();} 
-		
-	    boolean finished = false;
-		while (!finished) {
-			  
-			  Display.update();
-		      // Always call Window.update(), all the time - it does some behind the
-		      // scenes work, and also displays the rendered output
-			  handleInput();
-			  render();
-		      // Check for close requests
-		      if (Display.isCloseRequested()) {
-			  finished = true;
-		      } 
-		      else if (Display.isActive()) {
-		          render();
-		          Display.sync(60);
-		        } 
-		      // The window is not in the foreground, so we can allow other stuff to run and
-		      // infrequently update
-		      else {
-		        try {
-		          Thread.sleep(100);
-		        } catch (InterruptedException e) {e.printStackTrace();}
-		      }
-		      if (Display.isVisible() || Display.isDirty()) {
-		          render();
-		      }
-		}
-		Display.destroy();
-		System.exit(0);
+		    boolean finished = false;
+			while (!finished) {
+				  Display.update();
+				  handleInput();
+				  render();
+			      if (Display.isCloseRequested()) {
+			    	  finished = true;
+			      } 
+			      else if (Display.isActive()) {
+			          render();
+			          Display.sync(60);
+			      } 
+			      else {
+			    	  Thread.sleep(100);
+			      }
+			      if (Display.isVisible() || Display.isDirty()) {
+			          render();
+			      }
+			}
+			Display.destroy();
+			controllerAdapter.leaveMatch();
+			Client.backToLobby();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
 	}
 		
 
@@ -1427,155 +1414,164 @@ public class GameGUI extends View implements Runnable{
 	}
 	
 
-	private void handleInput() {
+	private void handleInput() throws InterruptedException {
 		int mx = Mouse.getX();
 		int my = Mouse.getY();
 		float oglx = mx*screenToOpenGLx(zOffsetUI)+25;
 		float ogly = (windowHeight-my)*screenToOpenGLy(zOffsetUI)+380;
 		
-		if (Mouse.isButtonDown(0) && System.currentTimeMillis() - lastinputcheck > 500 ) {
-			this.lastinputcheck = System.currentTimeMillis();
-			if (!(oglx > xOffsetUI && oglx < xOffsetUI+1281 && ogly > yOffsetUI && ogly < yOffsetUI+240)) {
-				switch (selectionMode) {
-					case NONE:
-						Path source = getMousePath();
-						if (source != null && modelReader.getCatapults(modelReader.getMe()).contains(source)) {
-							catapultAction.setPath(source);
-							selectionLocation = Model.getLocationListPath(modelReader.attackableCatapults(source));
-							selectionLocation2 = Model.getLocationListPath(modelReader.catapultMovePaths(source));
-							selectionLocation3 = Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Village, source));
-							selectionLocation3.addAll(Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Town, source)));
-							if (selectionLocation.size()!=0 || selectionLocation2.size()!=0 || selectionLocation3.size()!=0)
-								selectionMode = CATAPULT_ACTION_DST;
-						}
-						break;
-					case ROBBER_SELECT:
-						Field robberSRC = getMouseField();
-						if (robberSRC != null && selectionPoint.contains(Model.getLocation(robberSRC))) {
-							setRobber.setField(robberSRC);
-							selectionPoint = Model.getLocationListField(modelReader.canPlaceRobber());
-							selectionMode = ROBBER_PLACE;
-							console4 = "Now place the Robber on another Field!";
-						}
-						break;
-					case ROBBER_PLACE:
-						Field robberDST = getMouseField();
-						if (robberDST != null && selectionPoint.contains(Model.getLocation(robberDST))) {
-							setRobber.setField2(robberDST);
-							selectionLocation = Model.getLocationListIntersection(modelReader.getIntersectionsFromField(robberDST));
-							
-							//remove my own intersections from list
-							Iterator<Location> iter = selectionLocation.iterator();
-							while (iter.hasNext()) {
-								Intersection tmp = modelReader.getIntersection(iter.next());
-								if (tmp.hasOwner() && tmp.getOwner() == modelReader.getMe()) {
-									iter.remove();
+		if (System.currentTimeMillis() - lastinputcheck > 400 ) {
+			lastinputcheck = System.currentTimeMillis();
+			if (Mouse.isButtonDown(0)) {
+				if (!(oglx > xOffsetUI && oglx < xOffsetUI+1281 && ogly > yOffsetUI && ogly < yOffsetUI+240)) {
+					switch (selectionMode) {
+						case NONE:
+							Path source = getMousePath();
+							if (source != null && modelReader.getCatapults(modelReader.getMe()).contains(source)) {
+								catapultAction.setPath(source);
+								selectionLocation = Model.getLocationListPath(modelReader.attackableCatapults(source));
+								selectionLocation2 = Model.getLocationListPath(modelReader.catapultMovePaths(source));
+								selectionLocation3 = Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Village, source));
+								selectionLocation3.addAll(Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Town, source)));
+								if (selectionLocation.size()!=0 || selectionLocation2.size()!=0 || selectionLocation3.size()!=0)
+									selectionMode = CATAPULT_ACTION_DST;
+							}
+							break;
+						case ROBBER_SELECT:
+							Field robberSRC = getMouseField();
+							if (robberSRC != null && selectionPoint.contains(Model.getLocation(robberSRC))) {
+								setRobber.setField(robberSRC);
+								selectionPoint = Model.getLocationListField(modelReader.canPlaceRobber());
+								selectionMode = ROBBER_PLACE;
+								console4 = "Now place the Robber on another Field!";
+							}
+							break;
+						case ROBBER_PLACE:
+							Field robberDST = getMouseField();
+							if (robberDST != null && selectionPoint.contains(Model.getLocation(robberDST))) {
+								setRobber.setField2(robberDST);
+								selectionLocation = Model.getLocationListIntersection(modelReader.getIntersectionsFromField(robberDST));
+								
+								//remove my own intersections from list
+								Iterator<Location> iter = selectionLocation.iterator();
+								while (iter.hasNext()) {
+									Intersection tmp = modelReader.getIntersection(iter.next());
+									if (tmp.hasOwner() && tmp.getOwner() == modelReader.getMe()) {
+										iter.remove();
+									}
+								}
+								
+								selectionMode = ROBBER_PLAYER_SELECT;
+								console4 = "Now choose a Player to Rob or";
+								console5 = "click on an empty Intersection";
+								console6 = "to rob nobody";
+							}
+							break;
+						case ROBBER_PLAYER_SELECT:
+							Intersection player = getMouseIntersection();
+							if (player != null && selectionLocation.contains(Model.getLocation(player))) {
+								if (player.hasOwner())
+									setRobber.setPlayer(player.getOwner());
+								selectionMode = NONE;
+								console4 = "";
+								console5 = "";
+								console6 = "";
+								controllerAdapter.addGuiEvent(setRobber);
+								reinitiateUI();
+							}
+							break;
+						case VILLAGE:
+							Intersection village = getMouseIntersection();
+							if (village != null && selectionLocation.contains(Model.getLocation(village))) {
+								buildVillage.setIntersection(village);
+								controllerAdapter.addGuiEvent(buildVillage);
+								selectionMode = NONE;
+								console4 = "";
+								if (init) {
+									buildStreet.setActive(true);
+									buildVillage.setActive(false);
+									console4 = (modelReader.getInitVillages()-modelReader.getSettlements(modelReader.getMe(), BuildingType.Village).size()-1) + " initial villages left";
 								}
 							}
-							
-							selectionMode = ROBBER_PLAYER_SELECT;
-							console4 = "Now choose a Player to Rob or";
-							console5 = "click on an empty Intersection";
-							console6 = "to rob nobody";
-						}
-						break;
-					case ROBBER_PLAYER_SELECT:
-						Intersection player = getMouseIntersection();
-						if (player != null && selectionLocation.contains(Model.getLocation(player))) {
-							if (player.hasOwner())
-								setRobber.setPlayer(player.getOwner());
-							selectionMode = NONE;
-							console4 = "";
-							console5 = "";
-							console6 = "";
-							controllerAdapter.addGuiEvent(setRobber);
-							reinitiateUI();
-						}
-						break;
-					case VILLAGE:
-						Intersection village = getMouseIntersection();
-						if (village != null && selectionLocation.contains(Model.getLocation(village))) {
-							buildVillage.setIntersection(village);
-							selectionMode = NONE;
-							console4 = "";
-							if (init) {
-								buildStreet.setActive(true);
-								buildVillage.setActive(false);
-								console4 = (modelReader.getInitVillages()-modelReader.getSettlements(modelReader.getMe(), BuildingType.Village).size()-1) + " initial villages left";
-								selectionLocation = Model.getLocationListPath(modelReader.buildableStreetPaths(modelReader.getMe()));
-								if (selectionLocation.size() != 0)
-									selectionMode = STREET;
-							}
-							controllerAdapter.addGuiEvent(buildVillage);
-						}
-						break;
-					case TOWN:
-						Intersection town = getMouseIntersection();
-						if (town != null && selectionLocation.contains(Model.getLocation(town))) {
-							buildTown.setIntersection(town);
-							selectionMode = NONE;
-							console4 = "";
-							controllerAdapter.addGuiEvent(buildTown);
-						}
-						break;
-					case CATAPULT_BUILD:
-						Path path = getMousePath();
-						if (path != null && selectionLocation.contains(Model.getLocation(path))) {
-							buildCatapult.setPath(path);
-							selectionMode = NONE;
-							console4 = "";
-							controllerAdapter.addGuiEvent(buildCatapult);
-						}
-						break;
-					case CATAPULT_ACTION_DST:
-						Path destPath = getMousePath();
-						if (destPath == catapultAction.getPath()) {
-							selectionMode = NONE;
-						}
-						else if (modelReader.getCatapults(modelReader.getMe()).contains(destPath)){
-							catapultAction.setPath(destPath);
-							selectionLocation = Model.getLocationListPath(modelReader.attackableCatapults(destPath));
-							selectionLocation2 = Model.getLocationListPath(modelReader.catapultMovePaths(destPath));
-							selectionLocation3 = Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Village, destPath));
-							selectionLocation3.addAll(Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Town, destPath)));
-							if (selectionLocation.size()==0 && selectionLocation2.size()==0 && selectionLocation3.size()==0)
+							break;
+						case TOWN:
+							Intersection town = getMouseIntersection();
+							if (town != null && selectionLocation.contains(Model.getLocation(town))) {
+								buildTown.setIntersection(town);
 								selectionMode = NONE;
-						}
-						else {
-							Intersection destInter = getMouseIntersection();
-							if (destInter != null && selectionLocation3.contains(Model.getLocation(destInter))) {
-								catapultAction.setIntersection(destInter);
-								selectionMode = NONE;
-								controllerAdapter.addGuiEvent(catapultAction);
-							}
-							else if (destPath != null && (selectionLocation.contains(Model.getLocation(destPath)) || selectionLocation2.contains(Model.getLocation(destPath)))) {
-								catapultAction.setPath2(destPath);
-								selectionMode = NONE;
-								controllerAdapter.addGuiEvent(catapultAction);
-							}
-						}
-						break;	
-					case STREET:
-						Path street = getMousePath();
-						if (street != null && selectionLocation.contains(Model.getLocation(street))) {
-							buildStreet.setPath(street);
-							selectionMode = NONE;
-							if (init) {
-								buildStreet.setActive(false);
-								buildVillage.setActive(false);
-								init = false;
-							}
-							else 
 								console4 = "";
-							controllerAdapter.addGuiEvent(buildStreet);
-						}
-						//if init dont change console4 else ""
-						//if init set init to false
-						break; //TODO implement it!
+								controllerAdapter.addGuiEvent(buildTown);
+							}
+							break;
+						case CATAPULT_BUILD:
+							Path path = getMousePath();
+							if (path != null && selectionLocation.contains(Model.getLocation(path))) {
+								buildCatapult.setPath(path);
+								selectionMode = NONE;
+								console4 = "";
+								controllerAdapter.addGuiEvent(buildCatapult);
+							}
+							break;
+						case CATAPULT_ACTION_DST:
+							Path destPath = getMousePath();
+							if (destPath == catapultAction.getPath()) {
+								selectionMode = NONE;
+							}
+							else if (modelReader.getCatapults(modelReader.getMe()).contains(destPath)){
+								catapultAction.setPath(destPath);
+								selectionLocation = Model.getLocationListPath(modelReader.attackableCatapults(destPath));
+								selectionLocation2 = Model.getLocationListPath(modelReader.catapultMovePaths(destPath));
+								selectionLocation3 = Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Village, destPath));
+								selectionLocation3.addAll(Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Town, destPath)));
+								if (selectionLocation.size()==0 && selectionLocation2.size()==0 && selectionLocation3.size()==0)
+									selectionMode = NONE;
+							}
+							else {
+								Intersection destInter = getMouseIntersection();
+								if (destInter != null && selectionLocation3.contains(Model.getLocation(destInter))) {
+									catapultAction.setIntersection(destInter);
+									selectionMode = NONE;
+									controllerAdapter.addGuiEvent(catapultAction);
+								}
+								else if (destPath != null && (selectionLocation.contains(Model.getLocation(destPath)) || selectionLocation2.contains(Model.getLocation(destPath)))) {
+									catapultAction.setPath2(destPath);
+									selectionMode = NONE;
+									controllerAdapter.addGuiEvent(catapultAction);
+								}
+							}
+							break;	
+						case STREET:
+							Path street = getMousePath();
+							if (street != null && selectionLocation.contains(Model.getLocation(street))) {
+								buildStreet.setPath(street);
+								selectionMode = NONE;
+								if (init) {
+									buildStreet.setActive(false);
+									buildVillage.setActive(false);
+									init = false;
+								}
+								else 
+									console4 = "";
+								controllerAdapter.addGuiEvent(buildStreet);
+							}
+							break; 
+					}
+				}
+				for (Clickable c : Clickable.executeClicks(mx*screenToOpenGLx(zOffsetUI)+25, (windowHeight-my)*screenToOpenGLy(zOffsetUI)+380)) {
+					c.executeUI();
 				}
 			}
-			for (Clickable c : Clickable.executeClicks(mx*screenToOpenGLx(zOffsetUI)+25, (windowHeight-my)*screenToOpenGLy(zOffsetUI)+380)) {
-				c.executeUI();
+			if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
+				if (buildStreet.isActive()) buildStreet.executeUI();
+			}
+			else if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
+				if (buildVillage.isActive()) buildVillage.executeUI();
+			}
+			else if (Keyboard.isKeyDown(Keyboard.KEY_3)) {
+				if (buildTown.isActive()) buildTown.executeUI();
+			}
+			else if (Keyboard.isKeyDown(Keyboard.KEY_4)) {
+				if (buildCatapult.isActive()) buildCatapult.executeUI();
 			}
 		}
 		
@@ -1995,9 +1991,6 @@ public class GameGUI extends View implements Runnable{
 	public void initTurn() {
 		init = true;
 		buildVillage.setActive(true);
-		selectionLocation = Model.getLocationListIntersection(modelReader.buildableVillageIntersections(modelReader.getMe()));
-		if (selectionLocation.size() != 0)
-			selectionMode = VILLAGE;
 	}
 
 	@Override

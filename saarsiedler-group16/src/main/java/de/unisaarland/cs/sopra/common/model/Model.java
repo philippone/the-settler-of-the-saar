@@ -1437,8 +1437,9 @@ public class Model implements ModelReader, ModelWriter {
 					java.util.Collections.reverse(players);
 					reversedPlayersList = false;
 				}
+				if (getCurrentPlayer() == me)
+					Controller.requestSingleEventPull = true;
 			}
-			Controller.requestSingleEventPull = true;
 		}
 	}
 
