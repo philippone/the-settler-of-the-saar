@@ -10,14 +10,13 @@ import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
-import de.unisaarland.cs.sopra.common.model.Resource;
 
 public class InitializeStrategy extends Strategy {
-	private Set<Resource> playersResources = new HashSet<Resource>();
+	
+	//private Set<Resource> playersResources = new HashSet<Resource>();
 	
 	public InitializeStrategy(ModelReader mr) {
 		super(mr);
-		// TODO Auto-generated constructor stub
 	}
 	
 	
@@ -47,13 +46,11 @@ public class InitializeStrategy extends Strategy {
 	}
 	@Override
 	public double evaluate(AttackCatapult stroke) {
-		
 		return 0;
 	}
 
 	@Override
 	public double evaluate(AttackSettlement stroke) {
-		
 		return 0;
 	}
 
@@ -123,13 +120,11 @@ public class InitializeStrategy extends Strategy {
 
 	@Override
 	public double evaluate(BuildTown stroke) {
-		
 		return 0;
 	}
 
 	@Override
 	public double evaluate(BuildCatapult stroke) {
-	
 		return 0;
 	}
 
@@ -159,21 +154,18 @@ public class InitializeStrategy extends Strategy {
 
 	@Override
 	public double evaluate(MoveCatapult stroke) {
-		
 		return 0;
 	}
 
 
 	@Override
 	public double evaluate(MoveRobber stroke) {
-	
 		return 0;
 	}
 
 
 	@Override
 	public double evaluate(ReturnResources stroke) {
-	
 		return 0;
 	}
 

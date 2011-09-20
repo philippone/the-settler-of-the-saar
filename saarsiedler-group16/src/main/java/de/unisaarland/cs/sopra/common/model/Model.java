@@ -1384,9 +1384,6 @@ public class Model implements ModelReader, ModelWriter {
 	@Override
 	public void buildStreet(Location destination) {
 		if (destination == null)	throw new IllegalArgumentException(destination + " is null");
-		//TODO: path nur an village oder town!
-		
-		//TODO: evtl darf path in der initialisierungsphase nur an der letzten gebauten intersection gebaut werden für den fall auf angrenzen der "initLastVillageIntersection" prüfen
 		Path dest = getPath(destination);
 		if (dest.hasStreet())	throw new IllegalArgumentException(	"Strasse bereits vorhanden und gehört: "+ dest.getStreetOwner() + " und nicht: "+ getCurrentPlayer());
 		if (getRound() != 0) {
@@ -1437,8 +1434,8 @@ public class Model implements ModelReader, ModelWriter {
 					java.util.Collections.reverse(players);
 					reversedPlayersList = false;
 				}
-				Controller.somethingReallyImportant = true;
 			}
+			Controller.somethingReallyImportant = true;
 		}
 	}
 
@@ -1565,7 +1562,7 @@ public class Model implements ModelReader, ModelWriter {
 				else throw new IllegalArgumentException("Road is not properly join"); 
 			}
 			if (rightPlayer) {
-				Player owner = getPath(road.get(0)).getStreetOwner();
+				Player owner = getCurrentPlayer();
 				if (longestClaimedRoad == null ) {
 					owner.setVictoryPoints(owner.getVictoryPoints()+2);
 				}
