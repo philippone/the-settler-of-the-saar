@@ -473,6 +473,9 @@ public class GUIFrame extends JFrame {
 				panel13.add(label2, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- gameTitleField ----
+				gameTitleField.setText("private Grp16 noname");
 				panel13.add(gameTitleField, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
