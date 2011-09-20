@@ -1,5 +1,9 @@
 package de.unisaarland.cs.sopra.common.view.ai;
 
+import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -7,14 +11,20 @@ import java.util.List;
 import java.util.Set;
 
 import de.unisaarland.cs.sopra.common.ModelObserver;
+import de.unisaarland.cs.sopra.common.controller.Controller;
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.Intersection;
+import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
+import de.unisaarland.cs.st.saarsiedler.comm.Connection;
+import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
+import de.unisaarland.cs.st.saarsiedler.comm.SocketConnection;
+import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 
 public class Ai implements ModelObserver {
 	
@@ -36,6 +46,32 @@ public class Ai implements ModelObserver {
 		this.initStrategies = new HashSet<Strategy>();
 		this.initStrategies.add(new InitializeStrategy(mr));
 		mr.addModelObserver(this);
+	}
+	
+	private static MatchInformation getMatchInformation(String[] args, Connection c) throws Exception {
+		if (args.length == 2) return c.getMatchInfo(Long.parseLong(args[1]));
+		return null;
+	}
+	
+	public static void main(String[] args){
+		try {
+			String[] params = args[0].split(":");
+			int port = Connection.DEFAULT_PORT;
+			InetAddress ia = InetAddress.getByName(params[0]);
+			if (params.length == 2) port = Integer.parseInt(params[1]);
+			Connection connection = Connection.establish(ia, port, true);
+			MatchInformation matchInformation = getMatchInformation(args, connection);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	
@@ -235,6 +271,11 @@ public class Ai implements ModelObserver {
 		List<Stroke> streetStrokes = generateAllStreetStrokes();
 		sortStrokeList(streetStrokes, initStrategies);
 		streetStrokes.get(0).execute(ca);
+	}
+
+
+	@Override
+	public void eventMatchEnd(long winnerID) {
 	}
 
 }
