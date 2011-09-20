@@ -35,7 +35,16 @@ public class Ai implements ModelObserver {
 	}
 	
 	public void execute(List<Stroke> sortedStroke){
-		//TODO
+		if (sortedStroke.size() > 0){
+			Stroke bestStroke = sortedStroke.get(0);
+			if (me.checkResourcesSufficient(bestStroke.getPrice())){
+				bestStroke.execute(ca);
+			}
+			else {
+				// TODO insert Trade handling here!
+			}
+		}
+		else ca.endTurn();
 	}
 	
 	public List<Stroke> getSortedStrokeList(Set<Strategy> strategySet){
@@ -57,6 +66,17 @@ public class Ai implements ModelObserver {
 			}
 			stroke.setEvaluation(evaluation/evaluationParticipants);
 		}
+	}
+	
+	public List<Stroke> generateAllMoveRobberStrokes(){
+		List<Stroke> strokeSet = new LinkedList<Stroke>();
+		for (Field source : mr.getRobberFields()){
+			for (Field destination : mr.canPlaceRobber()){
+				strokeSet.add(new MoveRobber(source, destination, null));
+				//TODO change null to all possible players
+			}
+		}
+		return strokeSet;
 	}
 	
 	public List<Stroke> generateAllPossibleStrokes(){
@@ -96,73 +116,59 @@ public class Ai implements ModelObserver {
 
 	@Override
 	public void updatePath(Path path) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void updateIntersection(Intersection intersection) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void updateField(Field field) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void updateResources() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void updateVictoryPoints() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void updateCatapultCount() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void updateSettlementCount(BuildingType buildingType) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void updateTradePossibilities() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void eventPlayerLeft(long playerID) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void eventRobber() {
-		// TODO Auto-generated method stub
-		
+		List<Stroke> moveRobberStrokes = generateAllMoveRobberStrokes();
+		List<Stroke> sortedStrokes = getSortedStrokeList(strategies);
+		execute(sortedStrokes);
 	}
 
 	@Override
 	public void eventTrade(ResourcePackage resourcePackage) {
-		// TODO Auto-generated method stub
-		
+		TradeStrategy tradeStrategy = new StupidTradeStrategy();
+		ca.respondTrade(tradeStrategy.accepts());
 	}
 
 	@Override
 	public void eventNewRound(int number) {
-		// TODO	
+		if (mr.getCurrentPlayer() == me){
+			List<Stroke> sortedStrokes = getSortedStrokeList(strategies);
+			execute(sortedStrokes);
+		}
 	}
 
 	@Override

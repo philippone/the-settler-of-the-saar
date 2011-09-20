@@ -28,6 +28,10 @@ public abstract class Strategy {
 			return false;
 		case MOVE_CATAPULT:
 			return false;
+		case MOVE_ROBBER:
+			return false;
+		case RETURN_RESOURCES:
+			return false;
 		}
 	}
 	
@@ -49,6 +53,10 @@ public abstract class Strategy {
 			return evaluate((BuildStreet)s);
 		case MOVE_CATAPULT:
 			return evaluate((MoveCatapult)s);
+		case MOVE_ROBBER:
+			return evaluate((MoveRobber)s);
+		case RETURN_RESOURCES:
+			return evaluate((ReturnResources)s);
 		}
 	}
 	
@@ -59,5 +67,8 @@ public abstract class Strategy {
 	public abstract double evaluate(BuildCatapult stroke);
 	public abstract double evaluate(BuildStreet stroke);
 	public abstract double evaluate(MoveCatapult stroke);
+	public abstract double evaluate(MoveRobber stroke);
+	public abstract double evaluate(ReturnResources stroke);
+	
 
 }
