@@ -5,14 +5,6 @@
 package de.unisaarland.cs.sopra.common;
 
 import java.awt.*;
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Rectangle;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
@@ -39,6 +31,9 @@ import javax.swing.table.DefaultTableModel;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
+import de.unisaarland.cs.st.saarsiedler.comm.QualifikationMaps;
+import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
+
 /**
  * @author Hans Lange der
  */
@@ -50,10 +45,11 @@ public class GUIFrame extends JFrame {
 	private ButtonListener actLis;
 	public long focusedWordID;
 	public final static PlayerColors[] pc= new PlayerColors[]{ PlayerColors.BLUE,PlayerColors.YELLOW,PlayerColors.ORANGE,PlayerColors.BROWN,PlayerColors.WHITE,PlayerColors.PURPLE};
-	public final static String [] farben = new String[]{"BLUE","YELLOW","ORANGE","BROWN","WHITE","PURPLE"};
+	public final static String[] farben = new String[]{"BLUE","YELLOW","ORANGE","BROWN","WHITE","PURPLE"};
 	public final static DisplayMode[] displaymodes = new DisplayMode[]{new DisplayMode(Display.getDisplayMode().getWidth(), Display.getDisplayMode().getHeight()-100), new DisplayMode(1024, 530), new DisplayMode(800, 600)};
-	public final static String [] dmodes = new String[]{"AUTO","1024x530","800x600"};
-	
+	public final static String[] dmodes = new String[]{"AUTO","1024x530","800x600"};
+	public  static WorldRepresentation[] worldRepos; //= new WorldRepresentation[]{WorldRepresentation.getDefault(), QualifikationMaps.getMap1(), QualifikationMaps.getMap2(), QualifikationMaps.getMap3()};
+	public final static String[] worldNames = new String []{"Default", "Quali 1", "Quali 2", "Quali 3"};
 	
 	public GUIFrame() {
 		actLis = new ButtonListener(this);
@@ -63,6 +59,7 @@ public class GUIFrame extends JFrame {
 		setActionListner();
 		playerColorChooser();
 		resolutionChooser();
+		worldRepoChooser();
 
 	}
 	private void setActionListner() {
@@ -125,7 +122,18 @@ public class GUIFrame extends JFrame {
 
 	
 	public void worldRepoChooser(){
-		
+		try {
+			worldRepos= new WorldRepresentation[]{WorldRepresentation.getDefault(), QualifikationMaps.getMap1(), QualifikationMaps.getMap2(), QualifikationMaps.getMap3()};
+		} catch (IOException e1) {e1.printStackTrace();
+		}
+		for ( String s : worldNames)
+		      worldRepoBox.addItem( s );
+		worldRepoBox.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				Client.worldRepo=worldRepos[worldRepoBox.getSelectedIndex()];
+			}
+		});
 	}
 	
 	public void resolutionChooser(){
