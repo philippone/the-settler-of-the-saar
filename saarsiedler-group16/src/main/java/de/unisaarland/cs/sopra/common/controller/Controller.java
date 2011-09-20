@@ -352,7 +352,7 @@ public class Controller implements Runnable{
 	public void run() {
 		try {
 			while(!endOfGame){
-				while (!modelWriter.writeSomethingReallyUnspecifiedToModel() || somethingReallyImportant) {
+				if (!modelWriter.writeSomethingReallyUnspecifiedToModel() || somethingReallyImportant) {
 					somethingReallyImportant = false;
 					GameEvent e = connection.getNextEvent(100);
 					if (e != null) {

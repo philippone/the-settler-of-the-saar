@@ -1390,7 +1390,7 @@ public class GameGUI extends View implements Runnable{
         Keyboard.enableRepeatEvents(true);
         try {
 			Mouse.create();
-		} catch (LWJGLException e) { e.printStackTrace(); }
+		} catch (LWJGLException e) {e.printStackTrace(); }
         Mouse.poll();
         
         Font awtFont = new Font("Arial", Font.BOLD, 72);
