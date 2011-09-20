@@ -19,10 +19,10 @@ import de.unisaarland.cs.st.saarsiedler.comm.GameEvent;
 import de.unisaarland.cs.st.saarsiedler.comm.Intersection;
 import de.unisaarland.cs.st.saarsiedler.comm.results.AttackResult;
 
-public class Controller {
+public class Controller implements Runnable{
 
 	private Connection connection;
-	private ModelWriter modelWriter;;
+	private ModelWriter modelWriter;
 	private Resource r;
 	private boolean endOfGame;
 	private Queue<Clickable> guiEvents;
@@ -347,23 +347,27 @@ public class Controller {
 	 * @throws IOException
 	 * @throws InterruptedException 
 	 */
-	public void mainLoop() throws Exception {
-		while(!endOfGame){
-			while (!modelWriter.writeSomethingReallyUnspecifiedToModel() || somethingReallyImportant) {
-				somethingReallyImportant = false;
-				GameEvent e = connection.getNextEvent(100);
-				if (e != null) {
-					System.out.println(e);
-					handleEvent(e);
+	@Override
+	public void run() {
+		try {
+			while(!endOfGame){
+				while (!modelWriter.writeSomethingReallyUnspecifiedToModel() || somethingReallyImportant) {
+					somethingReallyImportant = false;
+					GameEvent e = connection.getNextEvent(100);
+					if (e != null) {
+						System.out.println(e);
+						handleEvent(e);
+					}
 				}
+				Iterator<Clickable> iter = guiEvents.iterator();
+				while (iter.hasNext()) {
+					iter.next().executeController();
+					iter.remove();
+				}
+				Thread.sleep(100);
 			}
-			Iterator<Clickable> iter = guiEvents.iterator();
-			while (iter.hasNext()) {
-				iter.next().execute();
-				iter.remove();
-			}
-			Thread.sleep(100);
 		}
+		catch (Exception e) { e.printStackTrace(); }
 	}
 	
 	public void setEndOfGame(boolean b){

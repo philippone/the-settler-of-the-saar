@@ -2,7 +2,6 @@ package de.unisaarland.cs.sopra.common;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -239,7 +238,7 @@ public class Client {
 		
 		System.out.println("Das Spiel wurde erfolgreich gestartet! =)");
 		try {
-			c.mainLoop();
+			new Thread(c).start();
 		} catch (Exception e) {e.printStackTrace();
 		}
 		
@@ -370,18 +369,20 @@ public class Client {
 		popup.returnPackPanel.setVisible(true);
 		int n = rp.size();
 		popup.setN(n);
-		popup.setVisible(true);
+		popup.setText("You have to choose "+(n/2)+" Resources!");
 		popup.lumberMax.setText(""+rp.getResource(Resource.LUMBER));
 		popup.brickMax.setText(""+rp.getResource(Resource.BRICK));
 		popup.woolMax.setText(""+rp.getResource(Resource.WOOL));
 		popup.grainMax.setText(""+rp.getResource(Resource.GRAIN));
 		popup.oreMax.setText(""+rp.getResource(Resource.ORE));
+		popup.setVisible(true);
 		
 		while(returnPackage==null){
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {e.printStackTrace();}
 		}
+		popup.reset();
 		popup.setVisible(false);
 		return returnPackage;
 	}
@@ -393,7 +394,6 @@ public class Client {
 		popup.incomingTradePanel.setVisible(false);
 		popup.tradePanel.setVisible(true);
 		popup.returnPackPanel.setVisible(false);
-		int n = rp.size();
 		popup.setVisible(true);
 		popup.lumberMax2.setText(""+rp.getResource(Resource.LUMBER));
 		popup.brickMax2.setText(""+rp.getResource(Resource.BRICK));
@@ -416,7 +416,6 @@ public class Client {
 		popup.tradePanel.setVisible(false);
 		popup.returnPackPanel.setVisible(false);
 		popup.incomingTradePanel.setVisible(true);
-		int n = rp.size();
 		popup.setVisible(true);
 		popup.lumberMax3.setText(""+rp.getResource(Resource.LUMBER));
 		popup.brickMax3.setText(""+rp.getResource(Resource.BRICK));
