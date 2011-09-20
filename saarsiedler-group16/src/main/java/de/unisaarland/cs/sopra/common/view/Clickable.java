@@ -24,6 +24,7 @@ public abstract class Clickable {
 	private Player player;
 	private ResourcePackage res;
 	private List<Path> road;
+	private boolean decision;
 	
 	public static List<Clickable> executeClicks(float xogl, float yogl) {
 		List<Clickable> liste = new LinkedList<Clickable>();
@@ -42,7 +43,7 @@ public abstract class Clickable {
 		this.height = height;
 		this.active = active;
 		this.visible = visible;
-		this.setName(name);
+		this.name = name;
 		list.add(this);
 	}
 	
@@ -92,7 +93,7 @@ public abstract class Clickable {
 	
 	private boolean checkClick(float xogl, float yogl) {
 		if (active) {
-			return (xogl > x && xogl < x+width && yogl > y && yogl < y+height);
+			return (xogl > x && xogl < x+width*0.854f && yogl > y && yogl < y+height*0.48f);
 		}
 		return false;
 	}
@@ -187,6 +188,14 @@ public abstract class Clickable {
 
 	public List<Path> getRoad() {
 		return road;
+	}
+
+	public void setDecision(boolean decision) {
+		this.decision = decision;
+	}
+
+	public boolean isDecision() {
+		return decision;
 	}
 	
 }
