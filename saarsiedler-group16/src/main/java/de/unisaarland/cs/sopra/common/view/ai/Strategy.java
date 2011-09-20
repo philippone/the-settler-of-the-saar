@@ -1,6 +1,14 @@
 package de.unisaarland.cs.sopra.common.view.ai;
 
+import de.unisaarland.cs.sopra.common.model.ModelReader;
+
 public abstract class Strategy {
+	
+	private final ModelReader mr;
+	
+	public Strategy(ModelReader mr){
+		this.mr = mr;
+	}
 	
 	public boolean evaluates(Stroke s){
 		switch(s.getType()){
