@@ -140,7 +140,7 @@ public class AI extends View{
 	}
 	
 	public Strategy evaluateBestStrategy(){
-
+		
 		strategies = new Strategy[6];
 		Strategy s2 = new BuildStreetStrategy();
 		strategies[0] = s2;
@@ -233,7 +233,8 @@ public class AI extends View{
 		
 	}
 	
-	public void executeBestStrategy() {
+	public void executeBestStrategy()  {
+	
 		Strategy bestOne = evaluateBestStrategy();
 		try{
 			while(modelReader.getMe().checkResourcesSufficient(bestOne.getPrice())){
@@ -242,7 +243,9 @@ public class AI extends View{
 			}
 		}
 		catch (Exception e){ e.printStackTrace(); }
+		
 		controllerAdapter.endTurn();
+		
 	}
 	
 	

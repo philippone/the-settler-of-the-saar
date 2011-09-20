@@ -4,7 +4,7 @@ import de.unisaarland.cs.sopra.common.model.ModelReader;
 
 public abstract class Strategy {
 	
-	private final ModelReader mr;
+	protected final ModelReader mr;
 	
 	public Strategy(ModelReader mr){
 		this.mr = mr;

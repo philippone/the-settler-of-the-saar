@@ -7,6 +7,7 @@ import java.util.Set;
 
 import de.unisaarland.cs.sopra.common.ModelObserver;
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
+import de.unisaarland.cs.sopra.common.model.Building;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.Intersection;
@@ -49,11 +50,11 @@ public class Ai implements ModelObserver {
 		List<Stroke> strokeSet = new LinkedList<Stroke>();
 		// create build village strokes
 		for (Intersection inter : mr.buildableVillageIntersections(me)){
-			strokeSet.add(new BuildBuilding(inter, BuildingType.Village));
+			strokeSet.add(new BuildVillage(inter));
 		}
 		// create build town strokes
 		for (Intersection inter : mr.buildableTownIntersections(me)){
-			strokeSet.add(new BuildBuilding(inter, BuildingType.Town));
+			strokeSet.add(new BuildTown(inter));
 		}
 		// create catapult strokes
 		for (Path path : mr.buildableCatapultPaths(me)){
