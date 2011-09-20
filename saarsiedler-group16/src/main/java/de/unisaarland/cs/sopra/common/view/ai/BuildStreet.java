@@ -8,7 +8,7 @@ public class BuildStreet extends Stroke {
 	private final Path destination;
 
 	public BuildStreet(Path destination){
-		super(StrokeType.BUILDING_STREET);
+		super(StrokeType.BUILD_STREET);
 		this.destination = destination;
 	}
 	
