@@ -39,17 +39,21 @@ public class InitializeStrategy extends Strategy {
 			return true;
 		case MOVE_CATAPULT:
 			return false;
+		case MOVE_ROBBER:
+			return false;
+		case RETURN_RESOURCES:
+			return false;
 		}
 	}
 	@Override
 	public double evaluate(AttackCatapult stroke) {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 
 	@Override
 	public double evaluate(AttackSettlement stroke) {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 
@@ -114,13 +118,13 @@ public class InitializeStrategy extends Strategy {
 
 	@Override
 	public double evaluate(BuildTown stroke) {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 
 	@Override
 	public double evaluate(BuildCatapult stroke) {
-		// TODO Auto-generated method stub
+	
 		return 0;
 	}
 
@@ -150,7 +154,21 @@ public class InitializeStrategy extends Strategy {
 
 	@Override
 	public double evaluate(MoveCatapult stroke) {
-		// TODO Auto-generated method stub
+		
+		return 0;
+	}
+
+
+	@Override
+	public double evaluate(MoveRobber stroke) {
+	
+		return 0;
+	}
+
+
+	@Override
+	public double evaluate(ReturnResources stroke) {
+	
 		return 0;
 	}
 
