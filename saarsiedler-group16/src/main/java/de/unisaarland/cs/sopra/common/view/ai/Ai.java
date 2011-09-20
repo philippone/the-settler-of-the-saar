@@ -237,4 +237,11 @@ public class Ai implements ModelObserver {
 		streetStrokes.get(0).execute(ca);
 	}
 
+
+	@Override
+	public void eventMatchEnd(long winnerID) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
