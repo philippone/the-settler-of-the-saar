@@ -423,7 +423,7 @@ public class Client {
 	}
 	
 	public static boolean incomingTradeOffer(ResourcePackage rp){
-		returnPackage=null;
+		acceptTrade=0;
 		popup.setTitle("Accept Trade?");
 		popup.tradePanel.setVisible(false);
 		popup.returnPackPanel.setVisible(false);
