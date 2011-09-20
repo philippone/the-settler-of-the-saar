@@ -1702,8 +1702,10 @@ public class Model implements ModelReader, ModelWriter {
 	@Override
 	public void tradeOffer(int lumber, int brick, int wool, int grain, int ore) {
 		lastTrade = new ResourcePackage(lumber, brick, wool, grain, ore);
-		for (ModelObserver mo : modelObserver) {
-			mo.eventTrade(lastTrade);
+		if (getCurrentPlayer()!=me) {
+			for (ModelObserver mo : modelObserver) {
+				mo.eventTrade(lastTrade);
+			}
 		}
 	}
 
