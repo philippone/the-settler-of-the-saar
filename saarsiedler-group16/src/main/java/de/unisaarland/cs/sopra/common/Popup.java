@@ -187,7 +187,6 @@ public class Popup extends JFrame {
 		setAlwaysOnTop(true);
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		setVisible(true);
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new GridBagLayout());
 		((GridBagLayout)contentPane.getLayout()).columnWidths = new int[] {0, 0};
@@ -199,7 +198,7 @@ public class Popup extends JFrame {
 		{
 			returnPackPanel.setBorder(new EmptyBorder(12, 12, 12, 12));
 			returnPackPanel.setVisible(false);
-
+//
 //			// JFormDesigner evaluation mark
 //			returnPackPanel.setBorder(new javax.swing.border.CompoundBorder(
 //				new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 0),
