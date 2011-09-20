@@ -1071,47 +1071,33 @@ public class GameGUI extends View implements Runnable{
 	
 	@Override
 	public void run() {
-		init();
 		try {
-			Display.makeCurrent();
-		} catch (LWJGLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		try {
+			init();
 			barrier.await();
-		} catch (Exception e) {e.printStackTrace();} 
-		
-	    boolean finished = false;
-		while (!finished) {
-			  
-			  Display.update();
-		      // Always call Window.update(), all the time - it does some behind the
-		      // scenes work, and also displays the rendered output
-			  handleInput();
-			  render();
-		      // Check for close requests
-		      if (Display.isCloseRequested()) {
-			  finished = true;
-		      } 
-		      else if (Display.isActive()) {
-		          render();
-		          Display.sync(60);
-		        } 
-		      // The window is not in the foreground, so we can allow other stuff to run and
-		      // infrequently update
-		      else {
-		        try {
-		          Thread.sleep(100);
-		        } catch (InterruptedException e) {e.printStackTrace();}
-		      }
-		      if (Display.isVisible() || Display.isDirty()) {
-		          render();
-		      }
-		}
-		Display.destroy();
-		System.exit(0);
+		    boolean finished = false;
+			while (!finished) {
+				  Display.update();
+				  handleInput();
+				  render();
+			      if (Display.isCloseRequested()) {
+			    	  finished = true;
+			      } 
+			      else if (Display.isActive()) {
+			          render();
+			          Display.sync(60);
+			      } 
+			      else {
+			    	  Thread.sleep(100);
+			      }
+			      if (Display.isVisible() || Display.isDirty()) {
+			          render();
+			      }
+			}
+			Display.destroy();
+			System.exit(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
 	}
 		
 
@@ -1427,7 +1413,7 @@ public class GameGUI extends View implements Runnable{
 	}
 	
 
-	private void handleInput() {
+	private void handleInput() throws InterruptedException {
 		int mx = Mouse.getX();
 		int my = Mouse.getY();
 		float oglx = mx*screenToOpenGLx(zOffsetUI)+25;
@@ -1496,17 +1482,14 @@ public class GameGUI extends View implements Runnable{
 						Intersection village = getMouseIntersection();
 						if (village != null && selectionLocation.contains(Model.getLocation(village))) {
 							buildVillage.setIntersection(village);
+							controllerAdapter.addGuiEvent(buildVillage);
 							selectionMode = NONE;
 							console4 = "";
 							if (init) {
 								buildStreet.setActive(true);
 								buildVillage.setActive(false);
 								console4 = (modelReader.getInitVillages()-modelReader.getSettlements(modelReader.getMe(), BuildingType.Village).size()-1) + " initial villages left";
-								selectionLocation = Model.getLocationListPath(modelReader.buildableStreetPaths(modelReader.getMe()));
-								if (selectionLocation.size() != 0)
-									selectionMode = STREET;
 							}
-							controllerAdapter.addGuiEvent(buildVillage);
 						}
 						break;
 					case TOWN:
@@ -1569,13 +1552,23 @@ public class GameGUI extends View implements Runnable{
 								console4 = "";
 							controllerAdapter.addGuiEvent(buildStreet);
 						}
-						//if init dont change console4 else ""
-						//if init set init to false
-						break; //TODO implement it!
+						break; 
 				}
 			}
 			for (Clickable c : Clickable.executeClicks(mx*screenToOpenGLx(zOffsetUI)+25, (windowHeight-my)*screenToOpenGLy(zOffsetUI)+380)) {
 				c.executeUI();
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
+				if (buildStreet.isActive()) buildStreet.executeUI();
+			}
+			else if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
+				if (buildVillage.isActive()) buildVillage.executeUI();
+			}
+			else if (Keyboard.isKeyDown(Keyboard.KEY_3)) {
+				if (buildTown.isActive()) buildTown.executeUI();
+			}
+			else if (Keyboard.isKeyDown(Keyboard.KEY_4)) {
+				if (buildCatapult.isActive()) buildCatapult.executeUI();
 			}
 		}
 		
