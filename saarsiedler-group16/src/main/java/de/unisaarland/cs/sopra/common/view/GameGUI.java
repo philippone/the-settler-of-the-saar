@@ -1085,10 +1085,11 @@ public class GameGUI extends View implements Runnable{
 		
 	    boolean finished = false;
 		while (!finished) {
-			  handleInput();
+			  
+			  Display.update();
 		      // Always call Window.update(), all the time - it does some behind the
 		      // scenes work, and also displays the rendered output
-			  Display.update();
+			  handleInput();
 			  render();
 		      // Check for close requests
 		      if (Display.isCloseRequested()) {
@@ -1392,9 +1393,6 @@ public class GameGUI extends View implements Runnable{
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		
         Keyboard.enableRepeatEvents(true);
-        try {
-			Mouse.create();
-		} catch (LWJGLException e) {e.printStackTrace(); }
         Mouse.poll();
         
         Font awtFont = new Font("Arial", Font.BOLD, 72);
@@ -1504,6 +1502,9 @@ public class GameGUI extends View implements Runnable{
 								buildStreet.setActive(true);
 								buildVillage.setActive(false);
 								console4 = (modelReader.getInitVillages()-modelReader.getSettlements(modelReader.getMe(), BuildingType.Village).size()-1) + " initial villages left";
+								selectionLocation = Model.getLocationListPath(modelReader.buildableStreetPaths(modelReader.getMe()));
+								if (selectionLocation.size() != 0)
+									selectionMode = STREET;
 							}
 							controllerAdapter.addGuiEvent(buildVillage);
 						}
@@ -1528,16 +1529,30 @@ public class GameGUI extends View implements Runnable{
 						break;
 					case CATAPULT_ACTION_DST:
 						Path destPath = getMousePath();
-						Intersection destInter = getMouseIntersection();
-						if (destInter != null && selectionLocation3.contains(Model.getLocation(destInter))) {
-							catapultAction.setIntersection(destInter);
+						if (destPath == catapultAction.getPath()) {
 							selectionMode = NONE;
-							controllerAdapter.addGuiEvent(catapultAction);
 						}
-						else if (destPath != null && (selectionLocation.contains(Model.getLocation(destPath)) || selectionLocation2.contains(Model.getLocation(destPath)))) {
-							catapultAction.setPath2(destPath);
-							selectionMode = NONE;
-							controllerAdapter.addGuiEvent(catapultAction);
+						else if (modelReader.getCatapults(modelReader.getMe()).contains(destPath)){
+							catapultAction.setPath(destPath);
+							selectionLocation = Model.getLocationListPath(modelReader.attackableCatapults(destPath));
+							selectionLocation2 = Model.getLocationListPath(modelReader.catapultMovePaths(destPath));
+							selectionLocation3 = Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Village, destPath));
+							selectionLocation3.addAll(Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Town, destPath)));
+							if (selectionLocation.size()==0 && selectionLocation2.size()==0 && selectionLocation3.size()==0)
+								selectionMode = NONE;
+						}
+						else {
+							Intersection destInter = getMouseIntersection();
+							if (destInter != null && selectionLocation3.contains(Model.getLocation(destInter))) {
+								catapultAction.setIntersection(destInter);
+								selectionMode = NONE;
+								controllerAdapter.addGuiEvent(catapultAction);
+							}
+							else if (destPath != null && (selectionLocation.contains(Model.getLocation(destPath)) || selectionLocation2.contains(Model.getLocation(destPath)))) {
+								catapultAction.setPath2(destPath);
+								selectionMode = NONE;
+								controllerAdapter.addGuiEvent(catapultAction);
+							}
 						}
 						break;	
 					case STREET:
@@ -1930,6 +1945,8 @@ public class GameGUI extends View implements Runnable{
 		model.buildStreet(new Location(2,1,1));
 		model.buildSettlement(new Location(2,2,0), BuildingType.Town);
 		model.buildCatapult(new Location(2,2,0), true);
+		model.getPath(new Location(3,3,2)).createCatapult(model.getMe());
+		model.getPath(new Location(4,3,4)).createCatapult(model.getTableOrder().get(0));
 		
 //		model.getPath(new Location(-1,-1,0)).createStreet(model.getMe());
 //		model.getPath(new Location(-1,-1,1)).createStreet(model.getMe());
@@ -1955,7 +1972,7 @@ public class GameGUI extends View implements Runnable{
 //		model.getField(new Point(2,2)).setRobber(true);
 		
 //		Setting setting = new Setting(Display.getDesktopDisplayMode(), true, PlayerColors.RED);
-		Setting setting = new Setting(new DisplayMode(1024, 520), false, PlayerColors.YELLOW);  /// Display.getDesktopDisplayMode()
+		Setting setting = new Setting(new DisplayMode(1024, 515), false, PlayerColors.YELLOW);  /// Display.getDesktopDisplayMode()
 		
 		CyclicBarrier barrier = new CyclicBarrier(2);
 		GameGUI gameGUI = new GameGUI(model, null, names, setting, "TestSpiel", false, barrier);
@@ -1978,6 +1995,9 @@ public class GameGUI extends View implements Runnable{
 	public void initTurn() {
 		init = true;
 		buildVillage.setActive(true);
+		selectionLocation = Model.getLocationListIntersection(modelReader.buildableVillageIntersections(modelReader.getMe()));
+		if (selectionLocation.size() != 0)
+			selectionMode = VILLAGE;
 	}
 		
 	/*
