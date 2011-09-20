@@ -1205,9 +1205,11 @@ public class GameGUI extends View implements Runnable{
 			claimVictory = new Clickable("ClaimVictory", xOffsetUI+673, yOffsetUI+22, 2, 185, 77, false, true) {
 				@Override
 				public void executeUI() {
-					this.setActive(false);
+					deactivateUI();
 					controllerAdapter.addGuiEvent(this);
-					//TODO evtl nen gz du hast gewonnen screen proggen
+					console4 = "You have won the match.";
+					console5 = "Congratulations. Press quit";
+					console6 = "to leave";
 				}
 				@Override
 				public void executeController() {
@@ -1361,6 +1363,7 @@ public class GameGUI extends View implements Runnable{
 				@Override
 				public void executeUI() {
 					Display.destroy();
+					controllerAdapter.leaveMatch();
 					Client.backToLobby();
 				}
 				@Override

@@ -1437,8 +1437,8 @@ public class Model implements ModelReader, ModelWriter {
 					java.util.Collections.reverse(players);
 					reversedPlayersList = false;
 				}
-				Controller.somethingReallyImportant = true;
 			}
+			Controller.somethingReallyImportant = true;
 		}
 	}
 
