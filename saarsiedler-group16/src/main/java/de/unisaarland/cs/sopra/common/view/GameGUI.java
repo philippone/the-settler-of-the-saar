@@ -723,52 +723,53 @@ public class GameGUI extends View implements Runnable{
 			int px = 0;
 			int py = 0;
 			int po = 0;
-		
-			  switch(l.getY()%2) {
-				   case 0:
-					   px = l.getX()*250;
-					   py = l.getY()*215; 
-					   break;
-				   case 1:
-				   case -1:
-					   px = l.getX()*250-125;
-					   py = l.getY()*215;
-					   break;
-			   }
-			  switch(l.getOrientation()) {
-				   case 0:
-					   px+=74;
-					   py+=-96;
-					   po+=30;
-					   break;
-				   case 1:
-					   px+=118;
-					   py+=18;
-					   po+=90;
-					   break;
-				   case 2:
-					   px+=38;
-					   py+=116;
-					   po+=150;
-					   break;
-				   case 3:
-					   px+=-84;
-					   py+=93;
-					   po+=210;
-					   break;
-				   case 4:
-					   px+=-128;
-					   py+=-21;
-					   po+=270;
-					   break;
-				   case 5:
-					   px+=-47;
-					   py+=-120;
-					   po+=330;
-					   break;
-				   default:
-					   throw new IllegalArgumentException();
-			   }
+			
+			
+			switch(l.getY()%2) {
+			   case 0:
+				   px = l.getX()*250;
+				   py = l.getY()*215; 
+				   break;
+			   case 1:
+			   case -1:
+				   px = l.getX()*250-125;
+				   py = l.getY()*215;
+				   break;
+		   }
+		  switch(l.getOrientation()) {
+			   case 0:
+				   px+=74;
+				   py+=-96;
+				   po+=30;
+				   break;
+			   case 1:
+				   px+=118;
+				   py+=18;
+				   po+=90;
+				   break;
+			   case 2:
+				   px+=38;
+				   py+=116;
+				   po+=150;
+				   break;
+			   case 3:
+				   px+=-84;
+				   py+=93;
+				   po+=210;
+				   break;
+			   case 4:
+				   px+=-128;
+				   py+=-21;
+				   po+=270;
+				   break;
+			   case 5:
+				   px+=-47;
+				   py+=-120;
+				   po+=330;
+				   break;
+			   default:
+				   throw new IllegalArgumentException();
+		   }
 				GL11.glPushMatrix();
 				GL11.glTranslatef(px+x, py+y, 1+z);
 				GL11.glRotatef(po, 0, 0, 1);
@@ -1204,9 +1205,11 @@ public class GameGUI extends View implements Runnable{
 			claimVictory = new Clickable("ClaimVictory", xOffsetUI+673, yOffsetUI+22, 2, 185, 77, false, true) {
 				@Override
 				public void executeUI() {
-					this.setActive(false);
+					deactivateUI();
 					controllerAdapter.addGuiEvent(this);
-					//TODO evtl nen gz du hast gewonnen screen proggen
+					console4 = "You have won the match.";
+					console5 = "Congratulations. Press quit";
+					console6 = "to leave";
 				}
 				@Override
 				public void executeController() {
@@ -1360,6 +1363,7 @@ public class GameGUI extends View implements Runnable{
 				@Override
 				public void executeUI() {
 					Display.destroy();
+					controllerAdapter.leaveMatch();
 					Client.backToLobby();
 				}
 				@Override
@@ -1390,7 +1394,7 @@ public class GameGUI extends View implements Runnable{
         Keyboard.enableRepeatEvents(true);
         try {
 			Mouse.create();
-		} catch (LWJGLException e) { e.printStackTrace(); }
+		} catch (LWJGLException e) {e.printStackTrace(); }
         Mouse.poll();
         
         Font awtFont = new Font("Arial", Font.BOLD, 72);

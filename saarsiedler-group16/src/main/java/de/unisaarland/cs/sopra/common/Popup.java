@@ -88,7 +88,7 @@ public class Popup extends JFrame {
 						warning2.setVisible(true);
 						}
 					else{
-						Client.returnPackage=new ResourcePackage(-a1,-a2,-a3,-a4,-a5);
+						Client.returnPackage=new ResourcePackage(a1,a2,a3,a4,a5);
 					}
 				}catch(NumberFormatException e1){
 					warning.setText("only numbers allowed!");

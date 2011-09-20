@@ -1437,8 +1437,8 @@ public class Model implements ModelReader, ModelWriter {
 					java.util.Collections.reverse(players);
 					reversedPlayersList = false;
 				}
-				Controller.somethingReallyImportant = true;
 			}
+			Controller.somethingReallyImportant = true;
 		}
 	}
 
@@ -1530,8 +1530,6 @@ public class Model implements ModelReader, ModelWriter {
 	@Override
 	public void longestRoadClaimed(List<Location> road)
 			throws IllegalStateException {
-		//funktion evtl fehlerhaft!
-		// TODO (Philipp)
 		if (road.size() >= 5 && ( (longestClaimedRoad != null && road.size() > longestClaimedRoad.size()) || (longestClaimedRoad == null) ) ) {
 			List<Path> lr = new LinkedList<Path>();
 			boolean rightPlayer = false;
@@ -1555,9 +1553,10 @@ public class Model implements ModelReader, ModelWriter {
 						lr.add(tmp);
 						break;
 					}
-					lr.add(p);
+					
 					if (p.getStreetOwner().equals(getCurrentPlayer())) {
 						rightPlayer = true;
+						lr.add(p);
 					} else {
 						rightPlayer = false;
 						break;
@@ -1665,7 +1664,6 @@ public class Model implements ModelReader, ModelWriter {
 	@Override
 	public void robberMoved(Point sourceField, Point destinationField,
 			long victimPlayer, Resource stolenResource) {
-		// TODO (Philipp)
 		// Wenn Wasser drumherum
 		boolean hasLand = false;
 		for (Field f : getFieldsFromField(getField(destinationField))) {
@@ -1702,8 +1700,10 @@ public class Model implements ModelReader, ModelWriter {
 	@Override
 	public void tradeOffer(int lumber, int brick, int wool, int grain, int ore) {
 		lastTrade = new ResourcePackage(lumber, brick, wool, grain, ore);
-		for (ModelObserver mo : modelObserver) {
-			mo.eventTrade(lastTrade);
+		if (getCurrentPlayer()!=me) {
+			for (ModelObserver mo : modelObserver) {
+				mo.eventTrade(lastTrade);
+			}
 		}
 	}
 
@@ -1714,7 +1714,6 @@ public class Model implements ModelReader, ModelWriter {
 	 */
 	@Override
 	public void respondTrade(long playerID) {
-		// TODO (Philipp)
 		if (playerID < -2)
 			throw new IllegalArgumentException();
 		else if (playerID == -1) {

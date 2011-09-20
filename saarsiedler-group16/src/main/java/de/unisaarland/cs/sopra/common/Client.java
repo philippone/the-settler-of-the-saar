@@ -29,8 +29,8 @@ import de.unisaarland.cs.sopra.common.model.ModelWriter;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
-import de.unisaarland.cs.sopra.common.view.AI;
 import de.unisaarland.cs.sopra.common.view.GameGUI;
+import de.unisaarland.cs.sopra.common.view.ai.Ai;
 import de.unisaarland.cs.st.saarsiedler.comm.Connection;
 import de.unisaarland.cs.st.saarsiedler.comm.GameEvent;
 import de.unisaarland.cs.st.saarsiedler.comm.GameEvent.EventType;
@@ -168,8 +168,8 @@ public class Client {
 		return new Controller(connection, modelWriter);
 	}
 	
-	public static AI buildAI(Controller controller, Model model) {
-		return new AI(model, new ControllerAdapter(controller, model));
+	public static Ai buildAI(Controller controller, Model model) {
+		return new Ai(model, new ControllerAdapter(controller, model));
 	}
 	
 	public static GameGUI buildGameGUI(Controller controller, Model model, long[] playerIDs, boolean AIisPlaying, CyclicBarrier barrier) {
