@@ -78,18 +78,6 @@ public class GUIFrame extends JFrame {
 		readyToggle.addActionListener(actLis);
 		back_join.addActionListener(actLis);
 		fullscreenToggle.addActionListener(actLis);
-//		playerColorBox.addFocusListener(new FocusListener() {
-//			
-//			@Override
-//			public void focusLost(FocusEvent e) {
-//				// TODO Auto-generated method stub
-//			}
-//			
-//			@Override
-//			public void focusGained(FocusEvent e) {
-//				selectedColor = (PlayerColors)playerColorBox.getSelectedItem();
-//			}
-//		});
 		gameTable.addFocusListener(new FocusListener() {
 			@Override
 			public void focusLost(FocusEvent e) {
@@ -107,6 +95,9 @@ public class GUIFrame extends JFrame {
 			}
 		});
 	}
+//	public void gameListActivator(){
+//		gameTable.addInputMethodListener(l)
+//	}
 	
 	public void playerColorChooser(){
 		for ( String s : farben)

@@ -52,6 +52,7 @@ public class Client {
 	static ResourcePackage returnPackage;
 	private static Popup popup;
 	public static int acceptTrade;
+	private static DefaultTableModel gameTableModel;
 	
 	public static void main(String[] args) throws UnknownHostException, IOException {
 		initOpenGL();
@@ -246,7 +247,7 @@ public class Client {
 	
 	public static  void setUpListUpdater(){
 		try {
-			Client.connection.registerMatchListUpdater(new GameListUpdater());	}catch(IOException e){throw new IllegalStateException("iwas mit Matchlistupdater faul!!!");}
+			Client.connection.registerMatchListUpdater(new GameListUpdater(gameTableModel));	}catch(IOException e){throw new IllegalStateException("iwas mit Matchlistupdater faul!!!");}
 	
 	}
 	
@@ -254,11 +255,12 @@ public class Client {
 	public static void refreshGameList(){
 		List<MatchInformation> matchList=null;
 		try {
-			matchList =Client.connection.listMatches();		} catch (IOException e1) {	e1.printStackTrace();		}
-			
-			clientGUI.gameTable.setModel(new DefaultTableModel(
-					parseMatchList(matchList),
-					new String[] {"MatchID", "Name", "Players", "WorldID", "Already started"	}));
+			matchList =Client.connection.listMatches();		
+		} catch (IOException e1) {	e1.printStackTrace();}
+		gameTableModel=new DefaultTableModel(
+				parseMatchList(matchList),
+				new String[] {"MatchID", "Name", "Players", "WorldID", "Already started"});
+		clientGUI.gameTable.setModel(gameTableModel);
 	}
 	
 	public static void refreshPlayerList(){
@@ -292,7 +294,16 @@ public class Client {
 		}
 		return ret;
 	}
-	
+	public static Object[] parseMatchInfo(MatchInformation matchList1){
+		if (matchList1 == null)	throw new IllegalArgumentException("matchInfo is null");
+		Object[] ret = new Object[5];
+			ret[0]=matchList1.getId();
+			ret[1]=matchList1.getTitle();
+			ret[2]=matchList1.getCurrentPlayers().length+"/"+matchList1.getNumPlayers();
+			ret[3]=matchList1.getWorldId();
+			ret[4]=matchList1.isStarted();
+		return ret;
+	}
 	public static void saveSettings(){
 		String color= (String) clientGUI.playerColorBox.getItemAt(clientGUI.playerColorBox.getSelectedIndex());
 		String resol= (String) clientGUI.resolutionBox.getItemAt(clientGUI.resolutionBox.getSelectedIndex());
