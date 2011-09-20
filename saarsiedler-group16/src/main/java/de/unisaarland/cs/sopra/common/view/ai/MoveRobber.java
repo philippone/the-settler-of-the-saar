@@ -14,7 +14,7 @@ public class MoveRobber extends Stroke {
 	public MoveRobber(Field source, Field destination, Player victim){
 		super(StrokeType.MOVE_ROBBER, new ResourcePackage());
 		this.source = source;
-		this.destination = source;
+		this.destination = destination;
 		this.victim = victim;
 	}
 
