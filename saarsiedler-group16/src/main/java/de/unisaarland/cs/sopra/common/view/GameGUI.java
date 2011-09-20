@@ -1039,9 +1039,11 @@ public class GameGUI extends View implements Runnable{
 
 	@Override
 	public void eventTrade(ResourcePackage resourcePackage) {
+		if (!observer) {
 		boolean decision = Client.incomingTradeOffer(modelReader.getResources().copy(),resourcePackage);
 		respondTrade.setDecision(decision);
 		controllerAdapter.addGuiEvent(respondTrade);
+		}
 	}
 
 	@Override
