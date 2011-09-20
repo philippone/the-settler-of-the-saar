@@ -17,6 +17,16 @@ import de.unisaarland.cs.sopra.common.model.ResourcePackage;
  * @author Hans Lange der
  */
 public class Popup extends JFrame {
+	int a1;
+	int a2;
+	int a3;
+	int a4;
+	int a5;
+	int r1;
+	int r2;
+	int r3;
+	int r4;
+	int r5;
 	/**
 	 * 
 	 */
@@ -31,25 +41,30 @@ public class Popup extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int a1 = Integer.valueOf(textField1.getText());
-				int a2 = Integer.valueOf(textField2.getText());
-				int a3 = Integer.valueOf(textField3.getText());
-				int a4 = Integer.valueOf(textField4.getText());
-				int a5 = Integer.valueOf(textField5.getText());
-				int r1 = Integer.valueOf(lumberMax.getText());
-				int r2 = Integer.valueOf(brickMax.getText());
-				int r3 = Integer.valueOf(woolMax.getText());
-				int r4 = Integer.valueOf(grainMax.getText());
-				int r5 = Integer.valueOf(oreMax.getText());
-				if((a1+a2+a3+a4+a5)!=(n/2) || a1 > r1 || a2 > r2 || a3 > r3 | a4 > r4 || a5 > r5 ){
-					warning.setText("invalid Selection");	
-					if(r1<a1 || r2<a2 || r3<a3 || r4<a4 || r5<a5){
-						warning.setText("invalid Selection, can't deliver more Resources than you have!");
+				try{
+					a1 = Integer.valueOf(textField1.getText());
+					a2 = Integer.valueOf(textField2.getText());
+					a3 = Integer.valueOf(textField3.getText());
+					a4 = Integer.valueOf(textField4.getText());
+					a5 = Integer.valueOf(textField5.getText());
+					r1 = Integer.valueOf(lumberMax.getText());
+					r2 = Integer.valueOf(brickMax.getText());
+					r3 = Integer.valueOf(woolMax.getText());
+					r4 = Integer.valueOf(grainMax.getText());
+					r5 = Integer.valueOf(oreMax.getText());
+					if((a1+a2+a3+a4+a5)!=(n/2) || a1 > r1 || a2 > r2 || a3 > r3 | a4 > r4 || a5 > r5 ){
+						warning.setText("invalid Selection");	
+						if(r1<a1 || r2<a2 || r3<a3 || r4<a4 || r5<a5){
+							warning.setText("invalid Selection, can't deliver more Resources than you have!");
+						}
+						warning.setVisible(true);
+						}
+					else{
+						Client.returnPackage=new ResourcePackage(a1,a2,a3,a4,a5);
 					}
+				}catch(NumberFormatException e1){
+					warning.setText("only numbers allowed!");
 					warning.setVisible(true);
-					}
-				else{
-					Client.returnPackage=new ResourcePackage(a1,a2,a3,a4,a5);
 				}
 			}
 		});
@@ -57,22 +72,27 @@ public class Popup extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int a1= Integer.valueOf(textField6.getText());
-				int a2= Integer.valueOf(textField7.getText());
-				int a3= Integer.valueOf(textField8.getText());
-				int a4= Integer.valueOf(textField9.getText());
-				int a5= Integer.valueOf(textField10.getText());
-				int r1= Integer.valueOf(lumberMax2.getText());
-				int r2= Integer.valueOf(brickMax2.getText());
-				int r3= Integer.valueOf(woolMax2.getText());
-				int r4= Integer.valueOf(grainMax2.getText());
-				int r5= Integer.valueOf(oreMax2.getText());
-				if(r1+a1>=0 || r2+a2>=0 || r3+a3>=0 || r4+a4>=0 || r5+a5>=0){
-					warning2.setText("invalid Selection, can't deliver more Resources than you have");	
-					warning2.setVisible(true);
+				try{	
+					a1= Integer.valueOf(textField6.getText());
+					a2= Integer.valueOf(textField7.getText());
+					a3= Integer.valueOf(textField8.getText());
+					a4= Integer.valueOf(textField9.getText());
+					a5= Integer.valueOf(textField10.getText());
+					r1= Integer.valueOf(lumberMax2.getText());
+					r2= Integer.valueOf(brickMax2.getText());
+					r3= Integer.valueOf(woolMax2.getText());
+					r4= Integer.valueOf(grainMax2.getText());
+					r5= Integer.valueOf(oreMax2.getText());
+					if(r1+a1<0 || r2+a2<0 || r3+a3<0 || r4+a4<0 || r5+a5<0){
+						warning2.setText("invalid Selection, can't deliver more Resources than you have");	
+						warning2.setVisible(true);
+						}
+					else{
+						Client.returnPackage=new ResourcePackage(-a1,-a2,-a3,-a4,-a5);
 					}
-				else{
-					Client.returnPackage=new ResourcePackage(a1,a2,a3,a4,a5);
+				}catch(NumberFormatException e1){
+					warning.setText("only numbers allowed!");
+					warning.setVisible(true);
 				}
 			}
 		});
@@ -106,6 +126,13 @@ public class Popup extends JFrame {
 		textField3.setText("0");
 		textField4.setText("0");
 		textField5.setText("0");
+		textField6.setText("0");
+		textField7.setText("0");
+		textField8.setText("0");
+		textField9.setText("0");
+		textField10.setText("0");
+		warning.setVisible(false);
+		warning2.setVisible(false);	
 	}
 	
 	private void initComponents() {
@@ -198,13 +225,13 @@ public class Popup extends JFrame {
 		{
 			returnPackPanel.setBorder(new EmptyBorder(12, 12, 12, 12));
 			returnPackPanel.setVisible(false);
-//
-//			// JFormDesigner evaluation mark
-//			returnPackPanel.setBorder(new javax.swing.border.CompoundBorder(
-//				new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 0),
-//					"JFormDesigner Evaluation", javax.swing.border.TitledBorder.CENTER,
-//					javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Dialog", java.awt.Font.BOLD, 12),
-//					java.awt.Color.red), returnPackPanel.getBorder())); returnPackPanel.addPropertyChangeListener(new java.beans.PropertyChangeListener(){public void propertyChange(java.beans.PropertyChangeEvent e){if("border".equals(e.getPropertyName()))throw new RuntimeException();}});
+
+			// JFormDesigner evaluation mark
+			returnPackPanel.setBorder(new javax.swing.border.CompoundBorder(
+				new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 0),
+					"JFormDesigner Evaluation", javax.swing.border.TitledBorder.CENTER,
+					javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Dialog", java.awt.Font.BOLD, 12),
+					java.awt.Color.red), returnPackPanel.getBorder())); returnPackPanel.addPropertyChangeListener(new java.beans.PropertyChangeListener(){public void propertyChange(java.beans.PropertyChangeEvent e){if("border".equals(e.getPropertyName()))throw new RuntimeException();}});
 
 			returnPackPanel.setLayout(new GridBagLayout());
 			((GridBagLayout)returnPackPanel.getLayout()).columnWidths = new int[] {0, 0};
