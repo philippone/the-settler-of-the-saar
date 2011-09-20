@@ -117,6 +117,7 @@ public class GameGUI extends View implements Runnable{
 	private int[] town;
 	private int[] catapult;
 	private int[] road;
+	List<List<Path>> longestroad;
 	
 	private Clickable claimLongestRoad;
 	private Clickable claimVictory;
@@ -229,7 +230,6 @@ public class GameGUI extends View implements Runnable{
 	
 	private void reinitiateUI() {
 		Player me = modelReader.getMe();
-		List<List<Path>> lr = modelReader.calculateLongestRoads(me);
 		if (modelReader.affordableSettlements(BuildingType.Village) > 0 && (modelReader.getSettlements(me, BuildingType.Village).size()!=modelReader.getMaxBuilding(BuildingType.Village))) 
 			buildVillage.setActive(true);
 		if (modelReader.affordableSettlements(BuildingType.Town) > 0 && (modelReader.getSettlements(me, BuildingType.Town).size()!=modelReader.getMaxBuilding(BuildingType.Town))) 
@@ -238,7 +238,7 @@ public class GameGUI extends View implements Runnable{
 			buildCatapult.setActive(true);
 		if (modelReader.affordableStreets() > 0 && modelReader.buildableStreetPaths(me).size()!=0) 
 			buildStreet.setActive(true);
-		if (!lr.isEmpty() && lr.get(0).size() > (modelReader.getLongestClaimedRoad() != null ? modelReader.getLongestClaimedRoad().size() : 4)  )
+		if (longestroad != null && !longestroad.isEmpty() && longestroad.get(0).size() > (modelReader.getLongestClaimedRoad() != null ? modelReader.getLongestClaimedRoad().size() : 4)  )
 			claimLongestRoad.setActive(true);
 		if (modelReader.getCurrentVictoryPoints(me) >= modelReader.getMaxVictoryPoints())
 			claimVictory.setActive(true);
@@ -919,8 +919,10 @@ public class GameGUI extends View implements Runnable{
 
 	   GL11.glPushMatrix();
 	   GL11.glTranslatef(xOffset+xOffsetUI, yOffsetUI, zOffsetUI);
-	   uiFont20.drawString(640, 75, "Round "+modelReader.getRound());
-	   uiFont20.drawString(640, 100, ""+ lastNumberDiced + " was diced");
+	   if (modelReader.getRound() != 0)
+		   uiFont20.drawString(640, 75, "Round "+modelReader.getRound());
+	   if (lastNumberDiced != 0)
+		   uiFont20.drawString(640, 100, ""+ lastNumberDiced + " was diced");
 	   uiFont20.drawString(640, 125, "It's "+ getName(modelReader.getCurrentPlayer()) + "'s turn");
 	   uiFont20.drawString(640, 150, console4);
 	   uiFont20.drawString(640, 175, console5);
@@ -954,11 +956,13 @@ public class GameGUI extends View implements Runnable{
 	
 	@Override
 	public void updatePath(Path path) {
-//		int i = 0;
-//		for (Player act : modelReader.getTableOrder()) {
-//			List<List<Path>> streets = modelReader.calculateLongestRoads(act);
-//			this.road[i++] = streets.size() > 0 ? streets.get(0).size() : 0;
-//		}
+		int i = 0;
+		for (Player act : modelReader.getTableOrder()) {
+			List<List<Path>> streets = modelReader.calculateLongestRoads(act);
+			this.road[i++] = streets.size() > 0 ? streets.get(0).size() : 0;
+			if (act == modelReader.getMe())
+				longestroad = streets;
+		}
 	}
 
 
@@ -1515,6 +1519,14 @@ public class GameGUI extends View implements Runnable{
 						}
 						break;
 					case CATAPULT_ACTION_DST:
+						Intersection destInter = getMouseIntersection();
+						if (destInter != null && selectionLocation3.contains(Model.getLocation(destInter))) {
+							catapultAction.setIntersection(destInter);
+							selectionMode = NONE;
+							controllerAdapter.addGuiEvent(catapultAction);
+							break;
+						}
+						
 						Path destPath = getMousePath();
 						if (destPath == catapultAction.getPath()) {
 							selectionMode = NONE;
@@ -1529,17 +1541,9 @@ public class GameGUI extends View implements Runnable{
 								selectionMode = NONE;
 						}
 						else {
-							Intersection destInter = getMouseIntersection();
-							if (destInter != null && selectionLocation3.contains(Model.getLocation(destInter))) {
-								catapultAction.setIntersection(destInter);
-								selectionMode = NONE;
-								controllerAdapter.addGuiEvent(catapultAction);
-							}
-							else if (destPath != null && (selectionLocation.contains(Model.getLocation(destPath)) || selectionLocation2.contains(Model.getLocation(destPath)))) {
-								catapultAction.setPath2(destPath);
-								selectionMode = NONE;
-								controllerAdapter.addGuiEvent(catapultAction);
-							}
+							catapultAction.setPath2(destPath);
+							selectionMode = NONE;
+							controllerAdapter.addGuiEvent(catapultAction);
 						}
 						break;	
 					case STREET:

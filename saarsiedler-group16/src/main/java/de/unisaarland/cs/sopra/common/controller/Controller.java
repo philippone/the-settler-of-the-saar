@@ -26,7 +26,7 @@ public class Controller implements Runnable {
 	private Resource r;
 	private boolean endOfGame;
 	private Queue<Clickable> guiEvents;
-	public static boolean requestSingleEventPull = false;
+	public static boolean requestEventPull = false;
 
 	/**
 	 * @param connection
@@ -111,6 +111,7 @@ public class Controller implements Runnable {
 			byte num = ((GameEvent.NewRound) gameEvent).getSpotSum();
 			System.out.println(num);
 			modelWriter.newRound(num);
+			requestEventPull = false;
 			break;
 		case PLAYER_LEFT:
 			long id = ((GameEvent.PlayerLeft) gameEvent).getClientId();
@@ -259,7 +260,7 @@ public class Controller implements Runnable {
 	 */
 	public void endTurn() throws IllegalStateException, IOException {
 		connection.endTurn();
-		Controller.requestSingleEventPull = true;
+		Controller.requestEventPull = true;
 	}
 
 	/**
@@ -369,9 +370,7 @@ public class Controller implements Runnable {
 
 
 			while(!endOfGame){
-				if (!modelWriter.isOurTurn() || requestSingleEventPull) {
-					requestSingleEventPull = false;
-
+				if (!modelWriter.isOurTurn() || requestEventPull) {
 					GameEvent e = connection.getNextEvent(100);
 					if (e != null) {
 						System.out.println(e);

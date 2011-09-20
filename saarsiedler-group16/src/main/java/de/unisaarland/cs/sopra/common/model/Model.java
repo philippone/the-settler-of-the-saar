@@ -1438,7 +1438,7 @@ public class Model implements ModelReader, ModelWriter {
 					reversedPlayersList = false;
 				}
 				if (getCurrentPlayer() == me)
-					Controller.requestSingleEventPull = true;
+					Controller.requestEventPull = true;
 			}
 		}
 	}
@@ -1630,7 +1630,7 @@ public class Model implements ModelReader, ModelWriter {
 			path_source.removeCatapult();
 		}
 
-		if (!(owner.checkResourcesSufficient(Catapult.getAttackcatapultprice())))
+		if ((!(owner.checkResourcesSufficient(Catapult.getAttackcatapultprice()))) && owner == me)
 			throw new IllegalStateException(
 					"not enough money on the bankaccount!");
 		owner.modifyResources(Catapult.getAttackcatapultprice());
