@@ -1,6 +1,7 @@
 package de.unisaarland.cs.sopra.common.view.ai;
 
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
+import de.unisaarland.cs.sopra.common.model.Catapult;
 import de.unisaarland.cs.sopra.common.model.Path;
 
 public class MoveCatapult extends Stroke {
@@ -17,7 +18,7 @@ public class MoveCatapult extends Stroke {
 	}
 
 	public MoveCatapult(Path source, Path destination){
-		super(StrokeType.MOVE_CATAPULT);
+		super(StrokeType.MOVE_CATAPULT, Catapult.getAttackcatapultprice());
 		this.source = source;
 		this.destination = destination;
 	}

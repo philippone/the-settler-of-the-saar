@@ -1,5 +1,7 @@
 package de.unisaarland.cs.sopra.common.view.ai;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,6 +32,17 @@ public class Ai implements ModelObserver {
 		this.ca = ca;
 		this.me = mr.getMe();
 		this.strategies = new HashSet<Strategy>();
+	}
+	
+	public void execute(List<Stroke> sortedStroke){
+		//TODO
+	}
+	
+	public List<Stroke> getSortedStrokeList(Set<Strategy> strategySet){
+		List<Stroke> strokeList = generateAllPossibleStrokes();
+		evaluateStrokes(strokeList, strategySet);
+		Collections.sort(strokeList);
+		return strokeList;
 	}
 	
 	public void evaluateStrokes(List<Stroke> strokeList, Set<Strategy> strategySet){
@@ -149,18 +162,15 @@ public class Ai implements ModelObserver {
 
 	@Override
 	public void eventNewRound(int number) {
-		List<Stroke> possibleStrokes = generateAllPossibleStrokes();
-		Set<Strategy> strategySet = new HashSet<Strategy>();
-		strategySet.add(new InitializeStrategy(mr));
-		evaluateStrokes(possibleStrokes, new HashSet<Strategy>());
+		// TODO	
 	}
 
 	@Override
 	public void initTurn() {
-		generateAllPossibleStrokes();
-		Strategy initStrategy = new InitializeStrategy(mr);
-		
-		
+		Set<Strategy> strategySet = new HashSet<Strategy>();
+		strategySet.add(new InitializeStrategy(mr));
+		List<Stroke> sortedStrokes = getSortedStrokeList(strategySet);
+		execute(sortedStrokes);
 	}
 
 }

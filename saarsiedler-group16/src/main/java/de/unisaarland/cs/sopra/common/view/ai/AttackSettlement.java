@@ -1,6 +1,7 @@
 package de.unisaarland.cs.sopra.common.view.ai;
 
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
+import de.unisaarland.cs.sopra.common.model.Catapult;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.Path;
 
@@ -10,7 +11,7 @@ public class AttackSettlement extends Stroke {
 	private final Intersection destination;
 	
 	public AttackSettlement(Path source, Intersection destination){
-		super(StrokeType.ATTACK_SETTLEMENT);
+		super(StrokeType.ATTACK_SETTLEMENT, Catapult.getAttackbuildingprice());
 		this.source = source;
 		this.destination = destination;
 	}
