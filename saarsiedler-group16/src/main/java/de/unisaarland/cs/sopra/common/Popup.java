@@ -158,6 +158,7 @@ public void setN(int n){
 		//======== this ========
 		setAlwaysOnTop(true);
 		setResizable(false);
+		setVisible(true);
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
 

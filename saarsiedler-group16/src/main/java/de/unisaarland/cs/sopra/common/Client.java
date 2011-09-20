@@ -399,11 +399,11 @@ public class Client {
 		popup.grainMax2.setText(""+rp.getResource(Resource.GRAIN));
 		popup.oreMax2.setText(""+rp.getResource(Resource.ORE));
 		
-		while(returnPackage==null){
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {e.printStackTrace();}
-		}
+//		while(returnPackage==null){
+//			try {
+//				Thread.sleep(100);
+//			} catch (InterruptedException e) {e.printStackTrace();}
+//		}
 		popup.setVisible(false);
 		return returnPackage;
 	}
