@@ -10,8 +10,7 @@ import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public abstract class Clickable {
-	private static List<Clickable> model = new LinkedList<Clickable>();
-	private static List<Clickable> ui = new LinkedList<Clickable>();
+	private static List<Clickable> list = new LinkedList<Clickable>();
 
 	private int x, y, z, width, height;
 	private boolean active, visible;
@@ -24,26 +23,19 @@ public abstract class Clickable {
 	private Path path2;
 	private Player player;
 	private ResourcePackage res;
+	private List<Path> road;
+	private boolean decision;
 	
-	public static List<Clickable> executeModelClicks(float xogl, float yogl) {
+	public static List<Clickable> executeClicks(float xogl, float yogl) {
 		List<Clickable> liste = new LinkedList<Clickable>();
-		for (Clickable act : model) {
+		for (Clickable act : list) {
 			if (act.checkClick(xogl, yogl))
 				liste.add(act);
 		}
 		return liste;
 	}
 	
-	public static List<Clickable> executeUIClicks(float xogl, float yogl) {
-		List<Clickable> liste = new LinkedList<Clickable>();
-		for (Clickable act : ui) {
-			if (act.checkClick(xogl, yogl))
-				liste.add(act);
-		}
-		return liste;
-	}
-	
-	public Clickable(String name, int x, int y, int z, int width, int height, boolean active, boolean isGUIonly, boolean visible) {
+	public Clickable(String name, int x, int y, int z, int width, int height, boolean active, boolean visible) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -51,11 +43,8 @@ public abstract class Clickable {
 		this.height = height;
 		this.active = active;
 		this.visible = visible;
-		this.setName(name);
-		if (isGUIonly)
-			ui.add(this);
-		else
-			model.add(this);
+		this.name = name;
+		list.add(this);
 	}
 	
 	public int getX() {
@@ -98,11 +87,13 @@ public abstract class Clickable {
 		this.height = height;
 	}
 
-	public abstract void execute();
+	public abstract void executeUI();
+	
+	public abstract void executeController();
 	
 	private boolean checkClick(float xogl, float yogl) {
 		if (active) {
-			return (xogl > x && xogl < x+width && yogl > y && yogl < y+height);
+			return (xogl > x && xogl < x+width*0.854f && yogl > y && yogl < y+height*0.48f);
 		}
 		return false;
 	}
@@ -124,10 +115,7 @@ public abstract class Clickable {
 	}
 
 	public static List<Clickable> getRenderList() {
-		List<Clickable> tmp = new LinkedList<Clickable>();
-		tmp.addAll(model);
-		tmp.addAll(ui);
-		return tmp;
+		return list;
 	}
 
 	public void setVisible(boolean visible) {
@@ -192,6 +180,22 @@ public abstract class Clickable {
 
 	public void setRes(ResourcePackage res) {
 		this.res = res;
+	}
+
+	public void setRoad(List<Path> road) {
+		this.road = road;
+	}
+
+	public List<Path> getRoad() {
+		return road;
+	}
+
+	public void setDecision(boolean decision) {
+		this.decision = decision;
+	}
+
+	public boolean isDecision() {
+		return decision;
 	}
 	
 }

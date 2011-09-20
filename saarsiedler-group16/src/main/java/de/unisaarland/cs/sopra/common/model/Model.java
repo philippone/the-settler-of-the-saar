@@ -36,7 +36,6 @@ public class Model implements ModelReader, ModelWriter {
 	private Player me;
 	private int initPlayer = 0;						    //akt player in der initPhase
 	private Intersection initLastVillageIntersection;	//fuer initPhase zur berechnung der erlaubeten street(welche dann den current player durchwechselt)
-	private boolean pull;
 
 	/**
 	 * @param worldRepresentation
@@ -486,12 +485,10 @@ public class Model implements ModelReader, ModelWriter {
 	 * @return The List of Player sorted in TableOrder
 	 */
 	public List<Player> getTableOrder() {
-		if (reversedPlayersList) {
-			reversedPlayersList = false;
-			Collections.reverse(this.players);
-		}
-		return this.players;
-			
+		List<Player> erg = new LinkedList<Player>(this.players);
+		if (reversedPlayersList)
+			Collections.reverse(erg);
+		return erg;	
 	}
 
 	@Override

@@ -17,22 +17,30 @@ import de.unisaarland.cs.sopra.common.model.ResourcePackage;
  * @author Hans Lange der
  */
 public class Popup extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	int n;
 	public Popup() {
 		initComponents();
-		topLabel.setText("You have to choose "+n+" Resources!");
 		topLabel2.setText("Make a valid offer!");
 		topLabel3.setText("Accept Trade-Offer?");
 		okButton.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int a1= Integer.valueOf(textField1.getText());
-				int a2= Integer.valueOf(textField2.getText());
-				int a3= Integer.valueOf(textField3.getText());
-				int a4= Integer.valueOf(textField4.getText());
-				int a5= Integer.valueOf(textField5.getText());
-				if((a1+a2+a3+a4+a5)!=(n/2)){
+				int a1 = Integer.valueOf(textField1.getText());
+				int a2 = Integer.valueOf(textField2.getText());
+				int a3 = Integer.valueOf(textField3.getText());
+				int a4 = Integer.valueOf(textField4.getText());
+				int a5 = Integer.valueOf(textField5.getText());
+				int r1 = Integer.valueOf(lumberMax.getText());
+				int r2 = Integer.valueOf(brickMax.getText());
+				int r3 = Integer.valueOf(woolMax.getText());
+				int r4 = Integer.valueOf(grainMax.getText());
+				int r5 = Integer.valueOf(oreMax.getText());
+				if((a1+a2+a3+a4+a5)!=(n/2) || a1 > r1 || a2 > r2 || a3 > r3 | a4 > r4 || a5 > r5 ){
 						warning.setVisible(true);
 					}
 				else{
@@ -77,9 +85,23 @@ public class Popup extends JFrame {
 			}
 		});
 	}
-public void setN(int n){
-	this.n=n;
-}
+	
+	public void setN(int n){
+		this.n=n;
+	}
+	
+	public void setText(String str) {
+		topLabel.setText(str);
+	}
+	
+	public void reset() {
+		textField1.setText("0");
+		textField2.setText("0");
+		textField3.setText("0");
+		textField4.setText("0");
+		textField5.setText("0");
+	}
+	
 	private void initComponents() {
 		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
 		// Generated using JFormDesigner Evaluation license - Hans Lange der
