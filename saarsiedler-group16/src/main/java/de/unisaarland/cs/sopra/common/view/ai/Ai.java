@@ -31,11 +31,11 @@ public class Ai implements ModelObserver {
 		this.strategies = new HashSet<Strategy>();
 	}
 	
-	public void evaluateStrokes(List<Stroke> strokeList){
+	public void evaluateStrokes(List<Stroke> strokeList, Set<Strategy> strategySet){
 		for (Stroke stroke : strokeList){
 			double evaluation = 0;
 			int evaluationParticipants = 0;
-			for (Strategy s : strategies){
+			for (Strategy s : strategySet){
 				if (s.evaluates(stroke)){
 					evaluationParticipants++;
 					evaluation += s.evaluate(stroke);
@@ -49,11 +49,11 @@ public class Ai implements ModelObserver {
 		List<Stroke> strokeSet = new LinkedList<Stroke>();
 		// create build village strokes
 		for (Intersection inter : mr.buildableVillageIntersections(me)){
-			strokeSet.add(new BuildBuilding(inter, BuildingType.Village));
+			strokeSet.add(new BuildVillage(inter));
 		}
 		// create build town strokes
 		for (Intersection inter : mr.buildableTownIntersections(me)){
-			strokeSet.add(new BuildBuilding(inter, BuildingType.Town));
+			strokeSet.add(new BuildTown(inter));
 		}
 		// create catapult strokes
 		for (Path path : mr.buildableCatapultPaths(me)){
@@ -149,12 +149,16 @@ public class Ai implements ModelObserver {
 	@Override
 	public void eventNewRound(int number) {
 		List<Stroke> possibleStrokes = generateAllPossibleStrokes();
-		evaluateStrokes(possibleStrokes);
+		Set<Strategy> strategySet = new HashSet<Strategy>();
+		strategySet.add(new InitializeStrategy(mr));
+		evaluateStrokes(possibleStrokes, new HashSet<Strategy>());
 	}
 
 	@Override
 	public void initTurn() {
-		// TODO Auto-generated method stub
+		generateAllPossibleStrokes();
+		Strategy initStrategy = new InitializeStrategy(mr);
+		
 		
 	}
 
