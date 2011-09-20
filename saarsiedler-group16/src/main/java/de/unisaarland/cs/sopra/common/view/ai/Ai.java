@@ -54,6 +54,12 @@ public class Ai implements ModelObserver {
 		return strokeList;
 	}
 	
+	public List<Stroke> getSortedStrokeList(List<Stroke> strokeList, Set<Strategy> strategySet){
+		evaluateStrokes(strokeList, strategySet);
+		Collections.sort(strokeList);
+		return strokeList;
+	}
+	
 	public void evaluateStrokes(List<Stroke> strokeList, Set<Strategy> strategySet){
 		for (Stroke stroke : strokeList){
 			double evaluation = 0;
@@ -152,9 +158,16 @@ public class Ai implements ModelObserver {
 
 	@Override
 	public void eventRobber() {
+		Set<Strategy> returnResoucesStrategies = new HashSet<Strategy>();
+		returnResoucesStrategies.add(new ReturnResourcesStrategy(mr));
+		List<Stroke> returnResourcesStrokes = generateAllReturnResourcesStrokes();
+		List<Stroke> sortedResourcesStrokes = getSortedStrokeList();
+		execute(sortedResourcesStrokes);
+		Set<Strategy> moveRobberStrategies = new HashSet<Strategy>();
+		moveRobberStrategies.add(new MoveRobberStrategy(mr));
 		List<Stroke> moveRobberStrokes = generateAllMoveRobberStrokes();
-		List<Stroke> sortedStrokes = getSortedStrokeList(strategies);
-		execute(sortedStrokes);
+		List<Stroke> sortedRobberStrokes = getSortedStrokeList();
+		execute(sortedRobberStrokes);
 	}
 
 	@Override
