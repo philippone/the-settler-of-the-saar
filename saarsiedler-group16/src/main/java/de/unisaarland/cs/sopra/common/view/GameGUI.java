@@ -1429,7 +1429,8 @@ public class GameGUI extends View implements Runnable{
 						selectionLocation2 = Model.getLocationListPath(modelReader.catapultMovePaths(source));
 						selectionLocation3 = Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Village, source));
 						selectionLocation3.addAll(Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Town, source)));
-						selectionMode = CATAPULT_ACTION_DST;
+						if (selectionLocation.size()!=0 || selectionLocation2.size()!=0 || selectionLocation3.size()!=0)
+							selectionMode = CATAPULT_ACTION_DST;
 					}
 					break;
 				case ROBBER_SELECT:
@@ -1899,6 +1900,8 @@ public class GameGUI extends View implements Runnable{
 		
 		model.buildStreet(new Location(1,2,2));
 		model.buildStreet(new Location(2,1,1));
+		model.buildSettlement(new Location(2,2,0), BuildingType.Town);
+		model.buildCatapult(new Location(2,2,0), true);
 		
 //		model.getPath(new Location(-1,-1,0)).createStreet(model.getMe());
 //		model.getPath(new Location(-1,-1,1)).createStreet(model.getMe());
