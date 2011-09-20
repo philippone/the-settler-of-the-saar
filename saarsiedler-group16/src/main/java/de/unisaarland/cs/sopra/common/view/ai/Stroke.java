@@ -37,8 +37,8 @@ public abstract class Stroke implements Comparable<Stroke>{
 
 	@Override
 	public int compareTo(Stroke o) {
-		if (this.evaluation < o.getEvaluation()) return 1;
-		else if (this.evaluation > o.getEvaluation()) return -1;
+		if (this.evaluation < o.getEvaluation()) return -1;
+		else if (this.evaluation > o.getEvaluation()) return 1;
 		else return 0;
 	}
 	

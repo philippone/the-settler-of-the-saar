@@ -1896,7 +1896,10 @@ public class Model implements ModelReader, ModelWriter {
 
 	@Override
 	public boolean isOurTurn() {
-		return me == getCurrentPlayer();
+		if (me == null)
+			return false;
+		else
+			return me == getCurrentPlayer();
 	}
 
 	@Override
