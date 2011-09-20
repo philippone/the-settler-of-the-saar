@@ -1435,7 +1435,7 @@ public class Model implements ModelReader, ModelWriter {
 					reversedPlayersList = false;
 				}
 			}
-			Controller.somethingReallyImportant = true;
+			Controller.requestSingleEventPull = true;
 		}
 	}
 
@@ -1891,8 +1891,15 @@ public class Model implements ModelReader, ModelWriter {
 	}
 
 	@Override
-	public boolean writeSomethingReallyUnspecifiedToModel() {
+	public boolean isOurTurn() {
 		return me == getCurrentPlayer();
+	}
+
+	@Override
+	public void matchEnd(long winnerID) {
+		for (ModelObserver act : modelObserver) {
+			act.eventMatchEnd(winnerID);
+		}
 	}
 
 }

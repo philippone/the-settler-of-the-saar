@@ -1999,6 +1999,11 @@ public class GameGUI extends View implements Runnable{
 		if (selectionLocation.size() != 0)
 			selectionMode = VILLAGE;
 	}
+
+	@Override
+	public void eventMatchEnd(long winnerID) {
+		console7 = getName(modelReader.getPlayerMap().get(winnerID)) + " is the winner!";
+	}
 		
 	/*
 		String[] list = new String[] {

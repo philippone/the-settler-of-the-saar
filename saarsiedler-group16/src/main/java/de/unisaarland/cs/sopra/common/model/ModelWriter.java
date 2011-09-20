@@ -106,6 +106,9 @@ public interface ModelWriter {
 	 */
 	public void setMe(Player player);
 
-	public boolean writeSomethingReallyUnspecifiedToModel();
+	public boolean isOurTurn();
+
+
+	public void matchEnd(long winnerID);
 	
 	}

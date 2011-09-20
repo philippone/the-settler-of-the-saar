@@ -21,5 +21,6 @@ public interface ModelObserver {
 	public void eventTrade(ResourcePackage resourcePackage);
 	public void eventNewRound(int number);
 	public void initTurn();
+	public void eventMatchEnd(long winnerID);
 	
 }
