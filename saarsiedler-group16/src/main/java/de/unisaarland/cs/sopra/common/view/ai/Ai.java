@@ -14,7 +14,7 @@ import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
-import de.unisaarland.cs.sopra.common.view.Strategy;
+import de.unisaarland.cs.sopra.common.view.ai.Strategy;
 
 public class Ai implements ModelObserver {
 	
@@ -36,9 +36,9 @@ public class Ai implements ModelObserver {
 			double evaluation = 0;
 			int evaluationParticipants = 0;
 			for (Strategy s : strategies){
-				if (s.evaluatesStroke(s)){
+				if (s.evaluates(stroke)){
 					evaluationParticipants++;
-					evaluation += s.evaluate(s);
+					evaluation += s.evaluate(stroke);
 				}
 			}
 			stroke.setEvaluation(evaluation/evaluationParticipants);
