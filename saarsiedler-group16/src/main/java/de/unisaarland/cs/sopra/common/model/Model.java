@@ -485,12 +485,10 @@ public class Model implements ModelReader, ModelWriter {
 	 * @return The List of Player sorted in TableOrder
 	 */
 	public List<Player> getTableOrder() {
-		if (reversedPlayersList) {
-			reversedPlayersList = false;
-			Collections.reverse(this.players);
-		}
-		return this.players;
-			
+		List<Player> erg = new LinkedList<Player>(this.players);
+		if (reversedPlayersList)
+			Collections.reverse(erg);
+		return erg;	
 	}
 
 	@Override

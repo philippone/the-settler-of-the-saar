@@ -121,13 +121,14 @@ public class GameGUI extends View implements Runnable{
 	private Clickable claimVictory;
 	private Clickable endTurn;
 	private Clickable offerTrade;
+	private Clickable respondTrade;
 	private Clickable buildStreet;
 	private Clickable buildVillage;
 	private Clickable buildTown;	
 	private Clickable buildCatapult;
-	private Clickable catapultActionGhost;
-	private Clickable setRobberGhost;
-	private Clickable returnResourcesGhost;
+	private Clickable catapultAction;
+	private Clickable setRobber;
+	private Clickable returnResources;
 	private Clickable quit;
 	
 	private boolean observer;
@@ -209,12 +210,12 @@ public class GameGUI extends View implements Runnable{
 	}
 	
 	private static float screenToOpenGLx (int zoom) {
-		float oglwidth = (2000+zoom)*0.82841f*aspectRatio;
+		float oglwidth = (float)(2000+zoom)*0.82841f*aspectRatio;
 		return oglwidth/windowWidth;
 	}
 	
 	private static float screenToOpenGLy (int zoom) {
-		float oglheight = (2000+zoom)*0.82841f;
+		float oglheight = (float)(2000+zoom)*0.82841f;
 		return oglheight/windowHeight;
 	}
 	
@@ -228,13 +229,13 @@ public class GameGUI extends View implements Runnable{
 	private void reinitiateUI() {
 		Player me = modelReader.getMe();
 		List<List<Path>> lr = modelReader.calculateLongestRoads(me);
-		if (modelReader.affordableSettlements(BuildingType.Village) > 0) 
+		if (modelReader.affordableSettlements(BuildingType.Village) > 0 && (modelReader.getSettlements(me, BuildingType.Village).size()!=modelReader.getMaxBuilding(BuildingType.Village))) 
 			buildVillage.setActive(true);
-		if (modelReader.affordableSettlements(BuildingType.Town) > 0) 
+		if (modelReader.affordableSettlements(BuildingType.Town) > 0 && (modelReader.getSettlements(me, BuildingType.Town).size()!=modelReader.getMaxBuilding(BuildingType.Town))) 
 			buildTown.setActive(true);
-		if (modelReader.affordableCatapultBuild() > 0) 
+		if (modelReader.affordableCatapultBuild() > 0 && (modelReader.getCatapults(me).size()!=modelReader.getMaxCatapult()) && modelReader.getSettlements(me, BuildingType.Town).size() > 0) 
 			buildCatapult.setActive(true);
-		if (modelReader.affordableStreets() > 0) 
+		if (modelReader.affordableStreets() > 0 && modelReader.buildableStreetPaths(me).size()!=0) 
 			buildStreet.setActive(true);
 		if (!lr.isEmpty() && lr.get(0).size() > (modelReader.getLongestClaimedRoad() != null ? modelReader.getLongestClaimedRoad().size() : 4)  )
 			claimLongestRoad.setActive(true);
@@ -790,6 +791,7 @@ public class GameGUI extends View implements Runnable{
 					   iy = l.getY()*215; 
 					   break;
 				   case 1:
+				   case -1:
 					   ix = l.getX()*250-125;
 					   iy = l.getY()*215;
 					   break;
@@ -875,14 +877,7 @@ public class GameGUI extends View implements Runnable{
 	   GL11.glTranslatef(xOffset, 0, zOffsetUI-5);
 	   setColor(BLACK);
 	   renderUI("Background", xOffsetUI, yOffsetUI, 0, 1500, 305);
-	   renderUI("Console", xOffsetUI+630, yOffsetUI+65, 1, 730, 300);
-	   
-	   GL11.glPushMatrix();
-	   GL11.glTranslatef((int)(Mouse.getX()*screenToOpenGLx(zOffsetUI)+25), (int)((windowHeight-Mouse.getY())*screenToOpenGLy(zOffsetUI)+380), 0);
-	   uiTextureMap.get("PlayerBackgroundHighlight").bind();
-	   drawSquareLeftTop(100, 100);
-	   GL11.glPopMatrix();
-	   
+	   renderUI("Console", xOffsetUI+630, yOffsetUI+65, 1, 730, 300);	   
 	   setColor(BLACK);
 	   renderUI("LumberScore", xOffsetUI+345, yOffsetUI+65, 1, 95, 77);
 	   uiFont20.drawString(xOffsetUI+396, yOffsetUI+72, ""+modelReader.getResources().getResource(Resource.LUMBER));
@@ -978,8 +973,13 @@ public class GameGUI extends View implements Runnable{
 	
 	@Override
 	public void updateResources() {
-		if (!observer)
-			reinitiateUI();
+		if (modelReader.getCurrentPlayer() == modelReader.getMe() && !observer
+				&& !(selectionMode == ROBBER_SELECT || selectionMode == ROBBER_PLACE || selectionMode == ROBBER_PLAYER_SELECT) ) {
+				reinitiateUI();
+			}
+			else {
+				deactivateUI();
+			}
 	}
 
 	
@@ -1023,8 +1023,8 @@ public class GameGUI extends View implements Runnable{
 		if (!observer) {
 			if (modelReader.getMe().getResources().size() > 7) {
 				ResourcePackage res = Client.returnResources(modelReader.getResources().copy());
-				returnResourcesGhost.setRes(res);
-				controllerAdapter.addGuiEvent(returnResourcesGhost);
+				returnResources.setRes(res);
+				controllerAdapter.addGuiEvent(returnResources);
 			}
 			if (modelReader.getMe() == modelReader.getCurrentPlayer()) {
 				selectionPoint = Model.getLocationListField(modelReader.getRobberFields());
@@ -1036,8 +1036,9 @@ public class GameGUI extends View implements Runnable{
 
 	@Override
 	public void eventTrade(ResourcePackage resourcePackage) {
-		Client.incomingTradeOffer(resourcePackage);
-		//TODO ghost knopf und behandeln!
+		boolean decision = Client.incomingTradeOffer(resourcePackage);
+		respondTrade.setDecision(decision);
+		controllerAdapter.addGuiEvent(respondTrade);
 	}
 
 	@Override
@@ -1118,7 +1119,7 @@ public class GameGUI extends View implements Runnable{
 			Display.setFullscreen(Setting.isFullscreen());
 			Display.create();
 			
-			//TODO zeit messen
+			//TODO zeit messen. takes a lot of time. evtl auslagern
 			fieldTextureMap = new HashMap<FieldType,Texture>();
 			fieldTextureMap.put(FieldType.MOUNTAINS, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Mountains.png")));
 			fieldTextureMap.put(FieldType.DESERT, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Desert.png")));
@@ -1227,9 +1228,9 @@ public class GameGUI extends View implements Runnable{
 				@Override
 				public void executeUI() {
 					ResourcePackage res = Client.tradeOffer(modelReader.getResources(), modelReader.getHarborTypes(modelReader.getMe()));
-					//TODO offertrade ghost schreiben und füllen
-					//anzahl der handel mitzählen?!
+					//TODO anzahl der handel mitzählen?!
 					if (res != null) {
+						this.setRes(res);
 						controllerAdapter.addGuiEvent(this);
 					}
 				}
@@ -1307,7 +1308,7 @@ public class GameGUI extends View implements Runnable{
 				}
 			};
 			
-			catapultActionGhost = new Clickable(null, 0, 0, 0, 0, 0, false, false) {
+			catapultAction = new Clickable(null, 0, 0, 0, 0, 0, false, false) {
 				@Override
 				public void executeUI() {}
 				@Override
@@ -1316,7 +1317,7 @@ public class GameGUI extends View implements Runnable{
 				}
 			};
 			
-			setRobberGhost = new Clickable(null, 0, 0, 0, 0, 0, false, false) {
+			setRobber = new Clickable(null, 0, 0, 0, 0, 0, false, false) {
 				@Override
 				public void executeUI() {}
 				@Override
@@ -1325,12 +1326,21 @@ public class GameGUI extends View implements Runnable{
 				}
 			};
 			
-			returnResourcesGhost = new Clickable(null, 0, 0, 0, 0, 0, false, false) {
+			returnResources = new Clickable(null, 0, 0, 0, 0, 0, false, false) {
 				@Override
 				public void executeUI() {}
 				@Override
 				public void executeController() {
 					controllerAdapter.returnResources(getRes());
+				}
+			};
+			
+			respondTrade = new Clickable(null, 0, 0, 0, 0, 0, false, false) {
+				@Override
+				public void executeUI() {}
+				@Override
+				public void executeController() {
+					controllerAdapter.respondTrade(this.isDecision());
 				}
 			};
 			
@@ -1407,14 +1417,14 @@ public class GameGUI extends View implements Runnable{
 		
 		if (Mouse.isButtonDown(0) && System.currentTimeMillis() - lastinputcheck > 500) {
 			this.lastinputcheck = System.currentTimeMillis();
-			for (Clickable c : Clickable.executeClicks(mx*screenToOpenGLx(zOffsetUI), (windowHeight-my)*screenToOpenGLy(zOffsetUI)+380)) {
+			for (Clickable c : Clickable.executeClicks(mx*screenToOpenGLx(zOffsetUI)+25, (windowHeight-my)*screenToOpenGLy(zOffsetUI)+380)) {
 				c.executeUI();
 			}
 			switch (selectionMode) {
 				case NONE:
 					Path source = getMousePath();
 					if (source != null && modelReader.getCatapults(modelReader.getMe()).contains(Model.getLocation(source))) {
-						catapultActionGhost.setPath(source);
+						catapultAction.setPath(source);
 						selectionLocation = Model.getLocationListPath(modelReader.attackableCatapults(source));
 						selectionLocation2 = Model.getLocationListPath(modelReader.catapultMovePaths(source));
 						selectionLocation3 = Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Village, source));
@@ -1425,7 +1435,7 @@ public class GameGUI extends View implements Runnable{
 				case ROBBER_SELECT:
 					Field robberSRC = getMouseField();
 					if (robberSRC != null && selectionPoint.contains(Model.getLocation(robberSRC))) {
-						setRobberGhost.setField(robberSRC);
+						setRobber.setField(robberSRC);
 						selectionPoint = Model.getLocationListField(modelReader.canPlaceRobber());
 						selectionMode = ROBBER_PLACE;
 						console4 = "Now place the Robber on another Field!";
@@ -1434,7 +1444,7 @@ public class GameGUI extends View implements Runnable{
 				case ROBBER_PLACE:
 					Field robberDST = getMouseField();
 					if (robberDST != null && selectionPoint.contains(Model.getLocation(robberDST))) {
-						setRobberGhost.setField2(robberDST);
+						setRobber.setField2(robberDST);
 						selectionLocation = Model.getLocationListIntersection(modelReader.getIntersectionsFromField(robberDST));
 						
 						//remove my own intersections from list
@@ -1456,12 +1466,12 @@ public class GameGUI extends View implements Runnable{
 					Intersection player = getMouseIntersection();
 					if (player != null && selectionLocation.contains(Model.getLocation(player))) {
 						if (player.hasOwner())
-							setRobberGhost.setPlayer(player.getOwner());
+							setRobber.setPlayer(player.getOwner());
 						selectionMode = NONE;
 						console4 = "";
 						console5 = "";
 						console6 = "";
-						controllerAdapter.addGuiEvent(setRobberGhost);
+						controllerAdapter.addGuiEvent(setRobber);
 						reinitiateUI();
 					}
 					break;
@@ -1500,7 +1510,7 @@ public class GameGUI extends View implements Runnable{
 				case CATAPULT_ACTION_DST:
 					Path destination = getMousePath();
 					if (destination != null && selectionLocation.contains(Model.getLocation(destination))) {
-						catapultActionGhost.setPath2(destination);
+						catapultAction.setPath2(destination);
 						selectionMode = NONE;
 						controllerAdapter.addGuiEvent(buildStreet);
 					}
@@ -1985,11 +1995,9 @@ public class GameGUI extends View implements Runnable{
 		*/
 	
 //	   GL11.glPushMatrix();
-//	   GL11.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);  // (-0.1453125f*(2000+z)      (-0.11875f*(2000+z)
-//	   GL11.glTranslatef(Mouse.getX()*screenToOpenGLx(z)+(585*aspectRatio)+((1450+z)*-0.415f*aspectRatio), (windowHeight-Mouse.getY())*screenToOpenGLy(z)+592+((1450+z)*-0.415f), z);
-//	   fieldMarkTexture.bind();
-//	   drawSquareLeftTop(100, 100);
-//	   //setColor(BLACK);
+//	   GL11.glTranslatef((int)(Mouse.getX()*screenToOpenGLx(zOffsetUI)+25), (int)((windowHeight-Mouse.getY())*screenToOpenGLy(zOffsetUI)+380), 0);
+//	   uiTextureMap.get("PlayerBackgroundHighlight").bind();
+//	   drawSquareLeftTop(159, 37);
 //	   GL11.glPopMatrix();
 	
 }
