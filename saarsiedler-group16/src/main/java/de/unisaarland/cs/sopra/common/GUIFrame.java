@@ -25,6 +25,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.*;
 import javax.swing.table.DefaultTableModel;
 
 import org.lwjgl.opengl.Display;
@@ -319,14 +320,24 @@ public class GUIFrame extends JFrame {
 					gameTable.setFont(gameTable.getFont().deriveFont(Font.BOLD, gameTable.getFont().getSize() + 2f));
 					gameTable.setModel(new DefaultTableModel(
 						new Object[][] {
-							{null, null, null, null},
-							{null, null, null, null},
-							{null, null, null, null},
+							{null, null, null, null, null},
+							{null, null, null, null, null},
+							{null, null, null, null, null},
 						},
 						new String[] {
-							"MatchID", "Name", "Players", "WorldID"
+							"MatchID", "Name", "Players", "WorldID", null
 						}
 					));
+					{
+						TableColumnModel cm = gameTable.getColumnModel();
+						cm.getColumn(0).setMinWidth(50);
+						cm.getColumn(0).setMaxWidth(60);
+						cm.getColumn(1).setMinWidth(220);
+						cm.getColumn(2).setMinWidth(60);
+						cm.getColumn(2).setMaxWidth(60);
+						cm.getColumn(3).setMinWidth(50);
+						cm.getColumn(3).setMaxWidth(50);
+					}
 					gameTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 					gameTable.setDoubleBuffered(true);
 					scrollPane4.setViewportView(gameTable);
