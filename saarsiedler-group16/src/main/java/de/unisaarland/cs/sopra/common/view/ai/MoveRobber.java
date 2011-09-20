@@ -7,9 +7,9 @@ import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public class MoveRobber extends Stroke {
 	
-	public final Field source;
-	public final Field destination;
-	public final Player victim;
+	private final Field source;
+	private final Field destination;
+	private final Player victim;
 	
 	public MoveRobber(Field source, Field destination, Player victim){
 		super(StrokeType.MOVE_ROBBER, new ResourcePackage());
