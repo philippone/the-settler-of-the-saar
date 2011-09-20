@@ -1248,7 +1248,8 @@ public class GameGUI extends View implements Runnable{
 					}
 					else {
 						selectionLocation = Model.getLocationListPath(modelReader.buildableStreetPaths(modelReader.getMe()));
-						selectionMode = STREET;
+						if (selectionLocation.size() != 0)
+							selectionMode = STREET;
 					}
 				}
 				@Override
@@ -1265,7 +1266,8 @@ public class GameGUI extends View implements Runnable{
 					}
 					else {
 						selectionLocation = Model.getLocationListIntersection(modelReader.buildableVillageIntersections(modelReader.getMe()));
-						selectionMode = VILLAGE;
+						if (selectionLocation.size() != 0)
+							selectionMode = VILLAGE;
 					}
 				}
 				@Override
@@ -1282,7 +1284,8 @@ public class GameGUI extends View implements Runnable{
 					}
 					else {
 						selectionLocation = Model.getLocationListIntersection(modelReader.buildableTownIntersections(modelReader.getMe()));
-						selectionMode = TOWN;
+						if (selectionLocation.size() != 0)
+							selectionMode = TOWN;
 					}
 				}
 				@Override
@@ -1299,7 +1302,8 @@ public class GameGUI extends View implements Runnable{
 					}
 					else {
 						selectionLocation = Model.getLocationListPath(modelReader.buildableCatapultPaths(modelReader.getMe()));
-						selectionMode = CATAPULT_BUILD;
+						if (selectionLocation.size() != 0)
+							selectionMode = CATAPULT_BUILD;
 					}
 				}
 				@Override
@@ -1348,7 +1352,7 @@ public class GameGUI extends View implements Runnable{
 				@Override
 				public void executeUI() {
 					Display.destroy();
-					System.exit(0);	
+					Client.backToLobby();
 				}
 				@Override
 				public void executeController() {}
@@ -1356,7 +1360,7 @@ public class GameGUI extends View implements Runnable{
 			
 		} catch (Exception e) {e.printStackTrace();}
 		
-		if (!observer) {
+		if (!observer && modelReader.getMe() == modelReader.getCurrentPlayer()) {
 			init = true;
 			buildVillage.setActive(true);
 			console4 = modelReader.getInitVillages() + " initial villages left";
@@ -1546,7 +1550,7 @@ public class GameGUI extends View implements Runnable{
 			if (my < 50) {
 				y-=5;
 			}
-			else if (my > windowHeight-50) {
+			else if (my > windowHeight-50 && (mx < 100 || mx > windowWidth-100) ) {
 				y+=5;
 			}
 		}
@@ -1565,16 +1569,16 @@ public class GameGUI extends View implements Runnable{
 			minX+=5;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
-			//x-=10;
-			minX-=5;
+			x-=10;
+//			minX-=5;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
-			//y+=10;
-			minY+=5;
+			y+=10;
+//			minY+=5;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
-			//y-=10;
-			minY-=5;
+			y-=10;
+//			minY-=5;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_N)) {
 			if (z+50 < this.maxZ)
