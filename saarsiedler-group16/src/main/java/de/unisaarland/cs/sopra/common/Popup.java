@@ -57,19 +57,19 @@ public class Popup extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int a1= Integer.valueOf(textField1.getText());
-				int a2= Integer.valueOf(textField2.getText());
-				int a3= Integer.valueOf(textField3.getText());
-				int a4= Integer.valueOf(textField4.getText());
-				int a5= Integer.valueOf(textField5.getText());
+				int a1= Integer.valueOf(textField6.getText());
+				int a2= Integer.valueOf(textField7.getText());
+				int a3= Integer.valueOf(textField8.getText());
+				int a4= Integer.valueOf(textField9.getText());
+				int a5= Integer.valueOf(textField10.getText());
 				int r1= Integer.valueOf(lumberMax2.getText());
 				int r2= Integer.valueOf(brickMax2.getText());
 				int r3= Integer.valueOf(woolMax2.getText());
 				int r4= Integer.valueOf(grainMax2.getText());
 				int r5= Integer.valueOf(oreMax2.getText());
-				if(r1<a1 || r2<a2 || r3<a3 || r4<a4 || r5<a5){
-					warning.setText("invalid Selection, can't deliver more Resources than you have");	
-					warning.setVisible(true);
+				if(r1+a1>=0 || r2+a2>=0 || r3+a3>=0 || r4+a4>=0 || r5+a5>=0){
+					warning2.setText("invalid Selection, can't deliver more Resources than you have");	
+					warning2.setVisible(true);
 					}
 				else{
 					Client.returnPackage=new ResourcePackage(a1,a2,a3,a4,a5);
