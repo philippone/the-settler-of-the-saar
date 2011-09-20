@@ -19,8 +19,7 @@ public class ReturnResources extends Stroke {
 	
 	@Override
 	public void execute(ControllerAdapter c) {
-		// TODO Auto-generated method stub
-		
+		c.returnResources(resources);
 	}
 
 }

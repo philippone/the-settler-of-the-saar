@@ -954,11 +954,11 @@ public class GameGUI extends View implements Runnable{
 	
 	@Override
 	public void updatePath(Path path) {
-		int i = 0;
-		for (Player act : modelReader.getTableOrder()) {
-			List<List<Path>> streets = modelReader.calculateLongestRoads(act);
-			this.road[i++] = streets.size() > 0 ? streets.get(0).size() : 0;
-		}
+//		int i = 0;
+//		for (Player act : modelReader.getTableOrder()) {
+//			List<List<Path>> streets = modelReader.calculateLongestRoads(act);
+//			this.road[i++] = streets.size() > 0 ? streets.get(0).size() : 0;
+//		}
 	}
 
 

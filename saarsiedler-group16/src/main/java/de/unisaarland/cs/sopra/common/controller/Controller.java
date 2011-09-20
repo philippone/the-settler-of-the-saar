@@ -383,7 +383,6 @@ public class Controller implements Runnable {
 					iter.next().executeController();
 					iter.remove();
 				}
-				Thread.sleep(100);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
