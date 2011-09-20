@@ -303,6 +303,8 @@ public class Ai implements ModelObserver {
 
 	@Override
 	public void eventMatchEnd(long winnerID) {
+		// TODO Auto-generated method stub
+
 	}
 
 }
