@@ -16,6 +16,7 @@ import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 import de.unisaarland.cs.sopra.common.view.ai.Strategy;
 
@@ -54,6 +55,12 @@ public class Ai implements ModelObserver {
 		return strokeList;
 	}
 	
+	public List<Stroke> getSortedStrokeList(List<Stroke> strokeList, Set<Strategy> strategySet){
+		evaluateStrokes(strokeList, strategySet);
+		Collections.sort(strokeList);
+		return strokeList;
+	}
+	
 	public void evaluateStrokes(List<Stroke> strokeList, Set<Strategy> strategySet){
 		for (Stroke stroke : strokeList){
 			double evaluation = 0;
@@ -66,6 +73,27 @@ public class Ai implements ModelObserver {
 			}
 			stroke.setEvaluation(evaluation/evaluationParticipants);
 		}
+	}
+	
+	public List<Stroke> generateAllReturnResourcesStrokes(){
+		List<Stroke> strokeSet = new LinkedList<Stroke>();
+		// TODO Calculate ALL return resources Strokes!!
+		if (me.getResources().size() > 7){
+			ResourcePackage myrp = me.getResources().copy();
+			int give = myrp.size()/2;
+			Resource max = Resource.LUMBER;
+			ResourcePackage tmp = new ResourcePackage();
+			while (give > 0){
+				// find the resource that you have most
+				for (Resource r : Resource.values())
+					max = myrp.getResource(r)>myrp.getResource(max)?r:max;
+				myrp.modifyResource(max, -1);	
+				tmp.modifyResource(max, 1);
+				give--;
+			}
+			strokeSet.add(new ReturnResources(tmp));
+		}
+		return strokeSet;
 	}
 	
 	public List<Stroke> generateAllMoveRobberStrokes(){
@@ -152,9 +180,16 @@ public class Ai implements ModelObserver {
 
 	@Override
 	public void eventRobber() {
+		Set<Strategy> returnResoucesStrategies = new HashSet<Strategy>();
+		returnResoucesStrategies.add(new ReturnResourcesStrategy(mr));
+		List<Stroke> returnResourcesStrokes = generateAllReturnResourcesStrokes();
+		List<Stroke> sortedResourcesStrokes = getSortedStrokeList(returnResourcesStrokes, returnResoucesStrategies);
+		execute(sortedResourcesStrokes);
+		Set<Strategy> moveRobberStrategies = new HashSet<Strategy>();
+		moveRobberStrategies.add(new MoveRobberStrategy(mr));
 		List<Stroke> moveRobberStrokes = generateAllMoveRobberStrokes();
-		List<Stroke> sortedStrokes = getSortedStrokeList(strategies);
-		execute(sortedStrokes);
+		List<Stroke> sortedRobberStrokes = getSortedStrokeList(moveRobberStrokes, moveRobberStrategies);
+		execute(sortedRobberStrokes);
 	}
 
 	@Override

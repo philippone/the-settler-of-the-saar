@@ -305,7 +305,7 @@ public class Controller implements Runnable{
 	 */
 	public void offerTrade(int lumber, int brick, int wool, int grain, int ore)
 			throws IllegalStateException, IOException {
-		long id = connection.offerTrade(lumber, brick, wool, grain, ore);
+		long id = connection.offerTrade(-lumber, -brick, -wool, -grain, -ore);
 		modelWriter.tradeOffer(lumber, brick, wool, grain, ore);
 		modelWriter.respondTrade(id);
 	}
@@ -352,7 +352,7 @@ public class Controller implements Runnable{
 	public void run() {
 		try {
 			while(!endOfGame){
-				while (!modelWriter.writeSomethingReallyUnspecifiedToModel() || somethingReallyImportant) {
+				if (!modelWriter.writeSomethingReallyUnspecifiedToModel() || somethingReallyImportant) {
 					somethingReallyImportant = false;
 					GameEvent e = connection.getNextEvent(100);
 					if (e != null) {

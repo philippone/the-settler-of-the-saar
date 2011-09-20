@@ -27,7 +27,6 @@ public class ButtonListener implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 		//Menu:
 			if (arg0.getSource() == gui.exit){
-				Client.closeConnection();
 				System.exit(0);
 			}
 			if (arg0.getSource() == gui.menuItemSettings){
@@ -37,7 +36,6 @@ public class ButtonListener implements ActionListener {
 				gui.createPanel.setVisible(false);
 				gui.joinPanel.setVisible(false);
 				gui.settingsPanel.setVisible(true);
-//				Client.closeConnection();
 			}
 		//
 		
