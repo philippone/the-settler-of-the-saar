@@ -1548,7 +1548,7 @@ public class GameGUI extends View implements Runnable{
 			else if (mx > windowWidth-50) {
 				x-=5;
 			}
-			if (my < 50 && (mx < 100 || mx > windowWidth-100)) {
+			if (my < 50 && (mx < 200 || mx > windowWidth-200)) {
 				y-=5;
 			}
 			else if (my > windowHeight-50 ) {
@@ -1566,8 +1566,8 @@ public class GameGUI extends View implements Runnable{
 		}
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
-			//x+=10;
-			minX+=5;
+			x+=10;
+//			minX+=5;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
 			x-=10;
@@ -1688,22 +1688,22 @@ public class GameGUI extends View implements Runnable{
 		}
 		tmpy = Math.abs(tmpy%215);
 		
-		if (tmpx > 65 && tmpx < 185) {
-			if (tmpy < 60)
+		if (tmpx > 85 && tmpx < 165) {
+			if (tmpy < 40)
 				ergo = 0;
-			if (tmpy > 225)
+			if (tmpy > 245)
 				ergo = 3;
 		}
-		else if (tmpy > 10 && tmpy < 130) {
-			if (tmpx > 190)
+		else if (tmpy > 30 && tmpy < 110) {
+			if (tmpx > 210)
 				ergo = 1;
-			if (tmpx < 60)
+			if (tmpx < 40)
 				ergo = 5;
 		}
-		else if (tmpy > 155 && tmpy < 275) {
-			if (tmpx > 190)
+		else if (tmpy > 175 && tmpy < 255) {
+			if (tmpx > 210)
 				ergo = 2;
-			if (tmpx < 60)
+			if (tmpx < 40)
 				ergo = 4;
 		}
 		
