@@ -64,4 +64,10 @@ public class MoveRobberStrategy extends Strategy {
 		return 0;
 	}
 
+	@Override
+	public boolean evaluates(Stroke s) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

@@ -10,30 +10,7 @@ public abstract class Strategy {
 		this.mr = mr;
 	}
 	
-	public boolean evaluates(Stroke s){
-		switch(s.getType()){
-		default:
-			throw new IllegalArgumentException("The stroke is no valid stroke!");
-		case ATTACK_CATAPULT:
-			return false;
-		case ATTACK_SETTLEMENT:
-			return false;
-		case BUILD_VILLAGE:
-			return false;
-		case BUILD_TOWN:
-			return false;
-		case BUILD_CATAPULT:
-			return false;
-		case BUILD_STREET:
-			return false;
-		case MOVE_CATAPULT:
-			return false;
-		case MOVE_ROBBER:
-			return false;
-		case RETURN_RESOURCES:
-			return false;
-		}
-	}
+	public abstract boolean evaluates(Stroke s);
 	
 	public final double evaluate(Stroke s){
 		switch(s.getType()){
