@@ -1,7 +1,5 @@
 package de.unisaarland.cs.sopra.common.view.ai;
 
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import de.unisaarland.cs.sopra.common.model.BuildingType;
@@ -16,6 +14,7 @@ public class MoveRobberStrategy extends Strategy {
 		super(mr);
 		// TODO Auto-generated constructor stub
 	}
+
 	public boolean evaluates(Stroke s){
 			switch(s.getType()){
 			default:
@@ -87,8 +86,8 @@ public class MoveRobberStrategy extends Strategy {
 		double destinationValue = 0.0;
 		double sourceValue = 0.0;
 		double moveRobberValue = 0.0;
-		Field sourceField = stroke.source;
-		Field destinationField = stroke.destination;
+		Field sourceField = stroke.getSource();
+		Field destinationField = stroke.getDestination();
 		Set<Intersection>  destIntersections= mr.getIntersectionsFromField(destinationField);
 		for (Intersection i: destIntersections){
 			if (i.hasOwner()) { 

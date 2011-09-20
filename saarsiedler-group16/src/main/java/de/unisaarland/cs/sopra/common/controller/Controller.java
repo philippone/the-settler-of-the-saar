@@ -26,7 +26,7 @@ public class Controller implements Runnable{
 	private Resource r;
 	private boolean endOfGame;
 	private Queue<Clickable> guiEvents;
-	public static boolean somethingReallyImportant = false;
+	public static boolean requestSingleEventPull = false;
 
 	/**
 	 * @param connection
@@ -44,8 +44,7 @@ public class Controller implements Runnable{
 	 * @throws IllegalArgumentException
 	 * @throws IllegalStateException
 	 */
-	public void handleEvent(GameEvent gameEvent) throws IllegalStateException,
-			IllegalArgumentException, IOException {
+	public void handleEvent(GameEvent gameEvent) {
 		switch (gameEvent.getType()) {
 		case ATTACK:
 			Edge e = ((GameEvent.Attack) gameEvent).getSourceLocation();
@@ -94,9 +93,10 @@ public class Controller implements Runnable{
 				modelWriter.catapultMoved(source, destination, fightOutcome1);
 				break;
 			case MATCH_END:
-				((GameEvent.MatchEnd)gameEvent).getWinnerClientId();
-				// TODO
-				//modelObserver.MatchEnd
+				long winnerID = ((GameEvent.MatchEnd)gameEvent).getWinnerClientId();
+				System.out.println(((GameEvent.MatchEnd)gameEvent).getMessage());
+				modelWriter.matchEnd(winnerID);
+				endOfGame = true;
 				break;
 			case NEW_ROUND:
 				byte num = ((GameEvent.NewRound)gameEvent).getSpotSum();
@@ -226,8 +226,8 @@ public class Controller implements Runnable{
 			Edge e = new Edge(l.getY(), l.getX(), l.getOrientation());
 			roadList.add(e);
 		}
-		modelWriter.longestRoadClaimed(road);
 		connection.claimLongestRoad(roadList);
+		modelWriter.longestRoadClaimed(road);
 	}
 
 	/**
@@ -244,7 +244,7 @@ public class Controller implements Runnable{
 	 */
 	public void endTurn() throws IllegalStateException, IOException {
 		connection.endTurn();
-		Controller.somethingReallyImportant = true;
+		Controller.requestSingleEventPull = true;
 	}
 
 	/**
@@ -352,8 +352,8 @@ public class Controller implements Runnable{
 	public void run() {
 		try {
 			while(!endOfGame){
-				if (!modelWriter.writeSomethingReallyUnspecifiedToModel() || somethingReallyImportant) {
-					somethingReallyImportant = false;
+				if (!modelWriter.isOurTurn() || requestSingleEventPull) {
+					requestSingleEventPull = false;
 					GameEvent e = connection.getNextEvent(100);
 					if (e != null) {
 						System.out.println(e);
