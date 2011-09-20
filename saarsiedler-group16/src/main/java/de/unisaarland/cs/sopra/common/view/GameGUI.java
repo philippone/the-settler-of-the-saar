@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.CyclicBarrier;
 
 import org.lwjgl.LWJGLException;
@@ -1318,7 +1319,13 @@ public class GameGUI extends View implements Runnable{
 				public void executeUI() {}
 				@Override
 				public void executeController() {
-					controllerAdapter.moveCatapult(getPath(), getPath2());
+					if (getPath2() != null) {
+						controllerAdapter.moveCatapult(getPath(), getPath2());
+					}
+					else {
+						controllerAdapter.attackSettlement(getPath(), getIntersection());
+					}
+					
 				}
 			};
 			
@@ -1422,13 +1429,10 @@ public class GameGUI extends View implements Runnable{
 		
 		if (Mouse.isButtonDown(0) && System.currentTimeMillis() - lastinputcheck > 250) {
 			this.lastinputcheck = System.currentTimeMillis();
-			for (Clickable c : Clickable.executeClicks(mx*screenToOpenGLx(zOffsetUI)+25, (windowHeight-my)*screenToOpenGLy(zOffsetUI)+380)) {
-				c.executeUI();
-			}
 			switch (selectionMode) {
 				case NONE:
 					Path source = getMousePath();
-					if (source != null && modelReader.getCatapults(modelReader.getMe()).contains(Model.getLocation(source))) {
+					if (source != null && modelReader.getCatapults(modelReader.getMe()).contains(source)) {
 						catapultAction.setPath(source);
 						selectionLocation = Model.getLocationListPath(modelReader.attackableCatapults(source));
 						selectionLocation2 = Model.getLocationListPath(modelReader.catapultMovePaths(source));
@@ -1514,11 +1518,17 @@ public class GameGUI extends View implements Runnable{
 					}
 					break;
 				case CATAPULT_ACTION_DST:
-					Path destination = getMousePath();
-					if (destination != null && selectionLocation.contains(Model.getLocation(destination))) {
-						catapultAction.setPath2(destination);
+					Path destPath = getMousePath();
+					Intersection destInter = getMouseIntersection();
+					if (destInter != null && selectionLocation3.contains(Model.getLocation(destInter))) {
+						catapultAction.setIntersection(destInter);
 						selectionMode = NONE;
-						controllerAdapter.addGuiEvent(buildStreet);
+						controllerAdapter.addGuiEvent(catapultAction);
+					}
+					else if (destPath != null && (selectionLocation.contains(Model.getLocation(destPath)) || selectionLocation2.contains(Model.getLocation(destPath)))) {
+						catapultAction.setPath2(destPath);
+						selectionMode = NONE;
+						controllerAdapter.addGuiEvent(catapultAction);
 					}
 					break;	
 				case STREET:
@@ -1538,6 +1548,9 @@ public class GameGUI extends View implements Runnable{
 					//if init dont change console4 else ""
 					//if init set init to false
 					break; //TODO implement it!
+			}
+			for (Clickable c : Clickable.executeClicks(mx*screenToOpenGLx(zOffsetUI)+25, (windowHeight-my)*screenToOpenGLy(zOffsetUI)+380)) {
+				c.executeUI();
 			}
 		}
 		
