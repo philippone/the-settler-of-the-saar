@@ -24,6 +24,7 @@ public class TestModelObserver implements ModelObserver {
 	public boolean eventPlayerLeftCalled;
 	private boolean initTurn;
 	private boolean receiveNames;
+	private boolean eventMatchEndCalled;
 	
 		@Override
 		public void updatePath(Path path) {
@@ -104,6 +105,19 @@ public class TestModelObserver implements ModelObserver {
 
 		public boolean isReceiveNames() {
 			return receiveNames;
+		}
+
+		@Override
+		public void eventMatchEnd(long winnerID) {
+			this.setEventMatchEndCalled(true);
+		}
+
+		public boolean isEventMatchEndCalled() {
+			return eventMatchEndCalled;
+		}
+
+		public void setEventMatchEndCalled(boolean eventMatchEndCalled) {
+			this.eventMatchEndCalled = eventMatchEndCalled;
 		}
 
 	
