@@ -1562,7 +1562,7 @@ public class Model implements ModelReader, ModelWriter {
 				else throw new IllegalArgumentException("Road is not properly join"); 
 			}
 			if (rightPlayer) {
-				Player owner = getPath(road.get(0)).getStreetOwner();
+				Player owner = getCurrentPlayer();
 				if (longestClaimedRoad == null ) {
 					owner.setVictoryPoints(owner.getVictoryPoints()+2);
 				}
