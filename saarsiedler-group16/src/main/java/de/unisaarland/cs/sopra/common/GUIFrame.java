@@ -223,7 +223,6 @@ public class GUIFrame extends JFrame {
 
 		//======== menuPanel ========
 		{
-			menuPanel.setVisible(false);
 
 			// JFormDesigner evaluation mark
 			menuPanel.setBorder(new javax.swing.border.CompoundBorder(
@@ -456,6 +455,7 @@ public class GUIFrame extends JFrame {
 
 		//======== createPanel ========
 		{
+			createPanel.setVisible(false);
 			createPanel.setLayout(new GridBagLayout());
 			((GridBagLayout)createPanel.getLayout()).columnWidths = new int[] {730, 0, 0};
 			((GridBagLayout)createPanel.getLayout()).rowHeights = new int[] {420, 0};
