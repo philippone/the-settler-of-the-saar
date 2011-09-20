@@ -18,7 +18,9 @@ public abstract class Strategy {
 			return false;
 		case ATTACK_SETTLEMENT:
 			return false;
-		case BUILD_BUILDING:
+		case BUILD_VILLAGE:
+			return false;
+		case BUILD_TOWN:
 			return false;
 		case BUILD_CATAPULT:
 			return false;
@@ -37,8 +39,10 @@ public abstract class Strategy {
 			return evaluate((AttackCatapult)s);
 		case ATTACK_SETTLEMENT:
 			return evaluate((AttackSettlement)s);
-		case BUILD_BUILDING:
-			return evaluate((BuildBuilding)s);
+		case BUILD_TOWN:
+			return evaluate((BuildTown)s);
+		case BUILD_VILLAGE:
+			return evaluate((BuildVillage)s);
 		case BUILD_CATAPULT:
 			return evaluate((BuildCatapult)s);
 		case BUILD_STREET:
@@ -50,7 +54,8 @@ public abstract class Strategy {
 	
 	public abstract double evaluate(AttackCatapult stroke);
 	public abstract double evaluate(AttackSettlement stroke);
-	public abstract double evaluate(BuildBuilding stroke);
+	public abstract double evaluate(BuildVillage stroke);
+	public abstract double evaluate(BuildTown stroke);
 	public abstract double evaluate(BuildCatapult stroke);
 	public abstract double evaluate(BuildStreet stroke);
 	public abstract double evaluate(MoveCatapult stroke);
