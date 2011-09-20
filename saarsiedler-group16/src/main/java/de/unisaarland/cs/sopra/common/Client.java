@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.concurrent.CyclicBarrier;
 
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -53,6 +54,7 @@ public class Client {
 	private static Popup popup;
 	public static int acceptTrade;
 	private static DefaultTableModel gameTableModel;
+	private static DefaultTableModel playerTableModel;
 	
 	public static void main(String[] args) throws UnknownHostException, IOException {
 		initOpenGL();
@@ -247,7 +249,7 @@ public class Client {
 	
 	public static  void setUpListUpdater(){
 		try {
-			Client.connection.registerMatchListUpdater(new GameListUpdater(gameTableModel));	}catch(IOException e){throw new IllegalStateException("iwas mit Matchlistupdater faul!!!");}
+			Client.connection.registerMatchListUpdater(new GameListUpdater(gameTableModel,playerTableModel));	}catch(IOException e){throw new IllegalStateException("iwas mit Matchlistupdater faul!!!");}
 	
 	}
 	
@@ -258,9 +260,20 @@ public class Client {
 			matchList =Client.connection.listMatches();		
 		} catch (IOException e1) {	e1.printStackTrace();}
 		gameTableModel=new DefaultTableModel(
-				parseMatchList(matchList),
-				new String[] {"MatchID", "Name", "Players", "WorldID", "Already started"});
+				parseMatchList(matchList)
+				,new String[] {"MatchID", "Name", "Players", "WorldID", "Already started"
+					});
 		clientGUI.gameTable.setModel(gameTableModel);
+	
+		TableColumnModel cm = clientGUI.gameTable.getColumnModel();
+		cm.getColumn(0).setMinWidth(50);
+		cm.getColumn(0).setMaxWidth(60);
+		cm.getColumn(1).setMinWidth(220);
+		cm.getColumn(2).setMinWidth(60);
+		cm.getColumn(2).setMaxWidth(60);
+		cm.getColumn(3).setMinWidth(50);
+		cm.getColumn(3).setMaxWidth(50);
+		
 	}
 	
 	public static void refreshPlayerList(){
@@ -276,8 +289,9 @@ public class Client {
 				table[i][0]= Client.connection.getPlayerInfo(players[i]).getName();} catch (IOException e) {e.printStackTrace();
 			}
 			table[i][1]= readyPlayers[i];
-		}												
-		clientGUI.playerTable.setModel(new DefaultTableModel( table ,new String[] {"Players", "ready-Status"	}));
+		}		
+		playerTableModel=new DefaultTableModel( table ,new String[] {"Players", "ready-Status"});
+		clientGUI.playerTable.setModel(playerTableModel);
 	}
 	
 	private static Object[][] parseMatchList(List<MatchInformation> matchList1){
@@ -422,7 +436,7 @@ public class Client {
 		return returnPackage;
 	}
 	
-	public static boolean incomingTradeOffer(ResourcePackage rp){
+	public static boolean incomingTradeOffer(ResourcePackage rp, ResourcePackage incomingRp){
 		acceptTrade=0;
 		popup.setTitle("Accept Trade?");
 		popup.tradePanel.setVisible(false);

@@ -1,5 +1,7 @@
 package de.unisaarland.cs.sopra.common;
 
+import java.io.IOException;
+
 import javax.swing.table.DefaultTableModel;
 
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
@@ -8,9 +10,11 @@ import de.unisaarland.cs.st.saarsiedler.comm.MatchListUpdater;
 public class GameListUpdater implements MatchListUpdater {
 
 	private DefaultTableModel gm;
+	private DefaultTableModel pm;
 
-	public GameListUpdater(DefaultTableModel gameTableModel) {
+	public GameListUpdater(DefaultTableModel gameTableModel, DefaultTableModel playerTableModel) {
 		this.gm= gameTableModel;
+		this.pm= playerTableModel;
 	}
 
 	@Override
@@ -18,11 +22,6 @@ public class GameListUpdater implements MatchListUpdater {
 		gm.addRow(Client.parseMatchInfo(info));
 		gm.fireTableDataChanged();
 	}
-//	@Override
-//	public void newMatch(MatchInformation info) {
-//		Client.refreshGameList();
-//	}
-
 	@Override
 	public synchronized void removedMatch(long matchId) {
 		for(int i=0; i<gm.getRowCount();i++){
@@ -30,11 +29,6 @@ public class GameListUpdater implements MatchListUpdater {
 		}
 		gm.fireTableDataChanged();
 	}
-//	@Override
-//	public void removedMatch(long matchId) {
-//		Client.refreshGameList();
-//	}
-	
 	@Override
 	public synchronized void matchUpdate(MatchInformation info) {
 		
@@ -45,16 +39,22 @@ public class GameListUpdater implements MatchListUpdater {
 				gm.fireTableRowsUpdated(i, i);
 			}
 		}
-//		if (Client.matchInfo.equals(info)) { 
-//			Client.refreshPlayerList();
-//		}
+		if (Client.matchInfo!=null && Client.matchInfo.equals(info)) { 
+			long[] players = Client.matchInfo.getCurrentPlayers();
+			boolean[]readyPlayers = Client.matchInfo.getReadyPlayers();
+			Object[][] table = new Object[players.length][2];
+			for (int i = 0; i < table.length; i++) {
+				try {
+					table[i][0]= Client.connection.getPlayerInfo(players[i]).getName();} catch (IOException e) {e.printStackTrace();
+				}
+				table[i][1]= readyPlayers[i];
+			}
+			while(pm.getRowCount()!=0){
+				pm.removeRow(0);
+			}
+			for (Object[] objects : table) {
+				pm.addRow( objects);
+			}
+		}
 	}
-//	@Override
-//	public void matchUpdate(MatchInformation info) {
-//		Client.refreshGameList();
-//		if (Client.matchInfo != null) { 
-//			Client.refreshPlayerList();
-//		}
-//	}
-
 }
