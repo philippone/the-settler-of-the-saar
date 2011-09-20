@@ -18,6 +18,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.IOException;
+import javax.swing.*;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -50,7 +51,7 @@ public class GUIFrame extends JFrame {
 	public long focusedWordID;
 	public final static PlayerColors[] pc= new PlayerColors[]{ PlayerColors.BLUE,PlayerColors.YELLOW,PlayerColors.ORANGE,PlayerColors.BROWN,PlayerColors.WHITE,PlayerColors.PURPLE};
 	public final static String [] farben = new String[]{"BLUE","YELLOW","ORANGE","BROWN","WHITE","PURPLE"};
-	public final static DisplayMode[] displaymodes = new DisplayMode[]{Display.getDisplayMode(), new DisplayMode(1024, 530), new DisplayMode(800, 600)};
+	public final static DisplayMode[] displaymodes = new DisplayMode[]{new DisplayMode(Display.getDisplayMode().getWidth(), Display.getDisplayMode().getHeight()-100), new DisplayMode(1024, 530), new DisplayMode(800, 600)};
 	public final static String [] dmodes = new String[]{"AUTO","1024x530","800x600"};
 	
 	
@@ -62,7 +63,7 @@ public class GUIFrame extends JFrame {
 		setActionListner();
 		playerColorChooser();
 		resolutionChooser();
-//		Client.loadSettings();
+
 	}
 	private void setActionListner() {
 		menuItemSettings.addActionListener(actLis);
@@ -180,6 +181,7 @@ public class GUIFrame extends JFrame {
 		gameTitleField = new JTextField();
 		label3 = new JLabel();
 		numPlayersField = new JTextField();
+		numWarning = new JLabel();
 		label4 = new JLabel();
 		worldRepoBox = new JComboBox();
 		label5 = new JLabel();
@@ -221,6 +223,7 @@ public class GUIFrame extends JFrame {
 
 		//======== menuPanel ========
 		{
+			menuPanel.setVisible(false);
 
 			// JFormDesigner evaluation mark
 			menuPanel.setBorder(new javax.swing.border.CompoundBorder(
@@ -453,7 +456,6 @@ public class GUIFrame extends JFrame {
 
 		//======== createPanel ========
 		{
-			createPanel.setVisible(false);
 			createPanel.setLayout(new GridBagLayout());
 			((GridBagLayout)createPanel.getLayout()).columnWidths = new int[] {730, 0, 0};
 			((GridBagLayout)createPanel.getLayout()).rowHeights = new int[] {420, 0};
@@ -491,6 +493,14 @@ public class GUIFrame extends JFrame {
 				panel13.add(numPlayersField, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- numWarning ----
+				numWarning.setText("-only numbers allowed!");
+				numWarning.setForeground(Color.red);
+				numWarning.setVisible(false);
+				panel13.add(numWarning, new GridBagConstraints(3, 2, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 0), 0, 0));
 
 				//---- label4 ----
 				label4.setText("World: ");
@@ -662,6 +672,7 @@ public class GUIFrame extends JFrame {
 	public JTextField gameTitleField;
 	private JLabel label3;
 	public JTextField numPlayersField;
+	public JLabel numWarning;
 	private JLabel label4;
 	public JComboBox worldRepoBox;
 	private JLabel label5;

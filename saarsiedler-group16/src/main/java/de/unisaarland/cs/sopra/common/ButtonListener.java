@@ -2,6 +2,7 @@ package de.unisaarland.cs.sopra.common;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.NumberFormat;
 
 import org.lwjgl.opengl.Display;
 
@@ -104,7 +105,7 @@ public class ButtonListener implements ActionListener {
 					gui.fullscreenToggle.setText("ON");
 					gui.resolutionBox.setSelectedIndex(0);
 					gui.resolutionBox.setEnabled(false);
-					Setting.setDisplayMode(Display.getDisplayMode());
+					Setting.setDisplayMode(GUIFrame.displaymodes[0]);
 					Setting.setFullscreen(true);
 				}
 				else{
@@ -117,12 +118,19 @@ public class ButtonListener implements ActionListener {
 		
 		//CreatePanel
 			if (arg0.getSource() == gui.createMatch){
-				try {
-					Client.createMatch(gui.gameTitleField.getText(), Integer.valueOf(gui.numPlayersField.getText())
-					,/*TODO mehr auswahl schaffen*/WorldRepresentation.getDefault(), joinAsObserver);} catch (Exception e) {e.printStackTrace();}
-				gui.createPanel.setVisible(false);
-				gui.joinPanel.setVisible(true);
-				Client.refreshPlayerList();
+				int numP=0; 
+				try{
+					numP =Integer.valueOf(gui.numPlayersField.getText());					
+					try {						
+						Client.createMatch(gui.gameTitleField.getText(),numP,
+								/*TODO mehr auswahl schaffen*/WorldRepresentation.getDefault(), joinAsObserver);} catch (Exception e) {e.printStackTrace();}
+					gui.createPanel.setVisible(false);
+					gui.joinPanel.setVisible(true);
+					Client.refreshPlayerList();
+					gui.numWarning.setVisible(false);
+				}catch (NumberFormatException e) {
+					gui.numWarning.setVisible(true);
+				}
 			}
 			if (arg0.getSource() == gui.observerToggle){
 				joinAsObserver=!joinAsObserver;

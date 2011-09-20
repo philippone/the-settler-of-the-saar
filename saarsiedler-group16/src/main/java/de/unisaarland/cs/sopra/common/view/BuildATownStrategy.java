@@ -103,9 +103,12 @@ public class BuildATownStrategy extends Strategy {
 	}
 	
 	@Override
-	public boolean useable() {
-		//TODO implement this operation
-		throw new UnsupportedOperationException();
+	public boolean useable(ModelReader mr) {
+		Player p = mr.getMe();
+		if (mr.getSettlements(p, BuildingType.Town).size() < mr.getMaxBuilding(BuildingType.Town) &&
+				 mr.buildableTownIntersections(p).size() > 0)
+					return true;
+		return false;
 	}
 	
 }

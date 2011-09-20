@@ -30,7 +30,7 @@ import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 
 public class AI extends View{
 	
-	
+	private Strategy[] strategies;
 	public static void main(String[] args){
 		
 		////////////initgui///////////////////
@@ -104,7 +104,7 @@ public class AI extends View{
 			long[] players = ((GameEvent.MatchStart) ge).getPlayerIds();
 			byte[] number = ((GameEvent.MatchStart) ge).getNumbers();
 			m.matchStart(players, number);
-			Setting setting = new Setting(new DisplayMode(1024,580), true, PlayerColors.RED);
+			Setting setting = new Setting(new DisplayMode(1024,580), true, PlayerColors.BLUE);
 			Map<Player, String> plToNames = new HashMap<Player, String>();
 			Iterator<Player> iterPl = m.getTableOrder().iterator();
 			for (long l : players) {  // erstellt Player-> names map
@@ -139,8 +139,47 @@ public class AI extends View{
 		modelReader.addModelObserver(this);
 	}
 	
-	public void evaluateBestStrategy(){
+	public Strategy evaluateBestStrategy(){
 		
+		strategies = new Strategy[6];
+		Strategy s2 = new BuildStreetStrategy();
+		strategies[0] = s2;
+		Strategy s3 = new BuildVillageStrategy();
+		strategies[1] = s3;
+		Strategy s4 = new BuildATownStrategy();
+		strategies[2] = s4;
+		Strategy s5 = new BuildACatapultStrategy();
+		strategies[3] = s5;
+		Strategy s6 = new MoveCatapultStrategy();
+		strategies[4] = s6;
+		Strategy s7 = new AttackSettlementStrategy();
+		strategies[5] = s7;
+		//Strategy s8 = new BuildLongestRoadStrategy();
+		//gameStats[6] = s8.getGameStats(modelReader);
+			
+		Strategy bestStrategy = strategies[0];
+		int bestStatsIdx = 0;
+		for (int k = 1; k < 6; k++) {
+			if (strategies[bestStatsIdx].getVictoryPoints() < strategies[k].getVictoryPoints()) {
+				bestStrategy = strategies[k];
+				bestStatsIdx = k;
+			} else if (strategies[bestStatsIdx].getVictoryPoints() == strategies[k].getVictoryPoints()) {
+				if (!modelReader.getMe().checkResourcesSufficient(strategies[bestStatsIdx].getPrice())) {
+					if (!modelReader.getMe().checkResourcesSufficient(strategies[k].getPrice())){
+						if (strategies[bestStatsIdx].getPrice().size() >= strategies[k].getPrice().size()){
+							bestStrategy = strategies[k];
+							bestStatsIdx = k;
+						}
+						bestStrategy = strategies[k];
+						bestStatsIdx = k;
+					}
+					bestStrategy = strategies[k];
+					bestStatsIdx = k;
+				}
+			}
+		}
+		s = bestStrategy;
+		return s;
 //		float strategyValue=(float) Math.random()*3;
 //		if (strategyValue<1) s=new BuildStreetStrategy();
 //		if (strategyValue>2) s=new BuildATownStrategy();
@@ -194,18 +233,19 @@ public class AI extends View{
 		
 	}
 	
-	public void executeBestStrategy() {
-		Strategy bestOne = null;
+	public void executeBestStrategy()  {
+	
+		Strategy bestOne = evaluateBestStrategy();
 		try{
-			do {
-				//Thread.sleep(5000);
-				bestOne = evaluateBestPossibleStrategy();
+			while(modelReader.getMe().checkResourcesSufficient(bestOne.getPrice())){
 				bestOne.execute(modelReader, controllerAdapter);
-				//s1.execute(modelReader, controllerAdapter);
-			} while (bestOne != null);
+				bestOne = evaluateBestStrategy();
+			}
 		}
 		catch (Exception e){ e.printStackTrace(); }
+		
 		controllerAdapter.endTurn();
+		
 	}
 	
 	
