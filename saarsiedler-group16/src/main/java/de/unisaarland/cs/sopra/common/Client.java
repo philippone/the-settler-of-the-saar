@@ -406,6 +406,7 @@ public class Client {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {e.printStackTrace();}
 		}
+		popup.reset();
 		popup.setVisible(false);
 		return returnPackage;
 	}
@@ -428,9 +429,16 @@ public class Client {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {e.printStackTrace();}
 		}
+		popup.reset();
 		popup.setVisible(false);
 		if(acceptTrade>0)return true;
 		else return false;
+	}
+	
+	public static void backToLobby(){
+		clientGUI.createPanel.setVisible(false);
+		clientGUI.lobbyPanel.setVisible(true);
+		clientGUI.setVisible(true);
 	}
 }
 
