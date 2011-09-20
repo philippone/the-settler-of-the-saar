@@ -123,7 +123,7 @@ public class ButtonListener implements ActionListener {
 					numP =Integer.valueOf(gui.numPlayersField.getText());					
 					try {						
 						Client.createMatch(gui.gameTitleField.getText(),numP,
-								/*TODO mehr auswahl schaffen*/WorldRepresentation.getDefault(), joinAsObserver);} catch (Exception e) {e.printStackTrace();}
+								Client.worldRepo, joinAsObserver);} catch (Exception e) {e.printStackTrace();}
 					gui.createPanel.setVisible(false);
 					gui.joinPanel.setVisible(true);
 					Client.refreshPlayerList();

@@ -47,7 +47,7 @@ public class Client {
 	public static MatchInformation matchInfo;
 	private static GUIFrame clientGUI;
 	private static Setting setting;
-	private static WorldRepresentation worldRepo;
+	static WorldRepresentation worldRepo;
 	public static boolean joinAsAI;
 	static ResourcePackage returnPackage;
 	private static Popup popup;
@@ -436,7 +436,7 @@ public class Client {
 	}
 	
 	public static void backToLobby(){
-		clientGUI.createPanel.setVisible(false);
+		clientGUI.joinPanel.setVisible(false);
 		clientGUI.lobbyPanel.setVisible(true);
 		clientGUI.setVisible(true);
 	}
