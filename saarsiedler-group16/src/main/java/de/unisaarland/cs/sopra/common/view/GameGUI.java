@@ -1420,8 +1420,8 @@ public class GameGUI extends View implements Runnable{
 		float oglx = mx*screenToOpenGLx(zOffsetUI)+25;
 		float ogly = (windowHeight-my)*screenToOpenGLy(zOffsetUI)+380;
 		
-		if (System.currentTimeMillis() - lastinputcheck > 150 ) {
-			this.lastinputcheck = System.currentTimeMillis();
+		if (System.currentTimeMillis() - lastinputcheck > 400 ) {
+			lastinputcheck = System.currentTimeMillis();
 			if (Mouse.isButtonDown(0)) {
 				if (!(oglx > xOffsetUI && oglx < xOffsetUI+1281 && ogly > yOffsetUI && ogly < yOffsetUI+240)) {
 					switch (selectionMode) {
@@ -1991,9 +1991,6 @@ public class GameGUI extends View implements Runnable{
 	public void initTurn() {
 		init = true;
 		buildVillage.setActive(true);
-		selectionLocation = Model.getLocationListIntersection(modelReader.buildableVillageIntersections(modelReader.getMe()));
-		if (selectionLocation.size() != 0)
-			selectionMode = VILLAGE;
 	}
 
 	@Override
