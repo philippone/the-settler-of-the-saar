@@ -27,7 +27,7 @@ public class Ai implements ModelObserver {
 	private final Set<Strategy> returnResourcesStrategies;
 	private final Set<Strategy> initStrategies;
 	
-	private Ai(ModelReader mr, ControllerAdapter ca){
+	public Ai(ModelReader mr, ControllerAdapter ca){
 		this.mr = mr;
 		this.ca = ca;
 		this.me = mr.getMe();
@@ -49,6 +49,7 @@ public class Ai implements ModelObserver {
 			}
 			else {
 				// TODO insert Trade handling here!
+				ca.endTurn();
 			}
 		}
 		else ca.endTurn();
