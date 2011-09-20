@@ -1388,6 +1388,9 @@ public class GameGUI extends View implements Runnable{
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		
         Keyboard.enableRepeatEvents(true);
+        try {
+			Mouse.create();
+		} catch (LWJGLException e) { e.printStackTrace(); }
         Mouse.poll();
         
         Font awtFont = new Font("Arial", Font.BOLD, 72);

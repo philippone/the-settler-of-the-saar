@@ -10,7 +10,6 @@ import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.IOException;
-import javax.swing.*;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -128,6 +127,7 @@ public class GUIFrame extends JFrame {
 		}
 		for ( String s : worldNames)
 		      worldRepoBox.addItem( s );
+		Client.worldRepo = worldRepos[0]; //fix ,that at begin no item selected
 		worldRepoBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
