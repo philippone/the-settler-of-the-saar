@@ -463,7 +463,6 @@ public class Client {
 	public static void backToLobby(){
 		clientGUI.joinPanel.setVisible(false);
 		clientGUI.lobbyPanel.setVisible(true);
-		clientGUI.
 		clientGUI.setVisible(true);
 	}
 }
