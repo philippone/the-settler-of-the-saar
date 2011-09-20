@@ -31,7 +31,19 @@ public class Ai implements ModelObserver {
 		this.strategies = new HashSet<Strategy>();
 	}
 	
-	public void 
+	public void evaluateStrokes(List<Stroke> strokeList){
+		for (Stroke stroke : strokeList){
+			double evaluation = 0;
+			int evaluationParticipants = 0;
+			for (Strategy s : strategies){
+				if (s.evaluatesStroke(s)){
+					evaluationParticipants++;
+					evaluation += s.evaluate(s);
+				}
+			}
+			stroke.setEvaluation(evaluation/evaluationParticipants);
+		}
+	}
 	
 	public List<Stroke> generateAllPossibleStrokes(){
 		List<Stroke> strokeSet = new LinkedList<Stroke>();
@@ -66,10 +78,6 @@ public class Ai implements ModelObserver {
 			}
 		}
 		return strokeSet;
-	}
-	
-	private void evaluateStrokes(List<Stroke> possibleStrokes) {
-		
 	}
 
 	@Override
