@@ -59,40 +59,14 @@ public class BuildStreetStrategy extends Strategy {
 		return (float) value;
 	}
 	
-	public boolean tradePossible(ModelReader mr){
-		resourcePackageTrade = mr.getMe().getResources().copy();
-		if (resourcePackageTrade.getResource(Resource.LUMBER) > 0){
-			resourcePackageTrade.add(new ResourcePackage(-1, 0, 0, 0, 0));
-		}
-		if (resourcePackageTrade.getResource(Resource.BRICK) > 0){
-			resourcePackageTrade.add(new ResourcePackage(0, -1, 0, 0, 0));
-		}
-		if (resourcePackageTrade.getPositiveResourcesCount() > 0)
-			return true;
-		else
-		return false;
-	}
-	
-	public ResourcePackage tradeOffer(ModelReader mr){
-		//trade one for one 
-		Resource max = Resource.LUMBER;
-		for (Resource r : Resource.values())
-			max = resourcePackageTrade.getResource(r)>resourcePackageTrade.getResource(max)?r:max;
-		if (resourcePackageTrade.getResource(Resource.LUMBER) < 1){
-			tradeOffer = resourcePackageTrade.add(new ResourcePackage(1, 0, 0, 0, 0));
-			tradeOffer.modifyResource(max, -1);
-			return tradeOffer;
-		}
-		else {
-			tradeOffer = resourcePackageTrade.add(new ResourcePackage(0, 1, 0, 0, 0));
-			tradeOffer.modifyResource(max, -1);
-			return tradeOffer;
-		}
-	}
+
+
 	
 	@Override
-	public boolean useable() {
-		//TODO implement this operation
-		throw new UnsupportedOperationException();
+	public boolean useable(ModelReader mr) {
+			if (mr.buildableStreetPaths(mr.getMe()).size() > 0)
+				return true;
+			return false;
 	}
+
 }

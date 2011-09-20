@@ -1,7 +1,16 @@
 package de.unisaarland.cs.sopra.common.view;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
+import de.unisaarland.cs.sopra.common.model.BuildingType;
+import de.unisaarland.cs.sopra.common.model.Field;
+import de.unisaarland.cs.sopra.common.model.FieldType;
+import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
+import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public class InitializeStrategy extends Strategy {
@@ -10,17 +19,17 @@ public class InitializeStrategy extends Strategy {
 	public InitializeStrategy() {
 		super(0, new ResourcePackage());
 	}
-
+/*
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
 		new BuildVillageStrategy().execute(mr, ca);
 		new BuildStreetStrategy().execute(mr, ca);
 	}
+*/
+	
+	private Set<Resource> playersResources = new HashSet<Resource>();
 
 	
-	//private Set<Resource> playersResources = new HashSet<Resource>();
-
-	/*
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
 		if (mr.getMe() == mr.getCurrentPlayer()){
@@ -128,12 +137,12 @@ public class InitializeStrategy extends Strategy {
 		}
 			
 	}
-	*/
+	
 	
 	@Override
-	public boolean useable() {
+	public boolean useable(ModelReader mr) {
 		//TODO implement this operation
-		throw new UnsupportedOperationException();
+		return true;
 	}
 
 }

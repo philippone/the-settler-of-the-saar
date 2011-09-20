@@ -3,28 +3,31 @@ package de.unisaarland.cs.sopra.common.view;
 import java.util.Set;
 
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
+import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Catapult;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.Player;
+import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 
 public class MoveCatapultStrategy extends Strategy {
-	
-	public MoveCatapultStrategy() {
-		//TODO hier nochmal draufschauen, ob attackprice = moveprice
-		super(0, Catapult.getAttackcatapultprice());
-	}
-
-	Path sourcePath;
- 
+ Path sourcePath;
+ 	public MoveCatapultStrategy(){
+ 		super(0, Catapult.getAttackcatapultprice());
+ 	}
+ //TODO add destination Path
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
 		if (!(mr.getMe().getResources().copy().add(new ResourcePackage(0,0,0,-1,0))).hasNegativeResources()){
 		Path destinationPath = evaluateStreet(mr);
 		ca.moveCatapult(sourcePath, destinationPath);
-	} 
+		ca.endTurn();
+	} else {
+		ca.endTurn();
+	  }
 }
 	public float evaluateStreetValue(ModelReader mr, Path p) {
 		if (p.hasCatapult() && p.getCatapultOwner() != mr.getMe()) {
@@ -61,11 +64,25 @@ public class MoveCatapultStrategy extends Strategy {
 		}
 		return bestPath;
 	}
-	
-	@Override
-	public boolean useable() {
-		//TODO implement this operation
-		throw new UnsupportedOperationException();
+
+
+	public float evaluate(ModelReader mr,ControllerAdapter ca) {
+
+		//TODO return -1 if not enough resources
+		if (mr.getCatapults(mr.getMe()).size() < 1) {
+			return -1;
+		}
+		// TODO: check the trade
+		return 1;
 	}
 	
+
+
+	@Override
+	public boolean useable(ModelReader mr) {
+		if (mr.getCatapults(mr.getMe()).size() > 0)
+			return true;
+		return false;
+	}
+
 }
