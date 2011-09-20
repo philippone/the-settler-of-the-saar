@@ -9,7 +9,7 @@ public class BuildTown extends Stroke {
 	private final Intersection destination;
 	
 	public BuildTown(Intersection destination){
-		super(StrokeType.BUILD_TOWN);
+		super(StrokeType.BUILD_TOWN, BuildingType.Town.getPrice());
 		this.destination = destination;
 	}
 	

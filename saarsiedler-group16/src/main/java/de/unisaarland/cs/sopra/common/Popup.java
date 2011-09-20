@@ -126,6 +126,13 @@ public class Popup extends JFrame {
 		textField3.setText("0");
 		textField4.setText("0");
 		textField5.setText("0");
+		textField6.setText("0");
+		textField7.setText("0");
+		textField8.setText("0");
+		textField9.setText("0");
+		textField10.setText("0");
+		warning.setVisible(false);
+		warning2.setVisible(false);	
 	}
 	
 	private void initComponents() {

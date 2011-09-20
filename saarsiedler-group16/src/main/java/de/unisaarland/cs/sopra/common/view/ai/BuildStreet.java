@@ -2,13 +2,14 @@ package de.unisaarland.cs.sopra.common.view.ai;
 
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.Street;
 
 public class BuildStreet extends Stroke {
 	
 	private final Path destination;
 
 	public BuildStreet(Path destination){
-		super(StrokeType.BUILD_STREET);
+		super(StrokeType.BUILD_STREET, Street.getPrice());
 		this.destination = destination;
 	}
 	
