@@ -306,7 +306,7 @@ public class Controller implements Runnable{
 	public void offerTrade(int lumber, int brick, int wool, int grain, int ore)
 			throws IllegalStateException, IOException {
 		connection.offerTrade(lumber, brick, wool, grain, ore);
-
+		modelWriter.tradeOffer(lumber, brick, wool, grain, ore);
 	}
 
 	/**
