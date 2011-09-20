@@ -912,6 +912,7 @@ public class GameGUI extends View implements Runnable{
 	   debugFont.drawString(300, 60, "mx: " + Mouse.getX() + ", my: " + Mouse.getY() + ", mw: " + Mouse.getEventDWheel(), Color.white);
 	   debugFont.drawString(300, 90, "minX: " + minX + ", minY: " + minY + ", minZ: " + maxX, Color.white);
 	   debugFont.drawString(300, 120, "oglx: " + (int)(Mouse.getX()*screenToOpenGLx(zOffsetUI)+25) + ", ogly: " + (int)((windowHeight-Mouse.getY())*screenToOpenGLy(zOffsetUI)+380) );
+	   debugFont.drawString(300, 150, "selectionmode: " + selectionMode );
 	   GL11.glPopMatrix();
 
 	   GL11.glPushMatrix();
@@ -1419,7 +1420,7 @@ public class GameGUI extends View implements Runnable{
 		int my = Mouse.getY();
 		
 		
-		if (Mouse.isButtonDown(0) && System.currentTimeMillis() - lastinputcheck > 500) {
+		if (Mouse.isButtonDown(0) && System.currentTimeMillis() - lastinputcheck > 250) {
 			this.lastinputcheck = System.currentTimeMillis();
 			for (Clickable c : Clickable.executeClicks(mx*screenToOpenGLx(zOffsetUI)+25, (windowHeight-my)*screenToOpenGLy(zOffsetUI)+380)) {
 				c.executeUI();
@@ -1547,10 +1548,10 @@ public class GameGUI extends View implements Runnable{
 			else if (mx > windowWidth-50) {
 				x-=5;
 			}
-			if (my < 50) {
+			if (my < 50 && (mx < 100 || mx > windowWidth-100)) {
 				y-=5;
 			}
-			else if (my > windowHeight-50 && (mx < 100 || mx > windowWidth-100) ) {
+			else if (my > windowHeight-50 ) {
 				y+=5;
 			}
 		}
