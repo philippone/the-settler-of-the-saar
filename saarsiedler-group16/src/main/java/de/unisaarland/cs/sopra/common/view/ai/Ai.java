@@ -1,6 +1,5 @@
 package de.unisaarland.cs.sopra.common.view.ai;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -9,7 +8,6 @@ import java.util.Set;
 
 import de.unisaarland.cs.sopra.common.ModelObserver;
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
-import de.unisaarland.cs.sopra.common.model.Building;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.Intersection;
@@ -18,22 +16,30 @@ import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
-import de.unisaarland.cs.sopra.common.view.ai.Strategy;
 
 public class Ai implements ModelObserver {
 	
 	private final ModelReader mr;
 	private final ControllerAdapter ca;
 	private final Player me;
-	private final Set<Strategy> strategies;
+	private final Set<Strategy> generalStrategies;
+	private final Set<Strategy> moveRobberStrategies;
+	private final Set<Strategy> returnResourcesStrategies;
+	private final Set<Strategy> initStrategies;
 	
-	
-	public Ai(ModelReader mr, ControllerAdapter ca){
+	private Ai(ModelReader mr, ControllerAdapter ca){
 		this.mr = mr;
 		this.ca = ca;
 		this.me = mr.getMe();
-		this.strategies = new HashSet<Strategy>();
+		this.generalStrategies = new HashSet<Strategy>();
+		this.moveRobberStrategies = new HashSet<Strategy>();
+		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
+		this.returnResourcesStrategies = new HashSet<Strategy>();
+		this.returnResourcesStrategies.add(new ReturnResourcesStrategy(mr));
+		this.initStrategies = new HashSet<Strategy>();
+		this.initStrategies.add(new InitializeStrategy(mr));
 	}
+	
 	
 	public void execute(List<Stroke> sortedStroke){
 		if (sortedStroke.size() > 0){
@@ -55,10 +61,9 @@ public class Ai implements ModelObserver {
 		return strokeList;
 	}
 	
-	public List<Stroke> getSortedStrokeList(List<Stroke> strokeList, Set<Strategy> strategySet){
+	public void sortStrokeList(List<Stroke> strokeList, Set<Strategy> strategySet){
 		evaluateStrokes(strokeList, strategySet);
 		Collections.sort(strokeList);
-		return strokeList;
 	}
 	
 	public void evaluateStrokes(List<Stroke> strokeList, Set<Strategy> strategySet){
@@ -180,16 +185,12 @@ public class Ai implements ModelObserver {
 
 	@Override
 	public void eventRobber() {
-		Set<Strategy> returnResoucesStrategies = new HashSet<Strategy>();
-		returnResoucesStrategies.add(new ReturnResourcesStrategy(mr));
 		List<Stroke> returnResourcesStrokes = generateAllReturnResourcesStrokes();
-		List<Stroke> sortedResourcesStrokes = getSortedStrokeList(returnResourcesStrokes, returnResoucesStrategies);
-		execute(sortedResourcesStrokes);
-		Set<Strategy> moveRobberStrategies = new HashSet<Strategy>();
-		moveRobberStrategies.add(new MoveRobberStrategy(mr));
+		sortStrokeList(returnResourcesStrokes, returnResourcesStrategies);
+		execute(returnResourcesStrokes);
 		List<Stroke> moveRobberStrokes = generateAllMoveRobberStrokes();
-		List<Stroke> sortedRobberStrokes = getSortedStrokeList(moveRobberStrokes, moveRobberStrategies);
-		execute(sortedRobberStrokes);
+		sortStrokeList(moveRobberStrokes, moveRobberStrategies);
+		execute(moveRobberStrokes);
 	}
 
 	@Override
@@ -201,17 +202,14 @@ public class Ai implements ModelObserver {
 	@Override
 	public void eventNewRound(int number) {
 		if (mr.getCurrentPlayer() == me){
-			List<Stroke> sortedStrokes = getSortedStrokeList(strategies);
+			List<Stroke> sortedStrokes = getSortedStrokeList(generalStrategies);
 			execute(sortedStrokes);
 		}
 	}
 
 	@Override
 	public void initTurn() {
-		Set<Strategy> strategySet = new HashSet<Strategy>();
-		strategySet.add(new InitializeStrategy(mr));
-		List<Stroke> sortedStrokes = getSortedStrokeList(strategySet);
-		execute(sortedStrokes);
+		execute(getSortedStrokeList(initStrategies));
 	}
 
 }
