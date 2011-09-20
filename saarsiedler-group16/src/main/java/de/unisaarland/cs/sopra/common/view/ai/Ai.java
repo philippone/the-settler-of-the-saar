@@ -13,7 +13,6 @@ import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
-import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
@@ -21,7 +20,6 @@ public class Ai implements ModelObserver {
 	
 	private final ModelReader mr;
 	private final ControllerAdapter ca;
-	private final Player me;
 	private final Set<Strategy> generalStrategies;
 	private final Set<Strategy> moveRobberStrategies;
 	private final Set<Strategy> returnResourcesStrategies;
@@ -30,7 +28,6 @@ public class Ai implements ModelObserver {
 	public Ai(ModelReader mr, ControllerAdapter ca){
 		this.mr = mr;
 		this.ca = ca;
-		this.me = mr.getMe();
 		this.generalStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
@@ -38,13 +35,14 @@ public class Ai implements ModelObserver {
 		this.returnResourcesStrategies.add(new ReturnResourcesStrategy(mr));
 		this.initStrategies = new HashSet<Strategy>();
 		this.initStrategies.add(new InitializeStrategy(mr));
+		mr.addModelObserver(this);
 	}
 	
 	
 	public void execute(List<Stroke> sortedStroke){
 		if (sortedStroke.size() > 0){
 			Stroke bestStroke = sortedStroke.get(0);
-			if (me.checkResourcesSufficient(bestStroke.getPrice())){
+			if (mr.getMe().checkResourcesSufficient(bestStroke.getPrice())){
 				bestStroke.execute(ca);
 			}
 			else {
@@ -84,8 +82,8 @@ public class Ai implements ModelObserver {
 	public List<Stroke> generateAllReturnResourcesStrokes(){
 		List<Stroke> strokeSet = new LinkedList<Stroke>();
 		// TODO Calculate ALL return resources Strokes!!
-		if (me.getResources().size() > 7){
-			ResourcePackage myrp = me.getResources().copy();
+		if (mr.getMe().getResources().size() > 7){
+			ResourcePackage myrp = mr.getMe().getResources().copy();
 			int give = myrp.size()/2;
 			Resource max = Resource.LUMBER;
 			ResourcePackage tmp = new ResourcePackage();
@@ -113,37 +111,57 @@ public class Ai implements ModelObserver {
 		return strokeSet;
 	}
 	
+	public List<Stroke> generateAllStreetStrokes(){
+		List<Stroke> strokeSet = new LinkedList<Stroke>();
+		for (Path path : mr.buildableStreetPaths(mr.getMe())){
+			strokeSet.add(new BuildStreet(path));
+		}
+		return strokeSet;
+	}
+	
+	public List<Stroke> generateAllVillageStrokes(){
+		List<Stroke> strokeSet = new LinkedList<Stroke>();
+		for (Intersection inter : mr.buildableVillageIntersections(mr.getMe())){
+			strokeSet.add(new BuildVillage(inter));
+		}
+		return strokeSet;
+	}
+	
 	public List<Stroke> generateAllPossibleStrokes(){
 		List<Stroke> strokeSet = new LinkedList<Stroke>();
 		// create build village strokes
-		for (Intersection inter : mr.buildableVillageIntersections(me)){
+		for (Intersection inter : mr.buildableVillageIntersections(mr.getMe())){
 			strokeSet.add(new BuildVillage(inter));
 		}
 		// create build town strokes
-		for (Intersection inter : mr.buildableTownIntersections(me)){
+		for (Intersection inter : mr.buildableTownIntersections(mr.getMe())){
 			strokeSet.add(new BuildTown(inter));
 		}
 		// create catapult strokes
-		for (Path path : mr.buildableCatapultPaths(me)){
+		for (Path path : mr.buildableCatapultPaths(mr.getMe())){
 			strokeSet.add(new BuildCatapult(path));
 		}
 		// move catapult strokes
-		for (Path source : mr.getCatapults(me)){
+		for (Path source : mr.getCatapults(mr.getMe())){
 			for (Path destination : mr.catapultMovePaths(source)){
 				strokeSet.add(new MoveCatapult(source, destination));
 			}
 		}
 		// attack settlement strokes
-		for (Path source : mr.getCatapults(me)){
+		for (Path source : mr.getCatapults(mr.getMe())){
 			for (Intersection destination : mr.attackableSettlements(BuildingType.Town, source)){
 				strokeSet.add(new AttackSettlement(source, destination));
 			}
 		}
 		// attack catapult paths
-		for (Path source : mr.getCatapults(me)){
+		for (Path source : mr.getCatapults(mr.getMe())){
 			for (Path destination : mr.attackableCatapults(source)){
 				strokeSet.add(new AttackCatapult(source, destination));
 			}
+		}
+		// create steets
+		for (Path path : mr.buildableStreetPaths(mr.getMe())){
+			strokeSet.add(new BuildStreet(path));
 		}
 		return strokeSet;
 	}
@@ -188,10 +206,11 @@ public class Ai implements ModelObserver {
 	public void eventRobber() {
 		List<Stroke> returnResourcesStrokes = generateAllReturnResourcesStrokes();
 		sortStrokeList(returnResourcesStrokes, returnResourcesStrategies);
-		execute(returnResourcesStrokes);
+		if (returnResourcesStrokes.size() > 0)
+			returnResourcesStrokes.get(0).execute(ca);
 		List<Stroke> moveRobberStrokes = generateAllMoveRobberStrokes();
 		sortStrokeList(moveRobberStrokes, moveRobberStrategies);
-		execute(moveRobberStrokes);
+		moveRobberStrokes.get(0).execute(ca);
 	}
 
 	@Override
@@ -202,7 +221,7 @@ public class Ai implements ModelObserver {
 
 	@Override
 	public void eventNewRound(int number) {
-		if (mr.getCurrentPlayer() == me){
+		if (mr.getCurrentPlayer() == mr.getMe()){
 			List<Stroke> sortedStrokes = getSortedStrokeList(generalStrategies);
 			execute(sortedStrokes);
 		}
@@ -210,7 +229,12 @@ public class Ai implements ModelObserver {
 
 	@Override
 	public void initTurn() {
-		execute(getSortedStrokeList(initStrategies));
+		List<Stroke> villageStrokes = generateAllVillageStrokes();
+		sortStrokeList(villageStrokes, initStrategies);
+		villageStrokes.get(0).execute(ca);
+		List<Stroke> streetStrokes = generateAllStreetStrokes();
+		sortStrokeList(streetStrokes, initStrategies);
+		streetStrokes.get(0).execute(ca);
 	}
 
 }
