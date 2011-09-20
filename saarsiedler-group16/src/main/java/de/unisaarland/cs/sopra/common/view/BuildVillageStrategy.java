@@ -30,13 +30,9 @@ public class BuildVillageStrategy extends Strategy {
 	@Override
 	public void execute(ModelReader mr, ControllerAdapter ca) throws Exception {
 
-		if (mr.affordableSettlements(BuildingType.Village) > 0 && mr.buildableVillageIntersections(mr.getMe()).size() > 0
-				&& mr.buildableVillageIntersections(mr.getMe()).size() <= mr.getMaxBuilding(BuildingType.Village) && mr.getSettlements(mr.getMe(), BuildingType.Village).size() < mr.getMaxBuilding(BuildingType.Village)) {
+		if ( mr.buildableVillageIntersections(mr.getMe()).size() > 0 && mr.getSettlements(mr.getMe(), BuildingType.Village).size() < mr.getMaxBuilding(BuildingType.Village)) {
 			Intersection bestIntersection = evaluateIntersection(mr);
 			ca.buildSettlement(bestIntersection, BuildingType.Village);
-			if (mr.getMe().getVictoryPoints() >= mr.getMaxVictoryPoints())
-				ca.claimVictory();
-			ca.endTurn();
 		} else 	if (mr.buildableVillageIntersections(mr.getMe()).size() < 1) {
 			Strategy buildStreet = new BuildStreetStrategy();
 			buildStreet.execute(mr, ca);
@@ -97,9 +93,11 @@ public class BuildVillageStrategy extends Strategy {
 	}
 	
 	@Override
-	public boolean useable() {
-		//TODO implement this operation
-		throw new UnsupportedOperationException();
+	public boolean useable(ModelReader mr) {
+		if (mr.getMaxBuilding(BuildingType.Village) > mr.getSettlements(mr.getMe(), BuildingType.Village).size()) {
+			return true;
+		}
+		return false;
 	}
 	
 }

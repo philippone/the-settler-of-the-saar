@@ -5,6 +5,7 @@ import java.util.List;
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 import de.unisaarland.cs.sopra.common.model.Street;
 
 public class BuildLongestRoadStrategy extends Strategy {
@@ -27,9 +28,19 @@ public class BuildLongestRoadStrategy extends Strategy {
 	}
 
 	@Override
-	public boolean useable() {
-		//TODO implement this operation
-		throw new UnsupportedOperationException();
+	public ResourcePackage getPrice(){
+		//TODO implement this method
+		return null;
+	}
+	
+	
+	@Override
+	public boolean useable(ModelReader mr) {
+		double vp = mr.getMe().getVictoryPoints() / mr.getMaxVictoryPoints();
+			if ( vp <= 0.5) {
+				return false;
+			}
+			return true;
 	}
 	
 }

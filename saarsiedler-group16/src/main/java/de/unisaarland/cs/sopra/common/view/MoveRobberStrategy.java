@@ -113,12 +113,14 @@ public class MoveRobberStrategy extends Strategy{
 			if (i.hasOwner() && i.getOwner()!=player) {victim=i.getOwner(); break;}
 		}
 		return victim;
+
 	}
 
+
 	@Override
-	public boolean useable() {
+	public boolean useable(ModelReader mr) {
 		//TODO implement this operation
 		throw new UnsupportedOperationException();
 	}
-	
+
 }

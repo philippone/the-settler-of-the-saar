@@ -4,27 +4,21 @@ import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 
-public class BuildBuilding extends Stroke {
+public class BuildVillage extends Stroke {
 
 	private final Intersection destination;
-	private final BuildingType buildingType;
 	
-	public BuildBuilding(Intersection destination, BuildingType buildingType){
-		super(StrokeType.BUILD_BUILDING);
+	public BuildVillage(Intersection destination){
+		super(StrokeType.BUILD_VILLAGE);
 		this.destination = destination;
-		this.buildingType = buildingType;
 	}
 	
 	public void execute(ControllerAdapter c) {
-		c.buildSettlement(destination, buildingType);
+		c.buildSettlement(destination, BuildingType.Village);
 	}
 
 	public Intersection getDestination() {
 		return destination;
-	}
-
-	public BuildingType getBuildingType() {
-		return buildingType;
-	}
-
+	}	
+	
 }
