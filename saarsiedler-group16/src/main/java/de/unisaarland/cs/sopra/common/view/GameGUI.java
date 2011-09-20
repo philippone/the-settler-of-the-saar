@@ -1428,9 +1428,9 @@ public class GameGUI extends View implements Runnable{
 		float oglx = mx*screenToOpenGLx(zOffsetUI)+25;
 		float ogly = (windowHeight-my)*screenToOpenGLy(zOffsetUI)+380;
 		
-		if (Mouse.isButtonDown(0) && System.currentTimeMillis() - lastinputcheck > 250 ) {
+		if (Mouse.isButtonDown(0) && System.currentTimeMillis() - lastinputcheck > 500 ) {
+			this.lastinputcheck = System.currentTimeMillis();
 			if (!(oglx > xOffsetUI && oglx < xOffsetUI+1281 && ogly > yOffsetUI && ogly < yOffsetUI+240)) {
-				this.lastinputcheck = System.currentTimeMillis();
 				switch (selectionMode) {
 					case NONE:
 						Path source = getMousePath();
