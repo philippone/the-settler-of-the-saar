@@ -114,9 +114,9 @@ public class ExpandStrategy extends Strategy {
 				resourceValue = resourceValue + 0.2333;
 			} else if (type == FieldType.MOUNTAINS) {
 				if (playerFields.contains(FieldType.MOUNTAINS)) {
-					resourceValue = resourceValue + 0.1167;
+					resourceValue = resourceValue + 0.0584;
 				}
-				resourceValue = resourceValue + 0.2333;
+				resourceValue = resourceValue + 0.1167;
 			}
 		}
 		 Set<Path> neighbourPaths = mr.getPathsFromIntersection(location);
