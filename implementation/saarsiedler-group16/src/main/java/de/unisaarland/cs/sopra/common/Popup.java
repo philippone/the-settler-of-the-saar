@@ -16,6 +16,7 @@ import javax.swing.border.*;
 
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
+import de.unisaarland.cs.sopra.common.view.GameGUI;
 
 /**
  * @author Hans Lange der
@@ -32,8 +33,6 @@ public class Popup extends JFrame {
 	int r4;
 	int r5;
 	private List<List<Path>> roadList;
-	private List<Path> selectedRoad;
-	private List<Path> claimedRoad;
 	/**
 	 * 
 	 */
@@ -151,8 +150,8 @@ public class Popup extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				claimedRoad=selectedRoad;
-				selectedRoad=null;
+				GameGUI.ret=GameGUI.selected;
+				GameGUI.selected=null;
 				reset();
 				setVisible(false);
 			}
@@ -161,7 +160,7 @@ public class Popup extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				selectedRoad=null;
+				GameGUI.selected=null;
 				reset();
 				setVisible(false);
 			}
@@ -172,7 +171,7 @@ public class Popup extends JFrame {
 			@Override
 			public void itemStateChanged(ItemEvent arg0) {
 				if (roadList != null)
-					selectedRoad=roadList.get(longestRoadBox.getSelectedIndex());
+					GameGUI.selected=roadList.get(longestRoadBox.getSelectedIndex());
 			}
 		});
 	}
@@ -1040,9 +1039,7 @@ public class Popup extends JFrame {
 	public JButton okIncomingTrade2;
 	public JButton cancelButton2;
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
-	public void setRoadList(List<List<Path>> roads, List<Path> selected, List<Path> ret) {
+	public void setRoadList(List<List<Path>> roads) {
 		this.roadList=roads;
-		this.selectedRoad=selected;
-		this.claimedRoad=ret;
 	}
 }

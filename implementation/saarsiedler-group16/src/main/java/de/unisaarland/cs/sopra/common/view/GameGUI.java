@@ -86,8 +86,8 @@ public class GameGUI extends View implements Runnable{
 	private int[] catapult;
 	private int[] road;
 	private List<List<Path>> longestroad;
-	private List<Path> selected;
-	private List<Path> ret;
+	public static List<Path> selected;
+	public static List<Path> ret;
 	
 	private Clickable claimLongestRoad;
 	private Clickable claimVictory;
@@ -720,7 +720,7 @@ public class GameGUI extends View implements Runnable{
 				public void executeUI() {
 					deactivateUI();
 					selected = longestroad.get(0);
-					Client.selectLongestRoad(longestroad, selected, ret);
+					Client.selectLongestRoad(longestroad);
 				}
 				@Override
 				public void executeController() {

@@ -517,7 +517,7 @@ public class Client {
 		if(acceptTrade>0)return true;
 		else return false;
 	}
-	public static void selectLongestRoad(List<List<Path>> roads, List<Path> selected, List<Path> ret){
+	public static void selectLongestRoad(List<List<Path>> roads){
 		popup.setTitle("Longest Road");
 		popup.tradePanel.setVisible(false);
 		popup.returnPackPanel.setVisible(false);
@@ -528,7 +528,7 @@ public class Client {
 			popup.longestRoadBox.addItem("Road "+i);
 		}
 		popup.longestRoadBox.setSelectedIndex(0); //to avoid initial not selected roads
-		popup.setRoadList(roads, selected, ret);
+		popup.setRoadList(roads);
 	}
 	
 	public static void backToLobby(){
