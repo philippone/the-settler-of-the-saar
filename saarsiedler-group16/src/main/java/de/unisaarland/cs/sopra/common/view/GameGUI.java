@@ -71,6 +71,7 @@ public class GameGUI extends View implements Runnable{
 	private static final int ROBBER_SELECT		 	=   6;
 	private static final int ROBBER_PLACE 			=   7;
 	private static final int ROBBER_PLAYER_SELECT 	=   8;
+	
 	private List<Point> selectionPoint;
 	private List<Location> selectionLocation;
 	private List<Location> selectionLocation2; //For move catapult
