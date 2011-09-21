@@ -96,7 +96,14 @@ public class Ai implements ModelObserver {
 	
 	
 	public void execute(List<Stroke> sortedStroke){
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if (sortedStroke.size() > 0){
+			
 			//TODO remove the random crap
 			//Collections.shuffle(sortedStroke);
 			Stroke bestStroke = sortedStroke.get(0);
