@@ -85,6 +85,7 @@ public class MoveRobberStrategy extends Strategy {
 	public double evaluate(MoveRobber stroke) {
 		double destinationValue = 0.0;
 		double sourceValue = 0.0;
+		double ownSettlementFactor = 0.4;
 		double moveRobberValue = 0.0;
 		Field sourceField = stroke.getSource();
 		Field destinationField = stroke.getDestination();
@@ -94,8 +95,10 @@ public class MoveRobberStrategy extends Strategy {
 				if (i.getOwner() != mr.getMe()){
 					if (i.getBuildingType() == BuildingType.Village)
 						destinationValue = destinationValue + 0.1667;
+					else if (i.getBuildingType() == BuildingType.Town )
+						destinationValue = destinationValue + 0.2333;
 				}	else
-						destinationValue = destinationValue + 0.0001;
+						destinationValue = destinationValue * ownSettlementFactor;
 			}
 			else destinationValue = destinationValue + 0.0833;
 		}
@@ -105,13 +108,13 @@ public class MoveRobberStrategy extends Strategy {
 				if (i.getOwner() == mr.getMe()) {
 					if (i.getBuildingType() == BuildingType.Village) {
 						sourceValue = sourceValue + 0.1667;
-					}
-
-					else
-						sourceValue = sourceValue + 0.0001;
+					}  else 
+						if (i.getBuildingType() == BuildingType.Town) 
+							sourceValue = sourceValue + 0.2333;
 				}
+				sourceValue = sourceValue * 0.9;
 			}
-			sourceValue = sourceValue + 0.0833;
+			sourceValue = sourceValue + 0.0001;
 		}
 		moveRobberValue = sourceValue + destinationValue;
 		return moveRobberValue;
