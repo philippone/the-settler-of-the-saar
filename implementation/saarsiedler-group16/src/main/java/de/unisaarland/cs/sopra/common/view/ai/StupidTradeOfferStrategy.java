@@ -1,3 +1,4 @@
+
 package de.unisaarland.cs.sopra.common.view.ai;
 
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
@@ -16,10 +17,16 @@ public class StupidTradeOfferStrategy extends TradeOfferStrategy {
 		ResourcePackage tradePackage = new ResourcePackage();
 		tradePackage.modifyResource(getMinResource(ref), 1);
 		while (numberOfPossitiveResources(ref) >= 4 && ref.hasNegativeResources()){
+			tradePackage = new ResourcePackage();
+			tradePackage.modifyResource(getMinResource(ref), 1);
 			for (int i = 0; i < 4; i++){
 				tradePackage.modifyResource(getMaxResource(ref), -1);
 				ref.modifyResource(getMaxResource(ref), -1);
 			}
+			System.out.println("-------------------------");
+			System.out.println(mr.getMe().getResources());
+			System.out.println(ref);
+			System.out.println(tradePackage);
 			ca.offerTrade(tradePackage);
 			ref.modifyResource(getMinResource(ref), 1);
 		}
@@ -29,3 +36,4 @@ public class StupidTradeOfferStrategy extends TradeOfferStrategy {
 	
 
 }
+
