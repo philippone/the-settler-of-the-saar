@@ -7,28 +7,32 @@ import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public class GreedyTradeOfferStrategy extends TradeOfferStrategy {
 
-	public GreedyTradeOfferStrategy(ControllerAdapter ca, ModelReader mr, ResourcePackage price){
-		super(ca, mr, price.copy());
+	public GreedyTradeOfferStrategy(ControllerAdapter ca, ModelReader mr){
+		super(ca, mr);
 	}
 	
-	public void execute() {
-		while(price.hasNegativeResources()){
-			Resource min = getMinResource(price);
-			tryToTrade(min);
-		}
+	public boolean execute(ResourcePackage price) {
+		boolean success = true;
+		Resource min;
+		do {
+			min = getMinResource(price);
+			if (tryToTrade(min, price)) price.modifyResource(min, 1);
+			else success = false;
+		} while(price.hasNegativeResources());
+		return success;
 	}
 	
-	private boolean tryToTrade(Resource min){
-		ResourcePackage myrp = mr.getMe().getResources();
+	private boolean tryToTrade(Resource min, ResourcePackage price){
+		ResourcePackage myrp = price;
 		ResourcePackage rp = new ResourcePackage();
 		rp.modifyResource(min, 1);
 		for (int i = 1; i < 4; i++){
 			rp.modifyResource(getMaxResource(myrp), -1);
+			if (!price.hasNegativeResources()){
+				return ca.offerTrade(rp) != -1;
+			}
 		}
-		if (!myrp.add(rp).hasNegativeResources()){
-			return ca.offerTrade(rp) != -1;
-		}
-		else return false;
+		return false;
 	}
 
 }

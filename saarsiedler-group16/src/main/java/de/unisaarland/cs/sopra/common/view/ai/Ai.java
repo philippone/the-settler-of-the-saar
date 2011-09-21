@@ -100,14 +100,13 @@ public class Ai implements ModelObserver {
 			//TODO remove the random crap
 			//Collections.shuffle(sortedStroke);
 			Stroke bestStroke = sortedStroke.get(0);
-			if (mr.getMe().checkResourcesSufficient(bestStroke.getPrice())){
+			boolean execute = true;
+			if (!mr.getMe().checkResourcesSufficient(bestStroke.getPrice())){
+				execute = new GreedyTradeOfferStrategy(ca, mr).execute(bestStroke.getPrice());
+			}
+			if (execute) {
 				bestStroke.execute(ca);
 				claimVictoryIfPossible();
-			}
-			else {
-				//new GreedyTradeOfferStrategy(ca, mr, bestStroke.getPrice()).execute();
-				//bestStroke.execute(ca);
-				//claimVictoryIfPossible();
 			}
 		}
 		// TODO vll loop?

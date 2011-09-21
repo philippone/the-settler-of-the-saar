@@ -9,16 +9,14 @@ public abstract class TradeOfferStrategy {
 	
 	protected final ControllerAdapter ca;
 	protected final ModelReader mr;
-	protected final ResourcePackage price;
 	
-	public TradeOfferStrategy(ControllerAdapter ca, ModelReader mr, ResourcePackage price){
+	public TradeOfferStrategy(ControllerAdapter ca, ModelReader mr){
 		this.mr = mr;
-		this.price = price;
 		this.ca = ca;
 	}
 	
 
-	public abstract void execute();
+	public abstract boolean execute(ResourcePackage price);
 	
 	protected Resource getMaxResource(ResourcePackage rp){
 		Resource max = Resource.LUMBER;
