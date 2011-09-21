@@ -45,6 +45,7 @@ import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
+import de.unisaarland.cs.st.saarsiedler.comm.results.AttackResult;
 
 public class GameGUI extends View implements Runnable{
 
@@ -70,6 +71,7 @@ public class GameGUI extends View implements Runnable{
 	private static final int ROBBER_SELECT		 	=   6;
 	private static final int ROBBER_PLACE 			=   7;
 	private static final int ROBBER_PLAYER_SELECT 	=   8;
+	
 	private List<Point> selectionPoint;
 	private List<Location> selectionLocation;
 	private List<Location> selectionLocation2; //For move catapult
@@ -627,6 +629,7 @@ public class GameGUI extends View implements Runnable{
 	@Override
 	public void eventTrade(ResourcePackage resourcePackage) {
 		if (!observer) {
+		deactivateUI();
 		boolean decision = Client.incomingTradeOffer(modelReader.getResources().copy(),resourcePackage);
 		respondTrade.setDecision(decision);
 		controllerAdapter.addGuiEvent(respondTrade);
@@ -753,6 +756,7 @@ public class GameGUI extends View implements Runnable{
 					ResourcePackage res = Client.tradeOffer(modelReader.getResources(), modelReader.getHarborTypes(modelReader.getMe()));
 					//TODO anzahl der handel mitzählen?!
 					if (res != null) {
+						deactivateUI();
 						this.setRes(res);
 						controllerAdapter.addGuiEvent(this);
 					}
@@ -760,6 +764,16 @@ public class GameGUI extends View implements Runnable{
 				@Override
 				public void executeController() {
 					controllerAdapter.offerTrade(getRes());
+					String name = "Nobody";
+					long player = controllerAdapter.respondTrade(this.isDecision());
+					if (player != -1 && player != -2) {
+						name = playerNames.get(modelReader.getPlayerMap().get(player));
+					}
+					else if(player == -2) {
+						name = "Bank";
+					}
+					console4 = "You traded with "+ name;
+					reinitiateUI();
 				}
 			};
 			
@@ -831,7 +845,11 @@ public class GameGUI extends View implements Runnable{
 				}
 				@Override
 				public void executeController() {
-					controllerAdapter.buildCatapult(getPath());
+					boolean result = controllerAdapter.buildCatapult(getPath());
+					if (!result) {
+						console4 = "Catapult was build but defeated";
+					}
+					reinitiateUI();
 				}
 			};
 			
@@ -841,12 +859,26 @@ public class GameGUI extends View implements Runnable{
 				@Override
 				public void executeController() {
 					if (getPath2() != null) {
-						controllerAdapter.moveCatapult(getPath(), getPath2());
+						boolean result = controllerAdapter.moveCatapult(getPath(), getPath2());
+						if (!result) {
+							console4 = "Catapult was defeated";
+						}
 					}
 					else {
-						controllerAdapter.attackSettlement(getPath(), getIntersection());
+						AttackResult r = controllerAdapter.attackSettlement(getPath(), getIntersection());
+						switch(r) {
+							case DEFEAT:
+								console4 = "You lost your catapult!";
+								break;
+							case DRAW:
+								console4 = "AttackResult: Draw";
+								break;
+							case SUCCESS:
+								console4 = "Attack successful";
+								break;
+						}
 					}
-					
+					reinitiateUI();
 				}
 			};
 			
@@ -855,7 +887,9 @@ public class GameGUI extends View implements Runnable{
 				public void executeUI() {}
 				@Override
 				public void executeController() {
-					controllerAdapter.moveRobber(getField(), getField2(), getPlayer());
+					Resource stolen = controllerAdapter.moveRobber(getField(), getField2(), getPlayer());
+					if (stolen != null)	
+						console4 = "You got: " +stolen;
 				}
 			};
 			
@@ -873,8 +907,19 @@ public class GameGUI extends View implements Runnable{
 				public void executeUI() {}
 				@Override
 				public void executeController() {
-					controllerAdapter.respondTrade(this.isDecision());
-				}
+					String name = "Nobody";
+					long player = controllerAdapter.respondTrade(this.isDecision());
+					if (player != -1 && player != -2) {
+						name = playerNames.get(modelReader.getPlayerMap().get(player));
+					}
+					else if(player == -2) {
+						name = "Bank";
+					}
+					String current = playerNames.get(modelReader.getCurrentPlayer());
+
+					console4 = current + " traded with "+ name;
+					reinitiateUI();
+				} 
 			};
 			
 			quit = new Clickable("Quit", xOffsetUI+983, yOffsetUI+22, 2, 100, 77, true, true) {
@@ -1005,7 +1050,6 @@ public class GameGUI extends View implements Runnable{
 							console5 = "";
 							console6 = "";
 							controllerAdapter.addGuiEvent(setRobber);
-							reinitiateUI();
 						}
 						break;
 					case VILLAGE:
@@ -1037,6 +1081,7 @@ public class GameGUI extends View implements Runnable{
 							buildCatapult.setPath(path);
 							selectionMode = NONE;
 							console4 = "";
+							deactivateUI();
 							controllerAdapter.addGuiEvent(buildCatapult);
 						}
 						break;
@@ -1046,6 +1091,7 @@ public class GameGUI extends View implements Runnable{
 							catapultAction.setIntersection(destInter);
 							catapultAction.setPath2(null);
 							selectionMode = NONE;
+							deactivateUI();
 							controllerAdapter.addGuiEvent(catapultAction);
 							break;
 						}
@@ -1066,6 +1112,7 @@ public class GameGUI extends View implements Runnable{
 						else if(selectionLocation.contains(Model.getLocation(destPath)) || selectionLocation2.contains(Model.getLocation(destPath))){
 							catapultAction.setPath2(destPath);
 							selectionMode = NONE;
+							deactivateUI();
 							controllerAdapter.addGuiEvent(catapultAction);
 						}
 						break;	

@@ -153,7 +153,7 @@ public class ControllerAdapter {
 	 * @throws IllegalArgumentException
 	 * @throws IOException
 	 */
-	public void moveRobber(Field sourceField, Field destinationField, Player victimPlayer) {
+	public Resource moveRobber(Field sourceField, Field destinationField, Player victimPlayer) {
 		Point p = Model.getLocation(sourceField);
 		Point p2 = Model.getLocation(destinationField);
 		Set<Long> keySet = model.getPlayerMap().keySet();
@@ -162,15 +162,16 @@ public class ControllerAdapter {
 				Player player = model.getPlayerMap().get(l);
 				if (player.equals(victimPlayer)){
 					try {
-						controller.moveRobber(p, p2, l);
+						return controller.moveRobber(p, p2, l);
 					} catch (Exception e) { e.printStackTrace(); }
 					break;
 				}
 			}
 		} else
 			try {
-				controller.moveRobber(p, p2, -1);
+				return controller.moveRobber(p, p2, -1);
 			} catch (Exception e) { e.printStackTrace(); }
+		throw new IllegalStateException();
 	}
 	
 	/**
