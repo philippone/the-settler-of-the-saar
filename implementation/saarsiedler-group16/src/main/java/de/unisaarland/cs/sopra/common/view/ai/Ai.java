@@ -42,7 +42,6 @@ public class Ai implements ModelObserver {
 		this.generalStrategies.add(new ExpandStrategy(mr));
 		this.generalStrategies.add(new AttackStrategy(mr));
 		this.generalStrategies.add(new DeffenceStrategy(mr));
-
 		this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
@@ -51,6 +50,7 @@ public class Ai implements ModelObserver {
 		this.initStrategies = new HashSet<Strategy>();
 		this.initStrategies.add(new InitializeStrategy(mr));
 		this.initStrategies.add(new InitNumStrategy(mr));
+		this.initStrategies.add(new HarborStrategy(mr));
 		mr.addModelObserver(this);
 	}
 	
