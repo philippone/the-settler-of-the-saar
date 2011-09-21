@@ -65,6 +65,7 @@ public class PlayerTableModel extends AbstractTableModel implements MatchListUpd
 		if (Client.matchInfo!=null && Client.matchInfo.getId()==info.getId()){
 			Client.matchInfo=info;
 		}
+		fireTableDataChanged();
 	}
 
 }
