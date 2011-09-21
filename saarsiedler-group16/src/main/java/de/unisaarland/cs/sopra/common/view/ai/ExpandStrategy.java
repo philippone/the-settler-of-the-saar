@@ -60,15 +60,15 @@ public class ExpandStrategy extends Strategy {
 
 	@Override
 	public double evaluate(BuildVillage stroke) {
-		double intersectionValue= 0.0;
-		double resourceValue= 0.0;
-		double numberValue= 0.0;
+		double intersectionValue = 0.0;
+		double resourceValue = 0.0;
+		double numberValue = 0.0;
 		double harborValue = 0.0;
 		int n = 0;
 		 Intersection location = stroke.getDestination();
 		 Set<Field> fields = mr.getFieldsFromIntersection(location);
 		 for (Field field : fields) {
-			 n=field.getNumber();
+			 n = field.getNumber();
 					if (n==2 || n==12)
 						numberValue= numberValue + 0.02143;
 				else 

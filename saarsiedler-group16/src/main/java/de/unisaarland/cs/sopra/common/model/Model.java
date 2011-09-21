@@ -799,7 +799,6 @@ public class Model implements ModelReader, ModelWriter {
 			for (Intersection inter2 : iset2) {
 				if (inter1 == inter2)
 					interBetweenPaths = inter1;
-					break;
 			}
 		}
 		return interBetweenPaths;
