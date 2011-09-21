@@ -799,7 +799,6 @@ public class Model implements ModelReader, ModelWriter {
 			for (Intersection inter2 : iset2) {
 				if (inter1 == inter2)
 					interBetweenPaths = inter1;
-					break;
 			}
 		}
 		return interBetweenPaths;
@@ -1446,7 +1445,7 @@ public class Model implements ModelReader, ModelWriter {
 					java.util.Collections.reverse(players);
 					reversedPlayersList = false;
 				}
-				if (getCurrentPlayer() == me)
+				if (getTableOrder().get(0) == me)
 					Controller.requestEventPull = true;
 			}
 		}

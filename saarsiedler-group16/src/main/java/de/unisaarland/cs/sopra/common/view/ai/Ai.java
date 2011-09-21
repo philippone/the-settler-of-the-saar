@@ -101,6 +101,7 @@ public class Ai implements ModelObserver {
 			Stroke bestStroke = sortedStroke.get(0);
 			if (mr.getMe().checkResourcesSufficient(bestStroke.getPrice())){
 				bestStroke.execute(ca);
+				claimVictoryIfPossible();
 			}
 			else {
 				// TODO insert Trade handling here! And try again!
@@ -108,6 +109,12 @@ public class Ai implements ModelObserver {
 		}
 		// TODO vll loop?
 		ca.endTurn();
+	}
+	
+	public void claimVictoryIfPossible(){
+		if (mr.getMaxVictoryPoints() <= mr.getMe().getVictoryPoints()){
+			ca.claimVictory();
+		}
 	}
 	
 	public List<Stroke> getSortedStrokeList(Set<Strategy> strategySet){
@@ -305,8 +312,9 @@ public class Ai implements ModelObserver {
 
 	@Override
 	public void eventMatchEnd(long winnerID) {
-		// TODO Auto-generated method stub
-
+		if (mr.getPlayerMap().get(winnerID) == mr.getMe())
+			System.out.println("You have won the macht! =)");
+		else System.out.println("You do not have won the match! =(");
 	}
 
 }
