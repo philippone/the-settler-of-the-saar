@@ -54,6 +54,7 @@ public class AttackStrategy extends Strategy {
 		double targetingVillageValue=0;
 		Set<Path> paths1=mr.getPathsFromPath(destination);
 		 for (Path p1 : paths1) {
+			 if (p1!=stroke.getSource()){
 			 if (p1.hasCatapult() && p1.getCatapultOwner()!=mr.getMe())
 				 targetingCatapultValue=targetingCatapultValue+0.2;
 			 // for all neighbor intersections of neighbor Paths
@@ -69,7 +70,7 @@ public class AttackStrategy extends Strategy {
 			 // for all neighbor paths of neighbor paths
 			 Set<Path> paths2=mr.getPathsFromPath(p1);
 			 for (Path p2: paths2){
-				 if (p2!=destination){
+				 if (p2!=destination | !paths1.contains(p2)){
 				 if (p2.hasCatapult() && p2.getCatapultOwner()!=mr.getMe())
 					 targetingCatapultValue=targetingCatapultValue+0.1;
 				 // for all neighbor intersections of neighbor Paths of neighbor paths
@@ -84,6 +85,7 @@ public class AttackStrategy extends Strategy {
 				 }
 				 }
 			 } 
+		 }
 		 }
 		 value=value+targetingCatapultValue+targetingTownValue+targetingVillageValue;
 		return Math.min(value, 1);
@@ -167,7 +169,7 @@ public class AttackStrategy extends Strategy {
 			 // for all neighbor paths of neighbor paths
 			 Set<Path> paths2=mr.getPathsFromPath(p1);
 			 for (Path p2: paths2){
-				 if (p2!=p0){
+				 if (p2!=p0 | !paths1.contains(p2)){
 				 if (p2.hasCatapult() && p2.getCatapultOwner()!=mr.getMe())
 					 targetingCatapultValue=targetingCatapultValue+0.1;
 				 // for all neighbor intersections of neighbor Paths of neighbor paths
@@ -216,6 +218,7 @@ public class AttackStrategy extends Strategy {
 		double targetingVillageValue=0;
 		Set<Path> paths1=mr.getPathsFromPath(destination);
 		 for (Path p1 : paths1) {
+			 if (p1!=source){
 			 si=mr.getIntersectionsFromPath(p1);
 			 for (Intersection i: si){
 				 if (i.hasOwner() && i.getOwner()!=mr.getMe()){
@@ -227,7 +230,7 @@ public class AttackStrategy extends Strategy {
 			 }
 			 Set<Path> paths2=mr.getPathsFromPath(p1);
 			 for (Path p2: paths2){
-				 if (p2!=destination){
+				 if (p2!=destination | !paths1.contains(p2)){
 				 if (p2.hasCatapult() && p2.getCatapultOwner()!=mr.getMe())
 					 targetingCatapultValue=targetingCatapultValue+0.1;
 				 si=mr.getIntersectionsFromPath(p2);
@@ -241,6 +244,7 @@ public class AttackStrategy extends Strategy {
 				 }
 				 }
 			 } 
+			 }
 		 }
 		 value=3*targetingCatapultValue+2*targetingTownValue+targetingVillageValue;
 		return Math.min(value, 1);

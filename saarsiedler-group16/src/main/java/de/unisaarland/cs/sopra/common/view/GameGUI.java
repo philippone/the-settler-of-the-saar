@@ -1,30 +1,22 @@
 package de.unisaarland.cs.sopra.common.view;
 
-import static de.unisaarland.cs.sopra.common.PlayerColors.BLACK;
-import static de.unisaarland.cs.sopra.common.PlayerColors.BLUE;
-import static de.unisaarland.cs.sopra.common.PlayerColors.BROWN;
-import static de.unisaarland.cs.sopra.common.PlayerColors.ORANGE;
-import static de.unisaarland.cs.sopra.common.PlayerColors.PURPLE;
-import static de.unisaarland.cs.sopra.common.PlayerColors.WHITE;
-import static de.unisaarland.cs.sopra.common.PlayerColors.YELLOW;
+import static de.unisaarland.cs.sopra.common.PlayerColors.*;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.*;
+import static de.unisaarland.cs.sopra.common.view.Textures.*;
+import static de.unisaarland.cs.sopra.common.view.Util.*;
 
 import java.awt.Font;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.CyclicBarrier;
 
-import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -35,8 +27,6 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
-import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.opengl.TextureLoader;
 
 import de.unisaarland.cs.sopra.common.Client;
 import de.unisaarland.cs.sopra.common.PlayerColors;
@@ -44,8 +34,6 @@ import de.unisaarland.cs.sopra.common.Setting;
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
-import de.unisaarland.cs.sopra.common.model.FieldType;
-import de.unisaarland.cs.sopra.common.model.HarborType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.Model;
@@ -62,26 +50,7 @@ public class GameGUI extends View implements Runnable{
 
 	private Map<Player, String> playerNames;
 	private String gameTitle;
-	private Setting setting;
-	private Map<FieldType,Texture> fieldTextureMap;
-	private Map<HarborType, Texture> harborTextureMap;
-	private Map<Integer,Texture> numberTextureMap;
-	private Map<String,Texture> uiTextureMap;
-	
-	private Texture streetTexture;
-	private Texture catapultTexture;
-	private Texture robberTexture;
-	private Texture pathMarkTexture;
-	private Texture pathMarkTextureRed;
-	private Texture fieldMarkTexture;
-	private Texture intersectionMarkTexture;
-	private Texture intersectionMarkRedTexture;
-	private Texture villageTexture;
-	private Texture townTexture;
-	
-	private int x,y,z;
-	private int maxX, maxY, maxZ;
-	private int minX, minY, minZ;
+		
 	private UnicodeFont debugFont;
 	private UnicodeFont uiFont20;
 	private UnicodeFont uiFont40;
@@ -90,7 +59,6 @@ public class GameGUI extends View implements Runnable{
 	private static final int NORMAL = 0;
 	private static final int RETURN_RESOURCES = 1;
 	//TODO trade, longestroad, etc
-	
 	
 	private int selectionMode;
 	private static final int NONE 					=	0;
@@ -107,9 +75,6 @@ public class GameGUI extends View implements Runnable{
 	private List<Location> selectionLocation2; //For move catapult
 	private List<Location> selectionLocation3; //For attackable settlements
 	
-	private static int windowWidth;
-	private static int windowHeight;
-	private static float aspectRatio;
 	private static int xOffset;
 	private static int xOffsetUI, yOffsetUI, zOffsetUI;
 	
@@ -136,8 +101,6 @@ public class GameGUI extends View implements Runnable{
 	private boolean observer;
 	private int lastNumberDiced;
 	
-	private Map<Player,PlayerColors> colorMap;
-	
 	private CyclicBarrier barrier;
 	
 	private String console4 = "";
@@ -148,12 +111,15 @@ public class GameGUI extends View implements Runnable{
 	
 	private long lastinputcheck;
 
+	public static ModelReader mr;
 	
-	public GameGUI(ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player, String> names, Setting setting, String gameTitle, boolean observer, CyclicBarrier barrier) {
+	public GameGUI(ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player, String> names, String gameTitle, boolean observer, CyclicBarrier barrier) {
 		super(modelReader, controllerAdapter);
 		this.modelReader.addModelObserver(this);
+		mr = this.modelReader;
+		initiateRenderBoard();
+		initiateUtil();
 		this.playerNames = names;
-		this.setting = setting;
 		this.selectionMode = NONE;
 		this.gameTitle = gameTitle;
 		this.catapult = new int[names.size()];
@@ -162,44 +128,10 @@ public class GameGUI extends View implements Runnable{
 		this.road = new int[names.size()];
 		this.observer = observer;
 		this.barrier = barrier;
-		windowWidth = Setting.getDisplayMode().getWidth();
-		windowHeight = Setting.getDisplayMode().getHeight();
-		aspectRatio = ((float)windowWidth)/windowHeight;
 		xOffset = (int)(366*aspectRatio);
 		xOffsetUI = (int)(((870*aspectRatio)-1075)/2);
 		yOffsetUI = 955;
 		zOffsetUI = -950;
-		//center to the area where the first field is drawn
-		this.x = (int)(812.8125f*aspectRatio);
-		this.y = 745;
-		this.z = -1450;
-		//center camera on map according to map size
-		this.x += (modelReader.getBoardWidth()-1)*-106;
-		this.y += (modelReader.getBoardHeight()-1)*-170;
-		this.z += Math.max((modelReader.getBoardWidth()-1)*450,(modelReader.getBoardHeight()-1)*450);
-	
-		//set the max and min for camera
-		this.maxZ = this.z;
-		this.minZ = -1500;
-		//TODO: set and use min,max for x,y 
-		
-		List<PlayerColors> tmp = new LinkedList<PlayerColors>();
-		tmp.addAll(Arrays.asList(new PlayerColors[] {YELLOW,ORANGE,WHITE,PURPLE,BLUE,BROWN}));
-		tmp.remove(Setting.getPlayerColor());
-		
-		//set color of players
-		colorMap = new HashMap<Player,PlayerColors>();
-		Iterator<Player> iterP = modelReader.getTableOrder().iterator();
-		Iterator<PlayerColors> iterC = tmp.iterator();
-		while (iterP.hasNext()) {
-			Player act = iterP.next();
-			if (act == modelReader.getMe()) {
-				colorMap.put(act, Setting.getPlayerColor());
-			}
-			else {
-				colorMap.put(act, iterC.next());
-			}
-		}
 		
 		int i = 0;
 		for (Player act : modelReader.getTableOrder()) {
@@ -229,6 +161,7 @@ public class GameGUI extends View implements Runnable{
 	}
 	
 	private void reinitiateUI() {
+		deactivateUI();
 		Player me = modelReader.getMe();
 		if (modelReader.affordableSettlements(BuildingType.Village) > 0 && (modelReader.getSettlements(me, BuildingType.Village).size()!=modelReader.getMaxBuilding(BuildingType.Village))) 
 			buildVillage.setActive(true);
@@ -247,364 +180,7 @@ public class GameGUI extends View implements Runnable{
 		if (me.getResources().size() >= 1)
 			offerTrade.setActive(true);
 	}
-
-	private void setColor(PlayerColors playerColor) {
-		switch(playerColor) {
-		case BLUE:
-			GL11.glColor4f(0.2f,0.2f,1.0f,1.0f); break;
-		case YELLOW:
-			GL11.glColor4f(1.0f,1.0f,0.0f,1.0f); break;
-		case ORANGE:
-			GL11.glColor4f(1.0f,0.5f,0.0f,1.0f); break;
-		case BROWN:
-			GL11.glColor4f(0.5f,0.25f,0.05f,1.0f); break;
-		case WHITE:
-			GL11.glColor4f(1.0f,1.0f,1.0f,1.0f); break;
-		case PURPLE:
-			GL11.glColor4f(0.5f,0.25f,0.5f,1.0f); break;
-		case BLACK:
-			GL11.glColor4f(1.0f,1.0f,1.0f,1.0f); break;
-		}
-	}
 	
-	private void drawSquareMid(int width, int height) {
-	     GL11.glBegin(GL11.GL_POLYGON);
-	       GL11.glTexCoord2f(0,0);
-	       GL11.glVertex3i(-width/2, -height/2, 0);
-	       GL11.glTexCoord2f(1,0);
-	       GL11.glVertex3i(width/2, -height/2, 0);
-	       GL11.glTexCoord2f(1,1);
-	       GL11.glVertex3i(width/2, height/2, 0);
-	       GL11.glTexCoord2f(0,1);
-	       GL11.glVertex3i(-width/2, height/2, 0);
-	     GL11.glEnd();
-	}
-	
-	private void drawSquareLeftTop(int width, int height) {
-	     GL11.glBegin(GL11.GL_POLYGON);
-	       GL11.glTexCoord2f(0,0);
-	       GL11.glVertex3i(0, 0, 0);
-	       GL11.glTexCoord2f(1,0);
-	       GL11.glVertex3i(width, 0, 0);
-	       GL11.glTexCoord2f(1,1);
-	       GL11.glVertex3i(width, height, 0);
-	       GL11.glTexCoord2f(0,1);
-	       GL11.glVertex3i(0, height, 0);
-	     GL11.glEnd();
-	}
-
-	private void renderField(Field f) {
-		int fx = 0;
-		int fy = 0;
-		   switch(f.getLocation().getY()%2) {
-		   case 0:
-			   fx = f.getLocation().getX()*250;
-			   fy = f.getLocation().getY()*215; 
-			   break;
-		   case 1:
-		   case -1:
-			   fx = f.getLocation().getX()*250-125;
-			   fy = f.getLocation().getY()*215;
-			   break;
-		   }
-		   GL11.glPushMatrix(); 
-		   setColor(BLACK);
-		   GL11.glTranslatef(fx+x, fy+y, 0+z);
-		   fieldTextureMap.get(f.getFieldType()).bind(); 
-		   if (f.hasRobber()) {
-			   if(f.getFieldType().equals(FieldType.DESERT) || f.getFieldType().equals(FieldType.WATER)) {
-				   drawSquareMid(300, 300);
-				   GL11.glTranslatef(20, 0, 0);
-				   robberTexture.bind();
-				   drawSquareMid(160, 160);
-			   }
-			   else {
-			   drawSquareMid(300, 300);
-			   GL11.glTranslatef(-30, 20, 0);
-			   robberTexture.bind();
-			   drawSquareMid(160, 160);
-			   GL11.glTranslatef(60, -20, 0);
-			   }
-		   }
-		   else {
-			   drawSquareMid(300, 300);
-		   }
-		   
-		   if (f.getFieldType() != FieldType.DESERT && f.getFieldType() != FieldType.WATER) { 
-			   numberTextureMap.get(f.getNumber()).bind();
-			   drawSquareMid(300, 300);
-		   }
-		   GL11.glPopMatrix();
-	}
-	
-	private void renderIntersection(Intersection i) {
-		if (i.hasOwner()) {
-			int ix = 0;
-			int iy = 0;
-			   switch(i.getLocation().getY()%2) {
-				   case 0:
-					   ix = i.getLocation().getX()*250;
-					   iy = i.getLocation().getY()*215; 
-					   break;
-				   case 1:
-				   case -1:
-					   ix = i.getLocation().getX()*250-125;
-					   iy = i.getLocation().getY()*215;
-					   break;
-			   }
-			  switch(i.getLocation().getOrientation()) {
-				   case 0:
-					   ix+=5;
-					   iy+=-136;
-					   break;
-				   case 1:
-					   ix+=128;
-					   iy+=-80;
-					   break;
-				   case 2:
-					   ix+=133;
-					   iy+=80;
-					   break;
-				   case 3:
-					   ix+=20;
-					   iy+=155;
-					   break;
-				   case 4:
-					   ix+=-117;
-					   iy+=80;
-					   break;
-				   case 5:
-					   ix+=-122;
-					   iy+=-80;
-					   break;
-				   default:
-					   throw new IllegalArgumentException();
-			   }
-			   GL11.glPushMatrix();
-			   switch (i.getBuildingType()) {
-			   case Village:
-				   setColor(colorMap.get(i.getOwner()));
-				   GL11.glTranslatef(ix+x, iy+y, 1+z);
-				   villageTexture.bind();
-				   drawSquareMid(125, 125);
-				   break;
-			   case Town:
-				   setColor(colorMap.get(i.getOwner()));
-				   GL11.glTranslatef(ix+x, iy+y, 1+z);
-				   townTexture.bind();
-				   drawSquareMid(125, 125);
-				   break;
-			   }
-			   GL11.glPopMatrix();
-		}
-	}
-
-	private void renderPath(Path p) {
-		if (p.hasStreet()) {
-			renderStreet(p);
-		}
-		if (p.hasCatapult()) {
-			renderCatapult(p);
-		}
-		if (p.getHarborType() != null) {
-			renderHarbor(p);
-		}
-	}
-	
-	private void renderHarbor(Path p) {
-		// TODO Auto-generated method stub
-		int o = p.getLocation().getOrientation();
-		for (Field f: modelReader.getFieldsFromPath(p)) {
-			if (f.getFieldType().equals(FieldType.WATER)) {
-				int xField = f.getLocation().getX();
-				int yField = f.getLocation().getY();
-				int orient = o;
-				if (xField != p.getLocation().getX() || yField != p.getLocation().getY()) {
-					if (orient <3) {
-						orient += 3;
-					}
-					else {
-						orient -=3;
-					}
-				}
-				
-				HarborType h = p.getHarborType();
-				int px = 0;
-				int py = 0;
-				int po = 0;
-				switch(yField%2) {
-				   case 0:
-					   px = xField*250;
-					   py = yField*215; 
-					   break;
-				   case 1:
-				   case -1:
-					   px = xField*250-125;
-					   py = yField*215;
-					   break;
-			   }
-			  switch(orient) {
-				   case 0:
-					   px+=95;  // 74
-					   py+=-35;  // -96
-					   po+=30;
-					   break;
-				   case 1:
-					   px+=68;
-					   py+=63;
-					   po+=90;
-					   break;
-				   case 2:
-					   px+=-27;
-					   py+=91;
-					   po+=150;
-					   break;
-				   case 3:
-					   px+=-99;
-					   py+=23;
-					   po+=210;
-					   break;
-				   case 4:
-					   px+=-78;
-					   py+=-71;
-					   po+=270;
-					   break;
-				   case 5:
-					   px+=18;
-					   py+=-100;
-					   po+=330;
-					   break;
-				   default:
-					   throw new IllegalArgumentException();
-			   }
-			  	Texture harborTexture = harborTextureMap.get(h);
-				GL11.glPushMatrix();
-				GL11.glTranslatef(px+x, py+y, 1+z);
-				GL11.glRotatef(po-90, 0, 0, 1);
-				setColor(BLACK);
-				harborTexture.bind();
-			    drawSquareMid(170,312);
-			    GL11.glPopMatrix();
-				}
-				}
-			}
-		
-	private void renderCatapult(Path p) {
-		int px = 0;
-		int py = 0;
-		int po = 0;
-	
-		  switch(p.getLocation().getY()%2) {
-			   case 0:
-				   px = p.getLocation().getX()*250;
-				   py = p.getLocation().getY()*215; 
-				   break;
-			   case 1:
-			   case -1:
-				   px = p.getLocation().getX()*250-125;
-				   py = p.getLocation().getY()*215;
-				   break;
-		   }
-		  switch(p.getLocation().getOrientation()) {
-			   case 0:
-				   px+=66;
-				   py+=-108;
-				   po+=30;
-				   break;
-			   case 1:
-				   px+=130;
-				   py+=-1;
-				   po+=90;
-				   break;
-			   case 2:
-				   px+=56;
-				   py+=112;
-				   po+=150;
-				   break;
-			   case 3:
-				   px+=-52;
-				   py+=115;
-				   po+=210;
-				   break;
-			   case 4:
-				   px+=-128;
-				   py+=-1;
-				   po+=270;
-				   break;
-			   case 5:
-				   px+=-72;
-				   py+=-100;
-				   po+=330;
-				   break;
-			   default:
-				   throw new IllegalArgumentException();
-		   }
-			GL11.glPushMatrix();
-			GL11.glTranslatef(px+x, py+y, 1+z);
-		    catapultTexture.bind();
-		    setColor(colorMap.get(p.getCatapultOwner()));
-		    drawSquareMid(70, 70);
-		    GL11.glPopMatrix();
-	}
-	
-	private void renderStreet(Path p) {
-		int px = 0;
-		int py = 0;
-		int po = 0;
-	
-		  switch(p.getLocation().getY()%2) {
-			   case 0:
-				   px = p.getLocation().getX()*250;
-				   py = p.getLocation().getY()*215; 
-				   break;
-			   case 1:
-			   case -1:
-				   px = p.getLocation().getX()*250-125;
-				   py = p.getLocation().getY()*215;
-				   break;
-		   }
-		  switch(p.getLocation().getOrientation()) {
-			   case 0:
-				   px+=74;
-				   py+=-96;
-				   po+=30;
-				   break;
-			   case 1:
-				   px+=118;
-				   py+=18;
-				   po+=90;
-				   break;
-			   case 2:
-				   px+=38;
-				   py+=116;
-				   po+=150;
-				   break;
-			   case 3:
-				   px+=-84;
-				   py+=93;
-				   po+=210;
-				   break;
-			   case 4:
-				   px+=-128;
-				   py+=-21;
-				   po+=270;
-				   break;
-			   case 5:
-				   px+=-47;
-				   py+=-120;
-				   po+=330;
-				   break;
-			   default:
-				   throw new IllegalArgumentException();
-		   }
-			GL11.glPushMatrix();
-			GL11.glTranslatef(px+x, py+y, 1+z);
-			GL11.glRotatef(po, 0, 0, 1);
-		    streetTexture.bind();
-		    setColor(colorMap.get(p.getStreetOwner()));
-		    drawSquareMid(200,25);
-		    GL11.glPopMatrix();
-	}
 
 	private void renderPlayerInfo(Player player, long pos) {
 		int px = 10;
@@ -623,13 +199,13 @@ public class GameGUI extends View implements Runnable{
 		GL11.glPushMatrix();
 		String name = getName(player);
 		uiFont20.drawString(xOffsetUI+px+30, yOffsetUI+py-3, name);
-		setColor(colorMap.get(player));
+		setColor(player);
 		renderUI("PlayerColor", xOffsetUI+px, yOffsetUI+py, 2, 30, 30);
 		setColor(BLACK);
 		renderUI("Cup", xOffsetUI+px, yOffsetUI+py+20, 2, 30, 50);
 		// draw currentScorePoints 0/??
 		uiFont20.drawString(xOffsetUI+px+22, yOffsetUI+py+25, ""+modelReader.getCurrentVictoryPoints(player) + "/" + modelReader.getMaxVictoryPoints());
-		setColor(colorMap.get(player));
+		setColor(player);
 		GL11.glPushMatrix();
 		GL11.glTranslatef(xOffsetUI+px+90, yOffsetUI+py+39, 1);
 		villageTexture.bind();
@@ -638,7 +214,7 @@ public class GameGUI extends View implements Runnable{
 		setColor(BLACK);
 		//draw VillageScore 0/??
 		uiFont20.drawString(xOffsetUI+px+100, yOffsetUI+py+25, ""+village[(int)pos] + "/" + modelReader.getMaxBuilding(BuildingType.Village));
-		setColor(colorMap.get(player));
+		setColor(player);
 		GL11.glPushMatrix();
 		GL11.glTranslatef(xOffsetUI+px+155, yOffsetUI+py+39, 1);
 		townTexture.bind();
@@ -647,7 +223,7 @@ public class GameGUI extends View implements Runnable{
 		setColor(BLACK);
 		//draw TownScore
 		uiFont20.drawString(xOffsetUI+px+168, yOffsetUI+py+25, ""+town[(int)pos] + "/" + modelReader.getMaxBuilding(BuildingType.Town));
-		setColor(colorMap.get(player));
+		setColor(player);
 		GL11.glPushMatrix();
 		GL11.glTranslatef(xOffsetUI+px+220, yOffsetUI+py+42, 1);
 		catapultTexture.bind();
@@ -656,7 +232,7 @@ public class GameGUI extends View implements Runnable{
 		setColor(BLACK);
 		//draw CatapultScore
 		uiFont20.drawString(xOffsetUI+px+230, yOffsetUI+py+25, ""+catapult[(int)pos] + "/" + modelReader.getMaxCatapult());
-		setColor(colorMap.get(player));
+		setColor(player);
 		GL11.glPushMatrix();
 		GL11.glTranslatef(xOffsetUI+px+270, yOffsetUI+py+38, 1);
 		streetTexture.bind();
@@ -960,7 +536,11 @@ public class GameGUI extends View implements Runnable{
 		if (!observer && longestroad != null && !longestroad.isEmpty() && longestroad.get(0).size() > (modelReader.getLongestClaimedRoad() != null ? modelReader.getLongestClaimedRoad().size() : 4)  )
 			claimLongestRoad.setActive(true);
 		for (Player act : modelReader.getTableOrder()) {
+			
+			long time = System.currentTimeMillis();
 			List<List<Path>> streets = modelReader.calculateLongestRoads(act);
+			System.out.println(System.currentTimeMillis()-time);
+			
 			this.road[i++] = streets.size() > 0 ? streets.get(0).size() : 0;
 			if (act == modelReader.getMe())
 				longestroad = streets;
@@ -984,6 +564,7 @@ public class GameGUI extends View implements Runnable{
 	public void updateResources() {
 		if (modelReader.getCurrentPlayer() == modelReader.getMe() && !observer
 				&& !(selectionMode == ROBBER_SELECT || selectionMode == ROBBER_PLACE || selectionMode == ROBBER_PLAYER_SELECT) ) {
+				//deactivateUI();	
 				reinitiateUI();
 			}
 			else {
@@ -1120,75 +701,13 @@ public class GameGUI extends View implements Runnable{
 			Display.setTitle("Die Siedler von der Saar: " + getName(modelReader.getMe()) + "@" + gameTitle);
 			Display.setFullscreen(Setting.isFullscreen());
 			Display.create();
-			
-			//TODO zeit messen. takes a lot of time. evtl auslagern
-			fieldTextureMap = new HashMap<FieldType,Texture>();
-			fieldTextureMap.put(FieldType.MOUNTAINS, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Mountains.png")));
-			fieldTextureMap.put(FieldType.DESERT, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Desert.png")));
-			fieldTextureMap.put(FieldType.FIELDS, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Fields.png")));
-			fieldTextureMap.put(FieldType.FOREST, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Forest.png")));
-			fieldTextureMap.put(FieldType.HILLS, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Hills.png")));
-			fieldTextureMap.put(FieldType.PASTURE, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Pasture.png")));
-			fieldTextureMap.put(FieldType.WATER, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Water.png")));
-			
-			numberTextureMap = new HashMap<Integer,Texture>();
-			numberTextureMap.put(2, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/2.png")));
-			numberTextureMap.put(3, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/3.png")));
-			numberTextureMap.put(4, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/4.png")));
-			numberTextureMap.put(5, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/5.png")));
-			numberTextureMap.put(6, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/6.png")));
-			numberTextureMap.put(8, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/8.png")));
-			numberTextureMap.put(9, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/9.png")));
-			numberTextureMap.put(10, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/10.png")));
-			numberTextureMap.put(11, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/11.png")));
-			numberTextureMap.put(12, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Numbers/12.png")));
-		
-			streetTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Street.png"));
-			catapultTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Catapult.png"));
-			robberTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Robber.png"));
-			fieldMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Fields/Mark.png"));
-			intersectionMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Mark.png"));
-			intersectionMarkRedTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/MarkRed.png"));
-			pathMarkTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/Mark.png"));
-			pathMarkTextureRed = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Paths/MarkRed.png"));
-			villageTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Village.png"));
-			townTexture = TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Intersections/Town.png"));
-			
-			harborTextureMap = new HashMap<HarborType,Texture>();
-			harborTextureMap.put(HarborType.GENERAL_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/General_Harbor.png")));
-			harborTextureMap.put(HarborType.BRICK_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Brick_Harbor.png")));
-			harborTextureMap.put(HarborType.GRAIN_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Grain_Harbor.png")));
-			harborTextureMap.put(HarborType.LUMBER_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Lumber_Harbor.png")));
-			harborTextureMap.put(HarborType.ORE_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Ore_Harbor.png")));
-			harborTextureMap.put(HarborType.WOOL_HARBOR, TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Harbor/Wool_Harbor.png")));
-			
-			uiTextureMap = new HashMap<String,Texture>();
-			uiTextureMap.put("Background", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/menue_background.png")));
-			uiTextureMap.put("EndTurn", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_endTurn.png")));
-			uiTextureMap.put("ClaimVictory", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_claimVictory.png")));
-			uiTextureMap.put("ClaimLongestRoad", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_claimLongestRoad.png")));
-			uiTextureMap.put("offerTrade", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_offerTrade.png")));
-			uiTextureMap.put("BuildStreet", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_BuildStreet.png")));
-			uiTextureMap.put("BuildVillage", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_BuildVillage.png")));
-			uiTextureMap.put("BuildTown", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_BuildTown.png")));
-			uiTextureMap.put("BuildCatapult", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_BuildCatapult.png")));
-			uiTextureMap.put("LumberScore", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Lumber_Score.png")));
-			uiTextureMap.put("BrickScore", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Brick_Score.png")));
-			uiTextureMap.put("GrainScore", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Grain_Score.png")));
-			uiTextureMap.put("WoolScore", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Wool_Score.png")));
-			uiTextureMap.put("OreScore", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Ore_Score.png")));
-			uiTextureMap.put("Console", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/console.png")));
-			uiTextureMap.put("PlayerColor", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Player_Color.png")));
-			uiTextureMap.put("Cup", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Cup.png")));
-			uiTextureMap.put("Trenner", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/PlayerTrenner.png")));
-			uiTextureMap.put("PlayerBackgroundHighlight", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/PlayerBackgroundHighlight.png")));
-			uiTextureMap.put("Quit", TextureLoader.getTexture("JPG", new FileInputStream("src/main/resources/Textures/Menue/Button_Quit.png")));
+			initiateTextures();
 			
 			claimLongestRoad = new Clickable("ClaimLongestRoad", xOffsetUI+450, yOffsetUI+22, 2, 373, 77, false, true) {
 				@Override
 				public void executeUI() {
 					//öffne auswahl and set road or not TODO
-					List<Path> road = modelReader.calculateLongestRoads(modelReader.getMe()).get(0);
+					List<Path> road = longestroad.get(0);
 					if (road != null) {
 						this.setActive(false);
 						this.setRoad(road);
@@ -1362,8 +881,6 @@ public class GameGUI extends View implements Runnable{
 				@Override
 				public void executeUI() {
 					Display.destroy();
-					controllerAdapter.leaveMatch();
-					Client.backToLobby();
 				}
 				@Override
 				public void executeController() {}
@@ -1527,6 +1044,7 @@ public class GameGUI extends View implements Runnable{
 						Intersection destInter = getMouseIntersection();
 						if (destInter != null && selectionLocation3.contains(Model.getLocation(destInter))) {
 							catapultAction.setIntersection(destInter);
+							catapultAction.setPath2(null);
 							selectionMode = NONE;
 							controllerAdapter.addGuiEvent(catapultAction);
 							break;
@@ -1545,7 +1063,7 @@ public class GameGUI extends View implements Runnable{
 							if (selectionLocation.size()==0 && selectionLocation2.size()==0 && selectionLocation3.size()==0)
 								selectionMode = NONE;
 						}
-						else {
+						else if(selectionLocation.contains(Model.getLocation(destPath)) || selectionLocation2.contains(Model.getLocation(destPath))){
 							catapultAction.setPath2(destPath);
 							selectionMode = NONE;
 							controllerAdapter.addGuiEvent(catapultAction);
@@ -1608,10 +1126,10 @@ public class GameGUI extends View implements Runnable{
 		}
 		
 		if (Mouse.next()) {
-			if (Mouse.getEventDWheel() < 0 && z+50 < this.maxZ) {
+			if (Mouse.getEventDWheel() < 0 && z+50 < maxZ) {
 				z+=50; 
 			}
-			else if (Mouse.getEventDWheel() > 0 && z-50 > this.minZ) {	
+			else if (Mouse.getEventDWheel() > 0 && z-50 > minZ) {	
 				z-=50; 
 			}
 		}
@@ -1633,12 +1151,12 @@ public class GameGUI extends View implements Runnable{
 //			minY-=5;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_N)) {
-			if (z+50 < this.maxZ)
+			if (z+50 < maxZ)
 				z+=50;
 //			maxX+=10;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_M)) {
-			if (z-50 > this.minZ)
+			if (z-50 > minZ)
 				z-=50;
 //			maxX-=10;
 		}
@@ -1983,11 +1501,11 @@ public class GameGUI extends View implements Runnable{
 		
 //		model.getField(new Point(2,2)).setRobber(true);
 		
-//		Setting setting = new Setting(Display.getDesktopDisplayMode(), true, PlayerColors.RED);
-		Setting setting = new Setting(new DisplayMode(1024, 515), false, PlayerColors.YELLOW);  /// Display.getDesktopDisplayMode()
+//		Setting.setSetting(Display.getDesktopDisplayMode(), true, PlayerColors.RED);
+		Setting.setSetting(new DisplayMode(1024, 515), false, PlayerColors.YELLOW);  /// Display.getDesktopDisplayMode()
 		
 		CyclicBarrier barrier = new CyclicBarrier(2);
-		GameGUI gameGUI = new GameGUI(model, null, names, setting, "TestSpiel", false, barrier);
+		GameGUI gameGUI = new GameGUI(model, null, names, "TestSpiel", false, barrier);
 		new Thread(gameGUI).start();
 		barrier.await();
 	}

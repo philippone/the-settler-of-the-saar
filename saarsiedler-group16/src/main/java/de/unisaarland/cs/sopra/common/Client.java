@@ -59,7 +59,7 @@ public class Client {
 	
 	public static void main(String[] args) throws UnknownHostException, IOException {
 		initOpenGL();
-		setting = new Setting(new DisplayMode(1024, 600), true, PlayerColors.BLUE);
+		Setting.setSetting(new DisplayMode(1024, 600), true, PlayerColors.BLUE);
 		clientGUI = new GUIFrame();
 		popup = new Popup();
 		loadSettings();
@@ -184,11 +184,11 @@ public class Client {
 				plToNames.put(iterPl.next(), connection.getPlayerInfo(l).getName());
 			} catch (IOException e) {e.printStackTrace();}
 		}
-		return new GameGUI(model, new ControllerAdapter(controller, model), plToNames , setting, matchInfo.getTitle(), AIisPlaying, barrier);
+		return new GameGUI(model, new ControllerAdapter(controller, model), plToNames , matchInfo.getTitle(), AIisPlaying, barrier);
 	}
 	
 	public static void changeSettings(DisplayMode mode, boolean fullscreen,PlayerColors playerColor, String name){
-		setting = new Setting(mode, fullscreen, playerColor);
+		Setting.setSetting(mode, fullscreen, playerColor);
 		Setting.setName(name);
 	}
 	
@@ -432,6 +432,7 @@ public class Client {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {e.printStackTrace();}
 		}
+		tradeAbort=!tradeAbort;
 		popup.reset();
 		popup.setVisible(false);
 		return returnPackage;
@@ -448,13 +449,13 @@ public class Client {
 		popup.brickMax3.setText(""+rp.getResource(Resource.BRICK));
 		popup.woolMax3.setText(""+rp.getResource(Resource.WOOL));
 		popup.grainMax3.setText(""+rp.getResource(Resource.GRAIN));
-		popup.oreMax3.setText(""+incomingRp.getResource(Resource.ORE));
+		popup.oreMax3.setText(""+rp.getResource(Resource.ORE));
 		
-		popup.label16.setText(""+incomingRp.getResource(Resource.LUMBER));
-		popup.label17.setText(""+incomingRp.getResource(Resource.BRICK));
-		popup.label18.setText(""+incomingRp.getResource(Resource.WOOL));
-		popup.label19.setText(""+incomingRp.getResource(Resource.GRAIN));
-		popup.label20.setText(""+incomingRp.getResource(Resource.ORE));
+		popup.label16.setText(""+ incomingRp.getResource(Resource.LUMBER));
+		popup.label17.setText(""+ incomingRp.getResource(Resource.BRICK));
+		popup.label18.setText(""+ incomingRp.getResource(Resource.WOOL));
+		popup.label19.setText(""+ incomingRp.getResource(Resource.GRAIN));
+		popup.label20.setText(""+ incomingRp.getResource(Resource.ORE));
 		
 		while(acceptTrade==0){
 			try {
@@ -471,6 +472,9 @@ public class Client {
 		clientGUI.joinPanel.setVisible(false);
 		clientGUI.lobbyPanel.setVisible(true);
 		clientGUI.setVisible(true);
+		clientGUI.readyToggle.setSelected(false);
+		clientGUI.readyToggle.setText("Set Ready");
+		ButtonListener.readyStatus=false;
 	}
 }
 
