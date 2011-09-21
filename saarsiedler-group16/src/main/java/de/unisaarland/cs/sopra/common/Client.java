@@ -432,6 +432,7 @@ public class Client {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {e.printStackTrace();}
 		}
+		tradeAbort=!tradeAbort;
 		popup.reset();
 		popup.setVisible(false);
 		return returnPackage;
@@ -448,13 +449,13 @@ public class Client {
 		popup.brickMax3.setText(""+rp.getResource(Resource.BRICK));
 		popup.woolMax3.setText(""+rp.getResource(Resource.WOOL));
 		popup.grainMax3.setText(""+rp.getResource(Resource.GRAIN));
-		popup.oreMax3.setText(""+incomingRp.getResource(Resource.ORE));
+		popup.oreMax3.setText(""+rp.getResource(Resource.ORE));
 		
-		popup.label16.setText(""+incomingRp.getResource(Resource.LUMBER));
-		popup.label17.setText(""+incomingRp.getResource(Resource.BRICK));
-		popup.label18.setText(""+incomingRp.getResource(Resource.WOOL));
-		popup.label19.setText(""+incomingRp.getResource(Resource.GRAIN));
-		popup.label20.setText(""+incomingRp.getResource(Resource.ORE));
+		popup.label16.setText(""+ incomingRp.getResource(Resource.LUMBER));
+		popup.label17.setText(""+ incomingRp.getResource(Resource.BRICK));
+		popup.label18.setText(""+ incomingRp.getResource(Resource.WOOL));
+		popup.label19.setText(""+ incomingRp.getResource(Resource.GRAIN));
+		popup.label20.setText(""+ incomingRp.getResource(Resource.ORE));
 		
 		while(acceptTrade==0){
 			try {

@@ -113,22 +113,23 @@ public class Popup extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				a1= Integer.valueOf(textField6.getText());
-				a2= Integer.valueOf(textField7.getText());
-				a3= Integer.valueOf(textField8.getText());
-				a4= Integer.valueOf(textField9.getText());
-				a5= Integer.valueOf(textField10.getText());
-				r1= Integer.valueOf(lumberMax2.getText());
-				r2= Integer.valueOf(brickMax2.getText());
-				r3= Integer.valueOf(woolMax2.getText());
-				r4= Integer.valueOf(grainMax2.getText());
-				r5= Integer.valueOf(oreMax2.getText());
+				a1= Integer.valueOf(label16.getText());
+				a2= Integer.valueOf(label17.getText());
+				a3= Integer.valueOf(label18.getText());
+				a4= Integer.valueOf(label19.getText());
+				a5= Integer.valueOf(label20.getText());
+				r1= Integer.valueOf(lumberMax3.getText());
+				r2= Integer.valueOf(brickMax3.getText());
+				r3= Integer.valueOf(woolMax3.getText());
+				r4= Integer.valueOf(grainMax3.getText());
+				r5= Integer.valueOf(oreMax3.getText());
 				//TODO noch nicht sicher mit abfrage
 				if(r1+a1<0 || r2+a2<0 || r3+a3<0 || r4+a4<0 || r5+a5<0){
 					warning3.setText("You have not enough Resources!");	
 					warning3.setVisible(true);
-					}
-				Client.acceptTrade = 1;
+				}else{
+					Client.acceptTrade = 1;
+				}
 			}
 		});
 		cancelButton.addActionListener(new ActionListener() {

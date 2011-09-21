@@ -1726,17 +1726,18 @@ public class Model implements ModelReader, ModelWriter {
 	public void respondTrade(long playerID) {
 		if (playerID < -2)
 			throw new IllegalArgumentException();
-		else if (playerID == -1) {
-			return;
-		} else if (playerID == -2) {
-			getCurrentPlayer().modifyResources(lastTrade);
-			for (ModelObserver mo : modelObserver) {
-				mo.updateResources();
-			}
+		
+		if (playerID == -1) return;
+		 
+		if (playerID == -2) {
+		getCurrentPlayer().modifyResources(lastTrade);
+		for (ModelObserver mo : modelObserver) {
+			mo.updateResources();
+		}
 		} else {
 			getCurrentPlayer().modifyResources(lastTrade);
 			playerMap.get(playerID).modifyResources(
-					lastTrade.neagateResourcePackage());
+					lastTrade/*.neagateResourcePackage()*/); //nix negieren sonst bei einem der beiden  alles falsch
 			for (ModelObserver mo : modelObserver) {
 				mo.updateResources();
 			}
