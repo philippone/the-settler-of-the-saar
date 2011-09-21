@@ -1390,13 +1390,16 @@ public class Model implements ModelReader, ModelWriter {
 		Path dest = getPath(destination);
 		if (dest.hasStreet())	throw new IllegalArgumentException(	"Strasse bereits vorhanden und gehört: "+ dest.getStreetOwner() + " und nicht: "+ getCurrentPlayer());
 		if (getRound() != 0) {
-			if (getCurrentPlayer() == me){
+			if (getCurrentPlayer() == me && round != 0){
 					if(getCurrentPlayer().checkResourcesSufficient(Street.getPrice())) {
 						me.modifyResources(Street.getPrice());
 						Set<Path> buildableStreets = buildableStreetPaths(getCurrentPlayer());
 						if (!buildableStreets.contains(dest))throw new IllegalStateException("Keine Nachbarstrassen oder WasserFeld");
 					}else{
 						throw new IllegalStateException("not enough resources");
+					}
+					for (ModelObserver ob : modelObserver) {
+						ob.updateResources();
 					}
 			}
 		} else {
@@ -1413,7 +1416,6 @@ public class Model implements ModelReader, ModelWriter {
 		}
 		getPath(destination).createStreet(getCurrentPlayer());
 		for (ModelObserver ob : modelObserver) {
-			ob.updateResources();
 			ob.updatePath(dest);
 		}
 		if (round == 0) {
@@ -1438,7 +1440,7 @@ public class Model implements ModelReader, ModelWriter {
 					reversedPlayersList = false;
 				}
 				if (getCurrentPlayer() == me)
-					Controller.requestSingleEventPull = true;
+					Controller.requestEventPull = true;
 			}
 		}
 	}
@@ -1630,7 +1632,7 @@ public class Model implements ModelReader, ModelWriter {
 			path_source.removeCatapult();
 		}
 
-		if (!(owner.checkResourcesSufficient(Catapult.getAttackcatapultprice())))
+		if ((!(owner.checkResourcesSufficient(Catapult.getAttackcatapultprice()))) && owner == me)
 			throw new IllegalStateException(
 					"not enough money on the bankaccount!");
 		owner.modifyResources(Catapult.getAttackcatapultprice());
