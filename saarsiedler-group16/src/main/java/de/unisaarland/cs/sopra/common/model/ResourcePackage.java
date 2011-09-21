@@ -175,4 +175,13 @@ public class ResourcePackage {
 			   this.getResource(ORE) * 251;
 	}
 	
+	@Override
+	public String toString(){
+		String s = "";
+		for (Resource r : Resource.values()){
+			s += String.format("%s: %d; ", r, resources.get(r));
+		}
+		return s;
+	}
+	
 }
