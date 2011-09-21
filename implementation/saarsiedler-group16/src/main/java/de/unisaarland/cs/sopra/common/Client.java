@@ -448,6 +448,30 @@ public class Client {
 		popup.woolMax2.setText(""+rp.getResource(Resource.WOOL));
 		popup.grainMax2.setText(""+rp.getResource(Resource.GRAIN));
 		popup.oreMax2.setText(""+rp.getResource(Resource.ORE));
+		for (HarborType harborType : set) {
+			switch (harborType) {
+			case LUMBER_HARBOR:
+				popup.checkBox1.setSelected(true);
+				break;
+			case BRICK_HARBOR:
+				popup.checkBox2.setSelected(true);
+				break;
+			case WOOL_HARBOR:
+				popup.checkBox3.setSelected(true);
+				break;
+			case GRAIN_HARBOR:
+				popup.checkBox4.setSelected(true);
+				break;
+			case ORE_HARBOR:
+				popup.checkBox5.setSelected(true);
+				break;
+			case GENERAL_HARBOR:
+				popup.checkBox6.setSelected(true);
+				break;
+			default:
+				break;
+			}
+		}
 		
 		while(returnPackage==null && !tradeAbort ){
 			try {

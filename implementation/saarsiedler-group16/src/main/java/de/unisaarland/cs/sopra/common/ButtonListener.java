@@ -156,6 +156,8 @@ public class ButtonListener implements ActionListener {
 			
 			if (arg0.getSource() == gui.back_join){
 				readyStatus=false;
+				gui.readyToggle.setText("Set Ready");
+				gui.readyToggle.setSelected(false);
 				try {Client.connection.leaveMatch();} catch (Exception e) {e.printStackTrace();}
 				gui.joinPanel.setVisible(false);
 				gui.lobbyPanel.setVisible(true);
