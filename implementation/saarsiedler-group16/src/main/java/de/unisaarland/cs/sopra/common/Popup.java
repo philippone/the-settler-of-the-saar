@@ -203,9 +203,7 @@ public class Popup extends JFrame {
 		checkBox4.setSelected(false);
 		checkBox5.setSelected(false);
 		checkBox6.setSelected(false);
-		while(longestRoadBox.getItemCount()!=0){
-			longestRoadBox.remove(0);
-		}
+		longestRoadBox.removeAllItems();
 	}
 	
 	private void initComponents() {

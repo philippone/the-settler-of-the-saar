@@ -438,7 +438,7 @@ public class Client {
 	
 	public static ResourcePackage tradeOffer(ResourcePackage rp, Set<HarborType> set){
 		//TODO use the set to show trade possibilites
-		tradeAbort=!tradeAbort;
+		tradeAbort=false;
 		returnPackage=null;
 		popup.setTitle("Make a Trade Offer");
 		popup.incomingTradePanel.setVisible(false);
