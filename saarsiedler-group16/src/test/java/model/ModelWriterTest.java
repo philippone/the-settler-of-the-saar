@@ -477,7 +477,7 @@ public class ModelWriterTest {
 		
 		model.tradeOffer(-4, 0, 0, 0, 1);
 		model.respondTrade(2);
-		assertTrue("Spieler der anbietet hat falsche Resourcen",new ResourcePackage(24,20,20,20,19).equals( p2.getResources()));
+		assertTrue("Spieler der anbietet hat falsche Resourcen",new ResourcePackage(16,20,20,20,21).equals( p2.getResources()));
 		assertTrue("Spieler der annimmt hat falsche Resourcen",new ResourcePackage(1, 6, 7, 3, 1).equals( p.getResources()));
 		
 	}

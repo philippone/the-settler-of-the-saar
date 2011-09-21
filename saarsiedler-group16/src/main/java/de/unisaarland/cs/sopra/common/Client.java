@@ -472,6 +472,9 @@ public class Client {
 		clientGUI.joinPanel.setVisible(false);
 		clientGUI.lobbyPanel.setVisible(true);
 		clientGUI.setVisible(true);
+		clientGUI.readyToggle.setSelected(false);
+		clientGUI.readyToggle.setText("Set Ready");
+		ButtonListener.readyStatus=false;
 	}
 }
 

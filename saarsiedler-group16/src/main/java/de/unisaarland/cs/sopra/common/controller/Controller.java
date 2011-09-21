@@ -166,7 +166,7 @@ public class Controller implements Runnable {
 	 * @throws IllegalArgumentException
 	 * @throws IOException
 	 */
-	public void attackSettlement(Location catapult, Location settlement)
+	public AttackResult attackSettlement(Location catapult, Location settlement)
 			throws IllegalStateException, IllegalArgumentException, IOException {
 		int y = catapult.getY();
 		int x = catapult.getX();
@@ -179,7 +179,7 @@ public class Controller implements Runnable {
 
 		AttackResult r = connection.attack(e, i);
 		modelWriter.attackSettlement(catapult, settlement, r);
-		
+		return r;
 	}
 
 	/**
@@ -188,11 +188,12 @@ public class Controller implements Runnable {
 	 * @throws IllegalArgumentException
 	 * @throws IOException
 	 */
-	public void buildCatapult(Location path) throws IllegalStateException,
+	public boolean buildCatapult(Location path) throws IllegalStateException,
 			IllegalArgumentException, IOException {
 		boolean fOC = connection.buildCatapult(new Edge(path.getY(), path
 				.getX(), path.getOrientation()));
 		modelWriter.buildCatapult(path, fOC);
+		return fOC;
 	}
 
 	/**
@@ -278,7 +279,7 @@ public class Controller implements Runnable {
 	 * @throws IllegalArgumentException
 	 * @throws IOException
 	 */
-	public void moveCatapult(Location sourcePath, Location destinationPath)
+	public boolean moveCatapult(Location sourcePath, Location destinationPath)
 			throws IllegalStateException, IllegalArgumentException, IOException {
 		Edge e = new Edge(sourcePath.getY(), sourcePath.getX(),
 				sourcePath.getOrientation());
@@ -286,6 +287,7 @@ public class Controller implements Runnable {
 				destinationPath.getOrientation());
 		boolean fOC = connection.moveCatapult(e, e1);
 		modelWriter.catapultMoved(sourcePath, destinationPath, fOC);
+		return fOC;
 	}
 
 	/**
@@ -296,7 +298,7 @@ public class Controller implements Runnable {
 	 * @throws IllegalArgumentException
 	 * @throws IOException
 	 */
-	public void moveRobber(Point sourceField, Point destinationField,
+	public Resource moveRobber(Point sourceField, Point destinationField,
 			long victimPlayer) throws IllegalStateException,
 			IllegalArgumentException, IOException {
 		int y = sourceField.getY();
@@ -308,6 +310,7 @@ public class Controller implements Runnable {
 				.moveRobber(y, x, y1, x1, victimPlayer);
 		r = Resource.convert(r1);
 		modelWriter.robberMoved(sourceField, destinationField, victimPlayer, r);
+		return r;
 	}
 
 	/**
@@ -319,11 +322,12 @@ public class Controller implements Runnable {
 	 * @throws IllegalStateException
 	 * @throws IOException
 	 */
-	public void offerTrade(int lumber, int brick, int wool, int grain, int ore)
+	public long offerTrade(int lumber, int brick, int wool, int grain, int ore)
 			throws IllegalStateException, IOException {
 		long id = connection.offerTrade(-lumber, -brick, -wool, -grain, -ore);
 		modelWriter.tradeOffer(lumber, brick, wool, grain, ore);
 		modelWriter.respondTrade(id);
+		return id;
 	}
 
 	/**
@@ -332,10 +336,11 @@ public class Controller implements Runnable {
 	 * @throws IllegalArgumentException
 	 * @throws IOException
 	 */
-	public void respondTrade(boolean decision) throws IllegalStateException,
+	public long respondTrade(boolean decision) throws IllegalStateException,
 			IllegalArgumentException, IOException {
 		long id = connection.respondTrade(decision);
 		modelWriter.respondTrade(id);
+		return id;
 	}
 
 	/**
