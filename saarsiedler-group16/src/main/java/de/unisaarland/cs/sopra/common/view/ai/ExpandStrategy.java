@@ -60,15 +60,15 @@ public class ExpandStrategy extends Strategy {
 
 	@Override
 	public double evaluate(BuildVillage stroke) {
-		double intersectionValue= 0.0;
-		double resourceValue= 0.0;
-		double numberValue= 0.0;
+		double intersectionValue = 0.0;
+		double resourceValue = 0.0;
+		double numberValue = 0.0;
 		double harborValue = 0.0;
 		int n = 0;
 		 Intersection location = stroke.getDestination();
 		 Set<Field> fields = mr.getFieldsFromIntersection(location);
 		 for (Field field : fields) {
-			 n=field.getNumber();
+			 n = field.getNumber();
 					if (n==2 || n==12)
 						numberValue= numberValue + 0.02143;
 				else 
@@ -134,7 +134,7 @@ public class ExpandStrategy extends Strategy {
 	public double evaluate(BuildTown stroke) {
 		double townValue = 0.0;
 		double resourceValue = 0.0; 
-		double villagesFactor = 0.8;
+		double earlyGameStageFactor = 0.5;
 		Intersection i = stroke.getDestination();
 		Set<Field> neighbourFields = mr.getFieldsFromIntersection(i);
 		for (Field f: neighbourFields){
@@ -143,9 +143,8 @@ public class ExpandStrategy extends Strategy {
 					resourceValue = resourceValue + 0.3333;
 			}
 		}
-		if (mr.getSettlements(mr.getMe(), BuildingType.Village).size()
-				< mr.getMaxBuilding(BuildingType.Village))
-		townValue = resourceValue * villagesFactor;
+		if (mr.getMe().getVictoryPoints() <= (mr.getMaxVictoryPoints()/2))
+		townValue = resourceValue * earlyGameStageFactor;
 		return townValue;
 		
 	}
@@ -159,24 +158,29 @@ public class ExpandStrategy extends Strategy {
 	@Override
 	public double evaluate(BuildStreet stroke) {
 		Path path = stroke.getDestination();
-		double NPValue = 0.0;
+		// IVValue is the value of the intersection to which we want to build on
 		double IValue = 0.0;
+		// NFValue evaluates the FieldType of the intersection we want to build on
+		double NFValue = 0.0;
 		double PathValue = 0.0;
-		Set<Path> paths = mr.getPathsFromPath(path);
-		for (Path p : paths) {
-			Set<Intersection> intersections = mr.getIntersectionsFromPath(p);
-			for (Intersection i : intersections) {
-				if (i.hasOwner())
-					IValue = 0.1;
-			}
-			IValue = 0.8;
-			Set<Field> fields = mr.getFieldsFromPath(p);
-			for (Field f : fields){
-				if (f.getNumber() != -1)
-					NPValue = NPValue + 0.1;
-			}
+		//if we can build a village, PathValue <= 0.5
+		double villagesFactor =0.0;
+		Set<Intersection> intersections = mr.getIntersectionsFromPath(path);
+		for (Intersection i : intersections){
+			if (!i.hasOwner()) {
+				IValue = IValue + 0.7;
+				Set<Field> fields =mr.getFieldsFromIntersection(i);
+				for (Field f : fields){
+					if (f.getNumber() != -1)
+						NFValue = NFValue + 0.1;
+				}
+			} else 
+				if (i.getOwner() == mr.getMe())
+					IValue = IValue + 0.2;
 		}
-		PathValue = NPValue + IValue;
+		PathValue = NFValue + IValue;
+		if (mr.buildableVillageIntersections(mr.getMe()).size() > 0)
+			PathValue = PathValue*villagesFactor;
 		return PathValue;
 	}
 
