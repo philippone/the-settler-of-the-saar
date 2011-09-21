@@ -377,16 +377,18 @@ public class Controller implements Runnable {
 
 			while(!endOfGame){
 				if (!modelWriter.isOurTurn() || requestEventPull) {
-					GameEvent e = connection.getNextEvent(100);
+					GameEvent e = connection.getNextEvent(0);
 					if (e != null) {
 						System.out.println(e);
 						handleEvent(e);
 					}
 				}
-				Iterator<Clickable> iter = guiEvents.iterator();
-				while (iter.hasNext()) {
-					iter.next().executeController();
-					iter.remove();
+				else {
+					Iterator<Clickable> iter = guiEvents.iterator();
+					while (iter.hasNext()) {
+						iter.next().executeController();
+						iter.remove();
+					}
 				}
 			}
 		} catch (Exception e) {

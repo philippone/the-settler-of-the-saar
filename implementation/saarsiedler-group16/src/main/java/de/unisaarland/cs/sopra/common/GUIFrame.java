@@ -536,6 +536,7 @@ public class GUIFrame extends JFrame {
 
 		//======== joinPanel ========
 		{
+			joinPanel.setVisible(false);
 			joinPanel.setLayout(new GridBagLayout());
 			((GridBagLayout)joinPanel.getLayout()).columnWidths = new int[] {999, 0};
 			((GridBagLayout)joinPanel.getLayout()).rowHeights = new int[] {337, 76, 0};
