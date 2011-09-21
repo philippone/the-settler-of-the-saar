@@ -50,7 +50,6 @@ public class Ai implements ModelObserver {
 		this.initStrategies = new HashSet<Strategy>();
 		this.initStrategies.add(new InitializeStrategy(mr));
 		this.initStrategies.add(new InitNumStrategy(mr));
-		this.initStrategies.add(new HarborStrategy(mr));
 		mr.addModelObserver(this);
 	}
 	
@@ -110,6 +109,7 @@ public class Ai implements ModelObserver {
 				execute = false;
 			}
 			if (execute) {
+				System.out.println(bestStroke);
 				bestStroke.execute(ca);
 				claimVictoryIfPossible();
 			}

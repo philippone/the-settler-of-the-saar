@@ -34,5 +34,10 @@ public class MoveRobber extends Stroke {
 	public Player getVictim() {
 		return victim;
 	}
+	
+	@Override
+	public String toString(){
+		return String.format("%s: Source: %s; Destination: %s; Victim: %s\n", super.toString(), source.toString(), destination.toString(), victim.toString());
+	}
 
 }

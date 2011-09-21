@@ -42,4 +42,9 @@ public abstract class Stroke implements Comparable<Stroke>{
 		else return 0;
 	}
 	
+	@Override
+	public String toString(){
+		return String.format(">> %s",type.toString());
+	}
+	
 }

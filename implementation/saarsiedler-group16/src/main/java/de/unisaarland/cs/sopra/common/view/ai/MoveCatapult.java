@@ -28,6 +28,10 @@ public class MoveCatapult extends Stroke {
 		c.moveCatapult(source, destination);
 	}
 
+	@Override
+	public String toString(){
+		return String.format("%s: Source: %s; Destination: %s\n", super.toString(), source.toString(), destination.toString());
+	}
 	
 	
 }

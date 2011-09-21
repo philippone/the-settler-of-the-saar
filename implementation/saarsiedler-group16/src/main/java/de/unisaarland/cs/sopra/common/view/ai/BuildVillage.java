@@ -19,6 +19,11 @@ public class BuildVillage extends Stroke {
 
 	public Intersection getDestination() {
 		return destination;
-	}	
+	}
+	
+	@Override
+	public String toString(){
+		return String.format("%s: Destination: %s\n", super.toString(), destination.toString());
+	}
 	
 }
