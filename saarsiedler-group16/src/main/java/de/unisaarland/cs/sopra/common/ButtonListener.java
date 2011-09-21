@@ -12,7 +12,7 @@ public class ButtonListener implements ActionListener {
 
 	private GUIFrame gui;
 //	private Client client;
-	private boolean readyStatus;
+	public static boolean readyStatus;
 	public boolean joinAsObserver;
 
 	public ButtonListener(GUIFrame guiFrame) {
