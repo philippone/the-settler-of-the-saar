@@ -224,7 +224,6 @@ public class GUIFrame extends JFrame {
 
 		//======== menuPanel ========
 		{
-			menuPanel.setVisible(false);
 
 			// JFormDesigner evaluation mark
 			menuPanel.setBorder(new javax.swing.border.CompoundBorder(
@@ -554,6 +553,7 @@ public class GUIFrame extends JFrame {
 				//---- joinMatchName ----
 				joinMatchName.setText("text");
 				joinMatchName.setFont(new Font("Tahoma", Font.BOLD, 14));
+				joinMatchName.setVisible(false);
 				panel14.add(joinMatchName, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
