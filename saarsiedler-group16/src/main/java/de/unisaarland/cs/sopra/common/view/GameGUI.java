@@ -161,6 +161,7 @@ public class GameGUI extends View implements Runnable{
 	}
 	
 	private void reinitiateUI() {
+		deactivateUI();
 		Player me = modelReader.getMe();
 		if (modelReader.affordableSettlements(BuildingType.Village) > 0 && (modelReader.getSettlements(me, BuildingType.Village).size()!=modelReader.getMaxBuilding(BuildingType.Village))) 
 			buildVillage.setActive(true);
@@ -563,6 +564,7 @@ public class GameGUI extends View implements Runnable{
 	public void updateResources() {
 		if (modelReader.getCurrentPlayer() == modelReader.getMe() && !observer
 				&& !(selectionMode == ROBBER_SELECT || selectionMode == ROBBER_PLACE || selectionMode == ROBBER_PLAYER_SELECT) ) {
+				//deactivateUI();	
 				reinitiateUI();
 			}
 			else {
@@ -1042,6 +1044,7 @@ public class GameGUI extends View implements Runnable{
 						Intersection destInter = getMouseIntersection();
 						if (destInter != null && selectionLocation3.contains(Model.getLocation(destInter))) {
 							catapultAction.setIntersection(destInter);
+							catapultAction.setPath2(null);
 							selectionMode = NONE;
 							controllerAdapter.addGuiEvent(catapultAction);
 							break;
@@ -1060,7 +1063,7 @@ public class GameGUI extends View implements Runnable{
 							if (selectionLocation.size()==0 && selectionLocation2.size()==0 && selectionLocation3.size()==0)
 								selectionMode = NONE;
 						}
-						else {
+						else if(selectionLocation.contains(Model.getLocation(destPath)) || selectionLocation2.contains(Model.getLocation(destPath))){
 							catapultAction.setPath2(destPath);
 							selectionMode = NONE;
 							controllerAdapter.addGuiEvent(catapultAction);
