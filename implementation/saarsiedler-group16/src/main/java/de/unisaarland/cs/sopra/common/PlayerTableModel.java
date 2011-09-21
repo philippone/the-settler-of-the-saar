@@ -57,11 +57,12 @@ public class PlayerTableModel extends AbstractTableModel implements MatchListUpd
 
 	@Override
 	public void removedMatch(long matchId) {
-		if (matchId==Client.matchInfo.getId()) throw new IllegalStateException("Actual Matchinfo was removed");
+		if (Client.matchInfo!=null && matchId==Client.matchInfo.getId()) throw new IllegalStateException("Actual Matchinfo was removed");
 	}
 
 	@Override
 	public void matchUpdate(MatchInformation info) {
+//		if(true)throw new NullPointerException();
 		if (Client.matchInfo!=null && Client.matchInfo.getId()==info.getId()){
 			Client.matchInfo=info;
 		}

@@ -139,7 +139,13 @@ public class Client {
 		if(result == ChangeReadyResult.UNCHANGED){
 			throw new IllegalStateException("Cant change ReadyStatus, JUST EPIC FAIL");
 		}
-		initializeMatch();	
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				initializeMatch();
+			}
+		}).start();
+		
 	}
 	
 	public static void closeConnection() {
@@ -251,6 +257,7 @@ public class Client {
 	
 	public static  void setUpListUpdater(){
 		try {
+			playerTableModel= new PlayerTableModel();
 			Client.connection.registerMatchListUpdater(new GameListUpdater(gameTableModel,playerTableModel));	
 			Client.connection.registerMatchListUpdater(playerTableModel);
 		}catch(IOException e){throw new IllegalStateException("iwas mit Matchlistupdater faul!!!");}
@@ -294,7 +301,7 @@ public class Client {
 			}
 			table[i][1]= readyPlayers[i];
 		}		
-		playerTableModel= new PlayerTableModel();//new DefaultTableModel( table ,new String[] {"Players", "ready-Status"});
+		//new DefaultTableModel( table ,new String[] {"Players", "ready-Status"});
 		clientGUI.playerTable.setModel(playerTableModel);
 	}
 	
@@ -399,7 +406,7 @@ public class Client {
 		popup.returnPackPanel.setVisible(true);
 		int n = rp.size();
 		popup.setN(n);
-		popup.setText("You have to choose "+(n/2)+" Resources!");
+		popup.setTitle("You have to choose "+(n/2)+" Resources!");
 		popup.lumberMax.setText(""+rp.getResource(Resource.LUMBER));
 		popup.brickMax.setText(""+rp.getResource(Resource.BRICK));
 		popup.woolMax.setText(""+rp.getResource(Resource.WOOL));
@@ -419,6 +426,7 @@ public class Client {
 	
 	public static ResourcePackage tradeOffer(ResourcePackage rp, Set<HarborType> set){
 		//TODO use the set to show trade possibilites
+		tradeAbort=!tradeAbort;
 		returnPackage=null;
 		popup.setTitle("Make a Trade Offer");
 		popup.incomingTradePanel.setVisible(false);
@@ -437,7 +445,7 @@ public class Client {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {e.printStackTrace();}
 		}
-		tradeAbort=!tradeAbort;
+		
 		popup.reset();
 		popup.setVisible(false);
 		return returnPackage;
@@ -474,6 +482,7 @@ public class Client {
 		else return false;
 	}
 	public static void selectLongestRoad(List<List<Path>> roads, List<Path> selected, List<Path> ret){
+		popup.setTitle("Longest Road");
 		popup.tradePanel.setVisible(false);
 		popup.returnPackPanel.setVisible(false);
 		popup.incomingTradePanel.setVisible(false);
@@ -486,6 +495,7 @@ public class Client {
 	}
 	
 	public static void backToLobby(){
+		popup.setVisible(false);
 		clientGUI.joinPanel.setVisible(false);
 		clientGUI.lobbyPanel.setVisible(true);
 		clientGUI.setVisible(true);
