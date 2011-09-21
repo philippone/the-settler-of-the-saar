@@ -1,5 +1,8 @@
 package de.unisaarland.cs.sopra.common.view.ai;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -7,14 +10,20 @@ import java.util.List;
 import java.util.Set;
 
 import de.unisaarland.cs.sopra.common.ModelObserver;
+import de.unisaarland.cs.sopra.common.controller.Controller;
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.Intersection;
+import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
+import de.unisaarland.cs.st.saarsiedler.comm.Connection;
+import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
+import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
+import de.unisaarland.cs.st.saarsiedler.comm.results.JoinResult;
 
 public class Ai implements ModelObserver {
 	
@@ -29,6 +38,7 @@ public class Ai implements ModelObserver {
 		this.mr = mr;
 		this.ca = ca;
 		this.generalStrategies = new HashSet<Strategy>();
+		this.generalStrategies.add(new ExpandStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
 		this.returnResourcesStrategies = new HashSet<Strategy>();
@@ -38,31 +48,77 @@ public class Ai implements ModelObserver {
 		mr.addModelObserver(this);
 	}
 	
+	public static void main(String[] args){
+		try {
+			String[] params = args[0].split(":");
+			int port = Connection.DEFAULT_PORT;
+			InetAddress ia = InetAddress.getByName(params[0]);
+			if (params.length == 2) port = Integer.parseInt(params[1]);
+			Connection connection = Connection.establish(ia, port, true);
+			MatchInformation matchInformation = null;
+			if (args.length == 2) {
+				matchInformation = connection.getMatchInfo(Long.parseLong(args[1]));
+				connection.joinMatch(matchInformation.getId(), false);
+			}
+			else {
+				for (MatchInformation mi: connection.listMatches()){
+					JoinResult jr = connection.joinMatch(mi.getId(), false);
+					if (jr == JoinResult.JOINED){
+						matchInformation = mi;
+						break;
+					}
+				}
+			}
+			long worldId = matchInformation.getWorldId();
+			WorldRepresentation worldRepresentation = connection.getWorld(worldId);
+			long myId = connection.getClientId();
+			Model model = new Model(worldRepresentation, matchInformation, myId);
+			Controller controller = new Controller(connection, model);
+			ControllerAdapter adapter = new ControllerAdapter(controller,model);
+			connection.changeReadyStatus(true);
+			System.out.println(myId);
+			Ai ai = new Ai(model, adapter);
+			controller.run();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 	
 	public void execute(List<Stroke> sortedStroke){
 		if (sortedStroke.size() > 0){
+			//TODO remove the random crap
+			Collections.shuffle(sortedStroke);
 			Stroke bestStroke = sortedStroke.get(0);
 			if (mr.getMe().checkResourcesSufficient(bestStroke.getPrice())){
 				bestStroke.execute(ca);
 			}
 			else {
-				// TODO insert Trade handling here!
-				ca.endTurn();
+				// TODO insert Trade handling here! And try again!
 			}
 		}
-		else ca.endTurn();
+		// TODO vll loop?
+		ca.endTurn();
 	}
 	
 	public List<Stroke> getSortedStrokeList(Set<Strategy> strategySet){
 		List<Stroke> strokeList = generateAllPossibleStrokes();
 		evaluateStrokes(strokeList, strategySet);
-		Collections.sort(strokeList);
+		Collections.sort(strokeList, Collections.<Stroke>reverseOrder());
 		return strokeList;
 	}
 	
 	public void sortStrokeList(List<Stroke> strokeList, Set<Strategy> strategySet){
 		evaluateStrokes(strokeList, strategySet);
-		Collections.sort(strokeList);
+		Collections.sort(strokeList, Collections.<Stroke>reverseOrder());
 	}
 	
 	public void evaluateStrokes(List<Stroke> strokeList, Set<Strategy> strategySet){
@@ -130,16 +186,22 @@ public class Ai implements ModelObserver {
 	public List<Stroke> generateAllPossibleStrokes(){
 		List<Stroke> strokeSet = new LinkedList<Stroke>();
 		// create build village strokes
-		for (Intersection inter : mr.buildableVillageIntersections(mr.getMe())){
-			strokeSet.add(new BuildVillage(inter));
+		if (mr.getMaxBuilding(BuildingType.Village) > mr.getSettlements(mr.getMe(), BuildingType.Village).size()){
+			for (Intersection inter : mr.buildableVillageIntersections(mr.getMe())){
+				strokeSet.add(new BuildVillage(inter));
+			}
 		}
 		// create build town strokes
-		for (Intersection inter : mr.buildableTownIntersections(mr.getMe())){
-			strokeSet.add(new BuildTown(inter));
+		if (mr.getMaxBuilding(BuildingType.Town) > mr.getSettlements(mr.getMe(), BuildingType.Town).size()){
+			for (Intersection inter : mr.buildableTownIntersections(mr.getMe())){
+				strokeSet.add(new BuildTown(inter));
+			}
 		}
 		// create catapult strokes
-		for (Path path : mr.buildableCatapultPaths(mr.getMe())){
-			strokeSet.add(new BuildCatapult(path));
+		if (mr.getMaxCatapult() > mr.getCatapults(mr.getMe()).size()) {
+			for (Path path : mr.buildableCatapultPaths(mr.getMe())){
+				strokeSet.add(new BuildCatapult(path));
+			}
 		}
 		// move catapult strokes
 		for (Path source : mr.getCatapults(mr.getMe())){
@@ -208,9 +270,11 @@ public class Ai implements ModelObserver {
 		sortStrokeList(returnResourcesStrokes, returnResourcesStrategies);
 		if (returnResourcesStrokes.size() > 0)
 			returnResourcesStrokes.get(0).execute(ca);
-		List<Stroke> moveRobberStrokes = generateAllMoveRobberStrokes();
-		sortStrokeList(moveRobberStrokes, moveRobberStrategies);
-		moveRobberStrokes.get(0).execute(ca);
+		if (mr.getCurrentPlayer() == mr.getMe()){
+			List<Stroke> moveRobberStrokes = generateAllMoveRobberStrokes();
+			sortStrokeList(moveRobberStrokes, moveRobberStrategies);
+			moveRobberStrokes.get(0).execute(ca);
+		}
 	}
 
 	@Override
@@ -235,6 +299,13 @@ public class Ai implements ModelObserver {
 		List<Stroke> streetStrokes = generateAllStreetStrokes();
 		sortStrokeList(streetStrokes, initStrategies);
 		streetStrokes.get(0).execute(ca);
+	}
+
+
+	@Override
+	public void eventMatchEnd(long winnerID) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

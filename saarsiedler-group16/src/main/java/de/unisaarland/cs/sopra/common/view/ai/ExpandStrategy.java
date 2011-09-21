@@ -6,19 +6,19 @@ import java.util.Set;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.FieldType;
+import de.unisaarland.cs.sopra.common.model.HarborType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 
-public class InitializeStrategy extends Strategy {
-	
-	//private Set<Resource> playersResources = new HashSet<Resource>();
-	
-	public InitializeStrategy(ModelReader mr) {
+public class ExpandStrategy extends Strategy {
+
+	public ExpandStrategy(ModelReader mr) {
 		super(mr);
+		// TODO Auto-generated constructor stub
 	}
-	
+
 	
 	public boolean evaluates(Stroke s){
 		switch(s.getType()){
@@ -31,7 +31,7 @@ public class InitializeStrategy extends Strategy {
 		case BUILD_VILLAGE:
 			return true;
 		case BUILD_TOWN:
-			return false;
+			return true;
 		case BUILD_CATAPULT:
 			return false;
 		case BUILD_STREET:
@@ -44,13 +44,17 @@ public class InitializeStrategy extends Strategy {
 			return false;
 		}
 	}
+
+
 	@Override
 	public double evaluate(AttackCatapult stroke) {
+		
 		return 0;
 	}
 
 	@Override
 	public double evaluate(AttackSettlement stroke) {
+	
 		return 0;
 	}
 
@@ -59,6 +63,7 @@ public class InitializeStrategy extends Strategy {
 		double intersectionValue= 0.0;
 		double resourceValue= 0.0;
 		double numberValue= 0.0;
+		double harborValue = 0.0;
 		int n = 0;
 		 Intersection location = stroke.getDestination();
 		 Set<Field> fields = mr.getFieldsFromIntersection(location);
@@ -109,22 +114,45 @@ public class InitializeStrategy extends Strategy {
 				resourceValue = resourceValue + 0.2333;
 			} else if (type == FieldType.MOUNTAINS) {
 				if (playerFields.contains(FieldType.MOUNTAINS)) {
-					resourceValue = resourceValue + 0.1167;
+					resourceValue = resourceValue + 0.0584;
 				}
-				resourceValue = resourceValue + 0.2333;
+				resourceValue = resourceValue + 0.1167;
 			}
 		}
-		 intersectionValue = resourceValue + numberValue;
+		 Set<Path> neighbourPaths = mr.getPathsFromIntersection(location);
+		 for (Path p : neighbourPaths){
+			 Set<HarborType> playersHarbors = mr.getHarborTypes(mr.getMe());
+			 if (p.getHarborType() != null && !(playersHarbors.contains(p.getHarborType()))){
+				 harborValue = 0.2333;
+			 }
+		 }
+		 intersectionValue = resourceValue + numberValue + harborValue;
 		return intersectionValue;
 	}
 
 	@Override
 	public double evaluate(BuildTown stroke) {
-		return 0;
+		double townValue = 0.0;
+		double resourceValue = 0.0; 
+		double villagesFactor = 0.8;
+		Intersection i = stroke.getDestination();
+		Set<Field> neighbourFields = mr.getFieldsFromIntersection(i);
+		for (Field f: neighbourFields){
+			if (!f.hasRobber()) {
+				if (f.getNumber() != -1) 
+					resourceValue = resourceValue + 0.3333;
+			}
+		}
+		if (mr.getSettlements(mr.getMe(), BuildingType.Village).size()
+				< mr.getMaxBuilding(BuildingType.Village))
+		townValue = resourceValue * villagesFactor;
+		return townValue;
+		
 	}
 
 	@Override
 	public double evaluate(BuildCatapult stroke) {
+
 		return 0;
 	}
 
@@ -154,18 +182,19 @@ public class InitializeStrategy extends Strategy {
 
 	@Override
 	public double evaluate(MoveCatapult stroke) {
+	
 		return 0;
 	}
-
 
 	@Override
 	public double evaluate(MoveRobber stroke) {
+	
 		return 0;
 	}
 
-
 	@Override
 	public double evaluate(ReturnResources stroke) {
+	
 		return 0;
 	}
 

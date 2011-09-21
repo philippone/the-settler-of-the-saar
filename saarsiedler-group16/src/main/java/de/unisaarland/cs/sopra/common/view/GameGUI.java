@@ -117,6 +117,7 @@ public class GameGUI extends View implements Runnable{
 	private int[] town;
 	private int[] catapult;
 	private int[] road;
+	List<List<Path>> longestroad;
 	
 	private Clickable claimLongestRoad;
 	private Clickable claimVictory;
@@ -201,7 +202,7 @@ public class GameGUI extends View implements Runnable{
 		}
 		
 		int i = 0;
-		for (Player act :modelReader.getTableOrder()) {
+		for (Player act : modelReader.getTableOrder()) {
 			this.village[i] = modelReader.getSettlements(act, BuildingType.Village).size();
 			this.town[i] = modelReader.getSettlements(act, BuildingType.Town).size();
 			this.catapult[i] = modelReader.getCatapults(act).size();
@@ -229,7 +230,6 @@ public class GameGUI extends View implements Runnable{
 	
 	private void reinitiateUI() {
 		Player me = modelReader.getMe();
-		List<List<Path>> lr = modelReader.calculateLongestRoads(me);
 		if (modelReader.affordableSettlements(BuildingType.Village) > 0 && (modelReader.getSettlements(me, BuildingType.Village).size()!=modelReader.getMaxBuilding(BuildingType.Village))) 
 			buildVillage.setActive(true);
 		if (modelReader.affordableSettlements(BuildingType.Town) > 0 && (modelReader.getSettlements(me, BuildingType.Town).size()!=modelReader.getMaxBuilding(BuildingType.Town))) 
@@ -238,7 +238,7 @@ public class GameGUI extends View implements Runnable{
 			buildCatapult.setActive(true);
 		if (modelReader.affordableStreets() > 0 && modelReader.buildableStreetPaths(me).size()!=0) 
 			buildStreet.setActive(true);
-		if (!lr.isEmpty() && lr.get(0).size() > (modelReader.getLongestClaimedRoad() != null ? modelReader.getLongestClaimedRoad().size() : 4)  )
+		if (longestroad != null && !longestroad.isEmpty() && longestroad.get(0).size() > (modelReader.getLongestClaimedRoad() != null ? modelReader.getLongestClaimedRoad().size() : 4)  )
 			claimLongestRoad.setActive(true);
 		if (modelReader.getCurrentVictoryPoints(me) >= modelReader.getMaxVictoryPoints())
 			claimVictory.setActive(true);
@@ -919,8 +919,10 @@ public class GameGUI extends View implements Runnable{
 
 	   GL11.glPushMatrix();
 	   GL11.glTranslatef(xOffset+xOffsetUI, yOffsetUI, zOffsetUI);
-	   uiFont20.drawString(640, 75, "Round "+modelReader.getRound());
-	   uiFont20.drawString(640, 100, ""+ lastNumberDiced + " was diced");
+	   if (modelReader.getRound() != 0)
+		   uiFont20.drawString(640, 75, "Round "+modelReader.getRound());
+	   if (lastNumberDiced != 0)
+		   uiFont20.drawString(640, 100, ""+ lastNumberDiced + " was diced");
 	   uiFont20.drawString(640, 125, "It's "+ getName(modelReader.getCurrentPlayer()) + "'s turn");
 	   uiFont20.drawString(640, 150, console4);
 	   uiFont20.drawString(640, 175, console5);
@@ -955,9 +957,13 @@ public class GameGUI extends View implements Runnable{
 	@Override
 	public void updatePath(Path path) {
 		int i = 0;
+		if (!observer && longestroad != null && !longestroad.isEmpty() && longestroad.get(0).size() > (modelReader.getLongestClaimedRoad() != null ? modelReader.getLongestClaimedRoad().size() : 4)  )
+			claimLongestRoad.setActive(true);
 		for (Player act : modelReader.getTableOrder()) {
 			List<List<Path>> streets = modelReader.calculateLongestRoads(act);
 			this.road[i++] = streets.size() > 0 ? streets.get(0).size() : 0;
+			if (act == modelReader.getMe())
+				longestroad = streets;
 		}
 	}
 
@@ -1039,9 +1045,11 @@ public class GameGUI extends View implements Runnable{
 
 	@Override
 	public void eventTrade(ResourcePackage resourcePackage) {
+		if (!observer) {
 		boolean decision = Client.incomingTradeOffer(modelReader.getResources().copy(),resourcePackage);
 		respondTrade.setDecision(decision);
 		controllerAdapter.addGuiEvent(respondTrade);
+		}
 	}
 
 	@Override
@@ -1052,6 +1060,9 @@ public class GameGUI extends View implements Runnable{
 		}
 		else {
 			deactivateUI();
+		}
+		if (!(selectionMode == ROBBER_SELECT || selectionMode == ROBBER_PLACE || selectionMode == ROBBER_PLAYER_SELECT)) {
+			console4 = "";
 		}
 		this.lastNumberDiced = number;
 	}
@@ -1071,47 +1082,34 @@ public class GameGUI extends View implements Runnable{
 	
 	@Override
 	public void run() {
-		init();
 		try {
-			Display.makeCurrent();
-		} catch (LWJGLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		try {
+			init();
 			barrier.await();
-		} catch (Exception e) {e.printStackTrace();} 
-		
-	    boolean finished = false;
-		while (!finished) {
-			  
-			  Display.update();
-		      // Always call Window.update(), all the time - it does some behind the
-		      // scenes work, and also displays the rendered output
-			  handleInput();
-			  render();
-		      // Check for close requests
-		      if (Display.isCloseRequested()) {
-			  finished = true;
-		      } 
-		      else if (Display.isActive()) {
-		          render();
-		          Display.sync(60);
-		        } 
-		      // The window is not in the foreground, so we can allow other stuff to run and
-		      // infrequently update
-		      else {
-		        try {
-		          Thread.sleep(100);
-		        } catch (InterruptedException e) {e.printStackTrace();}
-		      }
-		      if (Display.isVisible() || Display.isDirty()) {
-		          render();
-		      }
-		}
-		Display.destroy();
-		System.exit(0);
+		    boolean finished = false;
+			while (!finished) {
+				  Display.update();
+				  handleInput();
+				  render();
+			      if (Display.isCloseRequested()) {
+			    	  finished = true;
+			      } 
+			      else if (Display.isActive()) {
+			          render();
+			          Display.sync(60);
+			      } 
+			      else {
+			    	  Thread.sleep(100);
+			      }
+			      if (Display.isVisible() || Display.isDirty()) {
+			          render();
+			      }
+			}
+			Display.destroy();
+			controllerAdapter.leaveMatch();
+			Client.backToLobby();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
 	}
 		
 
@@ -1427,14 +1425,15 @@ public class GameGUI extends View implements Runnable{
 	}
 	
 
-	private void handleInput() {
+	private void handleInput() throws InterruptedException {
+		int INPUT_WAIT_TIME = 250;
 		int mx = Mouse.getX();
 		int my = Mouse.getY();
 		float oglx = mx*screenToOpenGLx(zOffsetUI)+25;
 		float ogly = (windowHeight-my)*screenToOpenGLy(zOffsetUI)+380;
 		
-		if (Mouse.isButtonDown(0) && System.currentTimeMillis() - lastinputcheck > 500 ) {
-			this.lastinputcheck = System.currentTimeMillis();
+		if (Mouse.isButtonDown(0) && System.currentTimeMillis() - lastinputcheck > INPUT_WAIT_TIME ) {
+			lastinputcheck = System.currentTimeMillis();
 			if (!(oglx > xOffsetUI && oglx < xOffsetUI+1281 && ogly > yOffsetUI && ogly < yOffsetUI+240)) {
 				switch (selectionMode) {
 					case NONE:
@@ -1496,17 +1495,14 @@ public class GameGUI extends View implements Runnable{
 						Intersection village = getMouseIntersection();
 						if (village != null && selectionLocation.contains(Model.getLocation(village))) {
 							buildVillage.setIntersection(village);
+							controllerAdapter.addGuiEvent(buildVillage);
 							selectionMode = NONE;
 							console4 = "";
 							if (init) {
 								buildStreet.setActive(true);
 								buildVillage.setActive(false);
 								console4 = (modelReader.getInitVillages()-modelReader.getSettlements(modelReader.getMe(), BuildingType.Village).size()-1) + " initial villages left";
-								selectionLocation = Model.getLocationListPath(modelReader.buildableStreetPaths(modelReader.getMe()));
-								if (selectionLocation.size() != 0)
-									selectionMode = STREET;
 							}
-							controllerAdapter.addGuiEvent(buildVillage);
 						}
 						break;
 					case TOWN:
@@ -1528,6 +1524,14 @@ public class GameGUI extends View implements Runnable{
 						}
 						break;
 					case CATAPULT_ACTION_DST:
+						Intersection destInter = getMouseIntersection();
+						if (destInter != null && selectionLocation3.contains(Model.getLocation(destInter))) {
+							catapultAction.setIntersection(destInter);
+							selectionMode = NONE;
+							controllerAdapter.addGuiEvent(catapultAction);
+							break;
+						}
+						
 						Path destPath = getMousePath();
 						if (destPath == catapultAction.getPath()) {
 							selectionMode = NONE;
@@ -1542,17 +1546,9 @@ public class GameGUI extends View implements Runnable{
 								selectionMode = NONE;
 						}
 						else {
-							Intersection destInter = getMouseIntersection();
-							if (destInter != null && selectionLocation3.contains(Model.getLocation(destInter))) {
-								catapultAction.setIntersection(destInter);
-								selectionMode = NONE;
-								controllerAdapter.addGuiEvent(catapultAction);
-							}
-							else if (destPath != null && (selectionLocation.contains(Model.getLocation(destPath)) || selectionLocation2.contains(Model.getLocation(destPath)))) {
-								catapultAction.setPath2(destPath);
-								selectionMode = NONE;
-								controllerAdapter.addGuiEvent(catapultAction);
-							}
+							catapultAction.setPath2(destPath);
+							selectionMode = NONE;
+							controllerAdapter.addGuiEvent(catapultAction);
 						}
 						break;	
 					case STREET:
@@ -1569,15 +1565,31 @@ public class GameGUI extends View implements Runnable{
 								console4 = "";
 							controllerAdapter.addGuiEvent(buildStreet);
 						}
-						//if init dont change console4 else ""
-						//if init set init to false
-						break; //TODO implement it!
+						break; 
 				}
 			}
 			for (Clickable c : Clickable.executeClicks(mx*screenToOpenGLx(zOffsetUI)+25, (windowHeight-my)*screenToOpenGLy(zOffsetUI)+380)) {
 				c.executeUI();
 			}
 		}
+
+		if (buildStreet.isActive() && Keyboard.isKeyDown(Keyboard.KEY_1) && System.currentTimeMillis() - lastinputcheck > INPUT_WAIT_TIME) {
+			buildStreet.executeUI();
+			lastinputcheck = System.currentTimeMillis();
+		}
+		else if (buildVillage.isActive() && Keyboard.isKeyDown(Keyboard.KEY_2) && System.currentTimeMillis() - lastinputcheck > INPUT_WAIT_TIME) {
+			buildVillage.executeUI();
+			lastinputcheck = System.currentTimeMillis();
+		}
+		else if (buildTown.isActive() && Keyboard.isKeyDown(Keyboard.KEY_3) && System.currentTimeMillis() - lastinputcheck > INPUT_WAIT_TIME) {
+			buildTown.executeUI();
+			lastinputcheck = System.currentTimeMillis();
+		}
+		else if (buildCatapult.isActive() && Keyboard.isKeyDown(Keyboard.KEY_4) && System.currentTimeMillis() - lastinputcheck > INPUT_WAIT_TIME) {
+			buildCatapult.executeUI();
+			lastinputcheck = System.currentTimeMillis();
+		}
+	
 		
 		
 		if (Mouse.isInsideWindow()) {
@@ -1995,9 +2007,6 @@ public class GameGUI extends View implements Runnable{
 	public void initTurn() {
 		init = true;
 		buildVillage.setActive(true);
-		selectionLocation = Model.getLocationListIntersection(modelReader.buildableVillageIntersections(modelReader.getMe()));
-		if (selectionLocation.size() != 0)
-			selectionMode = VILLAGE;
 	}
 
 	@Override

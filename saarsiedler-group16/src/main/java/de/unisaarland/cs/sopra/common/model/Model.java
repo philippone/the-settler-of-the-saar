@@ -604,13 +604,27 @@ public class Model implements ModelReader, ModelWriter {
 		Set<Path> res = new HashSet<Path>();
 		while (it.hasNext()) {
 			Intersection inter = it.next();
-			if (inter.hasOwner()
-					&& inter.getBuildingType().equals(BuildingType.Town)
+			if (inter.hasOwner() && inter.getBuildingType().equals(BuildingType.Town)
 					&& inter.getOwner() == player) {
-				res.addAll(getPathsFromIntersection(inter));
+				for (Path p : getPathsFromIntersection(inter)) {
+					if (hasLand(p)) {
+						res.add(p);
+					}
+				}
 			}
 		}
 		return res;
+	}
+	
+	private boolean hasLand(Path path) {
+		boolean hasland = false;
+		for (Field f: getFieldsFromPath(path)) {
+			if (!(f.getFieldType().equals(FieldType.WATER))) {
+				hasland = true;
+				break;
+			}
+		}
+		return hasland;
 	}
 
 	private int affordableThings(ResourcePackage price) {
@@ -717,50 +731,17 @@ public class Model implements ModelReader, ModelWriter {
 		Set<Path> sp1 = getPathsFromPath(path);
 		for (Path p1 : sp1) {
 			if (p1.hasCatapult() && p1.getCatapultOwner() != getMe()) {
-				Set<Intersection> iset1 = getIntersectionsFromPath(path);
-				Set<Intersection> iset2 = getIntersectionsFromPath(p1);
-				Intersection interBetweenPaths = null;
-				// finds the intersection between both paths
-				for (Intersection inter1 : iset1) {
-					for (Intersection inter2 : iset2) {
-						if (inter1 == inter2)
-							interBetweenPaths = inter1;
+				if (hasLand(p1)) {
+					Intersection interBetweenPaths = getIntersectionBetweenPaths(path, p1);
+					if (!interBetweenPaths.hasOwner() || interBetweenPaths.getOwner() == getMe()) {
+						attackableCatapults.add(p1);
 					}
 				}
-				if (!interBetweenPaths.hasOwner() || interBetweenPaths.getOwner() == getMe()) {
-					attackableCatapults.add(p1);
-				}
-				
 			}
 		}
 		return attackableCatapults;
 	}
 	
-	public Set<Path> catapultMovePaths(Path path){
-		Set<Path> attackableCatapults = new HashSet<Path>();
-		Set<Path> sp1 = getPathsFromPath(path);
-		for (Path p1 : sp1) {
-			if (!p1.hasCatapult()) {
-				Set<Intersection> iset1 = getIntersectionsFromPath(path);
-				Set<Intersection> iset2 = getIntersectionsFromPath(p1);
-				Intersection interBetweenPaths = null;
-				// finds the intersection between both paths
-				for (Intersection inter1 : iset1) {
-					for (Intersection inter2 : iset2) {
-						if (inter1 == inter2)
-							interBetweenPaths = inter1;
-					}
-				}
-				if (!interBetweenPaths.hasOwner() || interBetweenPaths.getOwner() == getMe()) {
-					attackableCatapults.add(p1);
-				}
-				
-			}
-		}
-		return attackableCatapults;
-	}
-	
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -778,24 +759,50 @@ public class Model implements ModelReader, ModelWriter {
 			Set<Path> sp1 = getPathsFromPath(p);
 			for (Path p1 : sp1) {
 				if (p1.hasCatapult() && p1.getCatapultOwner() != player) {
-					Set<Intersection> iset1 = getIntersectionsFromPath(p);
-					Set<Intersection> iset2 = getIntersectionsFromPath(p1);
-					Intersection interBetweenPaths = null;
-					// finds the intersection between both paths
-					for (Intersection inter1 : iset1) {
-						for (Intersection inter2 : iset2) {
-							if (inter1 == inter2)
-								interBetweenPaths = inter1;
+					if (hasLand(p1)) {
+						Intersection interBetweenPaths = getIntersectionBetweenPaths(p, p1);
+						if (!interBetweenPaths.hasOwner() || interBetweenPaths.getOwner() == player) {
+							attackableCatapults.add(p1);
 						}
 					}
-					if (!interBetweenPaths.hasOwner() || interBetweenPaths.getOwner() == player) {
-						attackableCatapults.add(p1);
-					}
-					
 				}
 			}
 		}
 		return attackableCatapults;
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.unisaarland.cs.sopra.common.model.ModelReader#catapultMovePaths(de.unisaarland.cs.sopra.common.model.Path)
+	 */
+	public Set<Path> catapultMovePaths(Path path){
+		Set<Path> attackableCatapults = new HashSet<Path>();
+		Set<Path> sp1 = getPathsFromPath(path);
+		for (Path p1 : sp1) {
+			if (!p1.hasCatapult()) {
+				if (hasLand(p1)) {
+					Intersection interBetweenPaths = getIntersectionBetweenPaths(path, p1);
+					if (!interBetweenPaths.hasOwner() || interBetweenPaths.getOwner() == getMe()) {
+						attackableCatapults.add(p1);
+					}
+				}
+			}
+		}
+		return attackableCatapults;
+	}
+	
+	private Intersection getIntersectionBetweenPaths(Path p1, Path p2) {
+		Set<Intersection> iset1 = getIntersectionsFromPath(p1);
+		Set<Intersection> iset2 = getIntersectionsFromPath(p2);
+		Intersection interBetweenPaths = null;
+		// finds the intersection between both paths
+		for (Intersection inter1 : iset1) {
+			for (Intersection inter2 : iset2) {
+				if (inter1 == inter2)
+					interBetweenPaths = inter1;
+					break;
+			}
+		}
+		return interBetweenPaths;
 	}
 
 	/*
@@ -1390,13 +1397,16 @@ public class Model implements ModelReader, ModelWriter {
 		Path dest = getPath(destination);
 		if (dest.hasStreet())	throw new IllegalArgumentException(	"Strasse bereits vorhanden und gehört: "+ dest.getStreetOwner() + " und nicht: "+ getCurrentPlayer());
 		if (getRound() != 0) {
-			if (getCurrentPlayer() == me){
+			if (getCurrentPlayer() == me && round != 0){
 					if(getCurrentPlayer().checkResourcesSufficient(Street.getPrice())) {
 						me.modifyResources(Street.getPrice());
 						Set<Path> buildableStreets = buildableStreetPaths(getCurrentPlayer());
 						if (!buildableStreets.contains(dest))throw new IllegalStateException("Keine Nachbarstrassen oder WasserFeld");
 					}else{
 						throw new IllegalStateException("not enough resources");
+					}
+					for (ModelObserver ob : modelObserver) {
+						ob.updateResources();
 					}
 			}
 		} else {
@@ -1413,7 +1423,6 @@ public class Model implements ModelReader, ModelWriter {
 		}
 		getPath(destination).createStreet(getCurrentPlayer());
 		for (ModelObserver ob : modelObserver) {
-			ob.updateResources();
 			ob.updatePath(dest);
 		}
 		if (round == 0) {
@@ -1437,8 +1446,9 @@ public class Model implements ModelReader, ModelWriter {
 					java.util.Collections.reverse(players);
 					reversedPlayersList = false;
 				}
+				if (getCurrentPlayer() == me)
+					Controller.requestEventPull = true;
 			}
-			Controller.requestSingleEventPull = true;
 		}
 	}
 
@@ -1629,7 +1639,7 @@ public class Model implements ModelReader, ModelWriter {
 			path_source.removeCatapult();
 		}
 
-		if (!(owner.checkResourcesSufficient(Catapult.getAttackcatapultprice())))
+		if ((!(owner.checkResourcesSufficient(Catapult.getAttackcatapultprice()))) && owner == me)
 			throw new IllegalStateException(
 					"not enough money on the bankaccount!");
 		owner.modifyResources(Catapult.getAttackcatapultprice());
@@ -1895,7 +1905,10 @@ public class Model implements ModelReader, ModelWriter {
 
 	@Override
 	public boolean isOurTurn() {
-		return me == getCurrentPlayer();
+		if (me == null)
+			return false;
+		else
+			return me == getCurrentPlayer();
 	}
 
 	@Override
