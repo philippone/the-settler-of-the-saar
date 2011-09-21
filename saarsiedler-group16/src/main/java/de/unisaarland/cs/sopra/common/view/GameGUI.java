@@ -202,7 +202,7 @@ public class GameGUI extends View implements Runnable{
 		}
 		
 		int i = 0;
-		for (Player act :modelReader.getTableOrder()) {
+		for (Player act : modelReader.getTableOrder()) {
 			this.village[i] = modelReader.getSettlements(act, BuildingType.Village).size();
 			this.town[i] = modelReader.getSettlements(act, BuildingType.Town).size();
 			this.catapult[i] = modelReader.getCatapults(act).size();
@@ -1058,6 +1058,9 @@ public class GameGUI extends View implements Runnable{
 		}
 		else {
 			deactivateUI();
+		}
+		if (!(selectionMode == ROBBER_SELECT || selectionMode == ROBBER_PLACE || selectionMode == ROBBER_PLAYER_SELECT)) {
+			console4 = "";
 		}
 		this.lastNumberDiced = number;
 	}

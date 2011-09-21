@@ -108,10 +108,10 @@ public class Controller implements Runnable {
 			// modelObserver.MatchEnd
 			break;
 		case NEW_ROUND:
+			requestEventPull = false;
 			byte num = ((GameEvent.NewRound) gameEvent).getSpotSum();
 			System.out.println(num);
 			modelWriter.newRound(num);
-			requestEventPull = false;
 			break;
 		case PLAYER_LEFT:
 			long id = ((GameEvent.PlayerLeft) gameEvent).getClientId();
