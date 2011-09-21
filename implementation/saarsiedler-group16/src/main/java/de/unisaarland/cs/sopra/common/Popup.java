@@ -935,8 +935,7 @@ public class Popup extends JFrame {
 		contentPane.add(longestRoadPanel, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 			new Insets(0, 0, 0, 0), 0, 0));
-		pack();
-		setLocationRelativeTo(getOwner());
+		setSize(370, 285);
 		// JFormDesigner - End of component initialization  //GEN-END:initComponents
 	}
 
