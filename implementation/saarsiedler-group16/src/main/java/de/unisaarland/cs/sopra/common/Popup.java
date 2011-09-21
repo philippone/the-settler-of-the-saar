@@ -153,6 +153,8 @@ public class Popup extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				claimedRoad=selectedRoad;
 				selectedRoad=null;
+				reset();
+				setVisible(false);
 			}
 		});
 		cancelButton2.addActionListener(new ActionListener() {
@@ -160,6 +162,8 @@ public class Popup extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				selectedRoad=null;
+				reset();
+				setVisible(false);
 			}
 		});
 //		longestRoadBox.setSelectedIndex(0); //to avoid initial not selected roads

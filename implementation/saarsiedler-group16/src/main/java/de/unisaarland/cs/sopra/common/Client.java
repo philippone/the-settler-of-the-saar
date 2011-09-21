@@ -523,18 +523,12 @@ public class Client {
 		popup.returnPackPanel.setVisible(false);
 		popup.incomingTradePanel.setVisible(false);
 		popup.longestRoadPanel.setVisible(true);
+		popup.setVisible(true);
 		for (int i = 0; i < roads.size(); i++) {
 			popup.longestRoadBox.addItem("Road "+i);
 		}
 		popup.longestRoadBox.setSelectedIndex(0); //to avoid initial not selected roads
 		popup.setRoadList(roads, selected, ret);
-		while(selected!=null){
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {e.printStackTrace();}
-		}
-		popup.reset();
-		popup.setVisible(false);
 	}
 	
 	public static void backToLobby(){
