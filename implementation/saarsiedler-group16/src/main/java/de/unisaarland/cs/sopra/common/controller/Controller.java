@@ -1,3 +1,4 @@
+
 package de.unisaarland.cs.sopra.common.controller;
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ import de.unisaarland.cs.st.saarsiedler.comm.Edge;
 import de.unisaarland.cs.st.saarsiedler.comm.GameEvent;
 import de.unisaarland.cs.st.saarsiedler.comm.Intersection;
 import de.unisaarland.cs.st.saarsiedler.comm.results.AttackResult;
+
 
 public class Controller implements Runnable {
 
@@ -306,7 +308,7 @@ public class Controller implements Runnable {
 		int y1 = destinationField.getY();
 		int x1 = destinationField.getX();
 		//TODO BREAKPOINT
-		System.out.println(victimPlayer);
+		System.out.println("Victimplayer: " + victimPlayer);
 		de.unisaarland.cs.st.saarsiedler.comm.Resource r1 = connection
 				.moveRobber(y, x, y1, x1, victimPlayer);
 		r = Resource.convert(r1);
@@ -383,12 +385,10 @@ public class Controller implements Runnable {
 						handleEvent(e);
 					}
 				}
-				else {
-					Iterator<Clickable> iter = guiEvents.iterator();
-					while (iter.hasNext()) {
-						iter.next().executeController();
-						iter.remove();
-					}
+				Iterator<Clickable> iter = guiEvents.iterator();
+				while (iter.hasNext()) {
+					iter.next().executeController();
+					iter.remove();
 				}
 			}
 		} catch (Exception e) {
@@ -401,3 +401,4 @@ public class Controller implements Runnable {
 	}
 
 }
+

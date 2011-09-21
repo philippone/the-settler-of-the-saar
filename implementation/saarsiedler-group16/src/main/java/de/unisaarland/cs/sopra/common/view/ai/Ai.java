@@ -1,3 +1,4 @@
+
 package de.unisaarland.cs.sopra.common.view.ai;
 
 import java.io.IOException;
@@ -41,12 +42,14 @@ public class Ai implements ModelObserver {
 		this.generalStrategies.add(new ExpandStrategy(mr));
 		this.generalStrategies.add(new AttackStrategy(mr));
 		this.generalStrategies.add(new DeffenceStrategy(mr));
+		this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
 		this.returnResourcesStrategies = new HashSet<Strategy>();
 		this.returnResourcesStrategies.add(new ReturnResourcesStrategy(mr));
 		this.initStrategies = new HashSet<Strategy>();
 		this.initStrategies.add(new InitializeStrategy(mr));
+		this.initStrategies.add(new InitNumStrategy(mr));
 		mr.addModelObserver(this);
 	}
 	
@@ -106,6 +109,7 @@ public class Ai implements ModelObserver {
 				execute = false;
 			}
 			if (execute) {
+				System.out.println(bestStroke);
 				bestStroke.execute(ca);
 				claimVictoryIfPossible();
 			}
@@ -319,6 +323,6 @@ public class Ai implements ModelObserver {
 		if (mr.getPlayerMap().get(winnerID) == mr.getMe())
 			System.out.println("You have won the macht! =)");
 		else System.out.println("You do not have won the match! =(");
-	}
+	} 
 
 }

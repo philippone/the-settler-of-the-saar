@@ -21,5 +21,10 @@ public class ReturnResources extends Stroke {
 	public void execute(ControllerAdapter c) {
 		c.returnResources(resources);
 	}
+	
+	@Override
+	public String toString(){
+		return String.format("%s: %s\n", super.toString(), resources);
+	}
 
 }

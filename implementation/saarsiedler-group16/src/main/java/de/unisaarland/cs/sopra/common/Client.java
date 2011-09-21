@@ -1,3 +1,4 @@
+
 package de.unisaarland.cs.sopra.common;
 
 import java.io.File;

@@ -28,5 +28,10 @@ public class AttackSettlement extends Stroke {
 	public Intersection getDestination() {
 		return destination;
 	}
+	
+	@Override
+	public String toString(){
+		return String.format("%s: Source: %s; Destination: %s\n", super.toString(), source.toString(), destination.toString());
+	}
 
 }
