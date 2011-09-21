@@ -764,9 +764,8 @@ public class GameGUI extends View implements Runnable{
 				}
 				@Override
 				public void executeController() {
-					controllerAdapter.offerTrade(getRes());
+					long player = controllerAdapter.offerTrade(getRes());
 					String name = "Nobody";
-					long player = controllerAdapter.respondTrade(this.isDecision());
 					if (player != -1 && player != -2) {
 						name = playerNames.get(modelReader.getPlayerMap().get(player));
 					}
