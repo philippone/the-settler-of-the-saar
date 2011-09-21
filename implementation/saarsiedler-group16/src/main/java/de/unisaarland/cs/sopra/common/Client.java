@@ -39,6 +39,7 @@ import de.unisaarland.cs.st.saarsiedler.comm.GameEvent.EventType;
 import de.unisaarland.cs.st.saarsiedler.comm.GameEvent.MatchStart;
 import de.unisaarland.cs.st.saarsiedler.comm.GameEvent.PlayerLeft;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
+import de.unisaarland.cs.st.saarsiedler.comm.Timeouts;
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 import de.unisaarland.cs.st.saarsiedler.comm.results.ChangeReadyResult;
 import de.unisaarland.cs.st.saarsiedler.comm.results.JoinResult;
@@ -192,7 +193,13 @@ public class Client {
 				plToNames.put(iterPl.next(), connection.getPlayerInfo(l).getName());
 			} catch (IOException e) {e.printStackTrace();}
 		}
-		return new GameGUI(model, new ControllerAdapter(controller, model), plToNames , matchInfo.getTitle(), AIisPlaying, barrier, connection.getTimeouts());
+		Timeouts timeout=null;
+		try {
+			 timeout = connection.getTimeouts();
+			} catch (IOException e) {e.printStackTrace();
+		}
+		return new GameGUI(model, new ControllerAdapter(controller, model), plToNames , matchInfo.getTitle(), AIisPlaying, barrier, timeout );
+		
 	}
 	
 	public static void changeSettings(DisplayMode mode, boolean fullscreen,PlayerColors playerColor, String name){
