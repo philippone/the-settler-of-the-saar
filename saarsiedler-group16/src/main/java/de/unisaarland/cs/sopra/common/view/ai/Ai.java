@@ -39,7 +39,7 @@ public class Ai implements ModelObserver {
 		this.ca = ca;
 		this.generalStrategies = new HashSet<Strategy>();
 		this.generalStrategies.add(new ExpandStrategy(mr));
-		this.generalStrategies.add(new DeffenceStrategy(mr));
+		//this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
 		this.returnResourcesStrategies = new HashSet<Strategy>();
@@ -97,7 +97,7 @@ public class Ai implements ModelObserver {
 	public void execute(List<Stroke> sortedStroke){
 		if (sortedStroke.size() > 0){
 			//TODO remove the random crap
-			Collections.shuffle(sortedStroke);
+			//Collections.shuffle(sortedStroke);
 			Stroke bestStroke = sortedStroke.get(0);
 			if (mr.getMe().checkResourcesSufficient(bestStroke.getPrice())){
 				bestStroke.execute(ca);
