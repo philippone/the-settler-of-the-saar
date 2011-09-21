@@ -134,7 +134,7 @@ public class ExpandStrategy extends Strategy {
 	public double evaluate(BuildTown stroke) {
 		double townValue = 0.0;
 		double resourceValue = 0.0; 
-		double earlyGameStageFactor = 0.8;
+		double earlyGameStageFactor = 0.5;
 		Intersection i = stroke.getDestination();
 		Set<Field> neighbourFields = mr.getFieldsFromIntersection(i);
 		for (Field f: neighbourFields){
