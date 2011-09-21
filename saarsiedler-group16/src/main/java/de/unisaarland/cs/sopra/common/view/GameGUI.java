@@ -957,6 +957,8 @@ public class GameGUI extends View implements Runnable{
 	@Override
 	public void updatePath(Path path) {
 		int i = 0;
+		if (!observer && longestroad != null && !longestroad.isEmpty() && longestroad.get(0).size() > (modelReader.getLongestClaimedRoad() != null ? modelReader.getLongestClaimedRoad().size() : 4)  )
+			claimLongestRoad.setActive(true);
 		for (Player act : modelReader.getTableOrder()) {
 			List<List<Path>> streets = modelReader.calculateLongestRoads(act);
 			this.road[i++] = streets.size() > 0 ? streets.get(0).size() : 0;
