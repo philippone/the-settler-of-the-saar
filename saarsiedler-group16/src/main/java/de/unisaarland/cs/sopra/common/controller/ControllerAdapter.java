@@ -9,6 +9,7 @@ import java.util.Set;
 
 import de.unisaarland.cs.sopra.common.model.*;
 import de.unisaarland.cs.sopra.common.view.Clickable;
+import de.unisaarland.cs.st.saarsiedler.comm.results.AttackResult;
 
 public class ControllerAdapter {
 
@@ -33,12 +34,12 @@ public class ControllerAdapter {
 	 * @throws IllegalArgumentException
 	 * @throws IOException
 	 */
-	public void attackSettlement(Path catapult, Intersection settlement) {
+	public AttackResult attackSettlement(Path catapult, Intersection settlement) {
 		Location l = Model.getLocation(catapult);
 		Location i = Model.getLocation(settlement);
 		try {
-			controller.attackSettlement(l, i);
-		} catch (Exception e) { e.printStackTrace(); }		
+			return controller.attackSettlement(l, i);
+		} catch (Exception e) { e.printStackTrace(); return null; }		
 	}
 	
 	/**
@@ -47,11 +48,11 @@ public class ControllerAdapter {
 	 * @throws IllegalArgumentException
 	 * @throws IOException
 	 */
-	public void buildCatapult(Path path) {
+	public boolean buildCatapult(Path path) {
 		Location l = Model.getLocation(path);
 		try {
-			controller.buildCatapult(l);
-		} catch (Exception e) { e.printStackTrace(); }
+			return controller.buildCatapult(l);
+		} catch (Exception e) { e.printStackTrace(); return false; }
 	}
 	
 	/**
@@ -136,12 +137,12 @@ public class ControllerAdapter {
 	 * @throws IllegalArgumentException
 	 * @throws IOException
 	 */
-	public void moveCatapult(Path sourcePath, Path destinationPath) {
+	public boolean moveCatapult(Path sourcePath, Path destinationPath) {
 		Location l = Model.getLocation(sourcePath);
 		Location l2 = Model.getLocation(destinationPath);
 		try {
-			controller.moveCatapult(l, l2);
-		} catch (Exception e) { e.printStackTrace(); }
+			return controller.moveCatapult(l, l2);
+		} catch (Exception e) { e.printStackTrace(); return false;}
 	}
 	
 	/**
@@ -177,7 +178,7 @@ public class ControllerAdapter {
 	 * @throws IllegalStateException
 	 * @throws IOException
 	 */
-	public void offerTrade(ResourcePackage resourcePackage) {
+	public long offerTrade(ResourcePackage resourcePackage) {
 		// TODO: Ueberpruefe ob Handel so erlaubt (Verhaeltnisse)
 		int lumber = resourcePackage.getResource(LUMBER);
 		int brick =  resourcePackage.getResource(BRICK);
@@ -185,8 +186,8 @@ public class ControllerAdapter {
 		int grain =  resourcePackage.getResource(GRAIN);
 		int ore =   resourcePackage.getResource(ORE);
 		try {
-			controller.offerTrade(lumber, brick, wool, grain, ore);
-		} catch (Exception e) { e.printStackTrace(); }
+			return controller.offerTrade(lumber, brick, wool, grain, ore);
+		} catch (Exception e) { e.printStackTrace(); return -1;}
 	}
 	
 	/**
@@ -195,10 +196,10 @@ public class ControllerAdapter {
 	 * @throws IllegalArgumentException
 	 * @throws IOException
 	 */
-	public void respondTrade(boolean decision) {
+	public long respondTrade(boolean decision) {
 		try {
-			controller.respondTrade(decision);
-		} catch (Exception e) { e.printStackTrace(); }
+			return controller.respondTrade(decision);
+		} catch (Exception e) { e.printStackTrace(); return -1;}
 	}
 	
 	/**
