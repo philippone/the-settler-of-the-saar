@@ -118,21 +118,36 @@ public class AttackStrategy extends Strategy {
 		 Intersection location=stroke.getDestination();
 		 Set<Path> sp0=mr.getPathsFromIntersection(location);
 		 for (Path p0: sp0){
-			 Set<Path> sp1=mr.getPathsFromPath(p0);
-			 for (Path p1: sp1){
-			 	Set<Intersection> si=mr.getIntersectionsFromPath(p1);
-				for (Intersection i: si){
-					if (i.hasOwner() && i.getOwner()==mr.getMe() && i.getBuildingType()==BuildingType.Town)
-						return 0;
-					// Ok no need to build a town, we got one not so far that can create catapults
-					if (i.hasOwner() && i.getOwner()!=mr.getMe())
-						value=value+0.5;
-					// interesting there's targets
-				}
-				if (p1.hasCatapult() && p1.getCatapultOwner()!=mr.getMe())
-					value=value+0.5;
-				// Warning there's an ennemy catapult coming
-			 }
+			 	Set<Path> sp1=mr.getPathsFromPath(p0);
+			 	for (Path p1: sp1){
+			 		if (!sp0.contains(p1)){
+			 				Set<Intersection> si=mr.getIntersectionsFromPath(p1);
+			 				for (Intersection i: si){
+			 					if (i.hasOwner() && i.getOwner()==mr.getMe() && i.getBuildingType()==BuildingType.Town)
+			 						return 0;
+			 					// Ok no need to build a town, we got one not so far that can create catapults
+			 					if (i.hasOwner() && i.getOwner()!=mr.getMe())
+			 						value=value+0.6;
+			 					// interesting there's targets not so far
+			 				}
+			 				Set<Path> sp2=mr.getPathsFromPath(p1);
+			 				for(Path p2: sp2){
+			 					if(!sp1.contains(p2)){
+			 						si=mr.getIntersectionsFromPath(p2);
+			 						for (Intersection i: si){
+			 							if (i.hasOwner() && i.getOwner()!=mr.getMe())
+			 								value=value+0.3;
+			 								// there's targets a bit further
+			 					
+			 						}
+			 					}
+			 				}
+			 			if (p1.hasCatapult() && p1.getCatapultOwner()!=mr.getMe())
+			 				value=value+0.5;
+			 				// Warning there's an ennemy catapult coming
+			 		}
+			 	}
+			 
 		 }
 		 if (mr.getSettlements(mr.getMe(), BuildingType.Town).size()<1) value=value+0.5;
 		 return Math.min(value,1);
@@ -185,11 +200,11 @@ public class AttackStrategy extends Strategy {
 				 }
 			 } 
 		 }
-		 if (p0.hasCatapult() && p0.getCatapultOwner()!=mr.getMe() && !doesIHazAlreadyACatapultNotSoFar ) 
+		 if (p0.hasCatapult() && p0.getCatapultOwner()!=mr.getMe()) 
 			 targetingCatapultValue=targetingCatapultValue+0.3;
 		 pathValue=3*targetingCatapultValue+2*targetingTownValue+targetingVillageValue;
-		 if (mr.getCatapults(mr.getMe()).size()<1) pathValue=pathValue+0.6;
-		 // little bonus if we don't have any catapult yet
+		 if (mr.getCatapults(mr.getMe()).size()<1 && pathValue>0.3) pathValue=1;
+		 if (doesIHazAlreadyACatapultNotSoFar) pathValue=pathValue/2;
 		 return Math.min(pathValue,1);
 	}
 
@@ -203,14 +218,11 @@ public class AttackStrategy extends Strategy {
 	public double evaluate(MoveCatapult stroke) {
 		Path source=stroke.getSource();
 		Set<Intersection> si=mr.getIntersectionsFromPath(source);
-		for (Intersection i:si){
-			if (i.hasOwner() && i.getOwner()!=mr.getMe())
-				return 0;
-			// no need to move we got a target!
-		}
-		if (mr.attackableCatapults(source).size()>0) return 0;
+		if (mr.attackableSettlements(mr.getMe(), BuildingType.Town).size()>0)return 0;
+		if (mr.attackableSettlements(mr.getMe(), BuildingType.Village).size()>0)return 0;
+		if (mr.attackableCatapults(mr.getMe()).size()>0)return 0;
 		// no need to move we got a target!
-		// now let seek the next target
+		// if we don't, let seek the next target
 		Path destination=stroke.getDestination();
 		double value=0;
 		double targetingCatapultValue=0;
