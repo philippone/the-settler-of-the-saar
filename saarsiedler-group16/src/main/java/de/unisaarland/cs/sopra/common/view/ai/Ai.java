@@ -96,7 +96,7 @@ public class Ai implements ModelObserver {
 	public void execute(List<Stroke> sortedStroke){
 		if (sortedStroke.size() > 0){
 			//TODO remove the random crap
-			Collections.shuffle(sortedStroke);
+			//Collections.shuffle(sortedStroke);
 			Stroke bestStroke = sortedStroke.get(0);
 			if (mr.getMe().checkResourcesSufficient(bestStroke.getPrice())){
 				bestStroke.execute(ca);
