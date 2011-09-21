@@ -152,6 +152,7 @@ public class Popup extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				claimedRoad=selectedRoad;
+				selectedRoad=null;
 			}
 		});
 		cancelButton2.addActionListener(new ActionListener() {
