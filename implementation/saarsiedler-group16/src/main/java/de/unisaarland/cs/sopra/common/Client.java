@@ -55,7 +55,7 @@ public class Client {
 	private static Popup popup;
 	public static int acceptTrade;
 	private static DefaultTableModel gameTableModel;
-	private static DefaultTableModel playerTableModel;
+	private static PlayerTableModel playerTableModel;
 	public static boolean tradeAbort;
 	
 	public static void main(String[] args) throws UnknownHostException, IOException {
@@ -251,7 +251,9 @@ public class Client {
 	
 	public static  void setUpListUpdater(){
 		try {
-			Client.connection.registerMatchListUpdater(new GameListUpdater(gameTableModel,playerTableModel));	}catch(IOException e){throw new IllegalStateException("iwas mit Matchlistupdater faul!!!");}
+			Client.connection.registerMatchListUpdater(new GameListUpdater(gameTableModel,playerTableModel));	
+			Client.connection.registerMatchListUpdater(playerTableModel);
+		}catch(IOException e){throw new IllegalStateException("iwas mit Matchlistupdater faul!!!");}
 	
 	}
 	
@@ -292,7 +294,7 @@ public class Client {
 			}
 			table[i][1]= readyPlayers[i];
 		}		
-		playerTableModel=new DefaultTableModel( table ,new String[] {"Players", "ready-Status"});
+		playerTableModel= new PlayerTableModel();//new DefaultTableModel( table ,new String[] {"Players", "ready-Status"});
 		clientGUI.playerTable.setModel(playerTableModel);
 	}
 	
@@ -472,9 +474,7 @@ public class Client {
 		for (int i = 0; i < roads.size(); i++) {
 			popup.longestRoadBox.addItem("Road "+i);
 		}
-		popup.setRoadList(roads, selected, ret);
-		
-		
+		popup.setRoadList(roads, selected, ret);	
 	}
 	
 	public static void backToLobby(){
