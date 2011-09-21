@@ -890,6 +890,7 @@ public class GameGUI extends View implements Runnable{
 					Resource stolen = controllerAdapter.moveRobber(getField(), getField2(), getPlayer());
 					if (stolen != null)	
 						console4 = "You got: " +stolen;
+					reinitiateUI();
 				}
 			};
 			
