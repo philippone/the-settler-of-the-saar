@@ -517,18 +517,17 @@ public class Client {
 		if(acceptTrade>0)return true;
 		else return false;
 	}
-	public static void selectLongestRoad(List<List<Path>> roads){
+	public static void selectLongestRoad(){
 		popup.setTitle("Longest Road");
 		popup.tradePanel.setVisible(false);
 		popup.returnPackPanel.setVisible(false);
 		popup.incomingTradePanel.setVisible(false);
 		popup.longestRoadPanel.setVisible(true);
 		popup.setVisible(true);
-		for (int i = 0; i < roads.size(); i++) {
+		for (int i = 0; i < GameGUI.longestroad.size(); i++) {
 			popup.longestRoadBox.addItem("Road "+i);
 		}
 		popup.longestRoadBox.setSelectedIndex(0); //to avoid initial not selected roads
-		popup.setRoadList(roads);
 	}
 	
 	public static void backToLobby(){

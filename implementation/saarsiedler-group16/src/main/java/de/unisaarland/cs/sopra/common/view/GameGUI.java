@@ -85,7 +85,7 @@ public class GameGUI extends View implements Runnable{
 	private int[] town;
 	private int[] catapult;
 	private int[] road;
-	private List<List<Path>> longestroad;
+	public static List<List<Path>> longestroad;
 	public static List<Path> selected;
 	public static List<Path> ret;
 	
@@ -546,11 +546,9 @@ public class GameGUI extends View implements Runnable{
 		int i = 0;
 		
 		for (Player act : modelReader.getTableOrder()) {
-			
 			long time = System.currentTimeMillis();
 			List<List<Path>> streets = modelReader.calculateLongestRoads(act);
-			System.out.println(System.currentTimeMillis()-time);
-			
+			System.out.println("Time for calculating longest road: " + (System.currentTimeMillis()-time));
 			this.road[i++] = streets.size() > 0 ? streets.get(0).size() : 0;
 			if (act == modelReader.getMe())
 				longestroad = streets;
@@ -719,8 +717,9 @@ public class GameGUI extends View implements Runnable{
 				@Override
 				public void executeUI() {
 					deactivateUI();
+					ret = null;
 					selected = longestroad.get(0);
-					Client.selectLongestRoad(longestroad);
+					Client.selectLongestRoad();
 				}
 				@Override
 				public void executeController() {
@@ -1001,12 +1000,18 @@ public class GameGUI extends View implements Runnable{
 		float ogly = (windowHeight-my)*screenToOpenGLy(zOffsetUI)+380;
 		
 		//handle longestroad fenster eingabe
-		if (ret != null) {
+		if (ret != null && ret == selected) {
 			claimLongestRoad.setRoad(ret);
 			controllerAdapter.addGuiEvent(claimLongestRoad);
 			reinitiateUI();
 			claimLongestRoad.setActive(false);
 			ret = null;
+			selected = null;
+		}
+		else if (ret != null && ret != selected) {
+			reinitiateUI();
+			ret = null;
+			selected = null;
 		}
 		
 		if (Mouse.isButtonDown(0) && System.currentTimeMillis() - lastinputcheck > INPUT_WAIT_TIME ) {

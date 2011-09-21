@@ -47,7 +47,8 @@ public class ButtonListener implements ActionListener {
 			}
 			if (arg0.getSource() == gui.play){
 				Client.joinAsAI=false;
-				Client.createConnection("sopra.cs.uni-saarland.de");
+//				Client.createConnection("sopra.cs.uni-saarland.de");
+				Client.createConnection("sopra.hammacher.name"); //Backup server
 				Client.refreshGameList();
 				gui.menuPanel.setVisible(false);
 				gui.lobbyPanel.setVisible(true);

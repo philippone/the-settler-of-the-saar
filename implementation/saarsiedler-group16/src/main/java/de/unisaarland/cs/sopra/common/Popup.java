@@ -32,7 +32,7 @@ public class Popup extends JFrame {
 	int r3;
 	int r4;
 	int r5;
-	private List<List<Path>> roadList;
+
 	/**
 	 * 
 	 */
@@ -151,7 +151,6 @@ public class Popup extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				GameGUI.ret=GameGUI.selected;
-				GameGUI.selected=null;
 				setVisible(false);
 				reset();
 			}
@@ -160,7 +159,9 @@ public class Popup extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				List<Path> tmp = GameGUI.selected;
 				GameGUI.selected=null;
+				GameGUI.ret=tmp;
 				setVisible(false);
 				reset();
 			}
@@ -170,8 +171,8 @@ public class Popup extends JFrame {
 		longestRoadBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent arg0) {
-				if (roadList != null && longestRoadBox.getItemCount()>0)
-					GameGUI.selected=roadList.get(longestRoadBox.getSelectedIndex());
+				if (GameGUI.longestroad != null && longestRoadBox.getItemCount()>0)
+					GameGUI.selected=GameGUI.longestroad.get(longestRoadBox.getSelectedIndex());
 			}
 		});
 	}
@@ -1039,7 +1040,5 @@ public class Popup extends JFrame {
 	public JButton okIncomingTrade2;
 	public JButton cancelButton2;
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
-	public void setRoadList(List<List<Path>> roads) {
-		this.roadList=roads;
-	}
+
 }
