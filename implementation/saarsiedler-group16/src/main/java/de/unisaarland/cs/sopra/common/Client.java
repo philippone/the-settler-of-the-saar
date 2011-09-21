@@ -1,3 +1,4 @@
+
 package de.unisaarland.cs.sopra.common;
 
 import java.io.File;
@@ -110,7 +111,6 @@ public class Client {
 	
 	public static void joinMatch(boolean asObserver) {
 		try {
-			clientGUI.joinMatchName.setText("ID: " +matchInfo.getId()+"   Gametitle: "+ matchInfo.getTitle());
 			worldRepo=connection.getWorld(matchInfo.getWorldId());
 			JoinResult res=connection.joinMatch(matchInfo.getId(), asObserver);
 			if(res==JoinResult.ALREADY_RUNNING
@@ -122,11 +122,9 @@ public class Client {
 	}
 	
 	public static void createMatch(String title, int numPlayer, WorldRepresentation world, boolean asObserver) {
-		
 		worldRepo=world;
 		try {	//erstellt Match udn setzt aktuelle Matchinfo auf das erstellste spiel
 			matchInfo = connection.newMatch(title, numPlayer,worldRepo, asObserver);	} catch (Exception e) {	e.printStackTrace();}
-		clientGUI.joinMatchName.setText("ID: " +matchInfo.getId()+"   Gametitle: "+ matchInfo.getTitle());
 	}
 	
 	public static void ready(boolean ready) {
@@ -211,6 +209,7 @@ public class Client {
 	}
 	
 	public static void initializeMatch() {	
+		clientGUI.joinMatchName.setText("ID: " +matchInfo.getId()+"Gametitle: "+ matchInfo.getTitle());
 		GameEvent event = null;
 		boolean jetztgehtslos = false;
 		MatchStart startEvent = null;

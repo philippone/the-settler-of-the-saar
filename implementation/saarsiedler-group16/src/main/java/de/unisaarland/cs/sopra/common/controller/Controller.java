@@ -1,3 +1,4 @@
+
 package de.unisaarland.cs.sopra.common.controller;
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ import de.unisaarland.cs.st.saarsiedler.comm.Edge;
 import de.unisaarland.cs.st.saarsiedler.comm.GameEvent;
 import de.unisaarland.cs.st.saarsiedler.comm.Intersection;
 import de.unisaarland.cs.st.saarsiedler.comm.results.AttackResult;
+
 
 public class Controller implements Runnable {
 
@@ -408,3 +410,4 @@ public class Controller implements Runnable {
 	}
 
 }
+

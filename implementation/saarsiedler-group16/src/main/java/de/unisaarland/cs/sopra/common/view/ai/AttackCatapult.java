@@ -32,5 +32,10 @@ public class AttackCatapult extends Stroke {
 	public void execute(ControllerAdapter c) {
 		c.moveCatapult(source, destination);
 	}
+	
+	@Override
+	public String toString(){
+		return String.format("%s: Source: %s; Destination: %s\n", super.toString(), source.toString(), destination.toString());
+	}
 
 }

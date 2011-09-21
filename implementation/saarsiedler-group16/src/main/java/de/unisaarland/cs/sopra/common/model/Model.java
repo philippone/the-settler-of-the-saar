@@ -1314,7 +1314,7 @@ public class Model implements ModelReader, ModelWriter {
 						//Town and defender > maxVillages && attacker < maxVillages 
 						inter_settlement.getOwner().setVictoryPoints(inter_settlement.getOwner().getVictoryPoints()-2);
 						inter_settlement.removeBuilding();
-						inter_settlement.createBuilding(BuildingType.Village, ownerBuilding);
+						inter_settlement.createBuilding(BuildingType.Village, owner);
 						inter_settlement.getOwner().setVictoryPoints(inter_settlement.getOwner().getVictoryPoints()+1);
 					}
 					else {

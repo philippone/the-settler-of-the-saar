@@ -114,7 +114,7 @@ public class InitializeStrategy extends Strategy {
 				resourceValue = resourceValue + 0.1667;
 			}
 		}
-		 intersectionValue =intersectionValue + resourceValue*4.0;
+		 intersectionValue =intersectionValue + resourceValue;
 		return intersectionValue;
 	}
 
