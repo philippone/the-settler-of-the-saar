@@ -152,8 +152,8 @@ public class Popup extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				GameGUI.ret=GameGUI.selected;
 				GameGUI.selected=null;
-				reset();
 				setVisible(false);
+				reset();
 			}
 		});
 		cancelButton2.addActionListener(new ActionListener() {
@@ -161,8 +161,8 @@ public class Popup extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				GameGUI.selected=null;
-				reset();
 				setVisible(false);
+				reset();
 			}
 		});
 //		longestRoadBox.setSelectedIndex(0); //to avoid initial not selected roads
@@ -170,7 +170,7 @@ public class Popup extends JFrame {
 		longestRoadBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent arg0) {
-				if (roadList != null)
+				if (roadList != null && longestRoadBox.getItemCount()>0)
 					GameGUI.selected=roadList.get(longestRoadBox.getSelectedIndex());
 			}
 		});
