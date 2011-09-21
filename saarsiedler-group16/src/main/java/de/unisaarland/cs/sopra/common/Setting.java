@@ -9,10 +9,10 @@ public class Setting {
 	private static PlayerColors playerColor;
 	private static String name = "ichbinkeinReh";
 	
-	public Setting(DisplayMode mode, boolean fullscreen, PlayerColors playerColor) {
+	public static void setSetting(DisplayMode mode, boolean fullscreen, PlayerColors playerColor) {
 		Setting.mode = mode;
 		Setting.fullscreen = fullscreen;
-		setPlayerColor(playerColor);
+		Setting.playerColor = playerColor;
 	}
 	
 	public static boolean isFullscreen() {
