@@ -51,9 +51,11 @@ public class GameListUpdater implements MatchListUpdater {
 			}
 			while(pm.getRowCount()!=0){
 				pm.removeRow(0);
+				pm.fireTableRowsDeleted(0, 0);
 			}
 			for (Object[] objects : table) {
 				pm.addRow( objects);
+				pm.fireTableRowsInserted(0, objects.length);
 			}
 		}
 	}

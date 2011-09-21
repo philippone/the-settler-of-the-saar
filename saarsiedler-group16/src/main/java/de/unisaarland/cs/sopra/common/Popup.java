@@ -32,9 +32,11 @@ public class Popup extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	int n;
+//	private PopListener actLis;
 	public Popup() {
 		initComponents();
 		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+//		this.actLis = new PopListener(this);  //TODO REFACTOR!!!!!
 		topLabel2.setText("Make a valid offer!");
 		topLabel3.setText("Accept Trade-Offer?");
 		okReturn.addActionListener(new ActionListener() {
@@ -83,30 +85,58 @@ public class Popup extends JFrame {
 					r3= Integer.valueOf(woolMax2.getText());
 					r4= Integer.valueOf(grainMax2.getText());
 					r5= Integer.valueOf(oreMax2.getText());
+					ResourcePackage temp =new ResourcePackage(a1,a2,a3,a4,a5);	
 					if(r1+a1<0 || r2+a2<0 || r3+a3<0 || r4+a4<0 || r5+a5<0){
 						warning2.setText("invalid Selection, can't deliver more Resources than you have");	
 						warning2.setVisible(true);
 						}
-					else{
-						Client.returnPackage=new ResourcePackage(a1,a2,a3,a4,a5);
+					if(!temp.hasNegativeResources()|| !temp.hasPositiveResources()){
+						warning2.setText("invalid Selection, you have to offer AND demand Resources");	
+						warning2.setVisible(true);
+					}else{	
+					Client.returnPackage= temp;
 					}
 				}catch(NumberFormatException e1){
-					warning.setText("only numbers allowed!");
-					warning.setVisible(true);
+					warning2.setText("only numbers allowed!");
+					warning2.setVisible(true);
 				}
+			}
+		});
+		cancelTrade.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				Client.tradeAbort=true;
 			}
 		});
 		okIncomingTrade.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Client.acceptTrade = 1;
+				a1= Integer.valueOf(label16.getText());
+				a2= Integer.valueOf(label17.getText());
+				a3= Integer.valueOf(label18.getText());
+				a4= Integer.valueOf(label19.getText());
+				a5= Integer.valueOf(label20.getText());
+				r1= Integer.valueOf(lumberMax3.getText());
+				r2= Integer.valueOf(brickMax3.getText());
+				r3= Integer.valueOf(woolMax3.getText());
+				r4= Integer.valueOf(grainMax3.getText());
+				r5= Integer.valueOf(oreMax3.getText());
+				//TODO noch nicht sicher mit abfrage
+				if(r1+a1<0 || r2+a2<0 || r3+a3<0 || r4+a4<0 || r5+a5<0){
+					warning3.setText("You have not enough Resources!");	
+					warning3.setVisible(true);
+				}else{
+					Client.acceptTrade = 1;
+				}
 			}
 		});
 		cancelButton.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				warning3.setVisible(false);
 				Client.acceptTrade = -1;
 			}
 		});
@@ -132,7 +162,8 @@ public class Popup extends JFrame {
 		textField9.setText("0");
 		textField10.setText("0");
 		warning.setVisible(false);
-		warning2.setVisible(false);	
+		warning2.setVisible(false);
+		//TODO warning 3 insert
 	}
 	
 	private void initComponents() {
@@ -192,6 +223,7 @@ public class Popup extends JFrame {
 		buttonBar2 = new JPanel();
 		warning2 = new JLabel();
 		okTrade = new JButton();
+		cancelTrade = new JButton();
 		incomingTradePanel = new JPanel();
 		contentPanel3 = new JPanel();
 		topLabel3 = new JLabel();
@@ -206,7 +238,13 @@ public class Popup extends JFrame {
 		grainMax3 = new JLabel();
 		oreMax3 = new JLabel();
 		separator3 = new JSeparator();
+		label16 = new JLabel();
+		label17 = new JLabel();
+		label18 = new JLabel();
+		label19 = new JLabel();
+		label20 = new JLabel();
 		buttonBar3 = new JPanel();
+		warning3 = new JLabel();
 		okIncomingTrade = new JButton();
 		cancelButton = new JButton();
 
@@ -410,7 +448,6 @@ public class Popup extends JFrame {
 		//======== tradePanel ========
 		{
 			tradePanel.setBorder(new EmptyBorder(12, 12, 12, 12));
-			tradePanel.setVisible(false);
 			tradePanel.setLayout(new GridBagLayout());
 			((GridBagLayout)tradePanel.getLayout()).columnWidths = new int[] {0, 0};
 			((GridBagLayout)tradePanel.getLayout()).rowHeights = new int[] {139, 34, 0};
@@ -573,9 +610,15 @@ public class Popup extends JFrame {
 
 				//---- okTrade ----
 				okTrade.setText("OK");
-				buttonBar2.add(okTrade, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
+				buttonBar2.add(okTrade, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 5), 0, 0));
+
+				//---- cancelTrade ----
+				cancelTrade.setText("Cancel");
+				buttonBar2.add(cancelTrade, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 0, 0), 0, 0));
 			}
 			tradePanel.add(buttonBar2, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -588,6 +631,7 @@ public class Popup extends JFrame {
 		//======== incomingTradePanel ========
 		{
 			incomingTradePanel.setBorder(new EmptyBorder(12, 12, 12, 12));
+			incomingTradePanel.setVisible(false);
 			incomingTradePanel.setLayout(new GridBagLayout());
 			((GridBagLayout)incomingTradePanel.getLayout()).columnWidths = new int[] {0, 0};
 			((GridBagLayout)incomingTradePanel.getLayout()).rowHeights = new int[] {139, 34, 0};
@@ -667,6 +711,36 @@ public class Popup extends JFrame {
 				contentPanel3.add(separator3, new GridBagConstraints(0, 4, 6, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- label16 ----
+				label16.setText("text");
+				contentPanel3.add(label16, new GridBagConstraints(1, 5, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- label17 ----
+				label17.setText("text");
+				contentPanel3.add(label17, new GridBagConstraints(2, 5, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- label18 ----
+				label18.setText("text");
+				contentPanel3.add(label18, new GridBagConstraints(3, 5, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- label19 ----
+				label19.setText("text");
+				contentPanel3.add(label19, new GridBagConstraints(4, 5, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+
+				//---- label20 ----
+				label20.setText("text");
+				contentPanel3.add(label20, new GridBagConstraints(5, 5, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
 			}
 			incomingTradePanel.add(contentPanel3, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -680,6 +754,14 @@ public class Popup extends JFrame {
 				((GridBagLayout)buttonBar3.getLayout()).rowHeights = new int[] {25, 0};
 				((GridBagLayout)buttonBar3.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
 
+				//---- warning3 ----
+				warning3.setText("text");
+				warning3.setForeground(Color.red);
+				warning3.setVisible(false);
+				buttonBar3.add(warning3, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 0), 0, 0));
+
 				//---- okIncomingTrade ----
 				okIncomingTrade.setText("OK");
 				buttonBar3.add(okIncomingTrade, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
@@ -687,7 +769,7 @@ public class Popup extends JFrame {
 					new Insets(0, 0, 0, 5), 0, 0));
 
 				//---- cancelButton ----
-				cancelButton.setText("Cancel");
+				cancelButton.setText("Decline");
 				buttonBar3.add(cancelButton, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 0), 0, 0));
@@ -720,19 +802,19 @@ public class Popup extends JFrame {
 	public JLabel grainMax;
 	public JLabel oreMax;
 	private JSeparator separator1;
-	private JTextField textField1;
-	private JTextField textField2;
-	private JTextField textField3;
-	private JTextField textField4;
-	private JTextField textField5;
+	public JTextField textField1;
+	public JTextField textField2;
+	public JTextField textField3;
+	public JTextField textField4;
+	public JTextField textField5;
 	private JComboBox lumberTradeBox;
 	private JComboBox brickTradeBox;
 	private JComboBox woolTradeBox;
 	private JComboBox grainTradeBox;
 	private JComboBox oreTradeBox;
 	private JPanel buttonBar;
-	private JLabel warning;
-	private JButton okReturn;
+	public JLabel warning;
+	public JButton okReturn;
 	public JPanel tradePanel;
 	private JPanel contentPanel2;
 	private JLabel topLabel2;
@@ -747,19 +829,20 @@ public class Popup extends JFrame {
 	public JLabel grainMax2;
 	public JLabel oreMax2;
 	private JSeparator separator2;
-	private JTextField textField6;
-	private JTextField textField7;
-	private JTextField textField8;
-	private JTextField textField9;
-	private JTextField textField10;
+	public JTextField textField6;
+	public JTextField textField7;
+	public JTextField textField8;
+	public JTextField textField9;
+	public JTextField textField10;
 	private JComboBox lumberTradeBox2;
 	private JComboBox brickTradeBox2;
 	private JComboBox woolTradeBox2;
 	private JComboBox grainTradeBox2;
 	private JComboBox oreTradeBox2;
 	private JPanel buttonBar2;
-	private JLabel warning2;
-	private JButton okTrade;
+	public JLabel warning2;
+	public JButton okTrade;
+	public JButton cancelTrade;
 	public JPanel incomingTradePanel;
 	private JPanel contentPanel3;
 	private JLabel topLabel3;
@@ -774,8 +857,14 @@ public class Popup extends JFrame {
 	public JLabel grainMax3;
 	public JLabel oreMax3;
 	private JSeparator separator3;
+	public JLabel label16;
+	public JLabel label17;
+	public JLabel label18;
+	public JLabel label19;
+	public JLabel label20;
 	private JPanel buttonBar3;
-	private JButton okIncomingTrade;
-	private JButton cancelButton;
+	public JLabel warning3;
+	public JButton okIncomingTrade;
+	public JButton cancelButton;
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
 }

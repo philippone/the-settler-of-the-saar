@@ -55,6 +55,7 @@ public class Client {
 	public static int acceptTrade;
 	private static DefaultTableModel gameTableModel;
 	private static DefaultTableModel playerTableModel;
+	public static boolean tradeAbort;
 	
 	public static void main(String[] args) throws UnknownHostException, IOException {
 		initOpenGL();
@@ -426,11 +427,12 @@ public class Client {
 		popup.grainMax2.setText(""+rp.getResource(Resource.GRAIN));
 		popup.oreMax2.setText(""+rp.getResource(Resource.ORE));
 		
-		while(returnPackage==null){
+		while(returnPackage==null && !tradeAbort ){
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {e.printStackTrace();}
 		}
+		tradeAbort=!tradeAbort;
 		popup.reset();
 		popup.setVisible(false);
 		return returnPackage;
@@ -448,6 +450,12 @@ public class Client {
 		popup.woolMax3.setText(""+rp.getResource(Resource.WOOL));
 		popup.grainMax3.setText(""+rp.getResource(Resource.GRAIN));
 		popup.oreMax3.setText(""+rp.getResource(Resource.ORE));
+		
+		popup.label16.setText(""+ incomingRp.getResource(Resource.LUMBER));
+		popup.label17.setText(""+ incomingRp.getResource(Resource.BRICK));
+		popup.label18.setText(""+ incomingRp.getResource(Resource.WOOL));
+		popup.label19.setText(""+ incomingRp.getResource(Resource.GRAIN));
+		popup.label20.setText(""+ incomingRp.getResource(Resource.ORE));
 		
 		while(acceptTrade==0){
 			try {

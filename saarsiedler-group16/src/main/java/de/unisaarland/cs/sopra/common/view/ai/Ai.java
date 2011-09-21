@@ -38,6 +38,8 @@ public class Ai implements ModelObserver {
 		this.mr = mr;
 		this.ca = ca;
 		this.generalStrategies = new HashSet<Strategy>();
+		this.generalStrategies.add(new ExpandStrategy(mr));
+		//this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
 		this.returnResourcesStrategies = new HashSet<Strategy>();
@@ -95,10 +97,11 @@ public class Ai implements ModelObserver {
 	public void execute(List<Stroke> sortedStroke){
 		if (sortedStroke.size() > 0){
 			//TODO remove the random crap
-			Collections.shuffle(sortedStroke);
+			//Collections.shuffle(sortedStroke);
 			Stroke bestStroke = sortedStroke.get(0);
 			if (mr.getMe().checkResourcesSufficient(bestStroke.getPrice())){
 				bestStroke.execute(ca);
+				claimVictoryIfPossible();
 			}
 			else {
 				// TODO insert Trade handling here! And try again!
@@ -108,16 +111,22 @@ public class Ai implements ModelObserver {
 		ca.endTurn();
 	}
 	
+	public void claimVictoryIfPossible(){
+		if (mr.getMaxVictoryPoints() <= mr.getMe().getVictoryPoints()){
+			ca.claimVictory();
+		}
+	}
+	
 	public List<Stroke> getSortedStrokeList(Set<Strategy> strategySet){
 		List<Stroke> strokeList = generateAllPossibleStrokes();
 		evaluateStrokes(strokeList, strategySet);
-		Collections.sort(strokeList);
+		Collections.sort(strokeList, Collections.<Stroke>reverseOrder());
 		return strokeList;
 	}
 	
 	public void sortStrokeList(List<Stroke> strokeList, Set<Strategy> strategySet){
 		evaluateStrokes(strokeList, strategySet);
-		Collections.sort(strokeList);
+		Collections.sort(strokeList, Collections.<Stroke>reverseOrder());
 	}
 	
 	public void evaluateStrokes(List<Stroke> strokeList, Set<Strategy> strategySet){
@@ -303,8 +312,9 @@ public class Ai implements ModelObserver {
 
 	@Override
 	public void eventMatchEnd(long winnerID) {
-		// TODO Auto-generated method stub
-
+		if (mr.getPlayerMap().get(winnerID) == mr.getMe())
+			System.out.println("You have won the macht! =)");
+		else System.out.println("You do not have won the match! =(");
 	}
 
 }
