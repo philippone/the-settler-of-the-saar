@@ -190,6 +190,7 @@ public class GUIFrame extends JFrame {
 		back_Create = new JButton();
 		joinPanel = new JPanel();
 		panel14 = new JPanel();
+		joinMatchName = new JLabel();
 		scrollPane5 = new JScrollPane();
 		playerTable = new JTable();
 		panel15 = new JPanel();
@@ -535,7 +536,6 @@ public class GUIFrame extends JFrame {
 
 		//======== joinPanel ========
 		{
-			joinPanel.setVisible(false);
 			joinPanel.setLayout(new GridBagLayout());
 			((GridBagLayout)joinPanel.getLayout()).columnWidths = new int[] {999, 0};
 			((GridBagLayout)joinPanel.getLayout()).rowHeights = new int[] {337, 76, 0};
@@ -546,9 +546,17 @@ public class GUIFrame extends JFrame {
 			{
 				panel14.setLayout(new GridBagLayout());
 				((GridBagLayout)panel14.getLayout()).columnWidths = new int[] {752, 245, 0};
-				((GridBagLayout)panel14.getLayout()).rowHeights = new int[] {330, 0};
+				((GridBagLayout)panel14.getLayout()).rowHeights = new int[] {40, 330, 0};
 				((GridBagLayout)panel14.getLayout()).columnWeights = new double[] {0.0, 0.0, 1.0E-4};
-				((GridBagLayout)panel14.getLayout()).rowWeights = new double[] {0.0, 1.0E-4};
+				((GridBagLayout)panel14.getLayout()).rowWeights = new double[] {0.0, 0.0, 1.0E-4};
+
+				//---- joinMatchName ----
+				joinMatchName.setText("text");
+				joinMatchName.setFont(new Font("Tahoma", Font.BOLD, 14));
+				joinMatchName.setVisible(false);
+				panel14.add(joinMatchName, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
 
 				//======== scrollPane5 ========
 				{
@@ -569,7 +577,7 @@ public class GUIFrame extends JFrame {
 					playerTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 					scrollPane5.setViewportView(playerTable);
 				}
-				panel14.add(scrollPane5, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+				panel14.add(scrollPane5, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 5), 0, 0));
 			}
@@ -672,6 +680,7 @@ public class GUIFrame extends JFrame {
 	public JButton back_Create;
 	public JPanel joinPanel;
 	private JPanel panel14;
+	public JLabel joinMatchName;
 	private JScrollPane scrollPane5;
 	public JTable playerTable;
 	private JPanel panel15;

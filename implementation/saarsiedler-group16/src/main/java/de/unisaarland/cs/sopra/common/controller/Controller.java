@@ -305,7 +305,8 @@ public class Controller implements Runnable {
 		int x = sourceField.getX();
 		int y1 = destinationField.getY();
 		int x1 = destinationField.getX();
-
+		//TODO BREAKPOINT
+		System.out.println(victimPlayer);
 		de.unisaarland.cs.st.saarsiedler.comm.Resource r1 = connection
 				.moveRobber(y, x, y1, x1, victimPlayer);
 		r = Resource.convert(r1);

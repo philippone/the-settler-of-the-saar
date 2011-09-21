@@ -1,6 +1,7 @@
 package de.unisaarland.cs.sopra.common.view.ai;
 
-import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
+
+import de.unisaarland.cs.sopra.ai.test.GreedyTradeOfferStrategyTest.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
@@ -16,20 +17,21 @@ public class GreedyTradeOfferStrategy extends TradeOfferStrategy {
 		Resource min;
 		do {
 			min = getMinResource(price);
-			if (tryToTrade(min, price)) price.modifyResource(min, 1);
+			if (tryToTrade(price)) price.modifyResource(min, 1);
 			else success = false;
 		} while(price.hasNegativeResources());
 		return success;
 	}
 	
-	private boolean tryToTrade(Resource min, ResourcePackage price){
-		ResourcePackage myrp = price;
-		ResourcePackage rp = new ResourcePackage();
-		rp.modifyResource(min, 1);
-		for (int i = 1; i < 4; i++){
-			rp.modifyResource(getMaxResource(myrp), -1);
-			if (!price.hasNegativeResources()){
-				return ca.offerTrade(rp) != -1;
+	public boolean tryToTrade(ResourcePackage price){
+		Resource min = getMinResource(price);
+		ResourcePackage tradePackage = new ResourcePackage();
+		tradePackage.modifyResource(min, 1);
+		for (int i = 1 ; i < 5; i++){
+			tradePackage.modifyResource(getMaxResource(price), -1);
+			if (!price.copy().add(tradePackage).hasNegativeResources() && ca.offerTrade(tradePackage) != -1){
+				price.add(tradePackage);
+				return true;
 			}
 		}
 		return false;

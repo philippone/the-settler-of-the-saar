@@ -44,6 +44,7 @@ import de.unisaarland.cs.sopra.common.model.Point;
 import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
+import de.unisaarland.cs.st.saarsiedler.comm.Timeouts;
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 import de.unisaarland.cs.st.saarsiedler.comm.results.AttackResult;
 
@@ -115,9 +116,12 @@ public class GameGUI extends View implements Runnable{
 
 	public static ModelReader mr;
 	
-	public GameGUI(ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player, String> names, String gameTitle, boolean observer, CyclicBarrier barrier) {
+	private Timeouts timeouts;
+	
+	public GameGUI(ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player, String> names, String gameTitle, boolean observer, CyclicBarrier barrier, Timeouts timeouts) {
 		super(modelReader, controllerAdapter);
 		this.modelReader.addModelObserver(this);
+		this.timeouts = timeouts; //TODO timeouts nutzen
 		mr = this.modelReader;
 		initiateRenderBoard();
 		initiateUtil();
@@ -630,7 +634,6 @@ public class GameGUI extends View implements Runnable{
 	@Override
 	public void eventTrade(ResourcePackage resourcePackage) {
 		if (!observer) {
-		deactivateUI();
 		boolean decision = Client.incomingTradeOffer(modelReader.getResources().copy(),resourcePackage);
 		respondTrade.setDecision(decision);
 		controllerAdapter.addGuiEvent(respondTrade);
@@ -754,7 +757,9 @@ public class GameGUI extends View implements Runnable{
 			offerTrade = new Clickable("offerTrade", xOffsetUI+450, yOffsetUI+65, 2, 185, 77, false, true) {
 				@Override
 				public void executeUI() {
+					deactivateUI();
 					ResourcePackage res = Client.tradeOffer(modelReader.getResources(), modelReader.getHarborTypes(modelReader.getMe()));
+					reinitiateUI();
 					//TODO anzahl der handel mitzählen?!
 					if (res != null) {
 						deactivateUI();
@@ -919,7 +924,6 @@ public class GameGUI extends View implements Runnable{
 					String current = playerNames.get(modelReader.getCurrentPlayer());
 
 					console4 = current + " traded with "+ name;
-					reinitiateUI();
 				} 
 			};
 			
@@ -1553,7 +1557,7 @@ public class GameGUI extends View implements Runnable{
 		Setting.setSetting(new DisplayMode(1024, 515), false, PlayerColors.YELLOW);  /// Display.getDesktopDisplayMode()
 		
 		CyclicBarrier barrier = new CyclicBarrier(2);
-		GameGUI gameGUI = new GameGUI(model, null, names, "TestSpiel", false, barrier);
+		GameGUI gameGUI = new GameGUI(model, null, names, "TestSpiel", false, barrier, null);
 		new Thread(gameGUI).start();
 		barrier.await();
 	}
