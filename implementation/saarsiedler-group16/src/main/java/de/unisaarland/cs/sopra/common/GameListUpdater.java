@@ -10,9 +10,9 @@ import de.unisaarland.cs.st.saarsiedler.comm.MatchListUpdater;
 public class GameListUpdater implements MatchListUpdater {
 
 	private DefaultTableModel gm;
-	private DefaultTableModel pm;
+	private PlayerTableModel pm;
 
-	public GameListUpdater(DefaultTableModel gameTableModel, DefaultTableModel playerTableModel) {
+	public GameListUpdater(DefaultTableModel gameTableModel, PlayerTableModel playerTableModel) {
 		this.gm= gameTableModel;
 		this.pm= playerTableModel;
 	}
@@ -39,24 +39,24 @@ public class GameListUpdater implements MatchListUpdater {
 				gm.fireTableRowsUpdated(i, i);
 			}
 		}
-		if (Client.matchInfo!=null && Client.matchInfo.equals(info)) { 
-			long[] players = Client.matchInfo.getCurrentPlayers();
-			boolean[]readyPlayers = Client.matchInfo.getReadyPlayers();
-			Object[][] table = new Object[players.length][2];
-			for (int i = 0; i < table.length; i++) {
-				try {
-					table[i][0]= Client.connection.getPlayerInfo(players[i]).getName();} catch (IOException e) {e.printStackTrace();
-				}
-				table[i][1]= readyPlayers[i];
-			}
-			while(pm.getRowCount()!=0){
-				pm.removeRow(0);
-				pm.fireTableRowsDeleted(0, 0);
-			}
-			for (Object[] objects : table) {
-				pm.addRow( objects);
-				pm.fireTableRowsInserted(0, objects.length);
-			}
-		}
+//		if (Client.matchInfo!=null && Client.matchInfo.equals(info)) { 
+//			long[] players = Client.matchInfo.getCurrentPlayers();
+//			boolean[]readyPlayers = Client.matchInfo.getReadyPlayers();
+//			Object[][] table = new Object[players.length][2];
+//			for (int i = 0; i < table.length; i++) {
+//				try {
+//					table[i][0]= Client.connection.getPlayerInfo(players[i]).getName();} catch (IOException e) {e.printStackTrace();
+//				}
+//				table[i][1]= readyPlayers[i];
+//			}
+//			while(pm.getRowCount()!=0){
+//				pm.removeRow(0);
+//				pm.fireTableRowsDeleted(0, 0);
+//			}
+//			for (Object[] objects : table) {
+//				pm.addRow( objects);
+//				pm.fireTableRowsInserted(0, objects.length);
+//			}
+//		}
 	}
 }

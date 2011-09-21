@@ -161,7 +161,8 @@ public class Popup extends JFrame {
 				selectedRoad=null;
 			}
 		});
-		longestRoadBox.setSelectedIndex(0); //to avoid initial not selected roads
+//		longestRoadBox.setSelectedIndex(0); //to avoid initial not selected roads
+		
 		longestRoadBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent arg0) {

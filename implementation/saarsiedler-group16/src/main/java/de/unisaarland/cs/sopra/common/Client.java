@@ -55,7 +55,7 @@ public class Client {
 	private static Popup popup;
 	public static int acceptTrade;
 	private static DefaultTableModel gameTableModel;
-	private static DefaultTableModel playerTableModel;
+	private static PlayerTableModel playerTableModel;
 	public static boolean tradeAbort;
 	
 	public static void main(String[] args) throws UnknownHostException, IOException {
@@ -139,7 +139,13 @@ public class Client {
 		if(result == ChangeReadyResult.UNCHANGED){
 			throw new IllegalStateException("Cant change ReadyStatus, JUST EPIC FAIL");
 		}
-		initializeMatch();	
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				initializeMatch();
+			}
+		}).start();
+		
 	}
 	
 	public static void closeConnection() {
@@ -251,7 +257,10 @@ public class Client {
 	
 	public static  void setUpListUpdater(){
 		try {
-			Client.connection.registerMatchListUpdater(new GameListUpdater(gameTableModel,playerTableModel));	}catch(IOException e){throw new IllegalStateException("iwas mit Matchlistupdater faul!!!");}
+			playerTableModel= new PlayerTableModel();
+			Client.connection.registerMatchListUpdater(new GameListUpdater(gameTableModel,playerTableModel));	
+			Client.connection.registerMatchListUpdater(playerTableModel);
+		}catch(IOException e){throw new IllegalStateException("iwas mit Matchlistupdater faul!!!");}
 	
 	}
 	
@@ -292,7 +301,7 @@ public class Client {
 			}
 			table[i][1]= readyPlayers[i];
 		}		
-		playerTableModel=new DefaultTableModel( table ,new String[] {"Players", "ready-Status"});
+		//new DefaultTableModel( table ,new String[] {"Players", "ready-Status"});
 		clientGUI.playerTable.setModel(playerTableModel);
 	}
 	
@@ -392,11 +401,12 @@ public class Client {
 	public static ResourcePackage returnResources(ResourcePackage rp){
 		returnPackage=null;
 		popup.incomingTradePanel.setVisible(false);
+		popup.longestRoadPanel.setVisible(false);
 		popup.tradePanel.setVisible(false);
 		popup.returnPackPanel.setVisible(true);
 		int n = rp.size();
 		popup.setN(n);
-		popup.setText("You have to choose "+(n/2)+" Resources!");
+		popup.setTitle("You have to choose "+(n/2)+" Resources!");
 		popup.lumberMax.setText(""+rp.getResource(Resource.LUMBER));
 		popup.brickMax.setText(""+rp.getResource(Resource.BRICK));
 		popup.woolMax.setText(""+rp.getResource(Resource.WOOL));
@@ -416,9 +426,11 @@ public class Client {
 	
 	public static ResourcePackage tradeOffer(ResourcePackage rp, Set<HarborType> set){
 		//TODO use the set to show trade possibilites
+		tradeAbort=!tradeAbort;
 		returnPackage=null;
 		popup.setTitle("Make a Trade Offer");
 		popup.incomingTradePanel.setVisible(false);
+		popup.longestRoadPanel.setVisible(false);
 		popup.tradePanel.setVisible(true);
 		popup.returnPackPanel.setVisible(false);
 		popup.setVisible(true);
@@ -433,7 +445,7 @@ public class Client {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {e.printStackTrace();}
 		}
-		tradeAbort=!tradeAbort;
+		
 		popup.reset();
 		popup.setVisible(false);
 		return returnPackage;
@@ -444,6 +456,7 @@ public class Client {
 		popup.setTitle("Accept Trade?");
 		popup.tradePanel.setVisible(false);
 		popup.returnPackPanel.setVisible(false);
+		popup.longestRoadPanel.setVisible(false);
 		popup.incomingTradePanel.setVisible(true);
 		popup.setVisible(true);
 		popup.lumberMax3.setText(""+rp.getResource(Resource.LUMBER));
@@ -469,15 +482,20 @@ public class Client {
 		else return false;
 	}
 	public static void selectLongestRoad(List<List<Path>> roads, List<Path> selected, List<Path> ret){
+		popup.setTitle("Longest Road");
+		popup.tradePanel.setVisible(false);
+		popup.returnPackPanel.setVisible(false);
+		popup.incomingTradePanel.setVisible(false);
+		popup.longestRoadPanel.setVisible(true);
 		for (int i = 0; i < roads.size(); i++) {
 			popup.longestRoadBox.addItem("Road "+i);
 		}
-		popup.setRoadList(roads, selected, ret);
-		
-		
+		popup.longestRoadBox.setSelectedIndex(0); //to avoid initial not selected roads
+		popup.setRoadList(roads, selected, ret);	
 	}
 	
 	public static void backToLobby(){
+		popup.setVisible(false);
 		clientGUI.joinPanel.setVisible(false);
 		clientGUI.lobbyPanel.setVisible(true);
 		clientGUI.setVisible(true);
