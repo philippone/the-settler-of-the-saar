@@ -42,6 +42,7 @@ public class Ai implements ModelObserver {
 		this.generalStrategies.add(new ExpandStrategy(mr));
 		this.generalStrategies.add(new AttackStrategy(mr));
 		this.generalStrategies.add(new DeffenceStrategy(mr));
+
 		this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
@@ -280,6 +281,7 @@ public class Ai implements ModelObserver {
 
 	@Override
 	public void eventRobber() {
+		
 		List<Stroke> returnResourcesStrokes = generateAllReturnResourcesStrokes();
 		sortStrokeList(returnResourcesStrokes, returnResourcesStrategies);
 		if (returnResourcesStrokes.size() > 0)
@@ -322,10 +324,5 @@ public class Ai implements ModelObserver {
 			System.out.println("You have won the macht! =)");
 		else System.out.println("You do not have won the match! =(");
 	} 
-}
-}
-}
 
-
->>>>>>> ae6b95f098e5524ceb261fcb6b21cbc3aac05171
-
+}
