@@ -59,7 +59,7 @@ public class Client {
 	
 	public static void main(String[] args) throws UnknownHostException, IOException {
 		initOpenGL();
-		setting = new Setting(new DisplayMode(1024, 600), true, PlayerColors.BLUE);
+		Setting.setSetting(new DisplayMode(1024, 600), true, PlayerColors.BLUE);
 		clientGUI = new GUIFrame();
 		popup = new Popup();
 		loadSettings();
@@ -184,11 +184,11 @@ public class Client {
 				plToNames.put(iterPl.next(), connection.getPlayerInfo(l).getName());
 			} catch (IOException e) {e.printStackTrace();}
 		}
-		return new GameGUI(model, new ControllerAdapter(controller, model), plToNames , setting, matchInfo.getTitle(), AIisPlaying, barrier);
+		return new GameGUI(model, new ControllerAdapter(controller, model), plToNames , matchInfo.getTitle(), AIisPlaying, barrier);
 	}
 	
 	public static void changeSettings(DisplayMode mode, boolean fullscreen,PlayerColors playerColor, String name){
-		setting = new Setting(mode, fullscreen, playerColor);
+		Setting.setSetting(mode, fullscreen, playerColor);
 		Setting.setName(name);
 	}
 	
