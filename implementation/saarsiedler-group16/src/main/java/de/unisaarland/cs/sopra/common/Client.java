@@ -28,7 +28,6 @@ import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.HarborType;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.ModelWriter;
-import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
@@ -50,7 +49,6 @@ public class Client {
 	public static Connection connection;
 	public static MatchInformation matchInfo;
 	private static GUIFrame clientGUI;
-	private static Setting setting;
 	static WorldRepresentation worldRepo;
 	public static boolean joinAsAI;
 	static ResourcePackage returnPackage;

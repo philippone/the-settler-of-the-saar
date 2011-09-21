@@ -15,6 +15,11 @@ public class PlayerTableModel extends AbstractTableModel implements MatchListUpd
 //		this.info=info;
 //	}
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2118717525194587446L;
+
 	@Override
 	public int getColumnCount() {
 		return 3;

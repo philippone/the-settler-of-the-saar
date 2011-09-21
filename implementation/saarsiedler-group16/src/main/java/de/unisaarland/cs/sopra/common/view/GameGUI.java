@@ -57,8 +57,11 @@ public class GameGUI extends View implements Runnable{
 	private UnicodeFont uiFont20;
 	private UnicodeFont uiFont40;
 
+	@SuppressWarnings("unused")
 	private int gameMode;
+	@SuppressWarnings("unused")
 	private static final int NORMAL = 0;
+	@SuppressWarnings("unused")
 	private static final int RETURN_RESOURCES = 1;
 	//TODO trade, longestroad, etc
 	
@@ -118,6 +121,7 @@ public class GameGUI extends View implements Runnable{
 
 	public static ModelReader mr;
 	
+	@SuppressWarnings("unused")
 	private Timeouts timeouts;
 	
 	public GameGUI(ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player, String> names, String gameTitle, boolean observer, CyclicBarrier barrier, Timeouts timeouts) {

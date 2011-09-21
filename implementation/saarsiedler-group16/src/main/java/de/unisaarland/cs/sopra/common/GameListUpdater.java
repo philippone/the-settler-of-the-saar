@@ -1,7 +1,5 @@
 package de.unisaarland.cs.sopra.common;
 
-import java.io.IOException;
-
 import javax.swing.table.DefaultTableModel;
 
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
