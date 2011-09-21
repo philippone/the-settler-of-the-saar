@@ -27,6 +27,7 @@ import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.HarborType;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.ModelWriter;
+import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
@@ -466,6 +467,14 @@ public class Client {
 		popup.setVisible(false);
 		if(acceptTrade>0)return true;
 		else return false;
+	}
+	public static void selectLongestRoad(List<List<Path>> roads, List<Path> selected, List<Path> ret){
+		for (int i = 0; i < roads.size(); i++) {
+			popup.longestRoadBox.addItem("Road "+i);
+		}
+		popup.setRoadList(roads, selected, ret);
+		
+		
 	}
 	
 	public static void backToLobby(){

@@ -7,10 +7,14 @@ package de.unisaarland.cs.sopra.common;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.*;
 
+import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 /**
@@ -27,6 +31,9 @@ public class Popup extends JFrame {
 	int r3;
 	int r4;
 	int r5;
+	private List<List<Path>> roadList;
+	private List<Path> selectedRoad;
+	private List<Path> claimedRoad;
 	/**
 	 * 
 	 */
@@ -140,6 +147,27 @@ public class Popup extends JFrame {
 				Client.acceptTrade = -1;
 			}
 		});
+		okIncomingTrade2.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				claimedRoad=selectedRoad;
+			}
+		});
+		cancelButton2.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				selectedRoad=null;
+			}
+		});
+		longestRoadBox.setSelectedIndex(0); //to avoid initial not selected roads
+		longestRoadBox.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent arg0) {
+				selectedRoad=roadList.get(longestRoadBox.getSelectedIndex());
+			}
+		});
 	}
 	
 	public void setN(int n){
@@ -247,6 +275,14 @@ public class Popup extends JFrame {
 		warning3 = new JLabel();
 		okIncomingTrade = new JButton();
 		cancelButton = new JButton();
+		longestRoadPanel = new JPanel();
+		contentPanel4 = new JPanel();
+		label21 = new JLabel();
+		longestRoadBox = new JComboBox();
+		buttonBar4 = new JPanel();
+		warning4 = new JLabel();
+		okIncomingTrade2 = new JButton();
+		cancelButton2 = new JButton();
 
 		//======== this ========
 		setAlwaysOnTop(true);
@@ -255,9 +291,9 @@ public class Popup extends JFrame {
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new GridBagLayout());
 		((GridBagLayout)contentPane.getLayout()).columnWidths = new int[] {0, 0};
-		((GridBagLayout)contentPane.getLayout()).rowHeights = new int[] {0, 0, 37, 0};
+		((GridBagLayout)contentPane.getLayout()).rowHeights = new int[] {0, 0, 37, 0, 0};
 		((GridBagLayout)contentPane.getLayout()).columnWeights = new double[] {1.0, 1.0E-4};
-		((GridBagLayout)contentPane.getLayout()).rowWeights = new double[] {0.0, 1.0, 1.0, 1.0E-4};
+		((GridBagLayout)contentPane.getLayout()).rowWeights = new double[] {0.0, 1.0, 1.0, 0.0, 1.0E-4};
 
 		//======== returnPackPanel ========
 		{
@@ -448,6 +484,7 @@ public class Popup extends JFrame {
 		//======== tradePanel ========
 		{
 			tradePanel.setBorder(new EmptyBorder(12, 12, 12, 12));
+			tradePanel.setVisible(false);
 			tradePanel.setLayout(new GridBagLayout());
 			((GridBagLayout)tradePanel.getLayout()).columnWidths = new int[] {0, 0};
 			((GridBagLayout)tradePanel.getLayout()).rowHeights = new int[] {139, 34, 0};
@@ -781,8 +818,74 @@ public class Popup extends JFrame {
 		contentPane.add(incomingTradePanel, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 			new Insets(0, 0, 0, 0), 0, 0));
+
+		//======== longestRoadPanel ========
+		{
+			longestRoadPanel.setBorder(new EmptyBorder(12, 12, 12, 12));
+			longestRoadPanel.setLayout(new GridBagLayout());
+			((GridBagLayout)longestRoadPanel.getLayout()).columnWidths = new int[] {0, 0};
+			((GridBagLayout)longestRoadPanel.getLayout()).rowHeights = new int[] {139, 34, 0};
+			((GridBagLayout)longestRoadPanel.getLayout()).columnWeights = new double[] {1.0, 1.0E-4};
+			((GridBagLayout)longestRoadPanel.getLayout()).rowWeights = new double[] {1.0, 0.0, 1.0E-4};
+
+			//======== contentPanel4 ========
+			{
+				contentPanel4.setLayout(new GridBagLayout());
+				((GridBagLayout)contentPanel4.getLayout()).columnWidths = new int[] {0, 87, 176, 49, 0, 0};
+				((GridBagLayout)contentPanel4.getLayout()).rowHeights = new int[] {18, 0, 58, 38, 0};
+				((GridBagLayout)contentPanel4.getLayout()).columnWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+				((GridBagLayout)contentPanel4.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 1.0E-4};
+
+				//---- label21 ----
+				label21.setText("Choose one off your Roads:");
+				contentPanel4.add(label21, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+				contentPanel4.add(longestRoadBox, new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 0, 5), 0, 0));
+			}
+			longestRoadPanel.add(contentPanel4, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+				new Insets(0, 0, 0, 0), 0, 0));
+
+			//======== buttonBar4 ========
+			{
+				buttonBar4.setBorder(new EmptyBorder(12, 0, 0, 0));
+				buttonBar4.setLayout(new GridBagLayout());
+				((GridBagLayout)buttonBar4.getLayout()).columnWidths = new int[] {139, 96, 134};
+				((GridBagLayout)buttonBar4.getLayout()).rowHeights = new int[] {25, 0};
+				((GridBagLayout)buttonBar4.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
+
+				//---- warning4 ----
+				warning4.setText("text");
+				warning4.setForeground(Color.red);
+				warning4.setVisible(false);
+				buttonBar4.add(warning4, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 0), 0, 0));
+
+				//---- okIncomingTrade2 ----
+				okIncomingTrade2.setText("OK");
+				buttonBar4.add(okIncomingTrade2, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 0, 5), 0, 0));
+
+				//---- cancelButton2 ----
+				cancelButton2.setText("Decline");
+				buttonBar4.add(cancelButton2, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 0, 0), 0, 0));
+			}
+			longestRoadPanel.add(buttonBar4, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+				new Insets(0, 0, 0, 0), 0, 0));
+		}
+		contentPane.add(longestRoadPanel, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0,
+			GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+			new Insets(0, 0, 0, 0), 0, 0));
 		pack();
-		setLocationRelativeTo(null);
+		setLocationRelativeTo(getOwner());
 		// JFormDesigner - End of component initialization  //GEN-END:initComponents
 	}
 
@@ -866,5 +969,18 @@ public class Popup extends JFrame {
 	public JLabel warning3;
 	public JButton okIncomingTrade;
 	public JButton cancelButton;
+	public JPanel longestRoadPanel;
+	private JPanel contentPanel4;
+	private JLabel label21;
+	public JComboBox longestRoadBox;
+	private JPanel buttonBar4;
+	public JLabel warning4;
+	public JButton okIncomingTrade2;
+	public JButton cancelButton2;
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
+	public void setRoadList(List<List<Path>> roads, List<Path> selected, List<Path> ret) {
+		this.roadList=roads;
+		this.selectedRoad=selected;
+		this.claimedRoad=ret;
+	}
 }
