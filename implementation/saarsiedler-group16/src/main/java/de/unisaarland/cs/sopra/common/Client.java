@@ -426,6 +426,7 @@ public class Client {
 	
 	public static ResourcePackage tradeOffer(ResourcePackage rp, Set<HarborType> set){
 		//TODO use the set to show trade possibilites
+		tradeAbort=!tradeAbort;
 		returnPackage=null;
 		popup.setTitle("Make a Trade Offer");
 		popup.incomingTradePanel.setVisible(false);
@@ -444,7 +445,7 @@ public class Client {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {e.printStackTrace();}
 		}
-		tradeAbort=!tradeAbort;
+		
 		popup.reset();
 		popup.setVisible(false);
 		return returnPackage;
