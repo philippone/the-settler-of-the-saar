@@ -243,7 +243,7 @@ public class AttackStrategy extends Strategy {
 			 } 
 		 }
 		 value=3*targetingCatapultValue+2*targetingTownValue+targetingVillageValue;
-		return Math.max(value, 1);
+		return Math.min(value, 1);
 	}
 
 	@Override
