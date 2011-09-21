@@ -40,8 +40,8 @@ public class Ai implements ModelObserver {
 		this.ca = ca;
 		this.generalStrategies = new HashSet<Strategy>();
 		this.generalStrategies.add(new ExpandStrategy(mr));
-		//this.generalStrategies.add(new AttackStrategy(mr));
-		//this.generalStrategies.add(new DeffenceStrategy(mr));
+		this.generalStrategies.add(new AttackStrategy(mr));
+		this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
@@ -49,6 +49,7 @@ public class Ai implements ModelObserver {
 		this.returnResourcesStrategies.add(new ReturnResourcesStrategy(mr));
 		this.initStrategies = new HashSet<Strategy>();
 		this.initStrategies.add(new InitializeStrategy(mr));
+		this.initStrategies.add(new InitNumStrategy(mr));
 		mr.addModelObserver(this);
 	}
 	
@@ -320,7 +321,11 @@ public class Ai implements ModelObserver {
 		if (mr.getPlayerMap().get(winnerID) == mr.getMe())
 			System.out.println("You have won the macht! =)");
 		else System.out.println("You do not have won the match! =(");
-	}
-
+	} 
 }
+}
+}
+
+
 >>>>>>> ae6b95f098e5524ceb261fcb6b21cbc3aac05171
+
