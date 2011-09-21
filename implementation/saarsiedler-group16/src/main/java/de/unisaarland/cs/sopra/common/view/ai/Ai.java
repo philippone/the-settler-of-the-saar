@@ -47,6 +47,7 @@ public class Ai implements ModelObserver {
 		this.returnResourcesStrategies.add(new ReturnResourcesStrategy(mr));
 		this.initStrategies = new HashSet<Strategy>();
 		this.initStrategies.add(new InitializeStrategy(mr));
+		this.initStrategies.add(new InitNumStrategy(mr));
 		mr.addModelObserver(this);
 	}
 	
@@ -96,12 +97,7 @@ public class Ai implements ModelObserver {
 	
 	
 	public void execute(List<Stroke> sortedStroke){
-		try {
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		if (sortedStroke.size() > 0){
 			
 			//TODO remove the random crap
