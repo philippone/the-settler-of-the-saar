@@ -103,7 +103,8 @@ public class Ai implements ModelObserver {
 			Stroke bestStroke = sortedStroke.get(0);
 			boolean execute = true;
 			if (!mr.getMe().checkResourcesSufficient(bestStroke.getPrice())){
-				execute = new GreedyTradeOfferStrategy(ca, mr).execute(bestStroke.getPrice());
+				execute = new StupidTradeOfferStrategy(ca, mr).execute(bestStroke.getPrice());
+				execute = false;
 			}
 			if (execute) {
 				bestStroke.execute(ca);

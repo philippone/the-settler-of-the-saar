@@ -1,5 +1,7 @@
 package de.unisaarland.cs.sopra.common.view.ai;
 
+
+
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Resource;
@@ -32,6 +34,14 @@ public abstract class TradeOfferStrategy {
 			min = rp.getResource(min) > rp.getResource(r) ? r : min;
 		}
 		return min;
+	}
+	
+	protected int numberOfPossitiveResources(ResourcePackage rp){
+		int nopr = 0;
+		for (Resource r : Resource.values()){
+			if (rp.getResource(r) > 0) nopr += rp.getResource(r);
+		}
+		return nopr;
 	}
 
 }
