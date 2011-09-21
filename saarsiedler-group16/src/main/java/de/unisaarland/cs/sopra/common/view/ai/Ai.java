@@ -112,13 +112,13 @@ public class Ai implements ModelObserver {
 	public List<Stroke> getSortedStrokeList(Set<Strategy> strategySet){
 		List<Stroke> strokeList = generateAllPossibleStrokes();
 		evaluateStrokes(strokeList, strategySet);
-		Collections.sort(strokeList);
+		Collections.sort(strokeList, Collections.<Stroke>reverseOrder());
 		return strokeList;
 	}
 	
 	public void sortStrokeList(List<Stroke> strokeList, Set<Strategy> strategySet){
 		evaluateStrokes(strokeList, strategySet);
-		Collections.sort(strokeList);
+		Collections.sort(strokeList, Collections.<Stroke>reverseOrder());
 	}
 	
 	public void evaluateStrokes(List<Stroke> strokeList, Set<Strategy> strategySet){
