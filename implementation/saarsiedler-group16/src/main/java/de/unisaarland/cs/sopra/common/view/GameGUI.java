@@ -44,6 +44,7 @@ import de.unisaarland.cs.sopra.common.model.Point;
 import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
+import de.unisaarland.cs.st.saarsiedler.comm.Timeouts;
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 import de.unisaarland.cs.st.saarsiedler.comm.results.AttackResult;
 
@@ -115,9 +116,12 @@ public class GameGUI extends View implements Runnable{
 
 	public static ModelReader mr;
 	
-	public GameGUI(ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player, String> names, String gameTitle, boolean observer, CyclicBarrier barrier) {
+	private Timeouts timeouts;
+	
+	public GameGUI(ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player, String> names, String gameTitle, boolean observer, CyclicBarrier barrier, Timeouts timeouts) {
 		super(modelReader, controllerAdapter);
 		this.modelReader.addModelObserver(this);
+		this.timeouts = timeouts; //TODO timeouts nutzen
 		mr = this.modelReader;
 		initiateRenderBoard();
 		initiateUtil();
