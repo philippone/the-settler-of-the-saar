@@ -66,7 +66,7 @@ public class Client {
 		clientGUI = new GUIFrame();
 		popup = new Popup();
 		loadSettings();
-		
+		tradeAbort=true;
 	}
 	private static void initOpenGL(){
 		
