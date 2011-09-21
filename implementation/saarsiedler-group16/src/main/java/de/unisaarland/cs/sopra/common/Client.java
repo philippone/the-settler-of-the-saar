@@ -155,6 +155,7 @@ public class Client {
 	public static void createConnection(String serverAdress) {
 		try {
 			connection= Connection.establish(serverAdress, joinAsAI);
+//			System.out.println("TIMEOUTS: "+ connection.getTimeouts().getTimeoutHumanMoveRobber());
 		} catch (Exception e) {	e.printStackTrace();}
 	}
 	
@@ -191,7 +192,7 @@ public class Client {
 				plToNames.put(iterPl.next(), connection.getPlayerInfo(l).getName());
 			} catch (IOException e) {e.printStackTrace();}
 		}
-		return new GameGUI(model, new ControllerAdapter(controller, model), plToNames , matchInfo.getTitle(), AIisPlaying, barrier);
+		return new GameGUI(model, new ControllerAdapter(controller, model), plToNames , matchInfo.getTitle(), AIisPlaying, barrier, connection.getTimeouts());
 	}
 	
 	public static void changeSettings(DisplayMode mode, boolean fullscreen,PlayerColors playerColor, String name){
@@ -199,7 +200,8 @@ public class Client {
 		Setting.setName(name);
 	}
 	
-	public static void initializeMatch() {					
+	public static void initializeMatch() {	
+		clientGUI.joinMatchName.setText("ID: " +matchInfo.getId()+"Gametitle: "+ matchInfo.getTitle());
 		GameEvent event = null;
 		boolean jetztgehtslos = false;
 		MatchStart startEvent = null;
