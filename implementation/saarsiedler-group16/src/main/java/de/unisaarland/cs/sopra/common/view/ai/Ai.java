@@ -39,8 +39,7 @@ public class Ai implements ModelObserver {
 		this.ca = ca;
 		this.generalStrategies = new HashSet<Strategy>();
 		this.generalStrategies.add(new ExpandStrategy(mr));
-		//this.generalStrategies.add(new AttackStrategy(mr));
-		//this.generalStrategies.add(new DeffenceStrategy(mr));
+		this.generalStrategies.add(new AttackStrategy(mr));
 		this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
@@ -103,7 +102,8 @@ public class Ai implements ModelObserver {
 			Stroke bestStroke = sortedStroke.get(0);
 			boolean execute = true;
 			if (!mr.getMe().checkResourcesSufficient(bestStroke.getPrice())){
-				execute = new GreedyTradeOfferStrategy(ca, mr).execute(bestStroke.getPrice());
+				//execute = new GreedyTradeOfferStrategy(ca, mr).execute(bestStroke.getPrice());
+				execute = false;
 			}
 			if (execute) {
 				bestStroke.execute(ca);
