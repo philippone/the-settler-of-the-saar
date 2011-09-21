@@ -93,25 +93,25 @@ public class MoveRobberStrategy extends Strategy {
 			if (i.hasOwner()) { 
 				if (i.getOwner() != mr.getMe()){
 					if (i.getBuildingType() == BuildingType.Village)
-						destinationValue = destinationValue + 0.0833;
-				}	else
 						destinationValue = destinationValue + 0.1667;
+				}	else
+						destinationValue = destinationValue + 0.0001;
 			}
-			else destinationValue = destinationValue + 0.03;
+			else destinationValue = destinationValue + 0.0833;
 		}
 		Set<Intersection> sourceIntersections = mr.getIntersectionsFromField(sourceField);
 		for (Intersection i : sourceIntersections) {
 			if (i.hasOwner()) {
 				if (i.getOwner() == mr.getMe()) {
 					if (i.getBuildingType() == BuildingType.Village) {
-						sourceValue = sourceValue + 0.0833;
+						sourceValue = sourceValue + 0.1667;
 					}
 
 					else
-						sourceValue = sourceValue + 0.1667;
+						sourceValue = sourceValue + 0.0001;
 				}
 			}
-			sourceValue = sourceValue + 0.03;
+			sourceValue = sourceValue + 0.0833;
 		}
 		moveRobberValue = sourceValue + destinationValue;
 		return moveRobberValue;
