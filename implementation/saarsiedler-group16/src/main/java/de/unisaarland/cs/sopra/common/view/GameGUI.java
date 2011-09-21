@@ -1557,7 +1557,7 @@ public class GameGUI extends View implements Runnable{
 		Setting.setSetting(new DisplayMode(1024, 515), false, PlayerColors.YELLOW);  /// Display.getDesktopDisplayMode()
 		
 		CyclicBarrier barrier = new CyclicBarrier(2);
-		GameGUI gameGUI = new GameGUI(model, null, names, "TestSpiel", false, barrier);
+		GameGUI gameGUI = new GameGUI(model, null, names, "TestSpiel", false, barrier, null);
 		new Thread(gameGUI).start();
 		barrier.await();
 	}
