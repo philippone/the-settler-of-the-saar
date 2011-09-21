@@ -167,7 +167,8 @@ public class Popup extends JFrame {
 		longestRoadBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent arg0) {
-				selectedRoad=roadList.get(longestRoadBox.getSelectedIndex());
+				if (roadList != null)
+					selectedRoad=roadList.get(longestRoadBox.getSelectedIndex());
 			}
 		});
 	}
