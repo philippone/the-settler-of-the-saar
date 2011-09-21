@@ -630,7 +630,6 @@ public class GameGUI extends View implements Runnable{
 	@Override
 	public void eventTrade(ResourcePackage resourcePackage) {
 		if (!observer) {
-		deactivateUI();
 		boolean decision = Client.incomingTradeOffer(modelReader.getResources().copy(),resourcePackage);
 		respondTrade.setDecision(decision);
 		controllerAdapter.addGuiEvent(respondTrade);
@@ -754,7 +753,9 @@ public class GameGUI extends View implements Runnable{
 			offerTrade = new Clickable("offerTrade", xOffsetUI+450, yOffsetUI+65, 2, 185, 77, false, true) {
 				@Override
 				public void executeUI() {
+					deactivateUI();
 					ResourcePackage res = Client.tradeOffer(modelReader.getResources(), modelReader.getHarborTypes(modelReader.getMe()));
+					reinitiateUI();
 					//TODO anzahl der handel mitzählen?!
 					if (res != null) {
 						deactivateUI();
@@ -919,7 +920,6 @@ public class GameGUI extends View implements Runnable{
 					String current = playerNames.get(modelReader.getCurrentPlayer());
 
 					console4 = current + " traded with "+ name;
-					reinitiateUI();
 				} 
 			};
 			
