@@ -89,32 +89,32 @@ public class InitializeStrategy extends Strategy {
 			FieldType type = field.getFieldType();
 			if (type == FieldType.FOREST) {
 				if (playerFields.contains(FieldType.FOREST)) {
-					resourceValue = resourceValue + 0.1167;
+					resourceValue = resourceValue + 0.1667;
 				}
-				resourceValue = resourceValue + 0.2333;
+				resourceValue = resourceValue + 0.3333;
 			} else if (type == FieldType.HILLS) {
 				if (playerFields.contains(FieldType.HILLS)) {
-					resourceValue = resourceValue + 0.1167;
+					resourceValue = resourceValue + 0.1667;
 				}
-				resourceValue = resourceValue + 0.2333;
+				resourceValue = resourceValue + 0.3333;
 			} else if (type == FieldType.PASTURE) {
 				if (playerFields.contains(FieldType.PASTURE)) {
-					resourceValue = resourceValue + 0.1167;
+					resourceValue = resourceValue + 0.1667;
 				}
-				resourceValue = resourceValue + 0.2333;
+				resourceValue = resourceValue + 0.3333;
 			} else if (type == FieldType.FIELDS) {
 				if (playerFields.contains(FieldType.FIELDS)) {
-					resourceValue = resourceValue + 0.1167;
+					resourceValue = resourceValue + 0.1667;
 				}
-				resourceValue = resourceValue + 0.2333;
+				resourceValue = resourceValue + 0.3333;
 			} else if (type == FieldType.MOUNTAINS) {
 				if (playerFields.contains(FieldType.MOUNTAINS)) {
-					resourceValue = resourceValue + 0.1167;
+					resourceValue = resourceValue + 0.08335;
 				}
-				resourceValue = resourceValue + 0.2333;
+				resourceValue = resourceValue + 0.1667;
 			}
 		}
-		 intersectionValue =intersectionValue + resourceValue*4.0 + numberValue*0.25;
+		 intersectionValue =intersectionValue + resourceValue*4.0;
 		return intersectionValue;
 	}
 

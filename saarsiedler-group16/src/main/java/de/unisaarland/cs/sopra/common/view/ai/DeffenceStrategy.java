@@ -25,13 +25,13 @@ public class DeffenceStrategy extends Strategy {
 		case BUILD_VILLAGE:
 			return false;
 		case BUILD_TOWN:
-			return false;
+			return true;
 		case BUILD_CATAPULT:
 			return true;
 		case BUILD_STREET:
 			return false;
 		case MOVE_CATAPULT:
-			return false;
+			return true;
 		case MOVE_ROBBER:
 			return false;
 		case RETURN_RESOURCES:
@@ -60,40 +60,27 @@ public class DeffenceStrategy extends Strategy {
 	@Override
 	public double evaluate(BuildTown stroke) {
 		//TODO maybe set townValue to 0.5
-		double townValue = 0.0;
-		Set<Intersection> villages = mr.getSettlements(mr.getMe(), BuildingType.Village);
-		for (Intersection i : villages){
-			Set<Path> neighbours = mr.getPathsFromIntersection(i);
+		double townValue = 0.4;
+		Intersection settlementLocation = stroke.getDestination();
+			Set<Path> neighbours = mr.getPathsFromIntersection(settlementLocation);
 			for (Path p : neighbours){
 				if (p.hasCatapult() && p.getCatapultOwner() != mr.getMe())
 					townValue = 1.0;
 			}
-		}
+		
 		return townValue;
 	}
 
 	@Override
 	public double evaluate(BuildCatapult stroke) {
 		double buildCatapultValue = 0.0;
-		Set<Intersection> playerTowns = mr.getSettlements(mr.getMe(),BuildingType.Town);
-		if (playerTowns.size() > 0) {
-			for (Intersection i : playerTowns) {
-				Set<Path> neighbourPaths = mr.getPathsFromIntersection(i);
+		Path path =  stroke.getDestination();
+				Set<Path> neighbourPaths = mr.getPathsFromPath(path);
 				for (Path p : neighbourPaths) {
 					if (p.hasCatapult() && p.getCatapultOwner() != mr.getMe())
 						buildCatapultValue = buildCatapultValue + 1.0;
 				}
 
-			}
-		}
-		Set<Intersection> playerVillages = mr.getSettlements(mr.getMe(), BuildingType.Village);
-		for (Intersection i : playerVillages){
-			Set<Path> neighboursPathsv = mr.getPathsFromIntersection(i);
-			for (Path p : neighboursPathsv) {
-				if (p.hasCatapult() && p.getCatapultOwner() != mr.getMe())
-					buildCatapultValue = buildCatapultValue + 0.9;
-			}
-		}
 		return buildCatapultValue;
 	}
 
@@ -106,22 +93,25 @@ public class DeffenceStrategy extends Strategy {
 	@Override
 	public double evaluate(MoveCatapult stroke) {
 		double moveCatapultValue = 0.0;
-		Set<Intersection> playerVillages = mr.getSettlements(mr.getMe(), BuildingType.Village);
-		Set<Intersection> playerSettlements = mr.getSettlements(mr.getMe(), BuildingType.Town);
-		playerSettlements.addAll(playerVillages);
-		for (Intersection i : playerSettlements){
-			Set<Path> neighboursPathsS = mr.getPathsFromIntersection(i);
-			for (Path p : neighboursPathsS) {
-				if (p.hasCatapult() && p.getCatapultOwner() != mr.getMe()){
-					Set<Path> neighboursPathp = mr.getPathsFromPath(p);
-					for (Path path : neighboursPathp){
-						if (path.hasCatapult() && path.getCatapultOwner() == mr.getMe())
-							moveCatapultValue = 1.0;
+		 Path source = stroke.getSource();
+		 Path destination = stroke.getDestination();
+		if (destination.hasCatapult())	{
+					if (destination.getCatapultOwner() != mr.getMe()){
+						Set<Intersection> destIntersects = mr.getIntersectionsFromPath(destination);
+						Set<Intersection> sourceAndDest = mr.getIntersectionsFromPath(source);
+						sourceAndDest.addAll(destIntersects);
+						for (Intersection i : sourceAndDest){
+							if (i.hasOwner() && i.getOwner() == mr.getMe())
+								moveCatapultValue = 1.0;
+						}
+						moveCatapultValue = 0.5;
 					}
-				}
+					moveCatapultValue = 0.0;
 					
-			}
-		}
+				}
+					moveCatapultValue = 0.1;
+			
+		
 		return moveCatapultValue;
 	}
 
