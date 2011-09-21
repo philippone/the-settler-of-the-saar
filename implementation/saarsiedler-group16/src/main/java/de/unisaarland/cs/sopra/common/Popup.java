@@ -192,6 +192,12 @@ public class Popup extends JFrame {
 		textField10.setText("0");
 		warning.setVisible(false);
 		warning2.setVisible(false);
+		checkBox1.setSelected(false);
+		checkBox2.setSelected(false);
+		checkBox3.setSelected(false);
+		checkBox4.setSelected(false);
+		checkBox5.setSelected(false);
+		checkBox6.setSelected(false);
 		//TODO warning 3 insert
 	}
 	
@@ -491,6 +497,7 @@ public class Popup extends JFrame {
 		//======== tradePanel ========
 		{
 			tradePanel.setBorder(new EmptyBorder(12, 12, 12, 12));
+			tradePanel.setVisible(false);
 			tradePanel.setLayout(new GridBagLayout());
 			((GridBagLayout)tradePanel.getLayout()).columnWidths = new int[] {0, 0};
 			((GridBagLayout)tradePanel.getLayout()).rowHeights = new int[] {139, 34, 0};
