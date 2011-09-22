@@ -40,16 +40,18 @@ public class Ai implements ModelObserver {
 		this.mr = mr;
 		this.ca = ca;
 		this.generalStrategies = new HashSet<Strategy>();
-		this.generalStrategies.add(new ExpandStrategy(mr));
-		this.generalStrategies.add(new AttackStrategy(mr));
-		this.generalStrategies.add(new DeffenceStrategy(mr));
+		this.generalStrategies.add(new KaisExpandStrategy(mr));
+		//this.generalStrategies.add(new ExpandStrategy(mr));
+		//this.generalStrategies.add(new AttackStrategy(mr));
+		//this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
 		this.returnResourcesStrategies = new HashSet<Strategy>();
 		this.returnResourcesStrategies.add(new ReturnResourcesStrategy(mr));
 		this.initStrategies = new HashSet<Strategy>();
-		this.initStrategies.add(new InitializeStrategy(mr));
-		this.initStrategies.add(new InitNumStrategy(mr));
+		//this.initStrategies.add(new InitializeStrategy(mr));
+		this.initStrategies.add(new KaisInitNumberStrategy(mr));
+		this.initStrategies.add(new KaisInitResourceStrategy(mr));
 		mr.addModelObserver(this);
 	}
 	
@@ -118,13 +120,13 @@ public class Ai implements ModelObserver {
 //		ca.endTurn();
 //	}
 	
-	public void executeLoop(List<Stroke> sortedStroke){
-		boolean execute = sortedStroke.size() > 0;
+	public void executeLoop(){
 		Player me = mr.getMe();
-		int i = 0;
-		while (execute && i < sortedStroke.size()){
+		List<Stroke> sortedStroke;
+		boolean execute = true;
+		while (execute){
 			sortedStroke = getSortedStrokeList(generalStrategies);
-			Stroke bestStroke = sortedStroke.get(i);
+			Stroke bestStroke = sortedStroke.get(0);
 			if (!mr.getMe().checkResourcesSufficient(bestStroke.getPrice())){
 				execute = new StupidTradeOfferStrategy(ca, mr).execute(bestStroke.getPrice());
 			}
@@ -159,14 +161,19 @@ public class Ai implements ModelObserver {
 	public void evaluateStrokes(List<Stroke> strokeList, Set<Strategy> strategySet){
 		for (Stroke stroke : strokeList){
 			double evaluation = 0;
-			int evaluationParticipants = 0;
+			double evaluationParticipants = 0;
 			for (Strategy s : strategySet){
 				if (s.evaluates(stroke)){
 					evaluationParticipants++;
-					evaluation += s.evaluate(stroke);
+					evaluation += s.evaluate(stroke)*s.importance();
 				}
 			}
-			stroke.setEvaluation(evaluation/evaluationParticipants);
+			if (evaluationParticipants == 0){
+				System.out.println("Hua!");
+			}
+			evaluation = evaluation/evaluationParticipants;
+			if (!Double.isNaN(evaluation))
+				stroke.setEvaluation(evaluation);
 		}
 	}
 	
@@ -323,8 +330,7 @@ public class Ai implements ModelObserver {
 	@Override
 	public void eventNewRound(int number) {
 		if (mr.getCurrentPlayer() == mr.getMe()){
-			List<Stroke> sortedStrokes = getSortedStrokeList(generalStrategies);
-			executeLoop(sortedStrokes);
+			executeLoop();
 		}
 	}
 
