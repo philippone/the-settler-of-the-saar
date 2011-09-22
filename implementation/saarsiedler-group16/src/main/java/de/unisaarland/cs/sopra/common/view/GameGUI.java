@@ -1567,7 +1567,7 @@ public class GameGUI extends View implements Runnable{
 		model.buildSettlement(new Location(2,2,0), BuildingType.Town);
 		model.buildCatapult(new Location(2,2,0), true);
 		model.getPath(new Location(3,3,2)).createCatapult(model.getMe());
-		model.getPath(new Location(4,3,4)).createCatapult(model.getTableOrder().get(0));
+		model.getPath(new Location(4,3,4)).createCatapult(model.getTableOrder().get(0)); 
 		
 //		model.getPath(new Location(-1,-1,0)).createStreet(model.getMe());
 //		model.getPath(new Location(-1,-1,1)).createStreet(model.getMe());
