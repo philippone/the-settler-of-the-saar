@@ -56,7 +56,6 @@ public class InitializeStrategy extends Strategy {
 
 	@Override
 	public double evaluate(BuildVillage stroke) {
-		double intersectionValue= 0.0;
 		double resourceValue= 0.0;
 		 Intersection location = stroke.getDestination();
 		 Set<Field> fields = mr.getFieldsFromIntersection(location);
@@ -97,8 +96,7 @@ public class InitializeStrategy extends Strategy {
 				resourceValue = resourceValue + 0.1667;
 			}
 		}
-		 intersectionValue =intersectionValue + resourceValue;
-		return intersectionValue;
+		return resourceValue;
 	}
 
 	@Override
@@ -150,6 +148,10 @@ public class InitializeStrategy extends Strategy {
 	@Override
 	public double evaluate(ReturnResources stroke) {
 		return 0;
+	}
+	
+	public double importance(){
+		return 1;
 	}
 
 }

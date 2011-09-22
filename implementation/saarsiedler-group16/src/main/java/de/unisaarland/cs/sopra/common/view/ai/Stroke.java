@@ -22,8 +22,6 @@ public abstract class Stroke implements Comparable<Stroke>{
 	}
 
 	public void setEvaluation(double evaluation){
-		if (this.evaluation != Double.NEGATIVE_INFINITY)
-			throw new IllegalStateException("The stroke was already evaluated");
 		this.evaluation = evaluation;
 	}
 	

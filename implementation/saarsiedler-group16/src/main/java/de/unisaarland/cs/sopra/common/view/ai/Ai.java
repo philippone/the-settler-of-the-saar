@@ -19,6 +19,7 @@ import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 import de.unisaarland.cs.st.saarsiedler.comm.Connection;
@@ -41,8 +42,8 @@ public class Ai implements ModelObserver {
 		this.generalStrategies = new HashSet<Strategy>();
 		this.generalStrategies.add(new ExpandStrategy(mr));
 		this.generalStrategies.add(new AttackStrategy(mr));
-		this.generalStrategies.add(new DeffenceStrategy(mr));
-		this.generalStrategies.add(new DeffenceStrategy(mr));
+		//this.generalStrategies.add(new DeffenceStrategy(mr));
+		//this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
 		this.returnResourcesStrategies = new HashSet<Strategy>();
@@ -50,8 +51,6 @@ public class Ai implements ModelObserver {
 		this.initStrategies = new HashSet<Strategy>();
 		this.initStrategies.add(new InitializeStrategy(mr));
 		this.initStrategies.add(new InitNumStrategy(mr));
-		//this.initStrategies.add(new WoolHarborStrategy(mr));
-		this.initStrategies.add(new HarborStrategy(mr));
 		mr.addModelObserver(this);
 	}
 	
@@ -100,23 +99,43 @@ public class Ai implements ModelObserver {
 	}
 	
 	
-	public void execute(List<Stroke> sortedStroke){
-		if (sortedStroke.size() > 0){
-			//TODO remove the random crap
-			//Collections.shuffle(sortedStroke);
-			Stroke bestStroke = sortedStroke.get(0);
-			boolean execute = true;
+//	public void execute(List<Stroke> sortedStroke){
+//		if (sortedStroke.size() > 0){
+//			//TODO remove the random crap
+//			//Collections.shuffle(sortedStroke);
+//			Stroke bestStroke = sortedStroke.get(0);
+//			boolean execute = true;
+//			if (!mr.getMe().checkResourcesSufficient(bestStroke.getPrice())){
+//				execute = new StupidTradeOfferStrategy(ca, mr).execute(bestStroke.getPrice());
+//				execute = false;
+//			}
+//			if (execute) {
+//				System.out.println(bestStroke);
+//				bestStroke.execute(ca);
+//				//claimVictoryIfPossible();
+//			}
+//		}
+//		// TODO vll loop?
+//		ca.endTurn();
+//	}
+	
+	public void executeLoop(List<Stroke> sortedStroke){
+		boolean execute = sortedStroke.size() > 0;
+		Player me = mr.getMe();
+		int i = 0;
+		while (execute && i < sortedStroke.size()){
+			sortedStroke = getSortedStrokeList(generalStrategies);
+			Stroke bestStroke = sortedStroke.get(i);
 			if (!mr.getMe().checkResourcesSufficient(bestStroke.getPrice())){
 				execute = new StupidTradeOfferStrategy(ca, mr).execute(bestStroke.getPrice());
-				execute = false;
 			}
 			if (execute) {
 				System.out.println(bestStroke);
+				
 				bestStroke.execute(ca);
 				claimVictoryIfPossible();
 			}
 		}
-		// TODO vll loop?
 		ca.endTurn();
 	}
 	
@@ -145,7 +164,7 @@ public class Ai implements ModelObserver {
 			for (Strategy s : strategySet){
 				if (s.evaluates(stroke)){
 					evaluationParticipants++;
-					evaluation += s.evaluate(stroke);
+					evaluation += s.evaluate(stroke)*s.importance();
 				}
 			}
 			stroke.setEvaluation(evaluation/evaluationParticipants);
@@ -296,16 +315,17 @@ public class Ai implements ModelObserver {
 	}
 
 	@Override
-	public void eventTrade(ResourcePackage resourcePackage) {
-		TradeStrategy tradeStrategy = new StupidTradeStrategy();
-		ca.respondTrade(tradeStrategy.accepts());
+	public void eventTrade(ResourcePackage offer) {
+		Stroke bestStroke = getSortedStrokeList(generalStrategies).get(0);
+		TradeStrategy tradeStrategy = new NaiveTradeStrategy(mr, ca);
+		tradeStrategy.accept(bestStroke.getPrice(), offer);
 	}
 
 	@Override
 	public void eventNewRound(int number) {
 		if (mr.getCurrentPlayer() == mr.getMe()){
 			List<Stroke> sortedStrokes = getSortedStrokeList(generalStrategies);
-			execute(sortedStrokes);
+			executeLoop(sortedStrokes);
 		}
 	}
 
@@ -328,3 +348,4 @@ public class Ai implements ModelObserver {
 	} 
 
 }
+

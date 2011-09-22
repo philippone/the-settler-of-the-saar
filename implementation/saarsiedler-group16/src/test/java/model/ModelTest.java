@@ -193,6 +193,160 @@ public class ModelTest {
 		 //model.longestRaodClaimed(Model.getLocationList(longRoad0));
 	}
 	
+	
+	
+	@Test
+	public void testCalculateLongestRoad2() throws IOException {
+		 model= TestUtil.getStandardModel4();
+		 model.newRound(8);
+		 // owner = currentPlayer
+		 Player owner = model.getTableOrder().get(0);
+		 owner.modifyResources(new ResourcePackage(10000,10000,10000,10000,10000));
+		 // erwartete Liste von longestRoads
+		 List< List<Path> > expectedLongestRoad = new ArrayList<List<Path>>();
+		 List<Path> longRoad0 = new LinkedList<Path>();	
+		 List<Path> reversedLongRoad0 = new LinkedList<Path>();
+		 
+		 model.getIntersection(new Location(0,0,0)).createBuilding(BuildingType.Village, owner); 
+		 model.getIntersection(new Location(1,0,5)).createBuilding(BuildingType.Village, owner); 	 
+		 model.getIntersection(new Location(1,0,3)).createBuilding(BuildingType.Village, owner); 
+		 
+		 model.getPath(new Location(0,0,0)).createStreet(owner);
+		 model.getPath(new Location(0,0,5)).createStreet(owner);
+		 model.getPath(new Location(0,0,4)).createStreet(owner);
+		 model.getPath(new Location(0,0,3)).createStreet(owner);
+		 model.getPath(new Location(1,0,5)).createStreet(owner);
+		 model.getPath(new Location(1,0,4)).createStreet(owner);
+		 model.getPath(new Location(1,0,3)).createStreet(owner);
+		 
+		 longRoad0.add(model.getPath(new Location(0,0,0)));
+		 longRoad0.add(model.getPath(new Location(0,0,5)));
+		 longRoad0.add(model.getPath(new Location(0,0,4)));
+		 longRoad0.add(model.getPath(new Location(1,0,5)));
+		 longRoad0.add(model.getPath(new Location(1,0,4)));
+		 longRoad0.add(model.getPath(new Location(1,0,3)));
+		 reversedLongRoad0.addAll(longRoad0);
+		 Collections.reverse(reversedLongRoad0);		 
+		 expectedLongestRoad.add(longRoad0);
+		 expectedLongestRoad.add(reversedLongRoad0);
+		 List<List<Path>> currentLongestRoad = model.calculateLongestRoads(owner);
+		 assertEquals(currentLongestRoad.size(),expectedLongestRoad.size());
+		 assertTrue(currentLongestRoad.containsAll(expectedLongestRoad) && expectedLongestRoad.containsAll(currentLongestRoad));
+	}
+	
+	@Test
+	public void testCalculateLongestRoad1() {
+		 //neue Runde (die erste)
+		 model.newRound(8);
+		 // owner = currentPlayer
+		 Player owner = model.getTableOrder().get(0);
+		 owner.modifyResources(new ResourcePackage(10000,10000,10000,10000,10000));
+		 // erwartete Liste von longestRoads
+		 List< List<Path> > expectedLongestRoad = new ArrayList<List<Path>>();
+		 List<Path> longRoad0 = new LinkedList<Path>();	
+		 List<Path> reversedLongRoad0 = new LinkedList<Path>();
+		 
+		 model.getIntersection(new Location(0,1,0)).createBuilding(BuildingType.Village, owner); 
+		 model.getIntersection(new Location(0,2,0)).createBuilding(BuildingType.Village, owner); 	 
+		 model.getIntersection(new Location(0,3,0)).createBuilding(BuildingType.Town, owner); 
+		 model.getIntersection(new Location(1,0,0)).createBuilding(BuildingType.Town, owner); 		 
+		 model.getIntersection(new Location(0,0,2)).createBuilding(BuildingType.Town, owner); 
+		 model.getIntersection(new Location(0,1,2)).createBuilding(BuildingType.Village, owner); 		 
+		 model.getIntersection(new Location(0,2,2)).createBuilding(BuildingType.Town, owner); 
+		 model.getIntersection(new Location(1,0,4)).createBuilding(BuildingType.Village, owner); 		 
+		 model.getIntersection(new Location(1,1,4)).createBuilding(BuildingType.Village, owner); 
+		 model.getIntersection(new Location(1,2,4)).createBuilding(BuildingType.Village, owner); 	 
+		 model.getIntersection(new Location(1,3,4)).createBuilding(BuildingType.Village, owner); 
+		 
+		 model.getPath(new Location(0,1,0)).createStreet(owner);
+		 model.getPath(new Location(0,2,5)).createStreet(owner);
+		 model.getPath(new Location(0,2,0)).createStreet(owner);
+		 model.getPath(new Location(0,3,5)).createStreet(owner);
+		 model.getPath(new Location(0,0,3)).createStreet(owner);
+		 model.getPath(new Location(0,0,2)).createStreet(owner);
+		 model.getPath(new Location(0,1,3)).createStreet(owner);
+		 model.getPath(new Location(0,1,2)).createStreet(owner);
+		 model.getPath(new Location(0,1,1)).createStreet(owner);
+		 model.getPath(new Location(0,2,3)).createStreet(owner);
+		 model.getPath(new Location(0,2,2)).createStreet(owner);
+		 model.getPath(new Location(1,1,1)).createStreet(owner);
+		 model.getPath(new Location(1,2,1)).createStreet(owner);
+		 
+		 longRoad0.add(model.getPath(new Location(0,3,5)));
+		 longRoad0.add(model.getPath(new Location(0,2,0)));
+		 longRoad0.add(model.getPath(new Location(0,2,5)));
+		 longRoad0.add(model.getPath(new Location(0,1,1)));
+		 longRoad0.add(model.getPath(new Location(0,1,2)));
+		 longRoad0.add(model.getPath(new Location(0,1,3)));
+		 longRoad0.add(model.getPath(new Location(0,0,2)));
+		 longRoad0.add(model.getPath(new Location(0,0,3)));
+		 reversedLongRoad0.addAll(longRoad0);
+		 Collections.reverse(reversedLongRoad0);		 
+		 expectedLongestRoad.add(longRoad0);
+		 expectedLongestRoad.add(reversedLongRoad0);
+		 List<List<Path>> currentLongestRoad = model.calculateLongestRoads(owner);
+		 assertEquals(currentLongestRoad.size(),expectedLongestRoad.size());
+		 assertTrue(currentLongestRoad.containsAll(expectedLongestRoad) && expectedLongestRoad.containsAll(currentLongestRoad));
+
+
+		 model.getPath(new Location(1,0,1)).createStreet(owner);
+		 List<Path> longRoad1 = new LinkedList<Path>();	
+		 List<Path> reversedLongRoad1 = new LinkedList<Path>();
+		 longRoad1.addAll(longRoad0);
+		 longRoad1.remove(model.getPath(new Location(0,0,3)));
+		 longRoad1.add(model.getPath(new Location(1,0,1)));
+		 reversedLongRoad1.addAll(longRoad1);
+		 Collections.reverse(reversedLongRoad1);
+		 expectedLongestRoad.add(longRoad1);
+		 expectedLongestRoad.add(reversedLongRoad1);
+		 currentLongestRoad = model.calculateLongestRoads(owner);
+		 assertEquals(currentLongestRoad.size(),expectedLongestRoad.size());
+		 assertTrue(currentLongestRoad.containsAll(expectedLongestRoad) && expectedLongestRoad.containsAll(currentLongestRoad));
+
+		 model.getPath(new Location(1,0,2)).createStreet(owner);
+		 List<Path> longRoad2 = new LinkedList<Path>();
+		 longRoad2.addAll(longRoad1);
+		 longRoad2.add(model.getPath(new Location(1,0,2)));
+		 List<Path> reversedLongRoad2 = new LinkedList<Path>();
+		 reversedLongRoad2.addAll(longRoad2);
+		 Collections.reverse(reversedLongRoad2);
+		 expectedLongestRoad.remove(longRoad0);
+		 expectedLongestRoad.remove(reversedLongRoad0);
+		 expectedLongestRoad.remove(longRoad1);
+		 expectedLongestRoad.remove(reversedLongRoad1);
+		 expectedLongestRoad.add(longRoad2);
+		 expectedLongestRoad.add(reversedLongRoad2);
+		 currentLongestRoad = model.calculateLongestRoads(owner);
+		 for (List<Path> lp: currentLongestRoad){
+				System.out.println(lp);
+			}
+			System.out.println(currentLongestRoad.size());
+			System.out.println(currentLongestRoad.get(0).size());
+			 for (List<Path> lp: expectedLongestRoad){
+					System.out.println(lp);
+				}
+			System.out.println(expectedLongestRoad.size());		
+			System.out.println(expectedLongestRoad.get(0).size());	 
+		 assertEquals(currentLongestRoad.size(),expectedLongestRoad.size());
+		 assertTrue(currentLongestRoad.containsAll(expectedLongestRoad) && expectedLongestRoad.containsAll(currentLongestRoad));
+
+		 model.getPath(new Location(1,0,3)).createStreet(owner);
+		 List<Path> longRoad3= new LinkedList<Path>();
+		 longRoad3.addAll(longRoad2);
+		 longRoad3.add(model.getPath(new Location(1,0,3)));
+		 List<Path> reversedLongRoad3 = new LinkedList<Path>();
+		 reversedLongRoad3.addAll(longRoad3);
+		 Collections.reverse(reversedLongRoad3);
+		 expectedLongestRoad.remove(longRoad2);
+		 expectedLongestRoad.remove(reversedLongRoad2);
+		 expectedLongestRoad.add(longRoad3);
+		 expectedLongestRoad.add(reversedLongRoad3);
+		 currentLongestRoad = model.calculateLongestRoads(owner);
+		 assertEquals(currentLongestRoad.size(),expectedLongestRoad.size());
+		 assertTrue(currentLongestRoad.containsAll(expectedLongestRoad) && expectedLongestRoad.containsAll(currentLongestRoad));
+		
+	}
+	
 	@Test
 	public void testSetTableOrder() {
 		assertEquals("TableOrder nicht richitg gesetzt", model.getPlayerMap().get(1L), model.getTableOrder().get(0));

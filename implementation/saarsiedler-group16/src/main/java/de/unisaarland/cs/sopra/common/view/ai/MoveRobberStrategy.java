@@ -125,5 +125,9 @@ public class MoveRobberStrategy extends Strategy {
 	
 		return 0;
 	}
+	
+	public double importance(){
+		return 1;
+	}
 
 }
