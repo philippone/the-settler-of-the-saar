@@ -420,13 +420,11 @@ public class GameGUI extends View implements Runnable{
 				deactivateUI();
 			}
 	}
-
 	
 	@Override
 	public void updateVictoryPoints() {
 		//TODO: implement it!
 	}
-
 	
 	@Override
 	public void updateCatapultCount() {
@@ -435,7 +433,6 @@ public class GameGUI extends View implements Runnable{
 			this.catapult[i++] = modelReader.getCatapults(act).size();
 		}
 	}
-
 	
 	@Override
 	public void updateSettlementCount(BuildingType buildingType) {
@@ -612,7 +609,7 @@ public class GameGUI extends View implements Runnable{
 						name = playerNames.get(modelReader.getPlayerMap().get(player));
 					}
 					else if(player == -2) {
-						name = "Bank"; //handel mitzählen
+						name = "Bank"; //handel mitzählen TODO
 					}
 					console4 = "You traded with "+ name;
 					reinitiateUI();
@@ -1124,8 +1121,7 @@ public class GameGUI extends View implements Runnable{
 			return null;
 		//TODO evtl verbessern da nur klappt wenn man ca genau in die mitte klickt
 	}
-	
-	
+
 	public Intersection getMouseIntersection() {
 		int tmpx = getOglx();
 		int tmpy = getOgly();
