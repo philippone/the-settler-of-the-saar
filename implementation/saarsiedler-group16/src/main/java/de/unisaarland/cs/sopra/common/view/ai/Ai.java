@@ -165,6 +165,7 @@ public class Ai implements ModelObserver {
 	}
 
 	
+	
 	public void claimVictoryIfPossible(){
 		if (mr.getMaxVictoryPoints() <= mr.getMe().getVictoryPoints()){
 			ca.claimVictory();

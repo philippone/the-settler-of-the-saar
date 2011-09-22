@@ -91,9 +91,9 @@ public class InitializeStrategy extends Strategy {
 				resourceValue = resourceValue + 0.3333;
 			} else if (type == FieldType.MOUNTAINS) {
 				if (playerFields.contains(FieldType.MOUNTAINS)) {
-					resourceValue = resourceValue + 0.08335;
+					resourceValue = resourceValue + 0.1667;
 				}
-				resourceValue = resourceValue + 0.1667;
+				resourceValue = resourceValue + 0.3333;
 			}
 		}
 		return resourceValue;
