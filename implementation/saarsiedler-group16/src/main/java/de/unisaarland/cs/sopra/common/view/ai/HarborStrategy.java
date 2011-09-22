@@ -105,4 +105,9 @@ public class HarborStrategy extends Strategy {
 		return 0;
 	}
 
+	@Override
+	public double importance() {
+		return 1;
+	}
+
 }

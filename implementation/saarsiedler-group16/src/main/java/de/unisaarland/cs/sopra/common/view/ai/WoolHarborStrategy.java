@@ -124,5 +124,9 @@ public class WoolHarborStrategy extends Strategy {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	@Override
+	public double importance() {
+		return 0;
+	}
 
 }

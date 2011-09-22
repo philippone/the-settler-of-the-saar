@@ -139,5 +139,9 @@ public class InitNumStrategy extends Strategy {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	
+	public double importance(){
+		return 0.5;
+	}
 
 }

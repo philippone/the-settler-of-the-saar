@@ -16,7 +16,6 @@ public class ExpandStrategy extends Strategy {
 
 	public ExpandStrategy(ModelReader mr) {
 		super(mr);
-		// TODO Auto-generated constructor stub
 	}
 
 	
@@ -176,6 +175,12 @@ public class ExpandStrategy extends Strategy {
 	public double evaluate(ReturnResources stroke) {
 	
 		return 0;
+	}
+
+
+	@Override
+	public double importance() {
+		return 1;
 	}
 
 }

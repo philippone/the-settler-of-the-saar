@@ -78,5 +78,9 @@ public class ReturnResourcesStrategy extends Strategy {
 		// TODO Implement this Method
 		return 0;
 	}
+	
+	public double importance(){
+		return 0;
+	}
 
 }
