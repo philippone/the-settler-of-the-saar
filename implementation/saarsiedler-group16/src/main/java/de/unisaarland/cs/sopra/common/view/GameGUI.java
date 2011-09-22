@@ -11,7 +11,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -1027,11 +1029,24 @@ public class GameGUI extends View implements Runnable{
 						Path source = getMousePath();
 						if (source != null && modelReader.getCatapults(modelReader.getMe()).contains(source)) {
 							catapultAction.setPath(source);
-							selectionLocation = Model.getLocationListPath(modelReader.attackableCatapults(source));
-							selectionLocation2 = Model.getLocationListPath(modelReader.catapultMovePaths(source));
-							selectionLocation3 = Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Village, source));
-							selectionLocation3.addAll(Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Town, source)));
-							if (selectionLocation.size()!=0 || selectionLocation2.size()!=0 || selectionLocation3.size()!=0)
+							boolean moveRes = modelReader.affordableCatapultAttack() > 0;
+							boolean attackRes = modelReader.affordableSettlementAttack() > 0;
+							if (moveRes) {
+								selectionLocation = Model.getLocationListPath(modelReader.attackableCatapults(source));
+								selectionLocation2 = Model.getLocationListPath(modelReader.catapultMovePaths(source));
+							}
+							else {
+								selectionLocation = new LinkedList<Location>();
+								selectionLocation2 = new LinkedList<Location>();
+							}
+							if (attackRes) {
+								selectionLocation3 = Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Village, source));
+								selectionLocation3.addAll(Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Town, source)));
+							}
+							else {
+								selectionLocation3 = new LinkedList<Location>();
+							}
+							if (selectionLocation.size()!=0 || selectionLocation2.size()!=0 || selectionLocation3.size()!=0 )
 								selectionMode = CATAPULT_ACTION_DST;
 						}
 						break;
@@ -1112,6 +1127,7 @@ public class GameGUI extends View implements Runnable{
 						break;
 					case CATAPULT_ACTION_DST:
 						Intersection destInter = getMouseIntersection();
+						// Attack Intersection
 						if (destInter != null && selectionLocation3.contains(Model.getLocation(destInter))) {
 							catapultAction.setIntersection(destInter);
 							catapultAction.setPath2(null);
@@ -1122,9 +1138,11 @@ public class GameGUI extends View implements Runnable{
 						}
 						
 						Path destPath = getMousePath();
+						// deactivate selection mode
 						if (destPath == catapultAction.getPath()) {
 							selectionMode = NONE;
 						}
+						// move to path 
 						else if (modelReader.getCatapults(modelReader.getMe()).contains(destPath)){
 							catapultAction.setPath(destPath);
 							selectionLocation = Model.getLocationListPath(modelReader.attackableCatapults(destPath));
@@ -1134,6 +1152,7 @@ public class GameGUI extends View implements Runnable{
 							if (selectionLocation.size()==0 && selectionLocation2.size()==0 && selectionLocation3.size()==0)
 								selectionMode = NONE;
 						}
+						// Attack catapult
 						else if(selectionLocation.contains(Model.getLocation(destPath)) || selectionLocation2.contains(Model.getLocation(destPath))){
 							catapultAction.setPath2(destPath);
 							selectionMode = NONE;
@@ -1520,7 +1539,7 @@ public class GameGUI extends View implements Runnable{
 		names.put(model.getTableOrder().get(2), "Herbert");
 		names.put(model.getTableOrder().get(1), "Hubert");
 		names.put(model.getTableOrder().get(0), "Hannes");
-		model.getTableOrder().get(3).modifyResources(new ResourcePackage(100,200,140,130,120));
+		model.getTableOrder().get(3).modifyResources(new ResourcePackage(100,100,100,2,10));
 		
 		model.buildSettlement(new Location(3,3,0), BuildingType.Village);
 		model.buildStreet(new Location(3,3,0));
