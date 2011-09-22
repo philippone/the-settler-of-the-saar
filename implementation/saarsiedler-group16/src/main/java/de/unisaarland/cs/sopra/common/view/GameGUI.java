@@ -1,9 +1,44 @@
 package de.unisaarland.cs.sopra.common.view;
 
-import static de.unisaarland.cs.sopra.common.PlayerColors.*;
-import static de.unisaarland.cs.sopra.common.view.RenderBoard.*;
-import static de.unisaarland.cs.sopra.common.view.Textures.*;
-import static de.unisaarland.cs.sopra.common.view.Util.*;
+import static de.unisaarland.cs.sopra.common.PlayerColors.BLACK;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.aspectRatio;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.camDown;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.camIn;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.camLeft;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.camOut;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.camRight;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.camTop;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.drawSquareLeftTop;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.drawSquareMid;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.getOglx;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.getOgly;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.getOrgZ;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.initiateRenderBoard;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.maxX;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.minX;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.minY;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.renderField;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.renderFieldMark;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.renderIntersection;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.renderIntersectionMark;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.renderPath;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.renderPathMark;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.resetCamera;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.screenToOpenGLx;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.screenToOpenGLy;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.windowHeight;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.windowWidth;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.x;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.y;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.z;
+import static de.unisaarland.cs.sopra.common.view.Textures.catapultTexture;
+import static de.unisaarland.cs.sopra.common.view.Textures.initiateTextures;
+import static de.unisaarland.cs.sopra.common.view.Textures.streetTexture;
+import static de.unisaarland.cs.sopra.common.view.Textures.townTexture;
+import static de.unisaarland.cs.sopra.common.view.Textures.uiTextureMap;
+import static de.unisaarland.cs.sopra.common.view.Textures.villageTexture;
+import static de.unisaarland.cs.sopra.common.view.Util.initiateUtil;
+import static de.unisaarland.cs.sopra.common.view.Util.setColor;
 
 import java.awt.Font;
 import java.io.File;
@@ -123,8 +158,6 @@ public class GameGUI extends View implements Runnable{
 	boolean finished = false;
 	
 	private long lastinputcheck;
-
-	public static ModelReader mr;
 	
 	@SuppressWarnings("unused")
 	private Timeouts timeouts;
@@ -133,9 +166,8 @@ public class GameGUI extends View implements Runnable{
 		super(modelReader, controllerAdapter);
 		this.modelReader.addModelObserver(this);
 		this.timeouts = timeouts; //TODO timeouts nutzen
-		mr = this.modelReader;
-		initiateRenderBoard();
-		initiateUtil();
+		initiateRenderBoard(modelReader);
+		initiateUtil(modelReader);
 		this.playerNames = names;
 		this.selectionMode = NONE;
 		this.gameTitle = gameTitle;
@@ -531,8 +563,8 @@ public class GameGUI extends View implements Runnable{
 			          render();
 			      }
 			}
-			Display.destroy();
 			controllerAdapter.leaveMatch();
+			Display.destroy();
 			Client.backToLobby();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1383,20 +1415,20 @@ public class GameGUI extends View implements Runnable{
 		model.newRound(2);
 		model.newRound(2);
 		
-		model.buildStreet(new Location(1,2,2));
-		model.buildStreet(new Location(2,1,1));
-		model.buildSettlement(new Location(2,2,0), BuildingType.Town);
-		model.buildCatapult(new Location(2,2,0), true);
-		model.getPath(new Location(3,3,2)).createCatapult(model.getMe());
-		model.getPath(new Location(4,3,4)).createCatapult(model.getTableOrder().get(0)); 
-		
+//		model.buildStreet(new Location(1,2,2));
+//		model.buildStreet(new Location(2,1,1));
+//		model.buildSettlement(new Location(2,2,0), BuildingType.Town);
+//		model.buildCatapult(new Location(2,2,0), true);
+//		model.getPath(new Location(3,3,2)).createCatapult(model.getMe());
+//		model.getPath(new Location(4,3,4)).createCatapult(model.getTableOrder().get(0)); 
+//		
 //		model.getPath(new Location(-1,-1,0)).createStreet(model.getMe());
 //		model.getPath(new Location(-1,-1,1)).createStreet(model.getMe());
 //		model.getPath(new Location(-1,-1,2)).createStreet(model.getMe());
 //		model.getPath(new Location(-1,-1,3)).createStreet(model.getMe());
 //		model.getPath(new Location(-1,-1,4)).createStreet(model.getMe());
 //		model.getPath(new Location(-1,-1,5)).createStreet(model.getMe());
-		
+//		
 //		model.getPath(new Location(-1,-1,0)).createCatapult(model.getMe());
 //		model.getPath(new Location(-1,-1,1)).createCatapult(model.getMe());
 //		model.getPath(new Location(-1,-1,2)).createCatapult(model.getMe());
@@ -1410,9 +1442,9 @@ public class GameGUI extends View implements Runnable{
 //		model.getIntersection(new Location(-1,-1,3)).createBuilding(BuildingType.Town, model.getMe());
 //		model.getIntersection(new Location(-1,-1,4)).createBuilding(BuildingType.Town, model.getMe());
 //		model.getIntersection(new Location(-1,-1,5)).createBuilding(BuildingType.Town, model.getMe());
-		
+//		
 //		model.getField(new Point(2,2)).setRobber(true);
-		
+//		
 //		Setting.setSetting(Display.getDesktopDisplayMode(), true, PlayerColors.RED);
 		Setting.setSetting(new DisplayMode(1024, 515), false, PlayerColors.YELLOW);  /// Display.getDesktopDisplayMode()
 		

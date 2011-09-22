@@ -93,7 +93,7 @@ public abstract class Clickable {
 	
 	private boolean checkClick(float xogl, float yogl) {
 		if (active) {
-			return (xogl > x && xogl < x+width*0.854f && yogl > y && yogl < y+height*0.48f);
+			return (xogl > x && xogl < x+width*0.82f && yogl > y && yogl < y+height*0.48f);
 		}
 		return false;
 	}
