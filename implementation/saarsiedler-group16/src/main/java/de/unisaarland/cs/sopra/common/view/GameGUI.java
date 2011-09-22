@@ -1,9 +1,44 @@
 package de.unisaarland.cs.sopra.common.view;
 
-import static de.unisaarland.cs.sopra.common.PlayerColors.*;
-import static de.unisaarland.cs.sopra.common.view.RenderBoard.*;
-import static de.unisaarland.cs.sopra.common.view.Textures.*;
-import static de.unisaarland.cs.sopra.common.view.Util.*;
+import static de.unisaarland.cs.sopra.common.PlayerColors.BLACK;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.aspectRatio;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.camDown;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.camIn;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.camLeft;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.camOut;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.camRight;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.camTop;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.drawSquareLeftTop;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.drawSquareMid;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.getOglx;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.getOgly;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.getOrgZ;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.initiateRenderBoard;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.maxX;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.minX;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.minY;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.renderField;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.renderFieldMark;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.renderIntersection;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.renderIntersectionMark;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.renderPath;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.renderPathMark;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.resetCamera;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.screenToOpenGLx;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.screenToOpenGLy;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.windowHeight;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.windowWidth;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.x;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.y;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.z;
+import static de.unisaarland.cs.sopra.common.view.Textures.catapultTexture;
+import static de.unisaarland.cs.sopra.common.view.Textures.initiateTextures;
+import static de.unisaarland.cs.sopra.common.view.Textures.streetTexture;
+import static de.unisaarland.cs.sopra.common.view.Textures.townTexture;
+import static de.unisaarland.cs.sopra.common.view.Textures.uiTextureMap;
+import static de.unisaarland.cs.sopra.common.view.Textures.villageTexture;
+import static de.unisaarland.cs.sopra.common.view.Util.initiateUtil;
+import static de.unisaarland.cs.sopra.common.view.Util.setColor;
 
 import java.awt.Font;
 import java.io.File;
@@ -123,8 +158,6 @@ public class GameGUI extends View implements Runnable{
 	boolean finished = false;
 	
 	private long lastinputcheck;
-
-	public static ModelReader mr;
 	
 	@SuppressWarnings("unused")
 	private Timeouts timeouts;
@@ -133,7 +166,6 @@ public class GameGUI extends View implements Runnable{
 		super(modelReader, controllerAdapter);
 		this.modelReader.addModelObserver(this);
 		this.timeouts = timeouts; //TODO timeouts nutzen
-		mr = this.modelReader;
 		initiateRenderBoard();
 		initiateUtil();
 		this.playerNames = names;
