@@ -6,7 +6,6 @@ import static de.unisaarland.cs.sopra.common.PlayerColors.ORANGE;
 import static de.unisaarland.cs.sopra.common.PlayerColors.PURPLE;
 import static de.unisaarland.cs.sopra.common.PlayerColors.WHITE;
 import static de.unisaarland.cs.sopra.common.PlayerColors.YELLOW;
-import static de.unisaarland.cs.sopra.common.view.GameGUI.*;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,13 +18,14 @@ import org.lwjgl.opengl.GL11;
 
 import de.unisaarland.cs.sopra.common.PlayerColors;
 import de.unisaarland.cs.sopra.common.Setting;
+import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Player;
 
 public class Util {
 
 	private static Map<Player,PlayerColors> colorMap;
 	
-	public static void initiateUtil() {
+	public static void initiateUtil(ModelReader mr) {
 		//set color of players
 		List<PlayerColors> tmp = new LinkedList<PlayerColors>();
 		tmp.addAll(Arrays.asList(new PlayerColors[] {YELLOW,ORANGE,WHITE,PURPLE,BLUE,BROWN}));

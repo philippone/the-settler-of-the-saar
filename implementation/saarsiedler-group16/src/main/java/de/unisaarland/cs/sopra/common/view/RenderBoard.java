@@ -1,7 +1,6 @@
 package de.unisaarland.cs.sopra.common.view;
 
 import static de.unisaarland.cs.sopra.common.PlayerColors.BLACK;
-import static de.unisaarland.cs.sopra.common.view.GameGUI.mr;
 import static de.unisaarland.cs.sopra.common.view.Textures.catapultTexture;
 import static de.unisaarland.cs.sopra.common.view.Textures.fieldMarkTexture;
 import static de.unisaarland.cs.sopra.common.view.Textures.fieldTextureMap;
@@ -29,6 +28,7 @@ import de.unisaarland.cs.sopra.common.model.FieldType;
 import de.unisaarland.cs.sopra.common.model.HarborType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.Location;
+import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Point;
 
@@ -42,8 +42,10 @@ public class RenderBoard {
 	public static int windowHeight;
 	public static float aspectRatio;
 	private static float ZOOM_FACTOR = 0.00909090909090909091f;
+	private static ModelReader mr;
 	
-	public static void initiateRenderBoard() {
+	public static void initiateRenderBoard(ModelReader mr) {
+		RenderBoard.mr = mr;
 		int boardwidth = mr.getBoardWidth();
 		int boardheight = mr.getBoardHeight();
 		windowWidth = Setting.getDisplayMode().getWidth();
