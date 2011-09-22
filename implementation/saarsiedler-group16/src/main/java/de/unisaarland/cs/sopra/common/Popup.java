@@ -1033,7 +1033,7 @@ public class Popup extends JFrame {
 					new Insets(0, 0, 0, 5), 0, 0));
 
 				//---- cancelButton2 ----
-				cancelButton2.setText("Decline");
+				cancelButton2.setText("Cancel");
 				buttonBar4.add(cancelButton2, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 0), 0, 0));
