@@ -28,7 +28,6 @@ import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.HarborType;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.ModelWriter;
-import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
@@ -50,7 +49,6 @@ public class Client {
 	public static Connection connection;
 	public static MatchInformation matchInfo;
 	private static GUIFrame clientGUI;
-	private static Setting setting;
 	static WorldRepresentation worldRepo;
 	public static boolean joinAsAI;
 	static ResourcePackage returnPackage;
@@ -66,7 +64,7 @@ public class Client {
 		clientGUI = new GUIFrame();
 		popup = new Popup();
 		loadSettings();
-		
+		tradeAbort=true;
 	}
 	private static void initOpenGL(){
 		
@@ -111,6 +109,7 @@ public class Client {
 	
 	public static void joinMatch(boolean asObserver) {
 		try {
+			clientGUI.joinMatchName.setText("ID: " +matchInfo.getId()+"   Gametitle: "+ matchInfo.getTitle());
 			worldRepo=connection.getWorld(matchInfo.getWorldId());
 			JoinResult res=connection.joinMatch(matchInfo.getId(), asObserver);
 			if(res==JoinResult.ALREADY_RUNNING
@@ -122,9 +121,11 @@ public class Client {
 	}
 	
 	public static void createMatch(String title, int numPlayer, WorldRepresentation world, boolean asObserver) {
+		
 		worldRepo=world;
 		try {	//erstellt Match udn setzt aktuelle Matchinfo auf das erstellste spiel
 			matchInfo = connection.newMatch(title, numPlayer,worldRepo, asObserver);	} catch (Exception e) {	e.printStackTrace();}
+		clientGUI.joinMatchName.setText("ID: " +matchInfo.getId()+"   Gametitle: "+ matchInfo.getTitle());
 	}
 	
 	public static void ready(boolean ready) {
@@ -209,7 +210,6 @@ public class Client {
 	}
 	
 	public static void initializeMatch() {	
-		clientGUI.joinMatchName.setText("ID: " +matchInfo.getId()+"Gametitle: "+ matchInfo.getTitle());
 		GameEvent event = null;
 		boolean jetztgehtslos = false;
 		MatchStart startEvent = null;
@@ -436,7 +436,7 @@ public class Client {
 	
 	public static ResourcePackage tradeOffer(ResourcePackage rp, Set<HarborType> set){
 		//TODO use the set to show trade possibilites
-		tradeAbort=!tradeAbort;
+		tradeAbort=false;
 		returnPackage=null;
 		popup.setTitle("Make a Trade Offer");
 		popup.incomingTradePanel.setVisible(false);
@@ -515,17 +515,17 @@ public class Client {
 		if(acceptTrade>0)return true;
 		else return false;
 	}
-	public static void selectLongestRoad(List<List<Path>> roads, List<Path> selected, List<Path> ret){
+	public static void selectLongestRoad(){
 		popup.setTitle("Longest Road");
 		popup.tradePanel.setVisible(false);
 		popup.returnPackPanel.setVisible(false);
 		popup.incomingTradePanel.setVisible(false);
 		popup.longestRoadPanel.setVisible(true);
-		for (int i = 0; i < roads.size(); i++) {
+		popup.setVisible(true);
+		for (int i = 0; i < GameGUI.longestroad.size(); i++) {
 			popup.longestRoadBox.addItem("Road "+i);
 		}
 		popup.longestRoadBox.setSelectedIndex(0); //to avoid initial not selected roads
-		popup.setRoadList(roads, selected, ret);	
 	}
 	
 	public static void backToLobby(){

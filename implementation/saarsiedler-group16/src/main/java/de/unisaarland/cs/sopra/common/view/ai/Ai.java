@@ -1,4 +1,3 @@
-
 package de.unisaarland.cs.sopra.common.view.ai;
 
 import java.io.IOException;
@@ -143,7 +142,7 @@ public class Ai implements ModelObserver {
 			for (Strategy s : strategySet){
 				if (s.evaluates(stroke)){
 					evaluationParticipants++;
-					evaluation += s.evaluate(stroke);
+					evaluation += s.evaluate(stroke)*s.importance();
 				}
 			}
 			stroke.setEvaluation(evaluation/evaluationParticipants);
@@ -294,9 +293,10 @@ public class Ai implements ModelObserver {
 	}
 
 	@Override
-	public void eventTrade(ResourcePackage resourcePackage) {
-		TradeStrategy tradeStrategy = new StupidTradeStrategy();
-		ca.respondTrade(tradeStrategy.accepts());
+	public void eventTrade(ResourcePackage offer) {
+		Stroke bestStroke = getSortedStrokeList(generalStrategies).get(0);
+		TradeStrategy tradeStrategy = new NaiveTradeStrategy(mr, ca);
+		tradeStrategy.accept(bestStroke.getPrice(), offer);
 	}
 
 	@Override

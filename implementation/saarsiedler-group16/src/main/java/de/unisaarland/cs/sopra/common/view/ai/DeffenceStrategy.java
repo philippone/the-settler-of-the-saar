@@ -127,4 +127,9 @@ public class DeffenceStrategy extends Strategy {
 		return 0;
 	}
 
+	@Override
+	public double importance() {
+		return 0.5;
+	}
+
 }
