@@ -1416,20 +1416,20 @@ public class GameGUI extends View implements Runnable{
 		model.newRound(2);
 		model.newRound(2);
 		
-		model.buildStreet(new Location(1,2,2));
-		model.buildStreet(new Location(2,1,1));
-		model.buildSettlement(new Location(2,2,0), BuildingType.Town);
-		model.buildCatapult(new Location(2,2,0), true);
-		model.getPath(new Location(3,3,2)).createCatapult(model.getMe());
-		model.getPath(new Location(4,3,4)).createCatapult(model.getTableOrder().get(0)); 
-		
+//		model.buildStreet(new Location(1,2,2));
+//		model.buildStreet(new Location(2,1,1));
+//		model.buildSettlement(new Location(2,2,0), BuildingType.Town);
+//		model.buildCatapult(new Location(2,2,0), true);
+//		model.getPath(new Location(3,3,2)).createCatapult(model.getMe());
+//		model.getPath(new Location(4,3,4)).createCatapult(model.getTableOrder().get(0)); 
+//		
 //		model.getPath(new Location(-1,-1,0)).createStreet(model.getMe());
 //		model.getPath(new Location(-1,-1,1)).createStreet(model.getMe());
 //		model.getPath(new Location(-1,-1,2)).createStreet(model.getMe());
 //		model.getPath(new Location(-1,-1,3)).createStreet(model.getMe());
 //		model.getPath(new Location(-1,-1,4)).createStreet(model.getMe());
 //		model.getPath(new Location(-1,-1,5)).createStreet(model.getMe());
-		
+//		
 //		model.getPath(new Location(-1,-1,0)).createCatapult(model.getMe());
 //		model.getPath(new Location(-1,-1,1)).createCatapult(model.getMe());
 //		model.getPath(new Location(-1,-1,2)).createCatapult(model.getMe());
@@ -1443,9 +1443,9 @@ public class GameGUI extends View implements Runnable{
 //		model.getIntersection(new Location(-1,-1,3)).createBuilding(BuildingType.Town, model.getMe());
 //		model.getIntersection(new Location(-1,-1,4)).createBuilding(BuildingType.Town, model.getMe());
 //		model.getIntersection(new Location(-1,-1,5)).createBuilding(BuildingType.Town, model.getMe());
-		
+//		
 //		model.getField(new Point(2,2)).setRobber(true);
-		
+//		
 //		Setting.setSetting(Display.getDesktopDisplayMode(), true, PlayerColors.RED);
 		Setting.setSetting(new DisplayMode(1024, 515), false, PlayerColors.YELLOW);  /// Display.getDesktopDisplayMode()
 		
