@@ -42,8 +42,7 @@ public class Ai implements ModelObserver {
 		this.generalStrategies = new HashSet<Strategy>();
 		this.generalStrategies.add(new ExpandStrategy(mr));
 		this.generalStrategies.add(new AttackStrategy(mr));
-		//this.generalStrategies.add(new DeffenceStrategy(mr));
-		//this.generalStrategies.add(new DeffenceStrategy(mr));
+		this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
 		this.returnResourcesStrategies = new HashSet<Strategy>();
@@ -164,7 +163,7 @@ public class Ai implements ModelObserver {
 			for (Strategy s : strategySet){
 				if (s.evaluates(stroke)){
 					evaluationParticipants++;
-					evaluation += s.evaluate(stroke)*s.importance();
+					evaluation += s.evaluate(stroke);
 				}
 			}
 			stroke.setEvaluation(evaluation/evaluationParticipants);
