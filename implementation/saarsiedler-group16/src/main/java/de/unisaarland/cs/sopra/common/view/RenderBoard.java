@@ -35,7 +35,7 @@ import de.unisaarland.cs.sopra.common.model.Point;
 public class RenderBoard {
 	
 	private static int orgX, orgY, orgZ;
-	private static int x,y,z;
+	public static int x,y,z;
 	public static int maxX, maxY, maxZ; //TODO use it
 	public static int minX, minY, minZ;
 	public static int windowWidth;

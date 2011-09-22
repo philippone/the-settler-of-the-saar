@@ -25,7 +25,6 @@ public class Controller implements Runnable {
 
 	private Connection connection;
 	private ModelWriter modelWriter;
-	private Resource r;
 	private boolean endOfGame;
 	private Queue<Clickable> guiEvents;
 	public static boolean requestEventPull = false;
@@ -110,9 +109,8 @@ public class Controller implements Runnable {
 			break;
 		case MATCH_END:
 			((GameEvent.MatchEnd) gameEvent).getWinnerClientId();
-			// TODO
-			// modelObserver.MatchEnd
 			System.out.println("< Match_End");
+			endOfGame = true;
 			break;
 		case NEW_ROUND:
 			requestEventPull = false;
@@ -264,6 +262,7 @@ public class Controller implements Runnable {
 	 */
 	public void claimVictory() throws IllegalStateException, IOException {
 		connection.claimVictory();
+		endOfGame = true;
 	}
 
 	/**
@@ -281,6 +280,7 @@ public class Controller implements Runnable {
 	 */
 	public void leaveMatch() throws IllegalStateException, IOException {
 		connection.leaveMatch();
+		endOfGame = true;
 	}
 
 	/**
@@ -320,7 +320,7 @@ public class Controller implements Runnable {
 		System.out.println("Victimplayer: " + victimPlayer);
 		de.unisaarland.cs.st.saarsiedler.comm.Resource r1 = connection
 				.moveRobber(y, x, y1, x1, victimPlayer);
-		r = Resource.convert(r1);
+		Resource r = Resource.convert(r1);
 		modelWriter.robberMoved(sourceField, destinationField, victimPlayer, r);
 		return r;
 	}
