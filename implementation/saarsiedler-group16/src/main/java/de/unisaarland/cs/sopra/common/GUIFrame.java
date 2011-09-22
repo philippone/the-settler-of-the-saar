@@ -64,6 +64,8 @@ public class GUIFrame extends JFrame {
 		this.setVisible(true);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		initComponents();
+		fullscreenToggle.setEnabled(false);
+		observerToggle.setEnabled(false);
 		setActionListner();
 		playerColorChooser();
 		resolutionChooser();

@@ -10,7 +10,7 @@ import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public abstract class Clickable {
-	private static List<Clickable> list = new LinkedList<Clickable>();
+	private static List<Clickable> list;
 
 	private int x, y, z, width, height;
 	private boolean active, visible;
@@ -25,6 +25,10 @@ public abstract class Clickable {
 	private ResourcePackage res;
 	private List<Path> road;
 	private boolean decision;
+	
+	public static void initClickables() { 
+		list = new LinkedList<Clickable>();
+	}
 	
 	public static List<Clickable> executeClicks(float xogl, float yogl) {
 		List<Clickable> liste = new LinkedList<Clickable>();
@@ -93,7 +97,7 @@ public abstract class Clickable {
 	
 	private boolean checkClick(float xogl, float yogl) {
 		if (active) {
-			return (xogl > x && xogl < x+width*0.82f && yogl > y && yogl < y+height*0.48f);
+			return (xogl > x && xogl < x+width*0.8f && yogl > y && yogl < y+height*0.48f);
 		}
 		return false;
 	}
