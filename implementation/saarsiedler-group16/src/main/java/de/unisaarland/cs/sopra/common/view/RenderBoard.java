@@ -41,6 +41,7 @@ public class RenderBoard {
 	public static int windowWidth;
 	public static int windowHeight;
 	public static float aspectRatio;
+	private static float ZOOM_FACTOR = 0.00909090909090909091f;
 	
 	public static void initiateRenderBoard() {
 		int boardwidth = mr.getBoardWidth();
@@ -545,16 +546,16 @@ public class RenderBoard {
 	}
 	
 	public static void camLeft() {
-		x += +0.00909090909090909091f * z;
+		x += ZOOM_FACTOR  * (2000+z);
 	}
 	public static void camRight() {
-		x += -0.00909090909090909091f * z;
+		x -= ZOOM_FACTOR * (2000+z);
 	}
 	public static void camTop() {
-		y += +0.00909090909090909091f * z;
+		y += ZOOM_FACTOR * (2000+z);
 	}
 	public static void camDown() {
-		y += -0.00909090909090909091f * z;
+		y -= ZOOM_FACTOR * (2000+z);
 	}
 	public static void camIn() {
 		if (z+50 < maxZ)
