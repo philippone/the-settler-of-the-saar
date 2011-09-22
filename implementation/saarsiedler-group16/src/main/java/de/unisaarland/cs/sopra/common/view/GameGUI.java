@@ -117,6 +117,8 @@ public class GameGUI extends View implements Runnable{
 	private String console7 = "";
 	private boolean init;
 	
+	boolean finished = false;
+	
 	private long lastinputcheck;
 
 	public static ModelReader mr;
@@ -680,11 +682,10 @@ public class GameGUI extends View implements Runnable{
 		try {
 			init();
 			barrier.await();
-		    boolean finished = false;
 			while (!finished) {
 				  Display.update();
-				  handleInput();
 				  render();
+				  handleInput();
 			      if (Display.isCloseRequested()) {
 			    	  finished = true;
 			      } 
@@ -934,7 +935,7 @@ public class GameGUI extends View implements Runnable{
 			quit = new Clickable("Quit", xOffsetUI+983, yOffsetUI+22, 2, 100, 77, true, true) {
 				@Override
 				public void executeUI() {
-					Display.destroy();
+					finished = true;
 				}
 				@Override
 				public void executeController() {}
