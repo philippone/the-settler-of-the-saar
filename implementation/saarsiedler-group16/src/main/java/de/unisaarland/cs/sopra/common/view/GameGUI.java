@@ -530,8 +530,8 @@ public class GameGUI extends View implements Runnable{
 			          render();
 			      }
 			}
-			Display.destroy();
 			controllerAdapter.leaveMatch();
+			Display.destroy();
 			Client.backToLobby();
 		} catch (Exception e) {
 			e.printStackTrace();

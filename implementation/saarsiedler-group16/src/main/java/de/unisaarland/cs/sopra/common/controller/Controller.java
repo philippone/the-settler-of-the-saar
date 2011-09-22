@@ -390,7 +390,6 @@ public class Controller implements Runnable {
 				if (!modelWriter.isOurTurn() || requestEventPull) {
 					GameEvent e = connection.getNextEvent(0);
 					if (e != null) {
-						//System.out.println(e);
 						handleEvent(e);
 					}
 				}
