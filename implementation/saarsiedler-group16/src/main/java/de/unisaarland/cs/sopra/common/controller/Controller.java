@@ -70,12 +70,14 @@ public class Controller implements Runnable {
 					ed.getDirection());
 			boolean fightOutcome = ((GameEvent.BuiltCatapult) gameEvent)
 					.fightOutcome();
+			System.out.println("< Build_Catapult (" + ed.getRow() + ", " + ed.getCol() + ", " + ed.getDirection() + ")");
 			modelWriter.buildCatapult(location, fightOutcome);
 			break;
 		case BUILT_ROAD:
 			Edge edg = ((GameEvent.BuiltRoad) gameEvent).getLocation();
 			Location locatio = new Location(edg.getRow(), edg.getCol(),
 					edg.getDirection());
+			System.out.println("< Build_Road (" + edg.getRow() + ", " + edg.getCol() + ", " + edg.getDirection() + ")");
 			modelWriter.buildStreet(locatio);
 			break;
 		case BUILT_SETTLEMENT:
@@ -85,6 +87,7 @@ public class Controller implements Runnable {
 					in.getDirection());
 			boolean isUpgradeToTown = ((GameEvent.BuiltSettlement) gameEvent)
 					.isUpgradeToTown();
+			System.out.println("< Build_Settlement upgrade=" + isUpgradeToTown + " (" + in.getRow() + ", " + in.getCol() + ", " + in.getDirection() + ")");
 			if (isUpgradeToTown) {
 				modelWriter.buildSettlement(locati, BuildingType.Town);
 			} else {
@@ -102,21 +105,24 @@ public class Controller implements Runnable {
 					e1.getDirection());
 			boolean fightOutcome1 = ((GameEvent.MovedCatapult) gameEvent)
 					.fightOutcome();
+			System.out.println("< Moved_Catapult foc=" + fightOutcome1 + " von(" + edge.getRow() + ", " + edge.getCol() + ", " + edge.getDirection() + ") nach(" + e1.getRow() + ", " + e1.getCol() + ", " + e1.getDirection() + ")");
 			modelWriter.catapultMoved(source, destination, fightOutcome1);
 			break;
 		case MATCH_END:
 			((GameEvent.MatchEnd) gameEvent).getWinnerClientId();
 			// TODO
 			// modelObserver.MatchEnd
+			System.out.println("< Match_End");
 			break;
 		case NEW_ROUND:
 			requestEventPull = false;
 			byte num = ((GameEvent.NewRound) gameEvent).getSpotSum();
-			System.out.println(num);
+			System.out.println("< New _Round num=" + num);
 			modelWriter.newRound(num);
 			break;
 		case PLAYER_LEFT:
 			long id = ((GameEvent.PlayerLeft) gameEvent).getClientId();
+			System.out.println("< Player_Left id=" + id);
 			modelWriter.playerLeft(id);
 			break;
 		case ROBBER_MOVED:
@@ -131,6 +137,7 @@ public class Controller implements Runnable {
 			de.unisaarland.cs.st.saarsiedler.comm.Resource r1 = ((GameEvent.RobberMoved) gameEvent)
 					.getStolenResource();
 			Resource stolenResource = Resource.convert(r1);
+			System.out.println("< Robber_Moved von(" + y + ", " + x + "), nach(" + y1 + ", " + x1 + ") res=" + stolenResource + " victim=" + victimPlayer);
 			modelWriter.robberMoved(sourceField, destinationField,
 					victimPlayer, stolenResource);
 			break;
@@ -144,6 +151,7 @@ public class Controller implements Runnable {
 			int wool = ((GameEvent.TradeOffer) gameEvent).getWool();
 			int grain = ((GameEvent.TradeOffer) gameEvent).getGrain();
 			int ore = ((GameEvent.TradeOffer) gameEvent).getOre();
+			System.out.println("< Trade (" + lumber + ", " + brick + ", " + wool + ", " + grain + ", " + ore + ")");
 			modelWriter.tradeOffer(lumber, brick, wool, grain, ore);
 			break;
 		case LONGEST_ROAD:
@@ -154,6 +162,7 @@ public class Controller implements Runnable {
 						e12.getDirection());
 				road.add(l);
 			}
+			System.out.println("< Claim longest Road" );
 			modelWriter.longestRoadClaimed(road);
 			break;
 		}
@@ -381,7 +390,7 @@ public class Controller implements Runnable {
 				if (!modelWriter.isOurTurn() || requestEventPull) {
 					GameEvent e = connection.getNextEvent(0);
 					if (e != null) {
-						System.out.println(e);
+						//System.out.println(e);
 						handleEvent(e);
 					}
 				}
