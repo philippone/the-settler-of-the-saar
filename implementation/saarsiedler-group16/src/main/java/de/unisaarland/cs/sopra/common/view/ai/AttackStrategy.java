@@ -101,8 +101,8 @@ public class AttackStrategy extends Strategy {
 		}
 		double value=0;
 		Intersection destination=stroke.getDestination();
-		if (destination.getBuildingType()==BuildingType.Town) value=value+0.9;
-		else if (destination.getBuildingType()==BuildingType.Village) value=value+0.8;
+		if (destination.getBuildingType()==BuildingType.Town) value=value+1;
+		else if (destination.getBuildingType()==BuildingType.Village) value=value+0.9;
 		return value;
 	}
 
@@ -203,8 +203,7 @@ public class AttackStrategy extends Strategy {
 		 if (p0.hasCatapult() && p0.getCatapultOwner()!=mr.getMe()) 
 			 targetingCatapultValue=targetingCatapultValue+0.3;
 		 pathValue=3*targetingCatapultValue+2*targetingTownValue+targetingVillageValue;
-		 if (mr.getCatapults(mr.getMe()).size()<1 && pathValue>0.3) pathValue=1;
-		 if (doesIHazAlreadyACatapultNotSoFar) pathValue=pathValue/2;
+		 if (doesIHazAlreadyACatapultNotSoFar) pathValue=pathValue/10;
 		 return Math.min(pathValue,1);
 	}
 
