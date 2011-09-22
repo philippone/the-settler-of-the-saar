@@ -387,7 +387,7 @@ public class Controller implements Runnable {
 
 
 			while(!endOfGame){
-				if (!modelWriter.isOurTurn() || requestEventPull) {
+				if ((!modelWriter.isOurTurn() || requestEventPull) && !endOfGame) {
 					GameEvent e = connection.getNextEvent(0);
 					if (e != null) {
 						handleEvent(e);
