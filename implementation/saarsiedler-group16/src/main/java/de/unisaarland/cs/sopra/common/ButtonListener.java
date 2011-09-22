@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+import org.lwjgl.opengl.Display;
+
 public class ButtonListener implements ActionListener {
 
 	private GUIFrame gui;
@@ -105,7 +107,7 @@ public class ButtonListener implements ActionListener {
 					gui.fullscreenToggle.setText("ON");
 					gui.resolutionBox.setSelectedIndex(0);
 					gui.resolutionBox.setEnabled(false);
-					Setting.setDisplayMode(GUIFrame.displaymodes[0]);
+					Setting.setDisplayMode(Display.getDisplayMode());
 					Setting.setFullscreen(true);
 				}
 				else{
