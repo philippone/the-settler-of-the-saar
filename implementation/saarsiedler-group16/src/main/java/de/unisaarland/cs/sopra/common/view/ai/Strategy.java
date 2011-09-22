@@ -12,6 +12,8 @@ public abstract class Strategy {
 	
 	public abstract boolean evaluates(Stroke s);
 	
+	public abstract double importance();
+	
 	public final double evaluate(Stroke s){
 		switch(s.getType()){
 		default:
