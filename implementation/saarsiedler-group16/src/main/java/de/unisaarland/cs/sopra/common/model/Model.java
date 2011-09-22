@@ -462,7 +462,7 @@ public class Model implements ModelReader, ModelWriter {
 		if (intersection == null)
 			throw new IllegalArgumentException();
 		
-		if (this.longestClaimedRoad != null) {
+		if (this.longestClaimedRoad != null && longestClaimedRoad.get(0).getStreetOwner() != intersection.getOwner()) {
 			List<Path> tmp = new LinkedList<Path>();
 			for (Path act : this.longestClaimedRoad) {
 				if (board.getIntersectionsFromPath(act).contains(intersection)) {
@@ -1035,27 +1035,22 @@ public class Model implements ModelReader, ModelWriter {
 	 */
 	@Override
 	public Set<HarborType> getHarborTypes(Player player) {
-		Set<HarborType> sht = new HashSet<HarborType>();
-		Iterator<Path> iter = getPathIterator();
-		while (iter.hasNext()) {
-			Path p = iter.next();
-			if (p.getHarborType() != null) {
-				for (Field f : getFieldsFromPath(p)) {
+		Set<Intersection> set = getHarborIntersections();
+		Set<HarborType> erg = new HashSet<HarborType>();
+		
+		for (Intersection inter : set) {
+			if (inter.hasOwner() && inter.getOwner() == player) {
+				boolean robber = false;
+				for (Field f : getFieldsFromIntersection(inter)) {
 					if (f.hasRobber()) {
-						sht.remove(p);
+						robber = true;
 						break;
 					}
-					else {
-						for (Intersection i : getIntersectionsFromPath(p)) {
-							if (i.hasOwner() && i.getOwner() == getCurrentPlayer())
-								sht.add(p.getHarborType());
-						}
-						
-					}
 				}
+				if (!robber) erg.add(getHarborType(inter));
 			}
 		}
-		return sht;
+		return erg; //TODO fix it
 	}
 
 	/*
