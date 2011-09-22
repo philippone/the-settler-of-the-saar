@@ -2,6 +2,7 @@ package de.unisaarland.cs.sopra.common;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class ButtonListener implements ActionListener {
 
@@ -71,6 +72,10 @@ public class ButtonListener implements ActionListener {
 				gui.createPanel.setVisible(true);
 			}
 			if (arg0.getSource() == gui.join){
+				long focusedGameID= (Long)gui.gameTable.getModel().getValueAt(gui.gameTable.getSelectedRow(), 0);
+				try { //set focused Matchinfo as actual Client.matchInfo
+					Client.matchInfo= Client.connection.getMatchInfo(focusedGameID);	} catch (IOException e1) {e1.printStackTrace();	}
+					
 				if(Client.matchInfo!=null 
 						&& !Client.matchInfo.isStarted() 
 						&& !(Client.matchInfo.getNumPlayers()==Client.matchInfo.getCurrentPlayers().length)){
@@ -112,6 +117,7 @@ public class ButtonListener implements ActionListener {
 		
 		//CreatePanel
 			if (arg0.getSource() == gui.createMatch){
+				
 				int numP=0; 
 				try{
 					numP =Integer.valueOf(gui.numPlayersField.getText());					
