@@ -24,13 +24,13 @@ public class HarborTradeStrategy  extends TradeOfferStrategy {
 		else {
 			ResourcePackage res = mr.getMe().getResources().copy().add(price);
 			ResourcePackage tradePackage = new ResourcePackage();
-			tradePackage.modifyResource(getMinResource(res), 1);
 			if (harbors.contains(HarborType.WOOL_HARBOR)) {
 				if (res.getResource(Resource.WOOL) < 2)
 					return false;
 				while (res.hasNegativeResources() && res.getResource(Resource.WOOL) >= 2) {
 					tradePackage.modifyResource(Resource.WOOL, -2);
 					res.modifyResource(Resource.WOOL, -2);
+					tradePackage.modifyResource(getMinResource(res), 1);
 					ca.offerTrade(tradePackage);
 					tradePackage.modifyResource(getMinResource(res), -1);
 					res.modifyResource(getMinResource(res), 1);

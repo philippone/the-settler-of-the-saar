@@ -11,7 +11,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -118,6 +117,8 @@ public class GameGUI extends View implements Runnable{
 	private String console6 = "";
 	private String console7 = "";
 	private boolean init;
+	private int declinedTrade = 0;
+	private int tradeCount = 0;
 	
 	boolean finished = false;
 	
@@ -183,7 +184,7 @@ public class GameGUI extends View implements Runnable{
 			claimVictory.setActive(true);
 		if (modelReader.getRound() >= 1)
 			endTurn.setActive(true);
-		if (me.getResources().size() >= 1)
+		if (me.getResources().size() >= 1 || tradeCount < 128 || declinedTrade < 5)
 			offerTrade.setActive(true);
 	}
 	
@@ -530,8 +531,8 @@ public class GameGUI extends View implements Runnable{
 			          render();
 			      }
 			}
-			Display.destroy();
 			controllerAdapter.leaveMatch();
+			Display.destroy();
 			Client.backToLobby();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -580,7 +581,10 @@ public class GameGUI extends View implements Runnable{
 			endTurn = new Clickable("EndTurn", xOffsetUI+828, yOffsetUI+22, 2, 185, 77, false, true) {
 				@Override
 				public void executeUI() {
-					this.setActive(false);
+					tradeCount = 0;
+					declinedTrade = 0;
+//					this.setActive(false);
+					deactivateUI();
 					controllerAdapter.addGuiEvent(this);
 				}
 				@Override
@@ -605,11 +609,15 @@ public class GameGUI extends View implements Runnable{
 				public void executeController() {
 					long player = controllerAdapter.offerTrade(getRes());
 					String name = "Nobody";
+					tradeCount += 1;
 					if (player != -1 && player != -2) {
 						name = playerNames.get(modelReader.getPlayerMap().get(player));
 					}
 					else if(player == -2) {
 						name = "Bank"; //handel mitzählen TODO
+					}
+					else {
+						declinedTrade += 1;
 					}
 					console4 = "You traded with "+ name;
 					reinitiateUI();
