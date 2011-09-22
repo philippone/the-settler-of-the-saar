@@ -2,11 +2,6 @@ package de.unisaarland.cs.sopra.common;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.NumberFormat;
-
-import org.lwjgl.opengl.Display;
-
-import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 
 public class ButtonListener implements ActionListener {
 
@@ -18,7 +13,7 @@ public class ButtonListener implements ActionListener {
 	public ButtonListener(GUIFrame guiFrame) {
 		this.gui = guiFrame;
 //		this.client= client;
-		this.readyStatus=false;
+		ButtonListener.readyStatus=false;
 		joinAsObserver=false;
 	}
 
@@ -47,7 +42,8 @@ public class ButtonListener implements ActionListener {
 			}
 			if (arg0.getSource() == gui.play){
 				Client.joinAsAI=false;
-				Client.createConnection("sopra.cs.uni-saarland.de");
+//				Client.createConnection("sopra.cs.uni-saarland.de");
+				Client.createConnection("sopra.hammacher.name"); //Backup server
 				Client.refreshGameList();
 				gui.menuPanel.setVisible(false);
 				gui.lobbyPanel.setVisible(true);

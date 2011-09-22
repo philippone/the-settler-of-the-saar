@@ -16,6 +16,7 @@ import javax.swing.border.*;
 
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
+import de.unisaarland.cs.sopra.common.view.GameGUI;
 
 /**
  * @author Hans Lange der
@@ -31,9 +32,7 @@ public class Popup extends JFrame {
 	int r3;
 	int r4;
 	int r5;
-	private List<List<Path>> roadList;
-	private List<Path> selectedRoad;
-	private List<Path> claimedRoad;
+
 	/**
 	 * 
 	 */
@@ -151,14 +150,20 @@ public class Popup extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				claimedRoad=selectedRoad;
+				GameGUI.ret=GameGUI.selected;
+				setVisible(false);
+				reset();
 			}
 		});
 		cancelButton2.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				selectedRoad=null;
+				List<Path> tmp = GameGUI.selected;
+				GameGUI.selected=null;
+				GameGUI.ret=tmp;
+				setVisible(false);
+				reset();
 			}
 		});
 //		longestRoadBox.setSelectedIndex(0); //to avoid initial not selected roads
@@ -166,7 +171,8 @@ public class Popup extends JFrame {
 		longestRoadBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent arg0) {
-				selectedRoad=roadList.get(longestRoadBox.getSelectedIndex());
+				if (GameGUI.longestroad != null && longestRoadBox.getItemCount()>0)
+					GameGUI.selected=GameGUI.longestroad.get(longestRoadBox.getSelectedIndex());
 			}
 		});
 	}
@@ -198,7 +204,7 @@ public class Popup extends JFrame {
 		checkBox4.setSelected(false);
 		checkBox5.setSelected(false);
 		checkBox6.setSelected(false);
-		//TODO warning 3 insert
+		longestRoadBox.removeAllItems();
 	}
 	
 	private void initComponents() {
@@ -1034,9 +1040,5 @@ public class Popup extends JFrame {
 	public JButton okIncomingTrade2;
 	public JButton cancelButton2;
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
-	public void setRoadList(List<List<Path>> roads, List<Path> selected, List<Path> ret) {
-		this.roadList=roads;
-		this.selectedRoad=selected;
-		this.claimedRoad=ret;
-	}
+
 }
