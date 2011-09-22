@@ -95,12 +95,13 @@ public class Popup extends JFrame {
 					if(r1+a1<0 || r2+a2<0 || r3+a3<0 || r4+a4<0 || r5+a5<0){
 						warning2.setText("invalid Selection, can't deliver more Resources than you have");	
 						warning2.setVisible(true);
+					}else{
+						if(!temp.hasNegativeResources()|| !temp.hasPositiveResources()){
+							warning2.setText("invalid Selection, you have to offer AND demand Resources");	
+							warning2.setVisible(true);
+						}else{	
+						Client.returnPackage= temp;
 						}
-					if(!temp.hasNegativeResources()|| !temp.hasPositiveResources()){
-						warning2.setText("invalid Selection, you have to offer AND demand Resources");	
-						warning2.setVisible(true);
-					}else{	
-					Client.returnPackage= temp;
 					}
 				}catch(NumberFormatException e1){
 					warning2.setText("only numbers allowed!");
@@ -503,7 +504,6 @@ public class Popup extends JFrame {
 		//======== tradePanel ========
 		{
 			tradePanel.setBorder(new EmptyBorder(12, 12, 12, 12));
-			tradePanel.setVisible(false);
 			tradePanel.setLayout(new GridBagLayout());
 			((GridBagLayout)tradePanel.getLayout()).columnWidths = new int[] {0, 0};
 			((GridBagLayout)tradePanel.getLayout()).rowHeights = new int[] {139, 34, 0};
