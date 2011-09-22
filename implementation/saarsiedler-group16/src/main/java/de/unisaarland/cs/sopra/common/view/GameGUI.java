@@ -598,7 +598,6 @@ public class GameGUI extends View implements Runnable{
 					deactivateUI();
 					ResourcePackage res = Client.tradeOffer(modelReader.getResources(), modelReader.getHarborTypes(modelReader.getMe()));
 					reinitiateUI();
-					//TODO anzahl der handel mitzählen?!
 					if (res != null) {
 						deactivateUI();
 						this.setRes(res);
@@ -613,7 +612,7 @@ public class GameGUI extends View implements Runnable{
 						name = playerNames.get(modelReader.getPlayerMap().get(player));
 					}
 					else if(player == -2) {
-						name = "Bank";
+						name = "Bank"; //handel mitzählen
 					}
 					console4 = "You traded with "+ name;
 					reinitiateUI();
@@ -916,6 +915,8 @@ public class GameGUI extends View implements Runnable{
 						if (player != null && selectionLocation.contains(Model.getLocation(player))) {
 							if (player.hasOwner())
 								setRobber.setPlayer(player.getOwner());
+							else
+								setRobber.setPlayer(null);
 							selectionMode = NONE;
 							console4 = "";
 							console5 = "";
