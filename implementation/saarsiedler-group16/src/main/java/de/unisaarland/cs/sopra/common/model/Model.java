@@ -267,9 +267,9 @@ public class Model implements ModelReader, ModelWriter {
 					for (List<Path> r : rList) {
 						if (r != null) {
 							for (List<Path> r1 : roadList)
-								a = a | r1.containsAll(r);
+								a = a | (r1.containsAll(r)&&r.containsAll(r1));
 							for (List<Path> r1 : roadList1)
-								a = a | r1.containsAll(r);
+								a = a | (r1.containsAll(r)&&r.containsAll(r1));
 							if (!a)
 								roadList1.add(r);
 							// if we didn't have this one, then we add it
@@ -363,9 +363,11 @@ public class Model implements ModelReader, ModelWriter {
 		for (Path p1 : sp) {
 			// we create a new road1 containing the road
 			// we try to add the new path
+			if (!road.contains(p1)){
 			List<Path> road1 = addPathToRoad(copy(road), player, p1);
 			if (road1 != null)
 				rList.add(road1);
+			}
 		}
 		return rList;
 	}
