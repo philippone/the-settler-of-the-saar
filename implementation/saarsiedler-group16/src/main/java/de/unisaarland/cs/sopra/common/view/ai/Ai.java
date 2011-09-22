@@ -1,4 +1,3 @@
-
 package de.unisaarland.cs.sopra.common.view.ai;
 
 import java.io.IOException;
@@ -48,7 +47,7 @@ public class Ai implements ModelObserver {
 		this.returnResourcesStrategies = new HashSet<Strategy>();
 		this.returnResourcesStrategies.add(new ReturnResourcesStrategy(mr));
 		this.initStrategies = new HashSet<Strategy>();
-		this.initStrategies.add(new InitializeStrategy(mr));
+		this.initStrategies.add(new InitWoolStrategy(mr));
 		this.initStrategies.add(new InitNumStrategy(mr));
 		this.initStrategies.add(new WoolHarborStrategy(mr));
 		mr.addModelObserver(this);
@@ -375,4 +374,3 @@ public class Ai implements ModelObserver {
 	} 
 
 }
-

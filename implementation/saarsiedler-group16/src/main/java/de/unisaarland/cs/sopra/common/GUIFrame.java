@@ -52,8 +52,8 @@ public class GUIFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private ButtonListener actLis;
 	public long focusedWordID;
-	public final static PlayerColors[] pc= new PlayerColors[]{ PlayerColors.BLUE,PlayerColors.YELLOW,PlayerColors.ORANGE,PlayerColors.BROWN,PlayerColors.WHITE,PlayerColors.PURPLE};
-	public final static String[] farben = new String[]{"BLUE","YELLOW","ORANGE","BROWN","WHITE","PURPLE"};
+	public final static PlayerColors[] pc= new PlayerColors[]{ PlayerColors.BLUE,PlayerColors.YELLOW,PlayerColors.ORANGE,PlayerColors.PINK,PlayerColors.BROWN,PlayerColors.WHITE,PlayerColors.PURPLE};
+	public final static String[] farben = new String[]{"BLUE","YELLOW","ORANGE","PINK","BROWN","WHITE","PURPLE"};
 	public final static DisplayMode[] displaymodes = new DisplayMode[]{new DisplayMode(Display.getDisplayMode().getWidth(), Display.getDisplayMode().getHeight()-100), new DisplayMode(1024, 530), new DisplayMode(800, 600)};
 	public final static String[] dmodes = new String[]{"AUTO","1024x530","800x600"};
 	public  static WorldRepresentation[] worldRepos; //= new WorldRepresentation[]{WorldRepresentation.getDefault(), QualifikationMaps.getMap1(), QualifikationMaps.getMap2(), QualifikationMaps.getMap3()};
@@ -64,6 +64,8 @@ public class GUIFrame extends JFrame {
 		this.setVisible(true);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		initComponents();
+		fullscreenToggle.setEnabled(false);	//TODO implement
+		observerToggle.setEnabled(false); 	//TODO implement
 		setActionListner();
 		playerColorChooser();
 		resolutionChooser();

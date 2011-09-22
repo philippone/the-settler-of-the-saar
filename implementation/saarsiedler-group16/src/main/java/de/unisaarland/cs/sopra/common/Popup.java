@@ -351,6 +351,7 @@ public class Popup extends JFrame {
 		setAlwaysOnTop(true);
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		setFont(new Font("Dialog", Font.BOLD, 12));
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new GridBagLayout());
 		((GridBagLayout)contentPane.getLayout()).columnWidths = new int[] {0, 0};
@@ -361,6 +362,7 @@ public class Popup extends JFrame {
 		//======== returnPackPanel ========
 		{
 			returnPackPanel.setBorder(new EmptyBorder(12, 12, 12, 12));
+			returnPackPanel.setVisible(false);
 
 			// JFormDesigner evaluation mark
 			returnPackPanel.setBorder(new javax.swing.border.CompoundBorder(
@@ -587,6 +589,9 @@ public class Popup extends JFrame {
 				((GridBagLayout)contentPanel2.getLayout()).rowHeights = new int[] {25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 17, 0};
 				((GridBagLayout)contentPanel2.getLayout()).columnWeights = new double[] {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0E-4};
 				((GridBagLayout)contentPanel2.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+
+				//---- topLabel2 ----
+				topLabel2.setText("bla hfkjwjfhkfjewfew");
 				contentPanel2.add(topLabel2, new GridBagConstraints(2, 0, 6, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
@@ -978,7 +983,6 @@ public class Popup extends JFrame {
 		//======== longestRoadPanel ========
 		{
 			longestRoadPanel.setBorder(new EmptyBorder(12, 12, 12, 12));
-			longestRoadPanel.setVisible(false);
 			longestRoadPanel.setLayout(new GridBagLayout());
 			((GridBagLayout)longestRoadPanel.getLayout()).columnWidths = new int[] {0, 0};
 			((GridBagLayout)longestRoadPanel.getLayout()).rowHeights = new int[] {139, 34, 0};
@@ -1029,7 +1033,7 @@ public class Popup extends JFrame {
 					new Insets(0, 0, 0, 5), 0, 0));
 
 				//---- cancelButton2 ----
-				cancelButton2.setText("Decline");
+				cancelButton2.setText("Cancel");
 				buttonBar4.add(cancelButton2, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 0), 0, 0));
@@ -1038,10 +1042,10 @@ public class Popup extends JFrame {
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 				new Insets(0, 0, 0, 0), 0, 0));
 		}
-		contentPane.add(longestRoadPanel, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0,
+		contentPane.add(longestRoadPanel, new GridBagConstraints(0, 0, 1, 4, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 			new Insets(0, 0, 0, 0), 0, 0));
-		setSize(370, 285);
+		setSize(375, 340);
 		// JFormDesigner - End of component initialization  //GEN-END:initComponents
 	}
 
