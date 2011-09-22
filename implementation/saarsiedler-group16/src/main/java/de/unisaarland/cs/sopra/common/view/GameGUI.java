@@ -166,8 +166,8 @@ public class GameGUI extends View implements Runnable{
 		super(modelReader, controllerAdapter);
 		this.modelReader.addModelObserver(this);
 		this.timeouts = timeouts; //TODO timeouts nutzen
-		initiateRenderBoard();
-		initiateUtil();
+		initiateRenderBoard(modelReader);
+		initiateUtil(modelReader);
 		this.playerNames = names;
 		this.selectionMode = NONE;
 		this.gameTitle = gameTitle;
