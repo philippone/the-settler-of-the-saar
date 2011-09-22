@@ -155,16 +155,6 @@ public class GameGUI extends View implements Runnable{
 		}
 	}
 	
-	private static float screenToOpenGLx (int zoom) {
-		float oglwidth = (float)(2000+zoom)*0.82841f*aspectRatio;
-		return oglwidth/windowWidth;
-	}
-	
-	private static float screenToOpenGLy (int zoom) {
-		float oglheight = (float)(2000+zoom)*0.82841f;
-		return oglheight/windowHeight;
-	}
-	
 	private void deactivateUI() {
 		for (Clickable click : Clickable.getRenderList()) {
 			click.setActive(false);
@@ -266,7 +256,7 @@ public class GameGUI extends View implements Runnable{
 			break;
 		case ROBBER_SELECT:
 		case ROBBER_PLACE:
-			renderFieldMark(selectionLocation);
+			renderFieldMark(selectionPoint);
 			break;
 		case ROBBER_PLAYER_SELECT:
 			renderIntersectionMark(true, selectionLocation);
@@ -283,147 +273,6 @@ public class GameGUI extends View implements Runnable{
 			renderPathMark(true, selectionLocation);
 			renderIntersectionMark(true, selectionLocation3);
 			renderPathMark(false, selectionLocation2);
-		}
-	}
-	
-	private void renderFieldMark(List<Location> selectionLocation) {
-		for (Point p : selectionPoint) {
-		    int fx = 0;
-		    int fy = 0;
-		    switch(p.getY()%2) {
-		    case 0:
-			   fx = p.getX()*250;
-			   fy = p.getY()*215; 
-			   break;
-		    case 1:
-			   fx = p.getX()*250-125;
-			   fy = p.getY()*215;
-			   break;
-		    }
-		    GL11.glPushMatrix();
-		    fieldMarkTexture.bind();
-		    GL11.glColor4f(0.5f, 0.5f, 0.5f, 0.5f);
-		    GL11.glTranslatef(fx+x, fy+y, 2+z);
-		    drawSquareMid(300, 300);
-		    GL11.glPopMatrix();
-		}
-	}
-	
-	private void renderPathMark(boolean red, List<Location> selectionLocation) {
-		for (Location l : selectionLocation) {
-			int px = 0;
-			int py = 0;
-			int po = 0;
-			
-			
-			switch(l.getY()%2) {
-			   case 0:
-				   px = l.getX()*250;
-				   py = l.getY()*215; 
-				   break;
-			   case 1:
-			   case -1:
-				   px = l.getX()*250-125;
-				   py = l.getY()*215;
-				   break;
-		   }
-		  switch(l.getOrientation()) {
-			   case 0:
-				   px+=74;
-				   py+=-96;
-				   po+=30;
-				   break;
-			   case 1:
-				   px+=118;
-				   py+=18;
-				   po+=90;
-				   break;
-			   case 2:
-				   px+=38;
-				   py+=116;
-				   po+=150;
-				   break;
-			   case 3:
-				   px+=-84;
-				   py+=93;
-				   po+=210;
-				   break;
-			   case 4:
-				   px+=-128;
-				   py+=-21;
-				   po+=270;
-				   break;
-			   case 5:
-				   px+=-47;
-				   py+=-120;
-				   po+=330;
-				   break;
-			   default:
-				   throw new IllegalArgumentException();
-		   }
-				GL11.glPushMatrix();
-				GL11.glTranslatef(px+x, py+y, 1+z);
-				GL11.glRotatef(po, 0, 0, 1);
-			    if (!red) 
-			    	pathMarkTexture.bind();
-			    else
-			    	pathMarkTextureRed.bind();
-			    GL11.glColor4f(0.5f, 0.5f, 0.5f, 0.5f);
-			    drawSquareMid(200,25);
-			    GL11.glPopMatrix();
-		}
-	}
-	
-	private void renderIntersectionMark(boolean red, List<Location> selectionLocation) {
-		for (Location l : selectionLocation) {
-			int ix = 0;
-			int iy = 0;
-			   switch(l.getY()%2) {
-				   case 0:
-					   ix = l.getX()*250;
-					   iy = l.getY()*215; 
-					   break;
-				   case 1:
-				   case -1:
-					   ix = l.getX()*250-125;
-					   iy = l.getY()*215;
-					   break;
-			   }
-			  switch(l.getOrientation()) {
-				   case 0:
-					   iy+=-135;
-					   break;
-				   case 1:
-					   ix+=125;
-					   iy+=-70;
-					   break;
-				   case 2:
-					   ix+=125;
-					   iy+=80;
-					   break;
-				   case 3:
-					   iy+=140;
-					   break;
-				   case 4:
-					   ix+=-120;
-					   iy+=80;
-					   break;
-				   case 5:
-					   ix+=-120;
-					   iy+=-70;
-					   break;
-				   default:
-					   throw new IllegalArgumentException();
-			   }
-		    GL11.glPushMatrix();
-		    if (!red)
-		    	intersectionMarkTexture.bind();
-		    else
-		    	intersectionMarkRedTexture.bind();
-		    GL11.glColor4f(0.5f, 0.5f, 0.5f, 0.5f);
-		    GL11.glTranslatef(ix+x+25, iy+y+22, 3+z);
-		    drawSquareMid(150, 150);
-		    GL11.glPopMatrix();
 		}
 	}
 	
@@ -497,16 +346,17 @@ public class GameGUI extends View implements Runnable{
 	   }
 	   
 	   GL11.glPopMatrix();
-	   //Render Fonts on UI
-	   GL11.glPushMatrix();
-	   GL11.glTranslatef(xOffset+20, 400, -950);
-	   debugFont.drawString(300, 0, "Debug:", Color.white);
-	   debugFont.drawString(300, 30, "x: " + x + ", y: " + y + ", z: " + z, Color.white);
-	   debugFont.drawString(300, 60, "mx: " + Mouse.getX() + ", my: " + Mouse.getY() + ", mw: " + Mouse.getEventDWheel(), Color.white);
-	   debugFont.drawString(300, 90, "minX: " + minX + ", minY: " + minY + ", minZ: " + maxX, Color.white);
-	   debugFont.drawString(300, 120, "oglx: " + (int)(Mouse.getX()*screenToOpenGLx(zOffsetUI)+25) + ", ogly: " + (int)((windowHeight-Mouse.getY())*screenToOpenGLy(zOffsetUI)+380) );
-	   debugFont.drawString(300, 150, "selectionmode: " + selectionMode );
-	   GL11.glPopMatrix();
+
+//	   //DEBUG
+//	   GL11.glPushMatrix();
+//	   GL11.glTranslatef(xOffset+20, 400, -950);
+//	   debugFont.drawString(300, 0, "Debug:", Color.white);
+//	   debugFont.drawString(300, 30, "x: " + x + ", y: " + y + ", z: " + z, Color.white);
+//	   debugFont.drawString(300, 60, "mx: " + Mouse.getX() + ", my: " + Mouse.getY() + ", mw: " + Mouse.getEventDWheel(), Color.white);
+//	   debugFont.drawString(300, 90, "minX: " + minX + ", minY: " + minY + ", minZ: " + maxX, Color.white);
+//	   debugFont.drawString(300, 120, "oglx: " + (int)(Mouse.getX()*screenToOpenGLx(zOffsetUI)+25) + ", ogly: " + (int)((windowHeight-Mouse.getY())*screenToOpenGLy(zOffsetUI)+380) );
+//	   debugFont.drawString(300, 150, "selectionmode: " + selectionMode );
+//	   GL11.glPopMatrix();
 
 	   GL11.glPushMatrix();
 	   GL11.glTranslatef(xOffset+xOffsetUI, yOffsetUI, zOffsetUI);
@@ -710,7 +560,7 @@ public class GameGUI extends View implements Runnable{
 
 	@SuppressWarnings("unchecked")
 	private void init() {
-		try {//Display.getDesktopDisplayMode()
+		try {
 			Display.setDisplayMode(Setting.getDisplayMode());
 			Display.setTitle("Die Siedler von der Saar: " + getName(modelReader.getMe()) + "@" + gameTitle);
 			Display.setFullscreen(Setting.isFullscreen());
@@ -958,7 +808,7 @@ public class GameGUI extends View implements Runnable{
         
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
-		GLU.gluPerspective(+45.0f, aspectRatio, 0.1f, z+2500); //-5000.f ist die maximale z tiefe
+		GLU.gluPerspective(+45.0f, aspectRatio, 0.1f, getOrgZ()+2500);
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		
         Keyboard.enableRepeatEvents(true);
@@ -1183,67 +1033,52 @@ public class GameGUI extends View implements Runnable{
 		
 		if (Mouse.isInsideWindow()) {
 			if (mx < 50) {
-				x+=5;
+				camLeft();
 			}
 			else if (mx > windowWidth-50) {
-				x-=5;
+				camRight();
 			}
 			if (my < 50 && (mx < 200 || mx > windowWidth-200)) {
-				y-=5;
+				camTop();
 			}
 			else if (my > windowHeight-50 ) {
-				y+=5;
+				camDown();
 			}
 		}
 		
 		if (Mouse.next()) {
-			if (Mouse.getEventDWheel() < 0 && z+50 < maxZ) {
-				z+=50; 
+			if (Mouse.getEventDWheel() < 0) {
+				camIn();
 			}
-			else if (Mouse.getEventDWheel() > 0 && z-50 > minZ) {	
-				z-=50; 
+			else if (Mouse.getEventDWheel() > 0) {	
+				camOut();
 			}
 		}
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
-			x+=10;
-//			minX+=5;
+			camLeft();
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
-			x-=10;
-//			minX-=5;
+			camRight();
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
-			y+=10;
-//			minY+=5;
+			camTop();
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
-			y-=10;
-//			minY-=5;
+			camDown();
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_N)) {
-			if (z+50 < maxZ)
-				z+=50;
-//			maxX+=10;
+			camIn();
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_M)) {
-			if (z-50 > minZ)
-				z-=50;
-//			maxX-=10;
+			camOut();
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_B)) {
+			resetCamera();
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
 			selectionMode = NONE;
 		}
-	}
-
-	public int getOglx() {
-		//Do not touch. took me 2 days to get it to work!
-		return (int) (Mouse.getX()*screenToOpenGLx(z)+(585*aspectRatio)+((1450+z)*-0.415f*aspectRatio))-x+128;
-	}
-	
-	public int getOgly() {
-		//Do not touch. took me 2 days to get it to work!
-		return (int) ((windowHeight-Mouse.getY())*screenToOpenGLy(z)+592+((1450+z)*-0.415f))-y+148;
 	}
 	
 	public Field getMouseField() {

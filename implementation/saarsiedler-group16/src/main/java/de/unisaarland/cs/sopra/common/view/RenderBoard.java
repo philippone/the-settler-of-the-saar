@@ -3,15 +3,23 @@ package de.unisaarland.cs.sopra.common.view;
 import static de.unisaarland.cs.sopra.common.PlayerColors.BLACK;
 import static de.unisaarland.cs.sopra.common.view.GameGUI.mr;
 import static de.unisaarland.cs.sopra.common.view.Textures.catapultTexture;
+import static de.unisaarland.cs.sopra.common.view.Textures.fieldMarkTexture;
 import static de.unisaarland.cs.sopra.common.view.Textures.fieldTextureMap;
 import static de.unisaarland.cs.sopra.common.view.Textures.harborTextureMap;
+import static de.unisaarland.cs.sopra.common.view.Textures.intersectionMarkRedTexture;
+import static de.unisaarland.cs.sopra.common.view.Textures.intersectionMarkTexture;
 import static de.unisaarland.cs.sopra.common.view.Textures.numberTextureMap;
+import static de.unisaarland.cs.sopra.common.view.Textures.pathMarkTexture;
+import static de.unisaarland.cs.sopra.common.view.Textures.pathMarkTextureRed;
 import static de.unisaarland.cs.sopra.common.view.Textures.robberTexture;
 import static de.unisaarland.cs.sopra.common.view.Textures.streetTexture;
 import static de.unisaarland.cs.sopra.common.view.Textures.townTexture;
 import static de.unisaarland.cs.sopra.common.view.Textures.villageTexture;
 import static de.unisaarland.cs.sopra.common.view.Util.setColor;
 
+import java.util.List;
+
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.Texture;
 
@@ -20,11 +28,14 @@ import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.FieldType;
 import de.unisaarland.cs.sopra.common.model.HarborType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
+import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.Point;
 
 public class RenderBoard {
 	
-	public static int x,y,z;
+	private static int orgX, orgY, orgZ;
+	private static int x,y,z;
 	public static int maxX, maxY, maxZ; //TODO use it
 	public static int minX, minY, minZ;
 	public static int windowWidth;
@@ -46,6 +57,10 @@ public class RenderBoard {
 		y += (boardheight-1)*-170;
 		z += Math.max((boardwidth-1)*450,(boardheight-1)*450);
 	
+		orgX = x;
+		orgY = y;
+		orgZ = z;
+		
 		//set the max and min for camera
 		maxZ = z;
 		minZ = -1500;
@@ -75,6 +90,147 @@ public class RenderBoard {
 	       GL11.glTexCoord2f(0,1);
 	       GL11.glVertex3i(0, height, 0);
 	     GL11.glEnd();
+	}
+	
+	public static void renderFieldMark(List<Point> selectionPoint) {
+		for (Point p : selectionPoint) {
+		    int fx = 0;
+		    int fy = 0;
+		    switch(p.getY()%2) {
+		    case 0:
+			   fx = p.getX()*250;
+			   fy = p.getY()*215; 
+			   break;
+		    case 1:
+			   fx = p.getX()*250-125;
+			   fy = p.getY()*215;
+			   break;
+		    }
+		    GL11.glPushMatrix();
+		    fieldMarkTexture.bind();
+		    GL11.glColor4f(0.5f, 0.5f, 0.5f, 0.5f);
+		    GL11.glTranslatef(fx+x, fy+y, 2+z);
+		    drawSquareMid(300, 300);
+		    GL11.glPopMatrix();
+		}
+	}
+	
+	public static void renderPathMark(boolean red, List<Location> selectionLocation) {
+		for (Location l : selectionLocation) {
+			int px = 0;
+			int py = 0;
+			int po = 0;
+			
+			
+			switch(l.getY()%2) {
+			   case 0:
+				   px = l.getX()*250;
+				   py = l.getY()*215; 
+				   break;
+			   case 1:
+			   case -1:
+				   px = l.getX()*250-125;
+				   py = l.getY()*215;
+				   break;
+		   }
+		  switch(l.getOrientation()) {
+			   case 0:
+				   px+=74;
+				   py+=-96;
+				   po+=30;
+				   break;
+			   case 1:
+				   px+=118;
+				   py+=18;
+				   po+=90;
+				   break;
+			   case 2:
+				   px+=38;
+				   py+=116;
+				   po+=150;
+				   break;
+			   case 3:
+				   px+=-84;
+				   py+=93;
+				   po+=210;
+				   break;
+			   case 4:
+				   px+=-128;
+				   py+=-21;
+				   po+=270;
+				   break;
+			   case 5:
+				   px+=-47;
+				   py+=-120;
+				   po+=330;
+				   break;
+			   default:
+				   throw new IllegalArgumentException();
+		   }
+				GL11.glPushMatrix();
+				GL11.glTranslatef(px+x, py+y, 1+z);
+				GL11.glRotatef(po, 0, 0, 1);
+			    if (!red) 
+			    	pathMarkTexture.bind();
+			    else
+			    	pathMarkTextureRed.bind();
+			    GL11.glColor4f(0.5f, 0.5f, 0.5f, 0.5f);
+			    drawSquareMid(200,25);
+			    GL11.glPopMatrix();
+		}
+	}
+	
+	public static void renderIntersectionMark(boolean red, List<Location> selectionLocation) {
+		for (Location l : selectionLocation) {
+			int ix = 0;
+			int iy = 0;
+			   switch(l.getY()%2) {
+				   case 0:
+					   ix = l.getX()*250;
+					   iy = l.getY()*215; 
+					   break;
+				   case 1:
+				   case -1:
+					   ix = l.getX()*250-125;
+					   iy = l.getY()*215;
+					   break;
+			   }
+			  switch(l.getOrientation()) {
+				   case 0:
+					   iy+=-135;
+					   break;
+				   case 1:
+					   ix+=125;
+					   iy+=-70;
+					   break;
+				   case 2:
+					   ix+=125;
+					   iy+=80;
+					   break;
+				   case 3:
+					   iy+=140;
+					   break;
+				   case 4:
+					   ix+=-120;
+					   iy+=80;
+					   break;
+				   case 5:
+					   ix+=-120;
+					   iy+=-70;
+					   break;
+				   default:
+					   throw new IllegalArgumentException();
+			   }
+		    GL11.glPushMatrix();
+		    if (!red)
+		    	intersectionMarkTexture.bind();
+		    else
+		    	intersectionMarkRedTexture.bind();
+		    GL11.glColor4f(0.5f, 0.5f, 0.5f, 0.5f);
+		    GL11.glTranslatef(ix+x+25, iy+y+22, 3+z);
+		    drawSquareMid(150, 150);
+		    GL11.glPopMatrix();
+		}
 	}
 
 	public static void renderField(Field f) {
@@ -381,6 +537,54 @@ public class RenderBoard {
 		    drawSquareMid(200,25);
 		    GL11.glPopMatrix();
 	}
+	
+	public static void resetCamera() {
+		x = orgX;
+		y = orgY;
+		z = orgZ;
+	}
+	
+	public static void camLeft() {
+		x += -0.00909090909090909091f * z;
+	}
+	public static void camRight() {
+		x += +0.00909090909090909091f * z;
+	}
+	public static void camTop() {
+		y += +0.00909090909090909091f * z;
+	}
+	public static void camDown() {
+		y += -0.00909090909090909091f * z;
+	}
+	public static void camIn() {
+		z += +20;
+	}
+	public static void camOut() {
+		z += -20;
+	}
 
+	public static int getOrgZ() {
+		return orgZ;
+	}
+	
+	public static int getOglx() {
+		//Do not touch. took me 2 days to get it to work!
+		return (int) (Mouse.getX()*screenToOpenGLx(z)+(585*aspectRatio)+((1450+z)*-0.415f*aspectRatio))-x+128;
+	}
+	
+	public static int getOgly() {
+		//Do not touch. took me 2 days to get it to work!
+		return (int) ((windowHeight-Mouse.getY())*screenToOpenGLy(z)+592+((1450+z)*-0.415f))-y+148;
+	}
+	
+	public static float screenToOpenGLx (int zoom) {
+		float oglwidth = (float)(2000+zoom)*0.82841f*aspectRatio;
+		return oglwidth/windowWidth;
+	}
+	
+	public static float screenToOpenGLy (int zoom) {
+		float oglheight = (float)(2000+zoom)*0.82841f;
+		return oglheight/windowHeight;
+	}
 
 }
