@@ -557,10 +557,12 @@ public class RenderBoard {
 		y += -0.00909090909090909091f * z;
 	}
 	public static void camIn() {
-		z += +20;
+		if (z+50 < maxZ)
+			z += +50;
 	}
 	public static void camOut() {
-		z += -20;
+		if (z-50 > minZ)
+			z += -50;
 	}
 
 	public static int getOrgZ() {

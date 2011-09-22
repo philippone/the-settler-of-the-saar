@@ -1059,10 +1059,10 @@ public class GameGUI extends View implements Runnable{
 				camRight();
 			}
 			if (my < 50 && (mx < 200 || mx > windowWidth-200)) {
-				camTop();
+				camDown();
 			}
 			else if (my > windowHeight-50 ) {
-				camDown();
+				camTop();
 			}
 		}
 		
