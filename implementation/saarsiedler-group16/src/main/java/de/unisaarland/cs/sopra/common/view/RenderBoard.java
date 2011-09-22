@@ -545,10 +545,10 @@ public class RenderBoard {
 	}
 	
 	public static void camLeft() {
-		x += -0.00909090909090909091f * z;
+		x += +0.00909090909090909091f * z;
 	}
 	public static void camRight() {
-		x += +0.00909090909090909091f * z;
+		x += -0.00909090909090909091f * z;
 	}
 	public static void camTop() {
 		y += +0.00909090909090909091f * z;
