@@ -376,28 +376,10 @@ public class GameGUI extends View implements Runnable{
 	   GL11.glPopMatrix();
 	}
 
-	
-	
-	public void drawTradeMenu() {
-		//TODO: implement it!
-	}
-	
-	
-	
-	public void drawBuildMenu() {
-		//TODO: implement it!
-	}
-	
-	
-	public void drawResource() {
-		//TODO: implement it!
-	}
-
 	public String getName(Player player) {
 		if (player == null) throw new IllegalArgumentException();
 		return playerNames.get(player);
 	}
-
 	
 	@Override
 	public void updatePath(Path path) {
@@ -431,8 +413,7 @@ public class GameGUI extends View implements Runnable{
 	@Override
 	public void updateResources() {
 		if (modelReader.getCurrentPlayer() == modelReader.getMe() && !observer
-				&& !(selectionMode == ROBBER_SELECT || selectionMode == ROBBER_PLACE || selectionMode == ROBBER_PLAYER_SELECT) ) {
-				//deactivateUI();	
+				&& !(selectionMode == ROBBER_SELECT || selectionMode == ROBBER_PLACE || selectionMode == ROBBER_PLAYER_SELECT) ) {	
 				reinitiateUI();
 			}
 			else {
