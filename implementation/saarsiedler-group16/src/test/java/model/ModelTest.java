@@ -207,29 +207,39 @@ public class ModelTest {
 		 List<Path> longRoad0 = new LinkedList<Path>();	
 		 List<Path> reversedLongRoad0 = new LinkedList<Path>();
 		 
-		 model.getIntersection(new Location(0,0,0)).createBuilding(BuildingType.Village, owner); 
-		 model.getIntersection(new Location(1,0,5)).createBuilding(BuildingType.Village, owner); 	 
-		 model.getIntersection(new Location(1,0,3)).createBuilding(BuildingType.Village, owner); 
+		 model.getIntersection(new Location(1,1,0)).createBuilding(BuildingType.Village, owner); 
+		 model.getIntersection(new Location(2,0,5)).createBuilding(BuildingType.Village, owner); 	 
+		 model.getIntersection(new Location(2,0,3)).createBuilding(BuildingType.Village, owner); 
 		 
-		 model.getPath(new Location(0,0,0)).createStreet(owner);
-		 model.getPath(new Location(0,0,5)).createStreet(owner);
-		 model.getPath(new Location(0,0,4)).createStreet(owner);
-		 model.getPath(new Location(0,0,3)).createStreet(owner);
-		 model.getPath(new Location(1,0,5)).createStreet(owner);
-		 model.getPath(new Location(1,0,4)).createStreet(owner);
-		 model.getPath(new Location(1,0,3)).createStreet(owner);
+		 model.getPath(new Location(1,1,0)).createStreet(owner);
+		 model.getPath(new Location(1,1,5)).createStreet(owner);
+		 model.getPath(new Location(1,1,4)).createStreet(owner);
+		 model.getPath(new Location(1,1,3)).createStreet(owner);
+		 model.getPath(new Location(2,0,5)).createStreet(owner);
+		 model.getPath(new Location(2,0,4)).createStreet(owner);
+		 model.getPath(new Location(2,0,3)).createStreet(owner);
 		 
-		 longRoad0.add(model.getPath(new Location(0,0,0)));
-		 longRoad0.add(model.getPath(new Location(0,0,5)));
-		 longRoad0.add(model.getPath(new Location(0,0,4)));
-		 longRoad0.add(model.getPath(new Location(1,0,5)));
-		 longRoad0.add(model.getPath(new Location(1,0,4)));
-		 longRoad0.add(model.getPath(new Location(1,0,3)));
+		 longRoad0.add(model.getPath(new Location(1,1,0)));
+		 longRoad0.add(model.getPath(new Location(1,1,5)));
+		 longRoad0.add(model.getPath(new Location(1,1,4)));
+		 longRoad0.add(model.getPath(new Location(2,0,5)));
+		 longRoad0.add(model.getPath(new Location(2,0,4)));
+		 longRoad0.add(model.getPath(new Location(2,0,3)));
 		 reversedLongRoad0.addAll(longRoad0);
 		 Collections.reverse(reversedLongRoad0);		 
 		 expectedLongestRoad.add(longRoad0);
 		 expectedLongestRoad.add(reversedLongRoad0);
 		 List<List<Path>> currentLongestRoad = model.calculateLongestRoads(owner);
+		 for (List<Path> lp: currentLongestRoad){
+		 	System.out.println(lp);
+		 }
+		 System.out.println(currentLongestRoad.size());
+		 System.out.println(currentLongestRoad.get(0).size());
+		 for (List<Path> lp: expectedLongestRoad){
+			System.out.println(lp);
+		 }
+		 System.out.println(expectedLongestRoad.size());		
+		 System.out.println(expectedLongestRoad.get(0).size());	
 		 assertEquals(currentLongestRoad.size(),expectedLongestRoad.size());
 		 assertTrue(currentLongestRoad.containsAll(expectedLongestRoad) && expectedLongestRoad.containsAll(currentLongestRoad));
 	}
