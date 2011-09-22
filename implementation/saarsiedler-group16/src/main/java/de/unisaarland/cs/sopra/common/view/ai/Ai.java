@@ -123,13 +123,14 @@ public class Ai implements ModelObserver {
 		Player me = mr.getMe();
 		int i = 0;
 		while (execute && i < sortedStroke.size()){
-			sortStrokeList(sortedStroke, generalStrategies);
+			sortedStroke = getSortedStrokeList(generalStrategies);
 			Stroke bestStroke = sortedStroke.get(i);
 			if (!mr.getMe().checkResourcesSufficient(bestStroke.getPrice())){
 				execute = new StupidTradeOfferStrategy(ca, mr).execute(bestStroke.getPrice());
 			}
 			if (execute) {
 				System.out.println(bestStroke);
+				
 				bestStroke.execute(ca);
 				claimVictoryIfPossible();
 			}
