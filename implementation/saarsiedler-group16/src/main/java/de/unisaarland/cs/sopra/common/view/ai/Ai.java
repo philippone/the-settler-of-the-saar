@@ -42,7 +42,7 @@ public class Ai implements ModelObserver {
 		this.generalStrategies.add(new ExpandStrategy(mr));
 		this.generalStrategies.add(new AttackStrategy(mr));
 		this.generalStrategies.add(new DeffenceStrategy(mr));
-		this.generalStrategies.add(new DeffenceStrategy(mr));
+		this.generalStrategies.add(new InitNumStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
 		this.returnResourcesStrategies = new HashSet<Strategy>();
@@ -50,7 +50,7 @@ public class Ai implements ModelObserver {
 		this.initStrategies = new HashSet<Strategy>();
 		this.initStrategies.add(new InitializeStrategy(mr));
 		this.initStrategies.add(new InitNumStrategy(mr));
-		//this.initStrategies.add(new WoolHarborStrategy(mr));
+		this.initStrategies.add(new WoolHarborStrategy(mr));
 		this.initStrategies.add(new HarborStrategy(mr));
 		mr.addModelObserver(this);
 	}
@@ -101,13 +101,19 @@ public class Ai implements ModelObserver {
 	
 	
 	public void execute(List<Stroke> sortedStroke){
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if (sortedStroke.size() > 0){
 			//TODO remove the random crap
 			//Collections.shuffle(sortedStroke);
 			Stroke bestStroke = sortedStroke.get(0);
 			boolean execute = true;
 			if (!mr.getMe().checkResourcesSufficient(bestStroke.getPrice())){
-				execute = new StupidTradeOfferStrategy(ca, mr).execute(bestStroke.getPrice());
+				execute = new HarborTradeStrategy(ca, mr).execute(bestStroke.getPrice());
 				execute = false;
 			}
 			if (execute) {

@@ -62,8 +62,6 @@ public class ExpandStrategy extends Strategy {
 	public double evaluate(BuildVillage stroke) {
 		double intersectionValue = 0.0;
 		double resourceValue = 0.0;
-		double numberValue = 0.0;
-		double harborValue = 0.0;
 		 Intersection location = stroke.getDestination();
 		 Set<Field> fields = mr.getFieldsFromIntersection(location);
 		 for (Field field : fields) {
@@ -78,29 +76,29 @@ public class ExpandStrategy extends Strategy {
 			FieldType type = field.getFieldType();
 			if (type == FieldType.FOREST) {
 				if (playerFields.contains(FieldType.FOREST)) {
-					resourceValue = resourceValue + 0.1666;
+					resourceValue = resourceValue + 0.1167;
 				}
-				resourceValue = resourceValue + 0.3333;
+				resourceValue = resourceValue + 0.2333;
 			} else if (type == FieldType.HILLS) {
 				if (playerFields.contains(FieldType.HILLS)) {
-					resourceValue = resourceValue + 0.1666;
+					resourceValue = resourceValue + 0.1167;
 				}
-				resourceValue = resourceValue + 0.3333;
+				resourceValue = resourceValue + 0.2333;
 			} else if (type == FieldType.PASTURE) {
 				if (playerFields.contains(FieldType.PASTURE)) {
-					resourceValue = resourceValue + 0.1666;
+					resourceValue = resourceValue + 0.1167;
 				}
-				resourceValue = resourceValue + 0.3333;
+				resourceValue = resourceValue + 0.2333;
 			} else if (type == FieldType.FIELDS) {
 				if (playerFields.contains(FieldType.FIELDS)) {
-					resourceValue = resourceValue + 0.1666;
+					resourceValue = resourceValue + 0.1167;
 				}
-				resourceValue = resourceValue + 0.3333;
+				resourceValue = resourceValue + 0.2333;
 			} else if (type == FieldType.MOUNTAINS) {
 				if (playerFields.contains(FieldType.MOUNTAINS)) {
-					resourceValue = resourceValue + 0.0833;
+					resourceValue = resourceValue + 0.0584;
 				}
-				resourceValue = resourceValue + 0.1666;
+				resourceValue = resourceValue + 0.1167;
 			}
 		}
 
