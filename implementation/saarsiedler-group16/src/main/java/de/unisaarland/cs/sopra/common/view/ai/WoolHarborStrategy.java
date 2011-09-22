@@ -58,13 +58,13 @@ public class WoolHarborStrategy extends Strategy {
 		Set<Path> paths = mr.getPathsFromIntersection(village);
 		for (Path p : paths){
 			if (p.getHarborType() != null){
-				harborValue = harborValue + 0.3;
+				harborValue = harborValue + 0.2;
 				HarborType harborType = p.getHarborType();
 				if (!mr.getHarborTypes(mr.getMe()).contains(harborType)) {
 					if (harborType == HarborType.WOOL_HARBOR)
-						harborValue = harborValue + 0.7;
+						harborValue = harborValue + 0.8;
 				}  
-				harborValue = harborValue + 0.2;
+				harborValue = harborValue + 0.1;
 					
 			} 
 		}

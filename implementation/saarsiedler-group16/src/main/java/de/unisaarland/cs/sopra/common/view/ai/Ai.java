@@ -1,4 +1,3 @@
-
 package de.unisaarland.cs.sopra.common.view.ai;
 
 import java.io.IOException;
@@ -164,6 +163,7 @@ public class Ai implements ModelObserver {
 		ca.endTurn();
 	}
 
+	
 	
 	public void claimVictoryIfPossible(){
 		if (mr.getMaxVictoryPoints() <= mr.getMe().getVictoryPoints()){
@@ -374,4 +374,3 @@ public class Ai implements ModelObserver {
 	} 
 
 }
-
