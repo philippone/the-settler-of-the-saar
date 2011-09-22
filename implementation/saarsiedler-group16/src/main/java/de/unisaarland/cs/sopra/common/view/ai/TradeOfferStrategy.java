@@ -12,9 +12,9 @@ public abstract class TradeOfferStrategy {
 	protected final ControllerAdapter ca;
 	protected final ModelReader mr;
 	
-	public TradeOfferStrategy(ControllerAdapter ca, ModelReader mr){
+	public TradeOfferStrategy(ControllerAdapter ca2, ModelReader mr){
 		this.mr = mr;
-		this.ca = ca;
+		this.ca = ca2;
 	}
 	
 

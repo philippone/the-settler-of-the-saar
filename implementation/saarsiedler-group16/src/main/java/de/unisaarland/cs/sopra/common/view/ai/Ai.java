@@ -42,8 +42,7 @@ public class Ai implements ModelObserver {
 		this.generalStrategies = new HashSet<Strategy>();
 		this.generalStrategies.add(new ExpandStrategy(mr));
 		this.generalStrategies.add(new AttackStrategy(mr));
-		//this.generalStrategies.add(new DeffenceStrategy(mr));
-		//this.generalStrategies.add(new DeffenceStrategy(mr));
+		this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
 		this.returnResourcesStrategies = new HashSet<Strategy>();
@@ -99,26 +98,26 @@ public class Ai implements ModelObserver {
 		
 	}
 	
-		public void execute(List<Stroke> sortedStroke){
-		if (sortedStroke.size() > 0){
-			//TODO remove the random crap
-			//Collections.shuffle(sortedStroke);
-		Stroke bestStroke = sortedStroke.get(0);
-		boolean execute = true;
-			if (!mr.getMe().checkResourcesSufficient(bestStroke.getPrice())){
-				execute = new TradeBrickHarborStrategy(ca, mr).execute(bestStroke.getPrice());
-				execute = false;
-			}
-			if (execute) {
-			System.out.println(bestStroke);
-			bestStroke.execute(ca);
-			//claimVictoryIfPossible();
-		}
-		}
-		// TODO vll loop?
-		ca.endTurn();
-	}
-	
+//		public void execute(List<Stroke> sortedStroke){
+//		if (sortedStroke.size() > 0){
+//			//TODO remove the random crap
+//			//Collections.shuffle(sortedStroke);
+//		Stroke bestStroke = sortedStroke.get(0);
+//		boolean execute = true;
+//			if (!mr.getMe().checkResourcesSufficient(bestStroke.getPrice())){
+//				execute = new TradeBrickHarborStrategy(ca, mr).execute(bestStroke.getPrice());
+//				execute = false;
+//			}
+//			if (execute) {
+//			System.out.println(bestStroke);
+//			bestStroke.execute(ca);
+//			//claimVictoryIfPossible();
+//		}
+//		}
+//		// TODO vll loop?
+//		ca.endTurn();
+//	}
+//	
 //	public void executeLoop(List<Stroke> sortedStroke){
 //		boolean execute = sortedStroke.size() > 0;
 //		Player me = mr.getMe();
@@ -137,6 +136,28 @@ public class Ai implements ModelObserver {
 //		}
 //		ca.endTurn();
 //	}
+
+	
+	public void executeLoop(List<Stroke> sortedStroke){
+		boolean execute = sortedStroke.size() > 0;
+		Player me = mr.getMe();
+		int i = 0;
+		while (execute && i < sortedStroke.size()){
+			sortedStroke = getSortedStrokeList(generalStrategies);
+			Stroke bestStroke = sortedStroke.get(i);
+			if (!mr.getMe().checkResourcesSufficient(bestStroke.getPrice())){
+				execute = new HarborTradeStrategy(ca, mr).execute(bestStroke.getPrice());
+			}
+			if (execute) {
+				System.out.println(bestStroke);
+				
+				bestStroke.execute(ca);
+				claimVictoryIfPossible();
+			}
+		}
+		ca.endTurn();
+	}
+
 	
 	public void claimVictoryIfPossible(){
 		if (mr.getMaxVictoryPoints() <= mr.getMe().getVictoryPoints()){
@@ -163,7 +184,7 @@ public class Ai implements ModelObserver {
 			for (Strategy s : strategySet){
 				if (s.evaluates(stroke)){
 					evaluationParticipants++;
-					evaluation += s.evaluate(stroke)*s.importance();
+					evaluation += s.evaluate(stroke);
 				}
 			}
 			stroke.setEvaluation(evaluation/evaluationParticipants);
@@ -324,7 +345,7 @@ public class Ai implements ModelObserver {
 	public void eventNewRound(int number) {
 		if (mr.getCurrentPlayer() == mr.getMe()){
 			List<Stroke> sortedStrokes = getSortedStrokeList(generalStrategies);
-			execute(sortedStrokes);
+			executeLoop(sortedStrokes);
 		}
 	}
 
