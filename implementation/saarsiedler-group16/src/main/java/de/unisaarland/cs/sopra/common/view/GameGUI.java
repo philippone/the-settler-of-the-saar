@@ -1,9 +1,44 @@
 package de.unisaarland.cs.sopra.common.view;
 
-import static de.unisaarland.cs.sopra.common.PlayerColors.*;
-import static de.unisaarland.cs.sopra.common.view.RenderBoard.*;
-import static de.unisaarland.cs.sopra.common.view.Textures.*;
-import static de.unisaarland.cs.sopra.common.view.Util.*;
+import static de.unisaarland.cs.sopra.common.PlayerColors.BLACK;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.aspectRatio;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.camDown;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.camIn;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.camLeft;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.camOut;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.camRight;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.camTop;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.drawSquareLeftTop;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.drawSquareMid;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.getOglx;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.getOgly;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.getOrgZ;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.initiateRenderBoard;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.maxX;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.minX;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.minY;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.renderField;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.renderFieldMark;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.renderIntersection;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.renderIntersectionMark;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.renderPath;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.renderPathMark;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.resetCamera;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.screenToOpenGLx;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.screenToOpenGLy;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.windowHeight;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.windowWidth;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.x;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.y;
+import static de.unisaarland.cs.sopra.common.view.RenderBoard.z;
+import static de.unisaarland.cs.sopra.common.view.Textures.catapultTexture;
+import static de.unisaarland.cs.sopra.common.view.Textures.initiateTextures;
+import static de.unisaarland.cs.sopra.common.view.Textures.streetTexture;
+import static de.unisaarland.cs.sopra.common.view.Textures.townTexture;
+import static de.unisaarland.cs.sopra.common.view.Textures.uiTextureMap;
+import static de.unisaarland.cs.sopra.common.view.Textures.villageTexture;
+import static de.unisaarland.cs.sopra.common.view.Util.initiateUtil;
+import static de.unisaarland.cs.sopra.common.view.Util.setColor;
 
 import java.awt.Font;
 import java.io.File;
@@ -11,7 +46,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -118,12 +152,12 @@ public class GameGUI extends View implements Runnable{
 	private String console6 = "";
 	private String console7 = "";
 	private boolean init;
+	private int declinedTrade = 0;
+	private int tradeCount = 0;
 	
 	boolean finished = false;
 	
 	private long lastinputcheck;
-
-	public static ModelReader mr;
 	
 	@SuppressWarnings("unused")
 	private Timeouts timeouts;
@@ -132,9 +166,8 @@ public class GameGUI extends View implements Runnable{
 		super(modelReader, controllerAdapter);
 		this.modelReader.addModelObserver(this);
 		this.timeouts = timeouts; //TODO timeouts nutzen
-		mr = this.modelReader;
-		initiateRenderBoard();
-		initiateUtil();
+		initiateRenderBoard(modelReader);
+		initiateUtil(modelReader);
 		this.playerNames = names;
 		this.selectionMode = NONE;
 		this.gameTitle = gameTitle;
@@ -183,7 +216,7 @@ public class GameGUI extends View implements Runnable{
 			claimVictory.setActive(true);
 		if (modelReader.getRound() >= 1)
 			endTurn.setActive(true);
-		if (me.getResources().size() >= 1)
+		if (me.getResources().size() >= 1 || tradeCount < 128 || declinedTrade < 5)
 			offerTrade.setActive(true);
 	}
 	
@@ -530,8 +563,8 @@ public class GameGUI extends View implements Runnable{
 			          render();
 			      }
 			}
-			Display.destroy();
 			controllerAdapter.leaveMatch();
+			Display.destroy();
 			Client.backToLobby();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -580,7 +613,10 @@ public class GameGUI extends View implements Runnable{
 			endTurn = new Clickable("EndTurn", xOffsetUI+828, yOffsetUI+22, 2, 185, 77, false, true) {
 				@Override
 				public void executeUI() {
-					this.setActive(false);
+					tradeCount = 0;
+					declinedTrade = 0;
+//					this.setActive(false);
+					deactivateUI();
 					controllerAdapter.addGuiEvent(this);
 				}
 				@Override
@@ -605,11 +641,15 @@ public class GameGUI extends View implements Runnable{
 				public void executeController() {
 					long player = controllerAdapter.offerTrade(getRes());
 					String name = "Nobody";
+					tradeCount += 1;
 					if (player != -1 && player != -2) {
 						name = playerNames.get(modelReader.getPlayerMap().get(player));
 					}
 					else if(player == -2) {
 						name = "Bank"; //handel mitzählen TODO
+					}
+					else {
+						declinedTrade += 1;
 					}
 					console4 = "You traded with "+ name;
 					reinitiateUI();

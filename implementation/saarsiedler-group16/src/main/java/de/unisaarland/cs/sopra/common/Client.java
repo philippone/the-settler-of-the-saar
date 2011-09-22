@@ -116,7 +116,7 @@ public class Client {
 					|| res==JoinResult.CLOSED
 					|| res==JoinResult.FULL
 					|| res==JoinResult.NOT_EXISTING)
-				throw new IllegalStateException("Running/closed/full/not_existing");
+				throw new IllegalStateException("Running/closed/full/not_existing: "+res);
 			} catch (Exception e) {e.printStackTrace();}
 	}
 	

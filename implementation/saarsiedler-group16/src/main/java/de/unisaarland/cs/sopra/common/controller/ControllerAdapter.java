@@ -126,6 +126,7 @@ public class ControllerAdapter {
 	 */
 	public void leaveMatch() {
 		try {
+			setEndOfGame(true);
 			controller.leaveMatch();
 		} catch (Exception e) { e.printStackTrace(); }
 	}
