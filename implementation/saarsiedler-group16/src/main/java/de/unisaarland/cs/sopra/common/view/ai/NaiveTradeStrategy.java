@@ -13,6 +13,10 @@ public class NaiveTradeStrategy extends TradeStrategy {
 	@Override
 	public void accept(ResourcePackage price, ResourcePackage offer) {
 		ResourcePackage possessions = mr.getResources().copy();
+		if (offer.getPositiveResourcesCount() >= 4 && !mr.getResources().copy().add(offer).hasNegativeResources()) {
+			ca.respondTrade(true);
+			return;
+		}
 		if (possessions.add(price).hasNegativeResources())
 			if (!possessions.add(offer).hasNegativeResources())
 				ca.respondTrade(true);

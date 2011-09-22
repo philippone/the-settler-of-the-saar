@@ -18,6 +18,7 @@ import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.Model;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 import de.unisaarland.cs.st.saarsiedler.comm.Connection;
@@ -40,7 +41,7 @@ public class Ai implements ModelObserver {
 		this.generalStrategies = new HashSet<Strategy>();
 		this.generalStrategies.add(new ExpandStrategy(mr));
 		this.generalStrategies.add(new AttackStrategy(mr));
-		this.generalStrategies.add(new DeffenceStrategy(mr));
+		//this.generalStrategies.add(new DeffenceStrategy(mr));
 		//this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
@@ -97,23 +98,42 @@ public class Ai implements ModelObserver {
 	}
 	
 	
-	public void execute(List<Stroke> sortedStroke){
-		if (sortedStroke.size() > 0){
-			//TODO remove the random crap
-			//Collections.shuffle(sortedStroke);
-			Stroke bestStroke = sortedStroke.get(0);
-			boolean execute = true;
+//	public void execute(List<Stroke> sortedStroke){
+//		if (sortedStroke.size() > 0){
+//			//TODO remove the random crap
+//			//Collections.shuffle(sortedStroke);
+//			Stroke bestStroke = sortedStroke.get(0);
+//			boolean execute = true;
+//			if (!mr.getMe().checkResourcesSufficient(bestStroke.getPrice())){
+//				execute = new StupidTradeOfferStrategy(ca, mr).execute(bestStroke.getPrice());
+//				execute = false;
+//			}
+//			if (execute) {
+//				System.out.println(bestStroke);
+//				bestStroke.execute(ca);
+//				//claimVictoryIfPossible();
+//			}
+//		}
+//		// TODO vll loop?
+//		ca.endTurn();
+//	}
+	
+	public void executeLoop(List<Stroke> sortedStroke){
+		boolean execute = sortedStroke.size() > 0;
+		Player me = mr.getMe();
+		int i = 0;
+		while (execute && i < sortedStroke.size()){
+			sortStrokeList(sortedStroke, generalStrategies);
+			Stroke bestStroke = sortedStroke.get(i);
 			if (!mr.getMe().checkResourcesSufficient(bestStroke.getPrice())){
 				execute = new StupidTradeOfferStrategy(ca, mr).execute(bestStroke.getPrice());
-				execute = false;
 			}
 			if (execute) {
 				System.out.println(bestStroke);
 				bestStroke.execute(ca);
-				//claimVictoryIfPossible();
+				claimVictoryIfPossible();
 			}
 		}
-		// TODO vll loop?
 		ca.endTurn();
 	}
 	
@@ -303,7 +323,7 @@ public class Ai implements ModelObserver {
 	public void eventNewRound(int number) {
 		if (mr.getCurrentPlayer() == mr.getMe()){
 			List<Stroke> sortedStrokes = getSortedStrokeList(generalStrategies);
-			execute(sortedStrokes);
+			executeLoop(sortedStrokes);
 		}
 	}
 
