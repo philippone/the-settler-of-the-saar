@@ -1,4 +1,3 @@
-
 package de.unisaarland.cs.sopra.common.view.ai;
 
 import java.io.IOException;
@@ -375,4 +374,3 @@ public class Ai implements ModelObserver {
 	} 
 
 }
-

@@ -168,6 +168,7 @@ public class GameGUI extends View implements Runnable{
 		this.timeouts = timeouts; //TODO timeouts nutzen
 		initiateRenderBoard(modelReader);
 		initiateUtil(modelReader);
+		Clickable.initClickables();
 		this.playerNames = names;
 		this.selectionMode = NONE;
 		this.gameTitle = gameTitle;
@@ -216,7 +217,7 @@ public class GameGUI extends View implements Runnable{
 			claimVictory.setActive(true);
 		if (modelReader.getRound() >= 1)
 			endTurn.setActive(true);
-		if (me.getResources().size() >= 1 || tradeCount < 128 || declinedTrade < 5)
+		if (me.getResources().size() >= 1 && tradeCount < 128 && declinedTrade < 5)
 			offerTrade.setActive(true);
 	}
 	

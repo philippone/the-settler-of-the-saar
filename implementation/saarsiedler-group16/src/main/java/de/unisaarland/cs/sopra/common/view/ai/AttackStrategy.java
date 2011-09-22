@@ -102,7 +102,7 @@ public class AttackStrategy extends Strategy {
 		double value=0;
 		Intersection destination=stroke.getDestination();
 		if (destination.getBuildingType()==BuildingType.Town) value=value+1;
-		else if (destination.getBuildingType()==BuildingType.Village) value=value+0.9;
+		else if (destination.getBuildingType()==BuildingType.Village) value=value+1;
 		return value;
 	}
 
