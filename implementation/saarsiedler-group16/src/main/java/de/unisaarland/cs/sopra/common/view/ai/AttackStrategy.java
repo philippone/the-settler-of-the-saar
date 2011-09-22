@@ -203,7 +203,6 @@ public class AttackStrategy extends Strategy {
 		 if (p0.hasCatapult() && p0.getCatapultOwner()!=mr.getMe()) 
 			 targetingCatapultValue=targetingCatapultValue+0.3;
 		 pathValue=3*targetingCatapultValue+2*targetingTownValue+targetingVillageValue;
-		 if (mr.getCatapults(mr.getMe()).size()<1 && pathValue>0.3) pathValue=1;
 		 if (doesIHazAlreadyACatapultNotSoFar) pathValue=pathValue/10;
 		 return Math.min(pathValue,1);
 	}
