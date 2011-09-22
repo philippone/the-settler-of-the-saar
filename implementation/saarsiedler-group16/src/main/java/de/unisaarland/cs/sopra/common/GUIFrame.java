@@ -4,6 +4,7 @@
 
 package de.unisaarland.cs.sopra.common;
 
+import java.awt.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -86,22 +87,22 @@ public class GUIFrame extends JFrame {
 		readyToggle.addActionListener(actLis);
 		back_join.addActionListener(actLis);
 		fullscreenToggle.addActionListener(actLis);
-		gameTable.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent e) {
-				//TODO evtl noch was zu tun
-				System.out.println("DESELECTED GameList");
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {
-				int row = gameTable.getSelectedRow();
-				long focusedGameID= (Long)gameTable.getModel().getValueAt(row, 0);
-				try { //set focused Matchinfo as actual Client.matchInfo
-					Client.matchInfo= Client.connection.getMatchInfo(focusedGameID);	} catch (IOException e1) {e1.printStackTrace();	}
-					System.out.println("row: "+row+"listID: "+focusedGameID+ "matchinfo: "+ Client.matchInfo.getId());
-			}
-		});
+//		gameTable.addFocusListener(new FocusListener() {
+//			@Override
+//			public void focusLost(FocusEvent e) {
+//				//TODO evtl noch was zu tun
+//				System.out.println("DESELECTED GameList");
+//			}
+//			
+//			@Override
+//			public void focusGained(FocusEvent e) {
+//				int row = gameTable.getSelectedRow();
+//				long focusedGameID= (Long)gameTable.getModel().getValueAt(row, 0);
+//				try { //set focused Matchinfo as actual Client.matchInfo
+//					Client.matchInfo= Client.connection.getMatchInfo(focusedGameID);	} catch (IOException e1) {e1.printStackTrace();	}
+//					System.out.println("row: "+row+"listID: "+focusedGameID+ "matchinfo: "+ Client.matchInfo.getId());
+//			}
+//		});
 	}
 //	public void gameListActivator(){
 //		gameTable.addInputMethodListener(l)
@@ -327,8 +328,9 @@ public class GUIFrame extends JFrame {
 					gameTable.setAutoCreateRowSorter(true);
 					gameTable.setFont(gameTable.getFont().deriveFont(Font.BOLD, gameTable.getFont().getSize() + 2f));
 					gameTable.setModel(new DefaultTableModel());
-					gameTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+					gameTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 					gameTable.setDoubleBuffered(true);
+					gameTable.setShowVerticalLines(false);
 					scrollPane4.setViewportView(gameTable);
 				}
 				panel8.add(scrollPane4, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
