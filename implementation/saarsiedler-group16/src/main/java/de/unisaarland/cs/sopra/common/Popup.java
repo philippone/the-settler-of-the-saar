@@ -38,11 +38,12 @@ public class Popup extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	int n;
-//	private PopListener actLis;
+	private PopListener actLis;
 	public Popup() {
 		initComponents();
 		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-//		this.actLis = new PopListener(this);  //TODO REFACTOR!!!!!
+		this.actLis = new PopListener(this);  //TODO REFACTOR!!!!!
+		setListener();
 		topLabel2.setText("Make a valid offer!");
 		topLabel3.setText("Accept Trade-Offer?");
 		okReturn.addActionListener(new ActionListener() {
@@ -71,7 +72,7 @@ public class Popup extends JFrame {
 						Client.returnPackage=new ResourcePackage(a1,a2,a3,a4,a5);
 					}
 				}catch(NumberFormatException e1){
-					warning.setText("only numbers allowed!");
+					warning.setText("only posivite numbers allowed!");
 					warning.setVisible(true);
 				}
 			}
@@ -177,6 +178,29 @@ public class Popup extends JFrame {
 			}
 		});
 	}
+	private void setListener(){
+		 button1.addActionListener(actLis);
+		 button3.addActionListener(actLis);
+		 button5.addActionListener(actLis);
+		 button7.addActionListener(actLis);
+		 button11.addActionListener(actLis);
+		 button2.addActionListener(actLis);
+		 button4.addActionListener(actLis);
+		 button6.addActionListener(actLis);
+		 button10.addActionListener(actLis);
+		 button12.addActionListener(actLis);
+		 
+		 button13.addActionListener(actLis);
+		 button14.addActionListener(actLis);
+		 button15.addActionListener(actLis);
+		 button16.addActionListener(actLis);
+		 button17.addActionListener(actLis);
+		 button18.addActionListener(actLis);
+		 button19.addActionListener(actLis);
+		 button20.addActionListener(actLis);
+		 button21.addActionListener(actLis);
+		 button22.addActionListener(actLis);
+	}
 	
 	public void setN(int n){
 		this.n=n;
@@ -224,12 +248,21 @@ public class Popup extends JFrame {
 		woolMax = new JLabel();
 		grainMax = new JLabel();
 		oreMax = new JLabel();
-		separator1 = new JSeparator();
+		button13 = new JButton();
+		button14 = new JButton();
+		button15 = new JButton();
+		button16 = new JButton();
+		button17 = new JButton();
 		textField1 = new JTextField();
 		textField2 = new JTextField();
 		textField3 = new JTextField();
 		textField4 = new JTextField();
 		textField5 = new JTextField();
+		button18 = new JButton();
+		button19 = new JButton();
+		button20 = new JButton();
+		button21 = new JButton();
+		button22 = new JButton();
 		lumberTradeBox = new JComboBox();
 		brickTradeBox = new JComboBox();
 		woolTradeBox = new JComboBox();
@@ -252,17 +285,27 @@ public class Popup extends JFrame {
 		checkBox4 = new JCheckBox();
 		checkBox5 = new JCheckBox();
 		checkBox6 = new JCheckBox();
-		separator2 = new JSeparator();
 		lumberMax2 = new JLabel();
 		brickMax2 = new JLabel();
 		woolMax2 = new JLabel();
 		grainMax2 = new JLabel();
 		oreMax2 = new JLabel();
+		button1 = new JButton();
+		button3 = new JButton();
+		button5 = new JButton();
+		button7 = new JButton();
+		button11 = new JButton();
 		textField6 = new JTextField();
 		textField7 = new JTextField();
 		textField8 = new JTextField();
 		textField9 = new JTextField();
 		textField10 = new JTextField();
+		button2 = new JButton();
+		button4 = new JButton();
+		button6 = new JButton();
+		button10 = new JButton();
+		button12 = new JButton();
+		separator2 = new JSeparator();
 		lumberTradeBox2 = new JComboBox();
 		brickTradeBox2 = new JComboBox();
 		woolTradeBox2 = new JComboBox();
@@ -318,7 +361,6 @@ public class Popup extends JFrame {
 		//======== returnPackPanel ========
 		{
 			returnPackPanel.setBorder(new EmptyBorder(12, 12, 12, 12));
-			returnPackPanel.setVisible(false);
 
 			// JFormDesigner evaluation mark
 			returnPackPanel.setBorder(new javax.swing.border.CompoundBorder(
@@ -337,9 +379,9 @@ public class Popup extends JFrame {
 			{
 				contentPanel.setLayout(new GridBagLayout());
 				((GridBagLayout)contentPanel.getLayout()).columnWidths = new int[] {0, 65, 65, 65, 65, 65, 0, 0};
-				((GridBagLayout)contentPanel.getLayout()).rowHeights = new int[] {21, 0, 0, 0, 0, 0, 14, 0};
+				((GridBagLayout)contentPanel.getLayout()).rowHeights = new int[] {21, 0, 0, 0, 28, 0, 0, 0, 14, 0};
 				((GridBagLayout)contentPanel.getLayout()).columnWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
-				((GridBagLayout)contentPanel.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+				((GridBagLayout)contentPanel.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 				contentPanel.add(topLabel, new GridBagConstraints(2, 1, 3, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
@@ -403,67 +445,94 @@ public class Popup extends JFrame {
 				contentPanel.add(oreMax, new GridBagConstraints(5, 3, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
-				contentPanel.add(separator1, new GridBagConstraints(0, 4, 6, 1, 0.0, 0.0,
+				contentPanel.add(button13, new GridBagConstraints(1, 5, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+				contentPanel.add(button14, new GridBagConstraints(2, 5, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+				contentPanel.add(button15, new GridBagConstraints(3, 5, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+				contentPanel.add(button16, new GridBagConstraints(4, 5, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+				contentPanel.add(button17, new GridBagConstraints(5, 5, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- textField1 ----
 				textField1.setText("0");
-				contentPanel.add(textField1, new GridBagConstraints(1, 5, 1, 1, 0.0, 0.0,
+				contentPanel.add(textField1, new GridBagConstraints(1, 6, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- textField2 ----
 				textField2.setText("0");
-				contentPanel.add(textField2, new GridBagConstraints(2, 5, 1, 1, 0.0, 0.0,
+				contentPanel.add(textField2, new GridBagConstraints(2, 6, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- textField3 ----
 				textField3.setText("0");
-				contentPanel.add(textField3, new GridBagConstraints(3, 5, 1, 1, 0.0, 0.0,
+				contentPanel.add(textField3, new GridBagConstraints(3, 6, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- textField4 ----
 				textField4.setText("0");
-				contentPanel.add(textField4, new GridBagConstraints(4, 5, 1, 1, 0.0, 0.0,
+				contentPanel.add(textField4, new GridBagConstraints(4, 6, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- textField5 ----
 				textField5.setText("0");
-				contentPanel.add(textField5, new GridBagConstraints(5, 5, 1, 1, 0.0, 0.0,
+				contentPanel.add(textField5, new GridBagConstraints(5, 6, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+				contentPanel.add(button18, new GridBagConstraints(1, 7, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+				contentPanel.add(button19, new GridBagConstraints(2, 7, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+				contentPanel.add(button20, new GridBagConstraints(3, 7, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+				contentPanel.add(button21, new GridBagConstraints(4, 7, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+				contentPanel.add(button22, new GridBagConstraints(5, 7, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- lumberTradeBox ----
 				lumberTradeBox.setVisible(false);
-				contentPanel.add(lumberTradeBox, new GridBagConstraints(1, 6, 1, 1, 0.0, 0.0,
+				contentPanel.add(lumberTradeBox, new GridBagConstraints(1, 8, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 5), 0, 0));
 
 				//---- brickTradeBox ----
 				brickTradeBox.setVisible(false);
-				contentPanel.add(brickTradeBox, new GridBagConstraints(2, 6, 1, 1, 0.0, 0.0,
+				contentPanel.add(brickTradeBox, new GridBagConstraints(2, 8, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 5), 0, 0));
 
 				//---- woolTradeBox ----
 				woolTradeBox.setVisible(false);
-				contentPanel.add(woolTradeBox, new GridBagConstraints(3, 6, 1, 1, 0.0, 0.0,
+				contentPanel.add(woolTradeBox, new GridBagConstraints(3, 8, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 5), 0, 0));
 
 				//---- grainTradeBox ----
 				grainTradeBox.setVisible(false);
-				contentPanel.add(grainTradeBox, new GridBagConstraints(4, 6, 1, 1, 0.0, 0.0,
+				contentPanel.add(grainTradeBox, new GridBagConstraints(4, 8, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 5), 0, 0));
 
 				//---- oreTradeBox ----
 				oreTradeBox.setVisible(false);
-				contentPanel.add(oreTradeBox, new GridBagConstraints(5, 6, 1, 1, 0.0, 0.0,
+				contentPanel.add(oreTradeBox, new GridBagConstraints(5, 8, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 5), 0, 0));
 			}
@@ -504,6 +573,7 @@ public class Popup extends JFrame {
 		//======== tradePanel ========
 		{
 			tradePanel.setBorder(new EmptyBorder(12, 12, 12, 12));
+			tradePanel.setVisible(false);
 			tradePanel.setLayout(new GridBagLayout());
 			((GridBagLayout)tradePanel.getLayout()).columnWidths = new int[] {0, 0};
 			((GridBagLayout)tradePanel.getLayout()).rowHeights = new int[] {139, 34, 0};
@@ -513,173 +583,203 @@ public class Popup extends JFrame {
 			//======== contentPanel2 ========
 			{
 				contentPanel2.setLayout(new GridBagLayout());
-				((GridBagLayout)contentPanel2.getLayout()).columnWidths = new int[] {0, 65, 65, 65, 65, 65, 0, 0};
-				((GridBagLayout)contentPanel2.getLayout()).rowHeights = new int[] {25, 0, 0, 0, 0, 0, 0, 0, 0, 17, 0};
-				((GridBagLayout)contentPanel2.getLayout()).columnWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
-				((GridBagLayout)contentPanel2.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
-				contentPanel2.add(topLabel2, new GridBagConstraints(2, 0, 3, 1, 0.0, 0.0,
+				((GridBagLayout)contentPanel2.getLayout()).columnWidths = new int[] {35, 35, 35, 35, 35, 35, 35, 35, 30, 30, 0};
+				((GridBagLayout)contentPanel2.getLayout()).rowHeights = new int[] {25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 17, 0};
+				((GridBagLayout)contentPanel2.getLayout()).columnWeights = new double[] {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0E-4};
+				((GridBagLayout)contentPanel2.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+				contentPanel2.add(topLabel2, new GridBagConstraints(2, 0, 6, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- label6 ----
 				label6.setText("Lumber:");
-				contentPanel2.add(label6, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
+				contentPanel2.add(label6, new GridBagConstraints(0, 2, 2, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.VERTICAL,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- label7 ----
 				label7.setText("Brick:");
-				contentPanel2.add(label7, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0,
+				contentPanel2.add(label7, new GridBagConstraints(2, 2, 2, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.VERTICAL,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- label8 ----
 				label8.setText("Wool:");
-				contentPanel2.add(label8, new GridBagConstraints(3, 2, 1, 1, 0.0, 0.0,
+				contentPanel2.add(label8, new GridBagConstraints(4, 2, 2, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.VERTICAL,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- label9 ----
 				label9.setText("Grain:");
-				contentPanel2.add(label9, new GridBagConstraints(4, 2, 1, 1, 0.0, 0.0,
+				contentPanel2.add(label9, new GridBagConstraints(6, 2, 2, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.VERTICAL,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- label10 ----
 				label10.setText("Ore:");
-				contentPanel2.add(label10, new GridBagConstraints(5, 2, 1, 1, 0.0, 0.0,
+				contentPanel2.add(label10, new GridBagConstraints(8, 2, 2, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.VERTICAL,
-					new Insets(0, 0, 5, 5), 0, 0));
+					new Insets(0, 0, 5, 0), 0, 0));
 
 				//---- checkBox1 ----
 				checkBox1.setEnabled(false);
-				contentPanel2.add(checkBox1, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0,
+				contentPanel2.add(checkBox1, new GridBagConstraints(0, 3, 2, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.VERTICAL,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- checkBox2 ----
 				checkBox2.setEnabled(false);
-				contentPanel2.add(checkBox2, new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0,
+				contentPanel2.add(checkBox2, new GridBagConstraints(2, 3, 2, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.VERTICAL,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- checkBox3 ----
 				checkBox3.setEnabled(false);
-				contentPanel2.add(checkBox3, new GridBagConstraints(3, 3, 1, 1, 0.0, 0.0,
+				contentPanel2.add(checkBox3, new GridBagConstraints(4, 3, 2, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.VERTICAL,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- checkBox4 ----
 				checkBox4.setEnabled(false);
-				contentPanel2.add(checkBox4, new GridBagConstraints(4, 3, 1, 1, 0.0, 0.0,
+				contentPanel2.add(checkBox4, new GridBagConstraints(6, 3, 2, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.VERTICAL,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- checkBox5 ----
 				checkBox5.setEnabled(false);
-				contentPanel2.add(checkBox5, new GridBagConstraints(5, 3, 1, 1, 0.0, 0.0,
+				contentPanel2.add(checkBox5, new GridBagConstraints(8, 3, 2, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.VERTICAL,
-					new Insets(0, 0, 5, 5), 0, 0));
+					new Insets(0, 0, 5, 0), 0, 0));
 
 				//---- checkBox6 ----
 				checkBox6.setText("General 3:1");
 				checkBox6.setEnabled(false);
-				contentPanel2.add(checkBox6, new GridBagConstraints(3, 4, 1, 1, 0.0, 0.0,
+				contentPanel2.add(checkBox6, new GridBagConstraints(3, 4, 3, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.VERTICAL,
 					new Insets(0, 0, 5, 5), 0, 0));
-				contentPanel2.add(separator2, new GridBagConstraints(1, 5, 6, 1, 0.0, 0.0,
-					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-					new Insets(0, 0, 5, 0), 0, 0));
 
 				//---- lumberMax2 ----
 				lumberMax2.setText("text");
-				contentPanel2.add(lumberMax2, new GridBagConstraints(1, 6, 1, 1, 0.0, 0.0,
+				contentPanel2.add(lumberMax2, new GridBagConstraints(0, 5, 2, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- brickMax2 ----
 				brickMax2.setText("text");
-				contentPanel2.add(brickMax2, new GridBagConstraints(2, 6, 1, 1, 0.0, 0.0,
+				contentPanel2.add(brickMax2, new GridBagConstraints(2, 5, 2, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- woolMax2 ----
 				woolMax2.setText("text");
-				contentPanel2.add(woolMax2, new GridBagConstraints(3, 6, 1, 1, 0.0, 0.0,
+				contentPanel2.add(woolMax2, new GridBagConstraints(4, 5, 2, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- grainMax2 ----
 				grainMax2.setText("text");
-				contentPanel2.add(grainMax2, new GridBagConstraints(4, 6, 1, 1, 0.0, 0.0,
+				contentPanel2.add(grainMax2, new GridBagConstraints(6, 5, 2, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- oreMax2 ----
 				oreMax2.setText("text");
-				contentPanel2.add(oreMax2, new GridBagConstraints(5, 6, 1, 1, 0.0, 0.0,
+				contentPanel2.add(oreMax2, new GridBagConstraints(8, 5, 2, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 0), 0, 0));
+				contentPanel2.add(button1, new GridBagConstraints(0, 7, 2, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
+				contentPanel2.add(button3, new GridBagConstraints(2, 7, 2, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+				contentPanel2.add(button5, new GridBagConstraints(4, 7, 2, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+				contentPanel2.add(button7, new GridBagConstraints(6, 7, 2, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+				contentPanel2.add(button11, new GridBagConstraints(8, 7, 2, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 0), 0, 0));
 
 				//---- textField6 ----
 				textField6.setText("0");
-				contentPanel2.add(textField6, new GridBagConstraints(1, 7, 1, 1, 0.0, 0.0,
+				contentPanel2.add(textField6, new GridBagConstraints(0, 8, 2, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- textField7 ----
 				textField7.setText("0");
-				contentPanel2.add(textField7, new GridBagConstraints(2, 7, 1, 1, 0.0, 0.0,
+				contentPanel2.add(textField7, new GridBagConstraints(2, 8, 2, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- textField8 ----
 				textField8.setText("0");
-				contentPanel2.add(textField8, new GridBagConstraints(3, 7, 1, 1, 0.0, 0.0,
+				contentPanel2.add(textField8, new GridBagConstraints(4, 8, 2, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- textField9 ----
 				textField9.setText("0");
-				contentPanel2.add(textField9, new GridBagConstraints(4, 7, 1, 1, 0.0, 0.0,
+				contentPanel2.add(textField9, new GridBagConstraints(6, 8, 2, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
 
 				//---- textField10 ----
 				textField10.setText("0");
-				contentPanel2.add(textField10, new GridBagConstraints(5, 7, 1, 1, 0.0, 0.0,
+				contentPanel2.add(textField10, new GridBagConstraints(8, 8, 2, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 0), 0, 0));
+				contentPanel2.add(button2, new GridBagConstraints(0, 9, 2, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 5, 5), 0, 0));
+				contentPanel2.add(button4, new GridBagConstraints(2, 9, 2, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+				contentPanel2.add(button6, new GridBagConstraints(4, 9, 2, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+				contentPanel2.add(button10, new GridBagConstraints(6, 9, 2, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
+				contentPanel2.add(button12, new GridBagConstraints(8, 9, 2, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 0), 0, 0));
+				contentPanel2.add(separator2, new GridBagConstraints(0, 10, 10, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 0), 0, 0));
 
 				//---- lumberTradeBox2 ----
 				lumberTradeBox2.setVisible(false);
-				contentPanel2.add(lumberTradeBox2, new GridBagConstraints(1, 9, 1, 1, 0.0, 0.0,
+				contentPanel2.add(lumberTradeBox2, new GridBagConstraints(0, 12, 2, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 5), 0, 0));
 
 				//---- brickTradeBox2 ----
 				brickTradeBox2.setVisible(false);
-				contentPanel2.add(brickTradeBox2, new GridBagConstraints(2, 9, 1, 1, 0.0, 0.0,
+				contentPanel2.add(brickTradeBox2, new GridBagConstraints(2, 12, 2, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 5), 0, 0));
 
 				//---- woolTradeBox2 ----
 				woolTradeBox2.setVisible(false);
-				contentPanel2.add(woolTradeBox2, new GridBagConstraints(3, 9, 1, 1, 0.0, 0.0,
+				contentPanel2.add(woolTradeBox2, new GridBagConstraints(4, 12, 2, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 5), 0, 0));
 
 				//---- grainTradeBox2 ----
 				grainTradeBox2.setVisible(false);
-				contentPanel2.add(grainTradeBox2, new GridBagConstraints(4, 9, 1, 1, 0.0, 0.0,
+				contentPanel2.add(grainTradeBox2, new GridBagConstraints(6, 12, 2, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 5), 0, 0));
 
 				//---- oreTradeBox2 ----
 				oreTradeBox2.setVisible(false);
-				contentPanel2.add(oreTradeBox2, new GridBagConstraints(5, 9, 1, 1, 0.0, 0.0,
+				contentPanel2.add(oreTradeBox2, new GridBagConstraints(8, 12, 2, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-					new Insets(0, 0, 0, 5), 0, 0));
+					new Insets(0, 0, 0, 0), 0, 0));
 			}
 			tradePanel.add(contentPanel2, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -960,12 +1060,21 @@ public class Popup extends JFrame {
 	public JLabel woolMax;
 	public JLabel grainMax;
 	public JLabel oreMax;
-	private JSeparator separator1;
+	public JButton button13;
+	public JButton button14;
+	public JButton button15;
+	public JButton button16;
+	public JButton button17;
 	public JTextField textField1;
 	public JTextField textField2;
 	public JTextField textField3;
 	public JTextField textField4;
 	public JTextField textField5;
+	public JButton button18;
+	public JButton button19;
+	public JButton button20;
+	public JButton button21;
+	public JButton button22;
 	private JComboBox lumberTradeBox;
 	private JComboBox brickTradeBox;
 	private JComboBox woolTradeBox;
@@ -988,17 +1097,27 @@ public class Popup extends JFrame {
 	public JCheckBox checkBox4;
 	public JCheckBox checkBox5;
 	public JCheckBox checkBox6;
-	private JSeparator separator2;
 	public JLabel lumberMax2;
 	public JLabel brickMax2;
 	public JLabel woolMax2;
 	public JLabel grainMax2;
 	public JLabel oreMax2;
+	public JButton button1;
+	public JButton button3;
+	public JButton button5;
+	public JButton button7;
+	public JButton button11;
 	public JTextField textField6;
 	public JTextField textField7;
 	public JTextField textField8;
 	public JTextField textField9;
 	public JTextField textField10;
+	public JButton button2;
+	public JButton button4;
+	public JButton button6;
+	public JButton button10;
+	public JButton button12;
+	private JSeparator separator2;
 	private JComboBox lumberTradeBox2;
 	private JComboBox brickTradeBox2;
 	private JComboBox woolTradeBox2;
