@@ -7,26 +7,39 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.CyclicBarrier;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.lwjgl.opengl.DisplayMode;
 
 import de.unisaarland.cs.sopra.common.ModelObserver;
+import de.unisaarland.cs.sopra.common.PlayerColors;
+import de.unisaarland.cs.sopra.common.Setting;
+import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.Model;
+import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Point;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
+import de.unisaarland.cs.sopra.common.view.GameGUI;
+import de.unisaarland.cs.st.saarsiedler.comm.Timeouts;
 import de.unisaarland.cs.st.saarsiedler.comm.results.AttackResult;
 
 
@@ -392,7 +405,7 @@ public class ModelTest {
 	}
 	
 	@Test
-	public void testUpdateLongestRoad() {
+	public void testUpdateLongestRoad() {		
 		model.buildSettlement(new Location(1,0,1), BuildingType.Village);
 		model.buildStreet(new Location(1,0,1));
 		
@@ -428,7 +441,7 @@ public class ModelTest {
 			expected.add(model.getLongestClaimedRoad().get(i));
 		}
 
-		assertTrue("updateLongestRoad fehlgeschlagen", model.getLongestClaimedRoad().size() == 5);
+		assertEquals("updateLongestRoad fehlgeschlagen", model.getLongestClaimedRoad().size(), 5);
 		assertEquals("nicht die richige LongestRoad geupdatet", model.getLongestClaimedRoad(), expected);
 	}
 	

@@ -3,13 +3,22 @@ package model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.CyclicBarrier;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.lwjgl.opengl.DisplayMode;
 
+import de.unisaarland.cs.sopra.common.PlayerColors;
+import de.unisaarland.cs.sopra.common.Setting;
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.HarborType;
@@ -19,6 +28,7 @@ import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Point;
 import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
+import de.unisaarland.cs.sopra.common.view.GameGUI;
 
 
 
@@ -42,6 +52,7 @@ public class ModelReaderTest {
 		currentPlayer.modifyResources(new ResourcePackage(10000,10000,10000,10000,10000));
 		model.getPath(new Location(2,1,0)).createStreet(currentPlayer);
 		model.buildSettlement(new Location(2, 1, 1), BuildingType.Village);
+		model.robberMoved(new Point (1,2), new Point (0,2), -1, null);
 		Set<HarborType> expectedSet = new HashSet<HarborType>();
 		expectedSet.add(HarborType.LUMBER_HARBOR);
 		currentSet = model.getHarborTypes(currentPlayer);
@@ -62,14 +73,14 @@ public class ModelReaderTest {
 		currentPlayer.modifyResources(new ResourcePackage(10000,10000,10000,10000,10000));
 		model.buildSettlement(new Location(2,1,1), BuildingType.Village);
 		currentSet = model.getHarborTypes(currentPlayer);
-		assertTrue("es gibt einen HarborType", currentSet.size() == 1);
+		assertTrue("es gibt keinen HarborType wegen dem Raeuber", currentSet.size() == 0);
 	}
 	
 	/**
 	 * Harbor with buccaneer (Seeraeuber)
 	 */
 	@Test
-	public void testGetHarborTypes2() {
+	public void testGetHarborTypes2() {		
 		Player currentPlayer = model.getCurrentPlayer();
 		Set<HarborType> currentSet = model.getHarborTypes(currentPlayer);
 		assertTrue("es gibt eig. keine HarborTypes", currentSet.size() == 0);
