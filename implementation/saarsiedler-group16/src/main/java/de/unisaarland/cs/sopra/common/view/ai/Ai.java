@@ -149,12 +149,14 @@ public class Ai implements ModelObserver {
 	public List<Stroke> getSortedStrokeList(Set<Strategy> strategySet){
 		List<Stroke> strokeList = generateAllPossibleStrokes();
 		evaluateStrokes(strokeList, strategySet);
+		Collections.shuffle(strokeList);
 		Collections.sort(strokeList, Collections.<Stroke>reverseOrder());
 		return strokeList;
 	}
 	
 	public void sortStrokeList(List<Stroke> strokeList, Set<Strategy> strategySet){
 		evaluateStrokes(strokeList, strategySet);
+		Collections.shuffle(strokeList);
 		Collections.sort(strokeList, Collections.<Stroke>reverseOrder());
 	}
 	
@@ -227,18 +229,22 @@ public class Ai implements ModelObserver {
 	
 	public List<Stroke> generateAllPossibleStrokes(){
 		List<Stroke> strokeSet = new LinkedList<Stroke>();
-		// create build village strokes
-		if (mr.getMaxBuilding(BuildingType.Village) > mr.getSettlements(mr.getMe(), BuildingType.Village).size()){
-			for (Intersection inter : mr.buildableVillageIntersections(mr.getMe())){
-				strokeSet.add(new BuildVillage(inter));
-			}
-		}
 		// create build town strokes
 		if (mr.getMaxBuilding(BuildingType.Town) > mr.getSettlements(mr.getMe(), BuildingType.Town).size()){
 			for (Intersection inter : mr.buildableTownIntersections(mr.getMe())){
 				strokeSet.add(new BuildTown(inter));
 			}
 		}
+		// create build village strokes
+		if (mr.getMaxBuilding(BuildingType.Village) > mr.getSettlements(mr.getMe(), BuildingType.Village).size()){
+			for (Intersection inter : mr.buildableVillageIntersections(mr.getMe())){
+				strokeSet.add(new BuildVillage(inter));
+			}
+		}
+		// create steets
+				for (Path path : mr.buildableStreetPaths(mr.getMe())){
+					strokeSet.add(new BuildStreet(path));
+				}
 		// create catapult strokes
 		if (mr.getMaxCatapult() > mr.getCatapults(mr.getMe()).size()) {
 			for (Path path : mr.buildableCatapultPaths(mr.getMe())){
@@ -262,10 +268,6 @@ public class Ai implements ModelObserver {
 			for (Path destination : mr.attackableCatapults(source)){
 				strokeSet.add(new AttackCatapult(source, destination));
 			}
-		}
-		// create steets
-		for (Path path : mr.buildableStreetPaths(mr.getMe())){
-			strokeSet.add(new BuildStreet(path));
 		}
 		return strokeSet;
 	}
