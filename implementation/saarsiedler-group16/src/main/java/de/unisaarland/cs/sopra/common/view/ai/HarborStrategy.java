@@ -69,13 +69,13 @@ public class HarborStrategy extends Strategy {
 		for (Path p : paths){
 			if (p.getHarborType() == HarborType.WOOL_HARBOR && 
 					!mr.getHarborTypes(mr.getMe()).contains(HarborType.WOOL_HARBOR))
-						harborValue = harborValue + 0.7;
+						harborValue = harborValue + 0.5;
 			else if (p.getHarborType() == HarborType.BRICK_HARBOR &&
 					!mr.getHarborTypes(mr.getMe()).contains(HarborType.BRICK_HARBOR))
 						harborValue = harborValue + 0.5;
 			else if (p.getHarborType() == HarborType.ORE_HARBOR &&
 					!mr.getHarborTypes(mr.getMe()).contains(HarborType.ORE_HARBOR))
-						harborValue = harborValue + 0.5;
+						harborValue = harborValue + 0.7;
 			else if (p.getHarborType() == HarborType.GRAIN_HARBOR &&
 					!mr.getHarborTypes(mr.getMe()).contains(HarborType.GRAIN_HARBOR))
 						harborValue = harborValue + 0.5;
@@ -183,7 +183,7 @@ public class HarborStrategy extends Strategy {
 
 	@Override
 	public double importance() {
-		return 1;
+		return 2;
 	}
 
 }

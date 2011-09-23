@@ -111,11 +111,6 @@ public class ExpandStrategy extends Strategy {
 		double resourceValue = 0.0; 
 		double earlyGameStageFactor = 0.5;
 		Intersection i = stroke.getDestination();
-		if (mr.affordableSettlements(BuildingType.Village) < 1 && mr.affordableStreets() < 1 && mr.affordableSettlements(BuildingType.Town) > 0){
-			townValue = 1.0;
-		
-		return townValue;
-		}
 		Set<Field> neighbourFields = mr.getFieldsFromIntersection(i);
 		for (Field f: neighbourFields){
 			if (!f.hasRobber()) {
