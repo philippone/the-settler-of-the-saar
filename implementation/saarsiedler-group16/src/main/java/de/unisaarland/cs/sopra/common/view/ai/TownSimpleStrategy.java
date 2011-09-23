@@ -62,7 +62,7 @@ public class TownSimpleStrategy extends Strategy {
 	@Override
 	public double evaluate(BuildTown stroke) {
 		double townValue = 0.0;
-		if (mr.affordableSettlements(BuildingType.Village) < 1 && mr.affordableSettlements(BuildingType.Town) > 0)
+		if (mr.affordableSettlements(BuildingType.Village) < 1 && mr.affordableStreets() < 1 && mr.affordableSettlements(BuildingType.Town) > 0)
 			townValue = 1.0;
 		return townValue;
 	}
