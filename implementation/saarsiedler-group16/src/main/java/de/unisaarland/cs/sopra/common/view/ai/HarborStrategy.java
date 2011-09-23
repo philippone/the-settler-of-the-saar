@@ -1,7 +1,11 @@
 package de.unisaarland.cs.sopra.common.view.ai;
 
+import java.util.HashSet;
 import java.util.Set;
 
+import de.unisaarland.cs.sopra.common.model.BuildingType;
+import de.unisaarland.cs.sopra.common.model.Field;
+import de.unisaarland.cs.sopra.common.model.FieldType;
 import de.unisaarland.cs.sopra.common.model.HarborType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
@@ -30,7 +34,7 @@ public class HarborStrategy extends Strategy {
 		case BUILD_CATAPULT:
 			return false;
 		case BUILD_STREET:
-			return false;
+			return true;
 		case MOVE_CATAPULT:
 			return false;
 		case MOVE_ROBBER:
@@ -55,18 +59,72 @@ public class HarborStrategy extends Strategy {
 	@Override
 	public double evaluate(BuildVillage stroke) {
 		double harborValue = 0.0;
-		Intersection location = stroke.getDestination();
-		 Set<Path> neighbourPaths = mr.getPathsFromIntersection(location);
-		 if (mr.getFieldsFromIntersection(location).size() > 1){
-		 for (Path p : neighbourPaths){
-			 Set<HarborType> playersHarbors = mr.getHarborTypes(mr.getMe());
-			 if (p.getHarborType() != null && !(playersHarbors.contains(p.getHarborType()))){
-				 harborValue = 1.0;
-			 }
-		 }
-		 harborValue = 0.5;
+		Intersection village = stroke.getDestination();
+		Set<Path> paths = mr.getPathsFromIntersection(village);
+		Set<Field> fields = mr.getFieldsFromIntersection(village);
+		for (Field f : fields){
+			if (f.getResource() != null)
+				harborValue = harborValue + 0.15;
 		}
-		 return harborValue; 
+		for (Path p : paths){
+			if (p.getHarborType() == HarborType.WOOL_HARBOR && 
+					!mr.getHarborTypes(mr.getMe()).contains(HarborType.WOOL_HARBOR))
+						harborValue = harborValue + 0.7;
+			else if (p.getHarborType() == HarborType.BRICK_HARBOR &&
+					!mr.getHarborTypes(mr.getMe()).contains(HarborType.BRICK_HARBOR))
+						harborValue = harborValue + 0.5;
+			else if (p.getHarborType() == HarborType.ORE_HARBOR &&
+					!mr.getHarborTypes(mr.getMe()).contains(HarborType.ORE_HARBOR))
+						harborValue = harborValue + 0.5;
+			else if (p.getHarborType() == HarborType.GRAIN_HARBOR &&
+					!mr.getHarborTypes(mr.getMe()).contains(HarborType.GRAIN_HARBOR))
+						harborValue = harborValue + 0.5;
+			else if (p.getHarborType() == HarborType.LUMBER_HARBOR &&
+					!mr.getHarborTypes(mr.getMe()).contains(HarborType.LUMBER_HARBOR))
+						harborValue = harborValue + 0.5;
+			else if (p.getHarborType() == HarborType.GENERAL_HARBOR &&
+					!mr.getHarborTypes(mr.getMe()).contains(HarborType.GENERAL_HARBOR))
+						harborValue = harborValue + 0.04;
+			Set<Intersection> buildings = mr.getSettlements(mr.getMe(), BuildingType.Village);
+			Set<Field> playerFields = new HashSet<Field>();
+			for (Intersection i : buildings){
+				Set<Field> fieldsforIntersection = mr.getFieldsFromIntersection(i);
+				playerFields.addAll(fieldsforIntersection);
+			}
+			Set<Field> fieldsforPath = mr.getFieldsFromPath(p);
+			playerFields.addAll(fieldsforPath);
+		for (Field field : fieldsforPath) {
+	FieldType type = field.getFieldType();
+	if (type == FieldType.FOREST) {
+		if (!playerFields.contains(FieldType.FOREST))
+			harborValue = harborValue + 0.1;
+				harborValue = harborValue + 0.05;
+	} else if (type == FieldType.HILLS){
+		if (!playerFields.contains(FieldType.HILLS))
+			harborValue = 0.1;
+		harborValue = 0.05;
+	}
+	else if (type == FieldType.FIELDS){
+		if (!playerFields.contains(FieldType.FIELDS))
+			harborValue = harborValue + 0.1;
+		harborValue = harborValue + 0.05;
+	}
+	else if (type == FieldType.PASTURE){
+		if (!playerFields.contains(FieldType.PASTURE))
+			harborValue = harborValue + 0.1;
+				harborValue = harborValue + 0.05;
+	}
+	else if (type == FieldType.MOUNTAINS){
+		if (!playerFields.contains(FieldType.MOUNTAINS))
+			harborValue = harborValue + 0.1;
+				harborValue = harborValue + 0.05;
+	}
+ }
+		
+		}
+		
+		
+		return harborValue;
 	}
 
 	@Override
@@ -83,8 +141,26 @@ public class HarborStrategy extends Strategy {
 
 	@Override
 	public double evaluate(BuildStreet stroke) {
-		// TODO Auto-generated method stub
-		return 0;
+		Path path = stroke.getDestination();
+		double NPValue = 0.0;
+		double IValue = 0.0;
+		double PathValue = 0.0;
+		Set<Path> paths = mr.getPathsFromPath(path);
+		for (Path p : paths) {
+			Set<Intersection> intersections = mr.getIntersectionsFromPath(p);
+			for (Intersection i : intersections) {
+				if (i.hasOwner())
+					IValue = 0.1;
+			}
+			IValue = 0.8;
+			Set<Field> fields = mr.getFieldsFromPath(p);
+			for (Field f : fields){
+				if (f.getNumber() != -1)
+					NPValue = NPValue + 0.1;
+			}
+		}
+		PathValue = NPValue + IValue;
+		return PathValue;
 	}
 
 	@Override

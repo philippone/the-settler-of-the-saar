@@ -1,21 +1,21 @@
 package de.unisaarland.cs.sopra.common.view.ai;
 
+import java.util.List;
 import java.util.Set;
 
-import de.unisaarland.cs.sopra.common.model.Field;
-import de.unisaarland.cs.sopra.common.model.HarborType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
 
-public class WoolHarborStrategy extends Strategy {
+public class LongestRoadStrategy extends Strategy{
 
-	public WoolHarborStrategy(ModelReader mr) {
+	public LongestRoadStrategy(ModelReader mr) {
 		super(mr);
 		// TODO Auto-generated constructor stub
 	}
+
 	@Override
-	public boolean evaluates(Stroke s){
+	public boolean evaluates(Stroke s) {
 		switch(s.getType()){
 		default:
 			throw new IllegalArgumentException("The stroke is no valid stroke!");
@@ -24,7 +24,7 @@ public class WoolHarborStrategy extends Strategy {
 		case ATTACK_SETTLEMENT:
 			return false;
 		case BUILD_VILLAGE:
-			return true;
+			return false;
 		case BUILD_TOWN:
 			return false;
 		case BUILD_CATAPULT:
@@ -39,6 +39,17 @@ public class WoolHarborStrategy extends Strategy {
 			return false;
 		}
 	}
+
+	@Override
+	public double importance() {
+		double importance=0.3;
+		int longestClaimedRoadSize=mr.getLongestClaimedRoad().size();
+		int myLongestRoadSize=mr.calculateLongestRoads(mr.getMe()).get(0).size();
+		if (myLongestRoadSize<longestClaimedRoadSize && myLongestRoadSize>longestClaimedRoadSize-3) importance=importance+0.3;		
+		if (mr.getMe().getVictoryPoints()>mr.getMaxVictoryPoints()-3) importance=importance+0.2;
+		return importance;
+	}
+
 	@Override
 	public double evaluate(AttackCatapult stroke) {
 		// TODO Auto-generated method stub
@@ -53,22 +64,8 @@ public class WoolHarborStrategy extends Strategy {
 
 	@Override
 	public double evaluate(BuildVillage stroke) {
-		double harborValue = 0.0;
-		Intersection village = stroke.getDestination();
-		Set<Path> paths = mr.getPathsFromIntersection(village);
-		for (Path p : paths){
-			if (p.getHarborType() != null){
-				harborValue = harborValue + 0.2;
-				HarborType harborType = p.getHarborType();
-				if (!mr.getHarborTypes(mr.getMe()).contains(harborType)) {
-					if (harborType == HarborType.WOOL_HARBOR)
-						harborValue = harborValue + 0.8;
-				}  
-				harborValue = harborValue + 0.1;
-					
-			} 
-		}
-		return harborValue;
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	@Override
@@ -85,26 +82,30 @@ public class WoolHarborStrategy extends Strategy {
 
 	@Override
 	public double evaluate(BuildStreet stroke) {
-		Path path = stroke.getDestination();
-		double NPValue = 0.0;
-		double IValue = 0.0;
-		double PathValue = 0.0;
-		Set<Path> paths = mr.getPathsFromPath(path);
-		for (Path p : paths) {
-			Set<Intersection> intersections = mr.getIntersectionsFromPath(p);
-			for (Intersection i : intersections) {
-				if (i.hasOwner())
-					IValue = 0.1;
-			}
-			IValue = 0.8;
-			Set<Field> fields = mr.getFieldsFromPath(p);
-			for (Field f : fields){
-				if (f.getNumber() != -1)
-					NPValue = NPValue + 0.1;
-			}
+		double value=0;
+		Path location = stroke.getDestination();
+		List<List<Path>> roadList=mr.calculateLongestRoads(mr.getMe());
+		Set<Intersection> si=mr.getIntersectionsFromPath(location);
+		for (Intersection i: si) 
+			if (i.hasOwner() && i.getOwner()!=mr.getMe()) 
+				return 0;
+				// it would be odd to build a path here
+				// since the longest road cannot go through ennemy Intersections
+		Set<Path> sp=mr.getPathsFromPath(location);
+		for (Path p: sp)
+			if (p.hasStreet() && p.getStreetOwner()==mr.getMe())
+				value=value+0.1;
+				// trying to join the max number of paths
+		for (List<Path> road: roadList){
+			int howManyPathsOfTheRoadAreConnectedToThisOne=0;
+			for (Path p1: road)
+				if (sp.contains(p1))
+					howManyPathsOfTheRoadAreConnectedToThisOne ++;
+			if (howManyPathsOfTheRoadAreConnectedToThisOne==1) value=value+0.5;
+			// trying to lenghten the road
+			else if (howManyPathsOfTheRoadAreConnectedToThisOne>1) value=value+0.1;
 		}
-		PathValue = NPValue + IValue;
-		return PathValue;
+		return Math.min(1, value);
 	}
 
 	@Override
@@ -122,10 +123,6 @@ public class WoolHarborStrategy extends Strategy {
 	@Override
 	public double evaluate(ReturnResources stroke) {
 		// TODO Auto-generated method stub
-		return 0;
-	}
-	@Override
-	public double importance() {
 		return 0;
 	}
 

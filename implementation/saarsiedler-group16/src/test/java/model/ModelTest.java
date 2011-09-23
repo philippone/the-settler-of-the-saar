@@ -392,7 +392,7 @@ public class ModelTest {
 	}
 	
 	@Test
-	public void testUpdateLongestRoad() {
+	public void testUpdateLongestRoad() {		
 		model.buildSettlement(new Location(1,0,1), BuildingType.Village);
 		model.buildStreet(new Location(1,0,1));
 		
@@ -428,7 +428,7 @@ public class ModelTest {
 			expected.add(model.getLongestClaimedRoad().get(i));
 		}
 
-		assertTrue("updateLongestRoad fehlgeschlagen", model.getLongestClaimedRoad().size() == 5);
+		assertEquals("updateLongestRoad fehlgeschlagen", model.getLongestClaimedRoad().size(), 5);
 		assertEquals("nicht die richige LongestRoad geupdatet", model.getLongestClaimedRoad(), expected);
 	}
 	

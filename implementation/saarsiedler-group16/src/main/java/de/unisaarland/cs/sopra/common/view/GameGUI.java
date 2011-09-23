@@ -647,7 +647,7 @@ public class GameGUI extends View implements Runnable{
 						name = playerNames.get(modelReader.getPlayerMap().get(player));
 					}
 					else if(player == -2) {
-						name = "Bank"; //handel mitzählen TODO
+						name = "Bank";
 					}
 					else {
 						declinedTrade += 1;
@@ -1088,10 +1088,10 @@ public class GameGUI extends View implements Runnable{
 		
 		if (Mouse.next()) {
 			if (Mouse.getEventDWheel() < 0) {
-				camIn();
+				camOut();
 			}
 			else if (Mouse.getEventDWheel() > 0) {	
-				camOut();
+				camIn();
 			}
 		}
 		
@@ -1108,10 +1108,10 @@ public class GameGUI extends View implements Runnable{
 			camDown();
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_N)) {
-			camIn();
+			camOut();
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_M)) {
-			camOut();
+			camIn();
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_B)) {
 			resetCamera();
@@ -1494,7 +1494,7 @@ public class GameGUI extends View implements Runnable{
 				Random r = new Random();
 	
 				try {
-					saveFile(tmpdir + "/" + act, input);
+					GameGUI.saveFile(tmpdir + "/" + act, input);
 				} catch (IOException e) {
 					e.printStackTrace();
 					tmpdir = System.getProperty("java.io.tmpdir") + r.nextInt();
@@ -1508,14 +1508,34 @@ public class GameGUI extends View implements Runnable{
 		if (System.getProperty("sun.desktop") != null && System.getProperty("sun.desktop").equals("windows")) seperator = ";";
 		else seperator = ":";
 		System.setProperty("java.library.path", System.getProperty("java.library.path") + seperator + tmpdir);
-		java.lang.reflect.Field vvv = ClassLoader.class.getDeclaredField("sys_paths");
+		java.lang.reflect.Field vvv = null;
+		try {
+			vvv = ClassLoader.class.getDeclaredField("sys_paths");
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchFieldException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		vvv.setAccessible(true); 
-		vvv.set(null, null);
+		try {
+			vvv.set(null, null);
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		Setting setting = new Setting(new DisplayMode(1024,580), true, PlayerColors.RED);
+		Setting.setSetting(new DisplayMode(1024,580), true, PlayerColors.YELLOW);
 		GameGUI gameGUI = null;
 		try {
-			gameGUI = new GameGUI(model, null, null, setting, true);
+			Map<Player,String> names = new HashMap<Player,String>();
+			names.put(model.getTableOrder().get(1), "Hubert");
+			names.put(model.getTableOrder().get(0), "Hannes");
+			gameGUI = new GameGUI(model, null, names, "Test", false, new CyclicBarrier(1), null);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
