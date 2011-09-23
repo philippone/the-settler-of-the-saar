@@ -1088,10 +1088,10 @@ public class GameGUI extends View implements Runnable{
 		
 		if (Mouse.next()) {
 			if (Mouse.getEventDWheel() < 0) {
-				camIn();
+				camOut();
 			}
 			else if (Mouse.getEventDWheel() > 0) {	
-				camOut();
+				camIn();
 			}
 		}
 		
@@ -1108,10 +1108,10 @@ public class GameGUI extends View implements Runnable{
 			camDown();
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_N)) {
-			camIn();
+			camOut();
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_M)) {
-			camOut();
+			camIn();
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_B)) {
 			resetCamera();

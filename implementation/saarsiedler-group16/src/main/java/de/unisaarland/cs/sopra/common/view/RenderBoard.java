@@ -559,13 +559,15 @@ public class RenderBoard {
 	public static void camDown() {
 		y -= ZOOM_FACTOR * (2000+z);
 	}
-	public static void camIn() {
-		if (z+50 < maxZ)
-			z += +50;
-	}
 	public static void camOut() {
-		if (z-50 > minZ)
-			z += -50;
+		int newz = (int)((z+1550)*1.05f)-1550;
+		if (newz < maxZ)
+			z = newz;
+	}
+	public static void camIn() {
+		int newz = (int)((z+1550)*0.95f)-1550;
+		if (newz > minZ)
+			z = newz;
 	}
 
 	public static int getOrgZ() {
