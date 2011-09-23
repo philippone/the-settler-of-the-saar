@@ -167,12 +167,15 @@ public class Ai implements ModelObserver {
 
 	public void claimLongestRoadIfPossible(){
 		List<Path> longestRoad=mr.getLongestClaimedRoad();
-		List<Path> myLongestRoad=mr.calculateLongestRoads(mr.getMe()).get(0);
-		if (longestRoad==null && myLongestRoad.size()>4){
-			ca.claimLongestRoad(myLongestRoad);
-		}
-		else if (longestRoad.size()<myLongestRoad.size()){
-			ca.claimLongestRoad(myLongestRoad);
+		List<List<Path>> myLongestRoads=mr.calculateLongestRoads(mr.getMe());
+		if (myLongestRoads.size()>0){
+			List<Path> myLongestRoad=myLongestRoads.get(0);
+		    if (longestRoad==null && myLongestRoad.size()>4){
+		    	ca.claimLongestRoad(myLongestRoad);
+		    }
+		    else if (longestRoad.size()<myLongestRoad.size()){
+		    	ca.claimLongestRoad(myLongestRoad);
+		    }
 		}
 	}
 	
