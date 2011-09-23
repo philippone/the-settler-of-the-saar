@@ -12,7 +12,7 @@ public abstract class Stroke implements Comparable<Stroke>{
 	public Stroke(StrokeType type, ResourcePackage price){
 		this.type = type;
 		this.price = price;
-		this.evaluation = Double.NEGATIVE_INFINITY;
+		this.evaluation = -1;
 	}
 	
 	public abstract void execute(ControllerAdapter c);
@@ -30,7 +30,7 @@ public abstract class Stroke implements Comparable<Stroke>{
 	}
 	
 	public ResourcePackage getPrice(){
-		return this.price;
+		return this.price.copy();
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public abstract class Stroke implements Comparable<Stroke>{
 	
 	@Override
 	public String toString(){
-		return String.format(">> %s",type.toString());
+		return String.format(">> %s : %f",type.toString(), this.evaluation);
 	}
 	
 }
