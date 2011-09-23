@@ -79,7 +79,7 @@ public class InitELIStrategy extends Strategy {
 			if (field.getNumber() != -1)
 				resourcePackage.modifyResource(field.getResource(), 1);
 			}
-		Resource max = Resource.LUMBER;
+		Resource max = Resource.WOOL;
 		for (Resource r : Resource.values()){
 			max = resourcePackage.getResource(max) < resourcePackage.getResource(r) ? r : max;
 		}
@@ -212,7 +212,7 @@ public class InitELIStrategy extends Strategy {
 					}
 				}
 			
-		intersectionValue = ((harborValue + resourceValue) / 2.0 + numberValue) / 2.0;
+		intersectionValue = ((harborValue + resourceValue) / 2.0 + numberValue * 0.25) / 2.0;
 		return intersectionValue;
 	}
 
