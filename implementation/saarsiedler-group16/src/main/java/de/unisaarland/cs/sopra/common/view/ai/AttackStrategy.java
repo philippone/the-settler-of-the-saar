@@ -115,6 +115,7 @@ public class AttackStrategy extends Strategy {
 	@Override
 	public double evaluate(BuildTown stroke) {
 		 double value=0;
+		 double targetingHarborValue=0;
 		 Intersection location=stroke.getDestination();
 		 Set<Path> sp0=mr.getPathsFromIntersection(location);
 		 for (Path p0: sp0){
@@ -126,19 +127,28 @@ public class AttackStrategy extends Strategy {
 			 					if (i.hasOwner() && i.getOwner()==mr.getMe() && i.getBuildingType()==BuildingType.Town)
 			 						return 0;
 			 					// Ok no need to build a town, we got one not so far that can create catapults
-			 					if (i.hasOwner() && i.getOwner()!=mr.getMe())
-			 						value=value+0.6;
+			 					if (i.hasOwner() && i.getOwner()!=mr.getMe()){
 			 					// interesting there's targets not so far
+			 						value=value+0.3;
+			 						boolean isHarbor=false;
+			 						Set<Path> sp=mr.getPathsFromIntersection(i);
+			 						for (Path pp: sp) if (pp.getHarborType()!=null) isHarbor=true;
+			 						if (isHarbor) targetingHarborValue=targetingHarborValue+0.3;
+			 					}
 			 				}
 			 				Set<Path> sp2=mr.getPathsFromPath(p1);
 			 				for(Path p2: sp2){
 			 					if(!sp1.contains(p2)){
 			 						si=mr.getIntersectionsFromPath(p2);
 			 						for (Intersection i: si){
-			 							if (i.hasOwner() && i.getOwner()!=mr.getMe())
-			 								value=value+0.3;
+			 							if (i.hasOwner() && i.getOwner()!=mr.getMe()){
+			 								value=value+0.2;
 			 								// there's targets a bit further
-			 					
+			 								boolean isHarbor=false;
+					 						Set<Path> sp=mr.getPathsFromIntersection(i);
+					 						for (Path pp: sp) if (pp.getHarborType()!=null) isHarbor=true;
+					 						if (isHarbor) targetingHarborValue=targetingHarborValue+0.2;
+			 							}
 			 						}
 			 					}
 			 				}
@@ -149,7 +159,8 @@ public class AttackStrategy extends Strategy {
 			 	}
 			 
 		 }
-		 if (mr.getSettlements(mr.getMe(), BuildingType.Town).size()<1) value=value+0.5;
+		 if (mr.getSettlements(mr.getMe(), BuildingType.Town).size()<1) value=value+0.4;
+		 value=value+targetingHarborValue;
 		 return Math.min(value,1);
 	}
 
@@ -159,6 +170,7 @@ public class AttackStrategy extends Strategy {
 		 double targetingCatapultValue=0;
 		 double targetingTownValue=0;
 		 double targetingVillageValue=0;
+		 double targetingHarborValue=0;
 		 boolean doesIHazAlreadyACatapultNotSoFar=false;
 		 Path p0 = stroke.getDestination();
 		 if (p0.hasCatapult() && p0.getCatapultOwner()==mr.getMe()) 
@@ -175,10 +187,11 @@ public class AttackStrategy extends Strategy {
 			 Set<Intersection> si=mr.getIntersectionsFromPath(p1);
 			 for (Intersection i: si){
 				 if (i.hasOwner() && i.getOwner()!=mr.getMe()){
-					 if (i.getBuildingType()==BuildingType.Town)
-						 targetingTownValue=targetingTownValue+0.2;
-					 else if(i.getBuildingType()==BuildingType.Village)
 						 targetingVillageValue=targetingVillageValue+0.2;
+						 boolean isHarbor=false;
+						Set<Path> sp=mr.getPathsFromIntersection(i);
+						for (Path pp: sp) if (pp.getHarborType()!=null) isHarbor=true;
+						if (isHarbor) targetingHarborValue=targetingHarborValue+0.2;
 				 }
 			 }
 			 // for all neighbor paths of neighbor paths
@@ -191,10 +204,11 @@ public class AttackStrategy extends Strategy {
 				 si=mr.getIntersectionsFromPath(p2);
 				 for (Intersection i: si){
 					 if (i.hasOwner() && i.getOwner()!=mr.getMe()){
-						 if (i.getBuildingType()==BuildingType.Town)
-							 targetingTownValue=targetingTownValue+0.1;
-						 else if(i.getBuildingType()==BuildingType.Village)
 							 targetingVillageValue=targetingVillageValue+0.1;
+							 boolean isHarbor=false;
+							Set<Path> sp=mr.getPathsFromIntersection(i);
+							for (Path pp: sp) if (pp.getHarborType()!=null) isHarbor=true;
+							if (isHarbor) targetingHarborValue=targetingHarborValue+0.1;
 					 }
 				 }
 				 }
@@ -202,8 +216,8 @@ public class AttackStrategy extends Strategy {
 		 }
 		 if (p0.hasCatapult() && p0.getCatapultOwner()!=mr.getMe()) 
 			 targetingCatapultValue=targetingCatapultValue+0.3;
-		 pathValue=3*targetingCatapultValue+2*targetingTownValue+targetingVillageValue;
-		 if (doesIHazAlreadyACatapultNotSoFar) pathValue=pathValue/10;
+		 pathValue=2*targetingCatapultValue+2*targetingTownValue+targetingVillageValue+targetingHarborValue;
+		 if (doesIHazAlreadyACatapultNotSoFar) return 0;
 		 return Math.min(pathValue,1);
 	}
 
@@ -227,16 +241,18 @@ public class AttackStrategy extends Strategy {
 		double targetingCatapultValue=0;
 		double targetingTownValue=0;
 		double targetingVillageValue=0;
+		double targetingHarborValue=0;
 		Set<Path> paths1=mr.getPathsFromPath(destination);
 		 for (Path p1 : paths1) {
 			 if (p1!=source){
 			 si=mr.getIntersectionsFromPath(p1);
 			 for (Intersection i: si){
 				 if (i.hasOwner() && i.getOwner()!=mr.getMe()){
-					 if (i.getBuildingType()==BuildingType.Town)
-						 targetingTownValue=targetingTownValue+0.2;
-					 else if(i.getBuildingType()==BuildingType.Village)
-						 targetingVillageValue=targetingVillageValue+0.2;
+						targetingVillageValue=targetingVillageValue+0.2;
+						boolean isHarbor=false;
+						Set<Path> sp=mr.getPathsFromIntersection(i);
+						for (Path pp: sp) if (pp.getHarborType()!=null) isHarbor=true;
+						if (isHarbor) targetingHarborValue=targetingHarborValue+0.2;
 				 }
 			 }
 			 Set<Path> paths2=mr.getPathsFromPath(p1);
@@ -247,17 +263,18 @@ public class AttackStrategy extends Strategy {
 				 si=mr.getIntersectionsFromPath(p2);
 				 for (Intersection i: si){
 					 if (i.hasOwner() && i.getOwner()!=mr.getMe()){
-						 if (i.getBuildingType()==BuildingType.Town)
-							 targetingTownValue=targetingTownValue+0.1;
-						 else if(i.getBuildingType()==BuildingType.Village)
-							 targetingVillageValue=targetingVillageValue+0.1;
+						targetingVillageValue=targetingVillageValue+0.1;
+						boolean isHarbor=false;
+						Set<Path> sp=mr.getPathsFromIntersection(i);
+						for (Path pp: sp) if (pp.getHarborType()!=null) isHarbor=true;
+						if (isHarbor) targetingHarborValue=targetingHarborValue+0.1;		
 					 }
 				 }
 				 }
 			 } 
 			 }
 		 }
-		 value=3*targetingCatapultValue+2*targetingTownValue+targetingVillageValue;
+		 value=2*targetingCatapultValue+2*targetingTownValue+targetingVillageValue+targetingHarborValue;
 		return Math.min(value, 1);
 	}
 
