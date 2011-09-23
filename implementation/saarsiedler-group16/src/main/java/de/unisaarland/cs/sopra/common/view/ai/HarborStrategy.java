@@ -10,6 +10,7 @@ import de.unisaarland.cs.sopra.common.model.HarborType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
+import de.unisaarland.cs.sopra.common.model.Player;
 
 public class HarborStrategy extends Strategy {
 
@@ -59,6 +60,8 @@ public class HarborStrategy extends Strategy {
 	@Override
 	public double evaluate(BuildVillage stroke) {
 		double harborValue = 0.0;
+		double resourceValue = 0.0;
+		double intersectValue = 0.0;
 		Intersection village = stroke.getDestination();
 		Set<Path> paths = mr.getPathsFromIntersection(village);
 		Set<Field> fields = mr.getFieldsFromIntersection(village);
@@ -69,19 +72,19 @@ public class HarborStrategy extends Strategy {
 		for (Path p : paths){
 			if (p.getHarborType() == HarborType.WOOL_HARBOR && 
 					!mr.getHarborTypes(mr.getMe()).contains(HarborType.WOOL_HARBOR))
-						harborValue = harborValue + 0.5;
+						harborValue = harborValue + 0.0;
 			else if (p.getHarborType() == HarborType.BRICK_HARBOR &&
 					!mr.getHarborTypes(mr.getMe()).contains(HarborType.BRICK_HARBOR))
-						harborValue = harborValue + 0.5;
+						harborValue = harborValue + 0.0;
 			else if (p.getHarborType() == HarborType.ORE_HARBOR &&
 					!mr.getHarborTypes(mr.getMe()).contains(HarborType.ORE_HARBOR))
-						harborValue = harborValue + 0.7;
+						harborValue = harborValue + 5.0;
 			else if (p.getHarborType() == HarborType.GRAIN_HARBOR &&
 					!mr.getHarborTypes(mr.getMe()).contains(HarborType.GRAIN_HARBOR))
-						harborValue = harborValue + 0.5;
+						harborValue = harborValue + 0.0;
 			else if (p.getHarborType() == HarborType.LUMBER_HARBOR &&
 					!mr.getHarborTypes(mr.getMe()).contains(HarborType.LUMBER_HARBOR))
-						harborValue = harborValue + 0.5;
+						harborValue = harborValue + 0.0;
 			else if (p.getHarborType() == HarborType.GENERAL_HARBOR &&
 					!mr.getHarborTypes(mr.getMe()).contains(HarborType.GENERAL_HARBOR))
 						harborValue = harborValue + 0.04;
@@ -122,8 +125,48 @@ public class HarborStrategy extends Strategy {
  }
 		
 		}
+		for (Field field : fields) {
+			
+			Player player = mr.getMe();
+			Set<Intersection> buildings = mr.getSettlements(player, BuildingType.Village);
+			Set<Field> playerFields = new HashSet<Field>();
+			for (Intersection i : buildings){
+				Set<Field> fieldsforIntersection = mr.getFieldsFromIntersection(i);
+				playerFields.addAll(fieldsforIntersection);
+			}
+		FieldType type = field.getFieldType();
+		if (type == FieldType.FOREST) {
+			if (!playerFields.contains(FieldType.FOREST) ||
+					mr.getHarborTypes(mr.getMe()).contains(HarborType.LUMBER_HARBOR))
+				resourceValue = resourceValue + 0.3333;
+					resourceValue = resourceValue + 0.1667;
+		} else if (type == FieldType.HILLS){
+			if (!playerFields.contains(FieldType.HILLS) ||
+					mr.getHarborTypes(mr.getMe()).contains(HarborType.BRICK_HARBOR))
+				resourceValue = resourceValue + 0.3333;
+					resourceValue = resourceValue + 0.1667;
+		}
+		else if (type == FieldType.FIELDS){
+			if (!playerFields.contains(FieldType.FIELDS) ||
+					mr.getHarborTypes(mr.getMe()).contains(HarborType.GRAIN_HARBOR))
+				resourceValue = resourceValue + 0.3333;
+					resourceValue = resourceValue + 0.1667;
+		}
+		else if (type == FieldType.PASTURE){
+			if (!playerFields.contains(FieldType.PASTURE) ||
+					mr.getHarborTypes(mr.getMe()).contains(HarborType.WOOL_HARBOR))
+				resourceValue = resourceValue + 0.3333;
+					resourceValue = resourceValue + 0.1667;
+		}
+		else if (type == FieldType.MOUNTAINS){
+			if (!playerFields.contains(FieldType.MOUNTAINS) ||
+					mr.getHarborTypes(mr.getMe()).contains(HarborType.ORE_HARBOR))
+				resourceValue = resourceValue + 0.3333;
+					resourceValue =resourceValue + 0.1667;
+		}
+	 }
 		
-		
+		intersectValue = harborValue + (resourceValue)/2.0;
 		return harborValue;
 	}
 
@@ -183,7 +226,7 @@ public class HarborStrategy extends Strategy {
 
 	@Override
 	public double importance() {
-		return 2;
+		return 1;
 	}
 
 }
