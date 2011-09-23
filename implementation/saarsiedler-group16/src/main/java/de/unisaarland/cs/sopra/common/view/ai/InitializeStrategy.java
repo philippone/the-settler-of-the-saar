@@ -70,32 +70,30 @@ public class InitializeStrategy extends Strategy {
 				}
 			FieldType type = field.getFieldType();
 			if (type == FieldType.FOREST) {
-				if (playerFields.contains(FieldType.FOREST)) {
-					resourceValue = resourceValue + 0.1667;
-				}
-				resourceValue = resourceValue + 0.3333;
-			} else if (type == FieldType.HILLS) {
-				if (playerFields.contains(FieldType.HILLS)) {
-					resourceValue = resourceValue + 0.1667;
-				}
-				resourceValue = resourceValue + 0.3333;
-			} else if (type == FieldType.PASTURE) {
-				if (playerFields.contains(FieldType.PASTURE)) {
-					resourceValue = resourceValue + 0.1667;
-				}
-				resourceValue = resourceValue + 0.3333;
-			} else if (type == FieldType.FIELDS) {
-				if (playerFields.contains(FieldType.FIELDS)) {
-					resourceValue = resourceValue + 0.1667;
-				}
-				resourceValue = resourceValue + 0.3333;
-			} else if (type == FieldType.MOUNTAINS) {
-				if (playerFields.contains(FieldType.MOUNTAINS)) {
-					resourceValue = resourceValue + 0.1667;
-				}
-				resourceValue = resourceValue + 0.3333;
+				if (!playerFields.contains(FieldType.FOREST))
+					resourceValue = resourceValue + 0.3333;
+						resourceValue = resourceValue + 0.1667;
+			} else if (type == FieldType.HILLS){
+				if (!playerFields.contains(FieldType.HILLS))
+					resourceValue = 0.3333;
+						resourceValue = 0.1667;
 			}
-		}
+			else if (type == FieldType.FIELDS){
+				if (!playerFields.contains(FieldType.FIELDS))
+					resourceValue = 0.3333;
+						resourceValue = 0.1667;
+			}
+			else if (type == FieldType.PASTURE){
+				if (!playerFields.contains(FieldType.PASTURE))
+					resourceValue = 0.3333;
+						resourceValue = 0.1667;
+			}
+			else if (type == FieldType.MOUNTAINS){
+				if (!playerFields.contains(FieldType.MOUNTAINS))
+					resourceValue = 0.3333;
+						resourceValue = 0.1667;
+			}
+		 }
 		return resourceValue;
 	}
 

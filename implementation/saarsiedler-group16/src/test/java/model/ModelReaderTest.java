@@ -42,6 +42,7 @@ public class ModelReaderTest {
 		currentPlayer.modifyResources(new ResourcePackage(10000,10000,10000,10000,10000));
 		model.getPath(new Location(2,1,0)).createStreet(currentPlayer);
 		model.buildSettlement(new Location(2, 1, 1), BuildingType.Village);
+		model.robberMoved(new Point (1,2), new Point (0,2), -1, null);
 		Set<HarborType> expectedSet = new HashSet<HarborType>();
 		expectedSet.add(HarborType.LUMBER_HARBOR);
 		currentSet = model.getHarborTypes(currentPlayer);
@@ -62,14 +63,14 @@ public class ModelReaderTest {
 		currentPlayer.modifyResources(new ResourcePackage(10000,10000,10000,10000,10000));
 		model.buildSettlement(new Location(2,1,1), BuildingType.Village);
 		currentSet = model.getHarborTypes(currentPlayer);
-		assertTrue("es gibt einen HarborType", currentSet.size() == 1);
+		assertTrue("es gibt keinen HarborType wegen dem Raeuber", currentSet.size() == 0);
 	}
 	
 	/**
 	 * Harbor with buccaneer (Seeraeuber)
 	 */
 	@Test
-	public void testGetHarborTypes2() {
+	public void testGetHarborTypes2() {		
 		Player currentPlayer = model.getCurrentPlayer();
 		Set<HarborType> currentSet = model.getHarborTypes(currentPlayer);
 		assertTrue("es gibt eig. keine HarborTypes", currentSet.size() == 0);
