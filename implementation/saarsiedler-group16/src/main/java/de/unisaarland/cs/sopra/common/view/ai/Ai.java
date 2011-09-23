@@ -1,3 +1,4 @@
+
 package de.unisaarland.cs.sopra.common.view.ai;
 
 import java.io.IOException;
@@ -41,7 +42,7 @@ public class Ai implements ModelObserver {
 		this.generalStrategies = new HashSet<Strategy>();
 		this.generalStrategies.add(new ExpandStrategy(mr));
 		//this.generalStrategies.add(new AttackStrategy(mr));
-		//this.generalStrategies.add(new TownSimpleStrategy(mr));
+		this.generalStrategies.add( new TownSimpleStrategy(mr));
 		this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
@@ -158,13 +159,26 @@ public class Ai implements ModelObserver {
 				System.out.println(bestStroke);
 				
 				bestStroke.execute(ca);
+				claimLongestRoadIfPossible();
 				claimVictoryIfPossible();
 			}
 		}
 		ca.endTurn();
 	}
 
-	
+	public void claimLongestRoadIfPossible(){
+		List<Path> longestRoad=mr.getLongestClaimedRoad();
+		List<List<Path>> myLongestRoads=mr.calculateLongestRoads(mr.getMe());
+		if (myLongestRoads.size()>0){
+			List<Path> myLongestRoad=myLongestRoads.get(0);
+		    if (longestRoad==null && myLongestRoad.size()>4){
+		    	ca.claimLongestRoad(myLongestRoad);
+		    }
+		    else if (longestRoad.size()<myLongestRoad.size()){
+		    	ca.claimLongestRoad(myLongestRoad);
+		    }
+		}
+	}
 	
 	public void claimVictoryIfPossible(){
 		if (mr.getMaxVictoryPoints() <= mr.getMe().getVictoryPoints()){
