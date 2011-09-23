@@ -72,19 +72,19 @@ public class HarborStrategy extends Strategy {
 						harborValue = harborValue + 0.7;
 			else if (p.getHarborType() == HarborType.BRICK_HARBOR &&
 					!mr.getHarborTypes(mr.getMe()).contains(HarborType.BRICK_HARBOR))
-						harborValue = harborValue + 0.6;
+						harborValue = harborValue + 0.5;
 			else if (p.getHarborType() == HarborType.ORE_HARBOR &&
 					!mr.getHarborTypes(mr.getMe()).contains(HarborType.ORE_HARBOR))
-						harborValue = harborValue + 0.6;
+						harborValue = harborValue + 0.5;
 			else if (p.getHarborType() == HarborType.GRAIN_HARBOR &&
 					!mr.getHarborTypes(mr.getMe()).contains(HarborType.GRAIN_HARBOR))
-						harborValue = harborValue + 0.6;
+						harborValue = harborValue + 0.5;
 			else if (p.getHarborType() == HarborType.LUMBER_HARBOR &&
 					!mr.getHarborTypes(mr.getMe()).contains(HarborType.LUMBER_HARBOR))
-						harborValue = harborValue + 0.6;
+						harborValue = harborValue + 0.5;
 			else if (p.getHarborType() == HarborType.GENERAL_HARBOR &&
 					!mr.getHarborTypes(mr.getMe()).contains(HarborType.GENERAL_HARBOR))
-						harborValue = harborValue + 0.05;
+						harborValue = harborValue + 0.04;
 			Set<Intersection> buildings = mr.getSettlements(mr.getMe(), BuildingType.Village);
 			Set<Field> playerFields = new HashSet<Field>();
 			for (Intersection i : buildings){
@@ -122,6 +122,8 @@ public class HarborStrategy extends Strategy {
  }
 		
 		}
+		
+		
 		return harborValue;
 	}
 
