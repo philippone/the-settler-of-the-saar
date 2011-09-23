@@ -18,9 +18,8 @@ public class HarborTradeStrategy extends TradeOfferStrategy {
 	@Override
 	public boolean execute(ResourcePackage price) {
 		Set<HarborType> harbors = mr.getHarborTypes(mr.getMe());
-		if (harbors == null)
-			return false;
-		else {
+		if (harbors != null) {
+		
 			ResourcePackage res = mr.getMe().getResources().copy().add(price);
 			ResourcePackage tradePackage = new ResourcePackage();
 			if (harbors.contains(HarborType.WOOL_HARBOR) && (res.getResource(Resource.WOOL) > 1)) {
@@ -86,10 +85,24 @@ public class HarborTradeStrategy extends TradeOfferStrategy {
 									}
 										
 								} 
+		}
+		ResourcePackage ref = price.copy().add(mr.getMe().getResources());
+		ResourcePackage tradePackage = new ResourcePackage();
+		tradePackage.modifyResource(getMinResource(ref), 1);
+		while (numberOfPossitiveResources(ref) >= 4 && ref.hasNegativeResources()){
+			tradePackage = new ResourcePackage();
+			tradePackage.modifyResource(getMinResource(ref), 1);
+			for (int i = 0; i < 4; i++){
+				tradePackage.modifyResource(getMaxResource(ref), -1);
+				ref.modifyResource(getMaxResource(ref), -1);
+			}
+			ca.offerTrade(tradePackage);
+			ref.modifyResource(getMinResource(ref), 1);
+		}
 			return false;
 		} 
 		
 	}
 	
 
-}
+

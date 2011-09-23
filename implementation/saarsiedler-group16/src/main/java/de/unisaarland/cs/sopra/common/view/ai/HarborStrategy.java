@@ -1,8 +1,11 @@
 package de.unisaarland.cs.sopra.common.view.ai;
 
+import java.util.HashSet;
 import java.util.Set;
 
+import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
+import de.unisaarland.cs.sopra.common.model.FieldType;
 import de.unisaarland.cs.sopra.common.model.HarborType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
@@ -82,6 +85,42 @@ public class HarborStrategy extends Strategy {
 			else if (p.getHarborType() == HarborType.GENERAL_HARBOR &&
 					!mr.getHarborTypes(mr.getMe()).contains(HarborType.GENERAL_HARBOR))
 						harborValue = harborValue + 0.05;
+			Set<Intersection> buildings = mr.getSettlements(mr.getMe(), BuildingType.Village);
+			Set<Field> playerFields = new HashSet<Field>();
+			for (Intersection i : buildings){
+				Set<Field> fieldsforIntersection = mr.getFieldsFromIntersection(i);
+				playerFields.addAll(fieldsforIntersection);
+			}
+			Set<Field> fieldsforPath = mr.getFieldsFromPath(p);
+			playerFields.addAll(fieldsforPath);
+		for (Field field : fieldsforPath) {
+	FieldType type = field.getFieldType();
+	if (type == FieldType.FOREST) {
+		if (!playerFields.contains(FieldType.FOREST))
+			harborValue = harborValue + 0.1;
+				harborValue = harborValue + 0.05;
+	} else if (type == FieldType.HILLS){
+		if (!playerFields.contains(FieldType.HILLS))
+			harborValue = 0.1;
+		harborValue = 0.05;
+	}
+	else if (type == FieldType.FIELDS){
+		if (!playerFields.contains(FieldType.FIELDS))
+			harborValue = harborValue + 0.1;
+		harborValue = harborValue + 0.05;
+	}
+	else if (type == FieldType.PASTURE){
+		if (!playerFields.contains(FieldType.PASTURE))
+			harborValue = harborValue + 0.1;
+				harborValue = harborValue + 0.05;
+	}
+	else if (type == FieldType.MOUNTAINS){
+		if (!playerFields.contains(FieldType.MOUNTAINS))
+			harborValue = harborValue + 0.1;
+				harborValue = harborValue + 0.05;
+	}
+ }
+		
 		}
 		return harborValue;
 	}
