@@ -19,26 +19,50 @@ public class HarborTradeStrategy  extends TradeOfferStrategy {
 	@Override
 	public boolean execute(ResourcePackage price) {
 		Set<HarborType> harbors = mr.getHarborTypes(mr.getMe());
-		if (harbors == null)
-			return false;
-		else {
-			ResourcePackage res = mr.getMe().getResources().copy().add(price);
-			ResourcePackage tradePackage = new ResourcePackage();
-			tradePackage.modifyResource(getMinResource(res), 1);
-			if (harbors.contains(HarborType.WOOL_HARBOR)) {
-				if (res.getResource(Resource.WOOL) < 2)
-					return false;
-				while (res.hasNegativeResources() && res.getResource(Resource.WOOL) >= 2) {
-					tradePackage.modifyResource(Resource.WOOL, -2);
-					res.modifyResource(Resource.WOOL, -2);
-					ca.offerTrade(tradePackage);
-					tradePackage.modifyResource(getMinResource(res), -1);
-					res.modifyResource(getMinResource(res), 1);
+		if (harbors != null){
+			if (harbors.contains(HarborType.WOOL_HARBOR)){
+				ResourcePackage resPack = mr.getMe().getResources().copy();
+				ResourcePackage tradePack = new ResourcePackage();
+				while (resPack.getResource(Resource.WOOL) > 1 && resPack.hasNegativeResources()) {
+				tradePack.modifyResource(getMinResource(resPack), 1);
+				tradePack.modifyResource(Resource.WOOL, -2);
+				ca.offerTrade(tradePack);
+				resPack.modifyResource(getMinResource(resPack), 1);
+				resPack.modifyResource(Resource.WOOL, 2);
+				tradePack.modifyResource(getMinResource(resPack), -1);
+				tradePack.modifyResource(Resource.WOOL, 2);
 				}
-					
-			}
+			} 
 			return false;
 		}
+		return false;
 	}
-
 }
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

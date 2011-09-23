@@ -11,15 +11,12 @@ import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 
-public class InitializeStrategy extends Strategy {
-	
-	//private Set<Resource> playersResources = new HashSet<Resource>();
-	
-	public InitializeStrategy(ModelReader mr) {
+public class InitWoolStrategy extends Strategy {
+
+	public InitWoolStrategy(ModelReader mr) {
 		super(mr);
+		// TODO Auto-generated constructor stub
 	}
-	
-	
 	public boolean evaluates(Stroke s){
 		switch(s.getType()){
 		default:
@@ -45,12 +42,20 @@ public class InitializeStrategy extends Strategy {
 		}
 	}
 	@Override
+	public double importance() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
 	public double evaluate(AttackCatapult stroke) {
+		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public double evaluate(AttackSettlement stroke) {
+		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -86,14 +91,14 @@ public class InitializeStrategy extends Strategy {
 				resourceValue = resourceValue + 0.3333;
 			} else if (type == FieldType.FIELDS) {
 				if (playerFields.contains(FieldType.FIELDS)) {
-					resourceValue = resourceValue + 0.1667;
+					resourceValue = resourceValue + 0.1;
 				}
-				resourceValue = resourceValue + 0.3333;
+				resourceValue = resourceValue + 0.2;
 			} else if (type == FieldType.MOUNTAINS) {
 				if (playerFields.contains(FieldType.MOUNTAINS)) {
-					resourceValue = resourceValue + 0.1667;
+					resourceValue = resourceValue + 0.0885;
 				}
-				resourceValue = resourceValue + 0.3333;
+				resourceValue = resourceValue + 0.1667;
 			}
 		}
 		return resourceValue;
@@ -101,11 +106,13 @@ public class InitializeStrategy extends Strategy {
 
 	@Override
 	public double evaluate(BuildTown stroke) {
+		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public double evaluate(BuildCatapult stroke) {
+		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -135,23 +142,20 @@ public class InitializeStrategy extends Strategy {
 
 	@Override
 	public double evaluate(MoveCatapult stroke) {
+		// TODO Auto-generated method stub
 		return 0;
 	}
-
 
 	@Override
 	public double evaluate(MoveRobber stroke) {
+		// TODO Auto-generated method stub
 		return 0;
 	}
-
 
 	@Override
 	public double evaluate(ReturnResources stroke) {
+		// TODO Auto-generated method stub
 		return 0;
-	}
-	
-	public double importance(){
-		return 1;
 	}
 
 }

@@ -30,7 +30,7 @@ public abstract class Stroke implements Comparable<Stroke>{
 	}
 	
 	public ResourcePackage getPrice(){
-		return this.price;
+		return this.price.copy();
 	}
 
 	@Override

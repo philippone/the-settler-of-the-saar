@@ -21,8 +21,8 @@ public class Player {
 	}
 	
 	public boolean checkResourcesSufficient(ResourcePackage resourcePackage) {
-		if (resourcePackage == null) throw new IllegalArgumentException();
-		if (resourcePackage.hasPositiveResources()) throw new IllegalArgumentException();
+		if (resourcePackage == null) throw new IllegalArgumentException("The resource Package is null");
+		if (resourcePackage.hasPositiveResources()) throw new IllegalArgumentException("The resourcePackage has positive entrys!");
 		return !resources.copy().add(resourcePackage).hasNegativeResources();
 	}
 

@@ -1,4 +1,3 @@
-
 package de.unisaarland.cs.sopra.common.view.ai;
 
 import java.io.IOException;
@@ -35,12 +34,15 @@ public class Ai implements ModelObserver {
 	private final Set<Strategy> moveRobberStrategies;
 	private final Set<Strategy> returnResourcesStrategies;
 	private final Set<Strategy> initStrategies;
+	private int lengthOfLongestClaimedRoad;
 	
 	public Ai(ModelReader mr, ControllerAdapter ca){
 		this.mr = mr;
 		this.ca = ca;
 		this.generalStrategies = new HashSet<Strategy>();
 		this.generalStrategies.add(new KaisExpandStrategy(mr));
+		this.generalStrategies.add(new KaisChooseVillageAndTownsHarbourStrategy(mr));
+		this.generalStrategies.add(new KaisTryToWinFastStrategy(mr));
 		//this.generalStrategies.add(new ExpandStrategy(mr));
 		//this.generalStrategies.add(new AttackStrategy(mr));
 		//this.generalStrategies.add(new DeffenceStrategy(mr));
@@ -99,54 +101,104 @@ public class Ai implements ModelObserver {
 		
 	}
 	
-	
-//	public void execute(List<Stroke> sortedStroke){
+//		public void execute(List<Stroke> sortedStroke){
 //		if (sortedStroke.size() > 0){
 //			//TODO remove the random crap
 //			//Collections.shuffle(sortedStroke);
-//			Stroke bestStroke = sortedStroke.get(0);
-//			boolean execute = true;
+//		Stroke bestStroke = sortedStroke.get(0);
+//		boolean execute = true;
 //			if (!mr.getMe().checkResourcesSufficient(bestStroke.getPrice())){
-//				execute = new StupidTradeOfferStrategy(ca, mr).execute(bestStroke.getPrice());
+//				execute = new TradeBrickHarborStrategy(ca, mr).execute(bestStroke.getPrice());
 //				execute = false;
 //			}
 //			if (execute) {
-//				System.out.println(bestStroke);
-//				bestStroke.execute(ca);
-//				//claimVictoryIfPossible();
-//			}
+//			System.out.println(bestStroke);
+//			bestStroke.execute(ca);
+//			//claimVictoryIfPossible();
+//		}
 //		}
 //		// TODO vll loop?
 //		ca.endTurn();
 //	}
-	
+//	
+//	public void executeLoop(List<Stroke> sortedStroke){
+//		boolean execute = sortedStroke.size() > 0;
+//		Player me = mr.getMe();
+//		int i = 0;
+//		while (execute && i < sortedStroke.size()){
+//			sortStrokeList(sortedStroke, generalStrategies);
+//			Stroke bestStroke = sortedStroke.get(i);
+//			if (!mr.getMe().checkResourcesSufficient(bestStroke.getPrice())){
+//				execute = new StupidTradeOfferStrategy(ca, mr).execute(bestStroke.getPrice());
+//			}
+//			if (execute) {
+//				System.out.println(bestStroke);
+//				bestStroke.execute(ca);
+//				claimVictoryIfPossible();
+//			}
+//		}
+//		ca.endTurn();
+//	}
+
 	public void executeLoop(){
 		Player me = mr.getMe();
-		List<Stroke> sortedStroke;
+		List<Stroke> sortedStrokes;
 		boolean execute = true;
+		int executed = 0;
 		while (execute){
-			sortedStroke = getSortedStrokeList(generalStrategies);
-			Stroke bestStroke = sortedStroke.get(0);
-			if (!mr.getMe().checkResourcesSufficient(bestStroke.getPrice())){
-				execute = new StupidTradeOfferStrategy(ca, mr).execute(bestStroke.getPrice());
-			}
-			if (execute) {
-				System.out.println(bestStroke);
-				
+			sortedStrokes = getSortedStrokeList(generalStrategies);
+			Stroke bestStroke = getTheBestStroke(sortedStrokes);
+			if (bestStroke != null){
 				bestStroke.execute(ca);
+				executed++;
+				claimLongestRoadIfPossible();
 				claimVictoryIfPossible();
 			}
+			else execute = false;
 		}
+		System.out.printf("Executed %d times!", executed);
 		ca.endTurn();
 	}
+
 	
-	public void claimVictoryIfPossible(){
+	private Stroke getTheBestStroke(List<Stroke> sortedStrokes) {
+		List<Stroke> the5BestStrokes = sortedStrokes.subList(0, 3);
+		KaisTradeOfferStrategy trade = new KaisTradeOfferStrategy(ca, mr);
+		for (Stroke s : the5BestStrokes){
+			if (mr.getMe().checkResourcesSufficient(s.getPrice()))
+				return s;
+			else if (trade.isProbable(s.getPrice())){
+				if (trade.execute(s.getPrice())) return s;
+			}
+		}
+		return null;
+	}
+
+	private void claimLongestRoadIfPossible(){
+		List<Path> longestRoad = new LinkedList<Path>();
+		for (List<Path> oneRoad : mr.calculateLongestRoads(mr.getMe())){
+			if (longestRoad.size() < oneRoad.size()) longestRoad = oneRoad;
+		}
+		int length = longestRoad.size();
+		if (length >= 5 && length > lengthOfLongestClaimedRoad){
+			if (mr.getLongestClaimedRoad() == null){
+				ca.claimLongestRoad(longestRoad);
+				lengthOfLongestClaimedRoad = length;
+			}
+			else if (length > mr.getLongestClaimedRoad().size()) {
+				ca.claimLongestRoad(longestRoad);
+				lengthOfLongestClaimedRoad = length;
+			}
+		}
+	}
+	
+	private void claimVictoryIfPossible(){
 		if (mr.getMaxVictoryPoints() <= mr.getMe().getVictoryPoints()){
 			ca.claimVictory();
 		}
 	}
 	
-	public List<Stroke> getSortedStrokeList(Set<Strategy> strategySet){
+	private List<Stroke> getSortedStrokeList(Set<Strategy> strategySet){
 		List<Stroke> strokeList = generateAllPossibleStrokes();
 		evaluateStrokes(strokeList, strategySet);
 		Collections.shuffle(strokeList);
@@ -154,13 +206,13 @@ public class Ai implements ModelObserver {
 		return strokeList;
 	}
 	
-	public void sortStrokeList(List<Stroke> strokeList, Set<Strategy> strategySet){
+	private void sortStrokeList(List<Stroke> strokeList, Set<Strategy> strategySet){
 		evaluateStrokes(strokeList, strategySet);
 		Collections.shuffle(strokeList);
 		Collections.sort(strokeList, Collections.<Stroke>reverseOrder());
 	}
 	
-	public void evaluateStrokes(List<Stroke> strokeList, Set<Strategy> strategySet){
+	private void evaluateStrokes(List<Stroke> strokeList, Set<Strategy> strategySet){
 		for (Stroke stroke : strokeList){
 			double evaluation = 0;
 			double evaluationParticipants = 0;
@@ -179,7 +231,7 @@ public class Ai implements ModelObserver {
 		}
 	}
 	
-	public List<Stroke> generateAllReturnResourcesStrokes(){
+	private List<Stroke> generateAllReturnResourcesStrokes(){
 		List<Stroke> strokeSet = new LinkedList<Stroke>();
 		// TODO Calculate ALL return resources Strokes!!
 		if (mr.getMe().getResources().size() > 7){
@@ -200,7 +252,7 @@ public class Ai implements ModelObserver {
 		return strokeSet;
 	}
 	
-	public List<Stroke> generateAllMoveRobberStrokes(){
+	private List<Stroke> generateAllMoveRobberStrokes(){
 		List<Stroke> strokeSet = new LinkedList<Stroke>();
 		for (Field source : mr.getRobberFields()){
 			for (Field destination : mr.canPlaceRobber()){
@@ -211,7 +263,7 @@ public class Ai implements ModelObserver {
 		return strokeSet;
 	}
 	
-	public List<Stroke> generateAllStreetStrokes(){
+	private List<Stroke> generateAllStreetStrokes(){
 		List<Stroke> strokeSet = new LinkedList<Stroke>();
 		for (Path path : mr.buildableStreetPaths(mr.getMe())){
 			strokeSet.add(new BuildStreet(path));
@@ -219,7 +271,7 @@ public class Ai implements ModelObserver {
 		return strokeSet;
 	}
 	
-	public List<Stroke> generateAllVillageStrokes(){
+	private List<Stroke> generateAllVillageStrokes(){
 		List<Stroke> strokeSet = new LinkedList<Stroke>();
 		for (Intersection inter : mr.buildableVillageIntersections(mr.getMe())){
 			strokeSet.add(new BuildVillage(inter));
@@ -227,7 +279,7 @@ public class Ai implements ModelObserver {
 		return strokeSet;
 	}
 	
-	public List<Stroke> generateAllPossibleStrokes(){
+	private List<Stroke> generateAllPossibleStrokes(){
 		List<Stroke> strokeSet = new LinkedList<Stroke>();
 		// create build town strokes
 		if (mr.getMaxBuilding(BuildingType.Town) > mr.getSettlements(mr.getMe(), BuildingType.Town).size()){
@@ -355,4 +407,3 @@ public class Ai implements ModelObserver {
 	} 
 
 }
-
