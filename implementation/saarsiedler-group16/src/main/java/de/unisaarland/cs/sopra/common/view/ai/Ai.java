@@ -46,7 +46,8 @@ public class Ai implements ModelObserver {
 		this.generalStrategies.add(new LongestRoadStrategy(mr));
 		this.generalStrategies.add( new TownSimpleStrategy(mr));
 		this.generalStrategies.add(new BuildTownStrategy(mr));
-		this.generalStrategies.add(new DeffenceStrategy(mr));
+		//this.generalStrategies.add(new DeffenceStrategy(mr));
+		//this.generalStrategies.add( new RandomStreetStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
 		this.returnResourcesStrategies = new HashSet<Strategy>();
@@ -266,30 +267,30 @@ public class Ai implements ModelObserver {
 				strokeSet.add(new BuildTown(inter));
 			}
 		}
-		// create catapult strokes
-		if (mr.getMaxCatapult() > mr.getCatapults(mr.getMe()).size()) {
-			for (Path path : mr.buildableCatapultPaths(mr.getMe())){
-				strokeSet.add(new BuildCatapult(path));
-			}
-		}
-		// move catapult strokes
-		for (Path source : mr.getCatapults(mr.getMe())){
-			for (Path destination : mr.catapultMovePaths(source)){
-				strokeSet.add(new MoveCatapult(source, destination));
-			}
-		}
-		// attack settlement strokes
-		for (Path source : mr.getCatapults(mr.getMe())){
-			for (Intersection destination : mr.attackableSettlements(BuildingType.Town, source)){
-				strokeSet.add(new AttackSettlement(source, destination));
-			}
-		}
-		// attack catapult paths
-		for (Path source : mr.getCatapults(mr.getMe())){
-			for (Path destination : mr.attackableCatapults(source)){
-				strokeSet.add(new AttackCatapult(source, destination));
-			}
-		}
+//		// create catapult strokes
+//		if (mr.getMaxCatapult() > mr.getCatapults(mr.getMe()).size()) {
+//			for (Path path : mr.buildableCatapultPaths(mr.getMe())){
+//				strokeSet.add(new BuildCatapult(path));
+//			}
+//		}
+//		// move catapult strokes
+//		for (Path source : mr.getCatapults(mr.getMe())){
+//			for (Path destination : mr.catapultMovePaths(source)){
+//				strokeSet.add(new MoveCatapult(source, destination));
+//			}
+//		}
+//		// attack settlement strokes
+//		for (Path source : mr.getCatapults(mr.getMe())){
+//			for (Intersection destination : mr.attackableSettlements(BuildingType.Town, source)){
+//				strokeSet.add(new AttackSettlement(source, destination));
+//			}
+//		}
+//		// attack catapult paths
+//		for (Path source : mr.getCatapults(mr.getMe())){
+//			for (Path destination : mr.attackableCatapults(source)){
+//				strokeSet.add(new AttackCatapult(source, destination));
+//			}
+//		}
 		// create steets
 		for (Path path : mr.buildableStreetPaths(mr.getMe())){
 			strokeSet.add(new BuildStreet(path));
