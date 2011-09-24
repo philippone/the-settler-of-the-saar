@@ -42,7 +42,7 @@ public class Ai implements ModelObserver {
 		this.ca = ca;
 		this.generalStrategies = new HashSet<Strategy>();
 		this.generalStrategies.add(new ExpandStrategy(mr));
-		this.generalStrategies.add(new AttackStrategy(mr));
+		//this.generalStrategies.add(new AttackStrategy(mr));
 		this.generalStrategies.add(new LongestRoadStrategy(mr));
 		this.generalStrategies.add( new TownSimpleStrategy(mr));
 		this.generalStrategies.add(new BuildTownStrategy(mr));
