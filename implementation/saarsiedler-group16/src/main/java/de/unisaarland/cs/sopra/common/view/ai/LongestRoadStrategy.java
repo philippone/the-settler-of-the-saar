@@ -83,6 +83,10 @@ public class LongestRoadStrategy extends Strategy{
 	@Override
 	public double evaluate(BuildStreet stroke) {
 		double value=0;
+		int myVictoryPoints = mr.getMe().getVictoryPoints();
+		double earlyGameFactor =(double) (myVictoryPoints) / (double)(mr.getMaxVictoryPoints());
+		if (earlyGameFactor < mr.getMaxVictoryPoints() -3)
+			return 0.0;
 		Path location = stroke.getDestination();
 		List<List<Path>> roadList=mr.calculateLongestRoads(mr.getMe());
 		Set<Intersection> si=mr.getIntersectionsFromPath(location);
