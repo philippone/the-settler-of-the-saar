@@ -181,7 +181,7 @@ public class AttackStrategy extends Strategy {
 				 && (mr.attackableSettlements(mr.getMe(), BuildingType.Town).size()>0
 				 | mr.attackableSettlements(mr.getMe(), BuildingType.Village).size()>0)
 				 | mr.attackableCatapults(mr.getMe()).size()>0) return 0;
-		 		// not threatened but threatening
+		 		// not threatened but threatening: no need to build another catapult
 		 // now: SEARCHIIIIIIIIIIIIIING, SEEK AND DESTROY!!
 		 // for all neighbor paths
 		 Set<Path> paths1=mr.getPathsFromPath(p0);
@@ -297,7 +297,7 @@ public class AttackStrategy extends Strategy {
 
 	@Override
 	public double importance() {
-		return 0.75;
+		return 1;
 	}
 
 }

@@ -81,6 +81,7 @@ public class Client {
 			everythingIsBad = false;
 			for (String act : list) {
 				InputStream input = ClassLoader.getSystemClassLoader().getResourceAsStream("native/" + act);
+				if (input == null) input = ClassLoader.getSystemClassLoader().getResourceAsStream("resources/native/" + act);
 				Random r = new Random();
 	
 				try {
