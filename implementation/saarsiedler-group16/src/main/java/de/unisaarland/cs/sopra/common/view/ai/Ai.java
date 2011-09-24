@@ -42,7 +42,8 @@ public class Ai implements ModelObserver {
 		this.ca = ca;
 		this.generalStrategies = new HashSet<Strategy>();
 		this.generalStrategies.add(new ExpandStrategy(mr));
-		//this.generalStrategies.add(new AttackStrategy(mr));
+		this.generalStrategies.add(new AttackStrategy(mr));
+		this.generalStrategies.add(new LongestRoadStrategy(mr));
 		this.generalStrategies.add( new TownSimpleStrategy(mr));
 		this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
@@ -141,12 +142,6 @@ public class Ai implements ModelObserver {
 
 	
 	public void executeLoop(List<Stroke> sortedStroke){
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		boolean execute = sortedStroke.size() > 0;
 		Player me = mr.getMe();
 		int i = 0;
@@ -160,6 +155,7 @@ public class Ai implements ModelObserver {
 				System.out.println(bestStroke);
 				
 				bestStroke.execute(ca);
+				claimLongestRoadIfPossible();
 				claimVictoryIfPossible();
 			}
 		}
@@ -167,6 +163,13 @@ public class Ai implements ModelObserver {
 	}
 
 	
+	public void claimLongestRoadIfPossible(){
+		List<Path> longestRoad=mr.getLongestClaimedRoad();
+		List<List<Path>> myLongestRoads=mr.calculateLongestRoads(mr.getMe());
+		List<Path> myLongestRoad=myLongestRoads.get(0);
+		if (longestRoad==null) {if (myLongestRoad.size()>4) ca.claimLongestRoad(myLongestRoad);}
+		else if (longestRoad.size()<myLongestRoad.size()) ca.claimLongestRoad(myLongestRoad);
+	}
 	
 	public void claimVictoryIfPossible(){
 		if (mr.getMaxVictoryPoints() <= mr.getMe().getVictoryPoints()){

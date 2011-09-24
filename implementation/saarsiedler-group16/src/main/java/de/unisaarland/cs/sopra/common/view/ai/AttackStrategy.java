@@ -297,7 +297,7 @@ public class AttackStrategy extends Strategy {
 
 	@Override
 	public double importance() {
-		return 0.75;
+		return 1;
 	}
 
 }
