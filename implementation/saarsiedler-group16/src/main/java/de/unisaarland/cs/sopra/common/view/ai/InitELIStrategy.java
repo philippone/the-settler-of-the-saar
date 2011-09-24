@@ -150,6 +150,8 @@ public class InitELIStrategy extends Strategy {
 							}
 					}
 				}
+				intersectionValue = (harborValue*4.0 + numberValue*0.25)/4.25;
+				return intersectionValue;
 			}
 				Set<Field> fields = mr.getFieldsFromIntersection(village);
 				Player player = mr.getMe();
@@ -212,7 +214,7 @@ public class InitELIStrategy extends Strategy {
 					}
 				}
 			
-		intersectionValue = ((harborValue + resourceValue) / 2.0 + numberValue * 0.25) / 2.0;
+		intersectionValue = (resourceValue*4.0 + numberValue*0.25)  / 4.25;
 		return intersectionValue;
 	}
 
