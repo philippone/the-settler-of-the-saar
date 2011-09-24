@@ -45,6 +45,7 @@ public class Ai implements ModelObserver {
 		this.generalStrategies.add(new AttackStrategy(mr));
 		this.generalStrategies.add(new LongestRoadStrategy(mr));
 		this.generalStrategies.add( new TownSimpleStrategy(mr));
+		this.generalStrategies.add(new BuildTownStrategy(mr));
 		this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
