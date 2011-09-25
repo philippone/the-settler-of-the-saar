@@ -593,6 +593,7 @@ public class GameGUI extends View implements Runnable{
 				@Override
 				public void executeController() {
 					controllerAdapter.claimLongestRoad(getRoad());
+					reinitiateUI();
 				}
 			};
 
