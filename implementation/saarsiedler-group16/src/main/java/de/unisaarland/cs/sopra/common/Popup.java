@@ -51,11 +51,11 @@ public class Popup extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try{
-					a1 = Integer.valueOf(textField1.getText());
-					a2 = Integer.valueOf(textField2.getText());
-					a3 = Integer.valueOf(textField3.getText());
-					a4 = Integer.valueOf(textField4.getText());
-					a5 = Integer.valueOf(textField5.getText());
+					a1 = -Integer.valueOf(textField1.getText());
+					a2 = -Integer.valueOf(textField2.getText());
+					a3 = -Integer.valueOf(textField3.getText());
+					a4 = -Integer.valueOf(textField4.getText());
+					a5 = -Integer.valueOf(textField5.getText());
 					r1 = Integer.valueOf(lumberMax.getText());
 					r2 = Integer.valueOf(brickMax.getText());
 					r3 = Integer.valueOf(woolMax.getText());
@@ -72,7 +72,7 @@ public class Popup extends JFrame {
 						Client.returnPackage=new ResourcePackage(a1,a2,a3,a4,a5);
 					}
 				}catch(NumberFormatException e1){
-					warning.setText("only posivite numbers allowed!");
+					warning.setText("only negative numbers allowed!");
 					warning.setVisible(true);
 				}
 			}
@@ -352,6 +352,7 @@ public class Popup extends JFrame {
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setFont(new Font("Dialog", Font.BOLD, 12));
+		setVisible(true);
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new GridBagLayout());
 		((GridBagLayout)contentPane.getLayout()).columnWidths = new int[] {0, 0};
@@ -362,7 +363,6 @@ public class Popup extends JFrame {
 		//======== returnPackPanel ========
 		{
 			returnPackPanel.setBorder(new EmptyBorder(12, 12, 12, 12));
-			returnPackPanel.setVisible(false);
 
 			// JFormDesigner evaluation mark
 			returnPackPanel.setBorder(new javax.swing.border.CompoundBorder(
@@ -983,6 +983,7 @@ public class Popup extends JFrame {
 		//======== longestRoadPanel ========
 		{
 			longestRoadPanel.setBorder(new EmptyBorder(12, 12, 12, 12));
+			longestRoadPanel.setVisible(false);
 			longestRoadPanel.setLayout(new GridBagLayout());
 			((GridBagLayout)longestRoadPanel.getLayout()).columnWidths = new int[] {0, 0};
 			((GridBagLayout)longestRoadPanel.getLayout()).rowHeights = new int[] {139, 34, 0};
