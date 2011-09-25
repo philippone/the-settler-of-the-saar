@@ -37,7 +37,7 @@ public class KaisTryToWinFastStrategy extends Strategy {
 
 	@Override
 	public double importance() {
-		return 2;
+		return 1;
 	}
 
 	@Override
@@ -57,12 +57,14 @@ public class KaisTryToWinFastStrategy extends Strategy {
 
 	@Override
 	public double evaluate(BuildTown stroke) {
+		/*
 		int numberOfVillages = mr.getSettlements(mr.getMe(), BuildingType.Village).size();
 		int numberOfTowns = mr.getSettlements(mr.getMe(), BuildingType.Town).size();
 		int possibleTowns = Math.min(mr.getMaxBuilding(BuildingType.Town)-numberOfTowns, numberOfVillages);
 		int missingVicotryPoints = mr.getMaxVictoryPoints()-mr.getMe().getVictoryPoints();
 		if (missingVicotryPoints < possibleTowns) return 1;
-		return 0;
+		*/
+		return 1;
 	}
 
 	@Override

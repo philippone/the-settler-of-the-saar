@@ -23,7 +23,7 @@ public class KaisExpandStrategy extends Strategy {
 		case ATTACK_SETTLEMENT:
 			return false;
 		case BUILD_VILLAGE:
-			return true;
+			return false;
 		case BUILD_TOWN:
 			return false;
 		case BUILD_CATAPULT:
