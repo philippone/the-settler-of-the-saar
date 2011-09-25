@@ -17,31 +17,31 @@ public class PopListener implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 		//Return-Panel
 		if(arg0.getSource()==pop.button13){
-			increase(pop.textField1);
+			increaseRet(pop.textField1);
 		}
 		if(arg0.getSource()==pop.button18){
 			decrease(pop.textField1);
 		}
 		if(arg0.getSource()==pop.button14){
-			increase(pop.textField2);
+			increaseRet(pop.textField2);
 		}
 		if(arg0.getSource()==pop.button19){
 			decrease(pop.textField2);
 		}
 		if(arg0.getSource()==pop.button15){
-			increase(pop.textField3);
+			increaseRet(pop.textField3);
 		}
 		if(arg0.getSource()==pop.button20){
 			decrease(pop.textField3);
 		}
 		if(arg0.getSource()==pop.button16){
-			increase(pop.textField4);
+			increaseRet(pop.textField4);
 		}
 		if(arg0.getSource()==pop.button21){
 			decrease(pop.textField4);
 		}
 		if(arg0.getSource()==pop.button17){
-			increase(pop.textField5);
+			increaseRet(pop.textField5);
 		}
 		if(arg0.getSource()==pop.button22){
 			decrease(pop.textField5);
@@ -85,8 +85,18 @@ public class PopListener implements ActionListener {
 	private void increase(JTextField tf) {
 		tf.setText((Integer.valueOf(tf.getText())+1)+"");
 	}
+	private void increaseRet(JTextField tf) {
+		int num =Integer.valueOf(tf.getText());
+		if(num<0){
+			tf.setText((num+1)+"");
+		}else{
+			pop.warning.setText("Only negative numbers allowed!");
+			pop.warning.setVisible(true);
+		}
+	}
 	private void decrease(JTextField tf) {
 		tf.setText((Integer.valueOf(tf.getText())-1)+"");
+		pop.warning.setVisible(false);
 	}
 
 }
