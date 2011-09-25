@@ -143,7 +143,12 @@ public class Ai implements ModelObserver {
 
 	
 	public void executeLoop(List<Stroke> sortedStroke){
-
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		boolean execute = sortedStroke.size() > 0;
 		Player me = mr.getMe();
 		int i = 0;
@@ -151,7 +156,7 @@ public class Ai implements ModelObserver {
 			sortedStroke = getSortedStrokeList(generalStrategies);
 			Stroke bestStroke = sortedStroke.get(i);
 			if (!mr.getMe().checkResourcesSufficient(bestStroke.getPrice())){
-				execute = new HarborTradeStrategy(ca, mr).execute(bestStroke.getPrice());
+				execute = new KaisTradeOfferStrategy(ca, mr).execute(bestStroke.getPrice());
 			}
 			if (execute) {
 				System.out.println(bestStroke);

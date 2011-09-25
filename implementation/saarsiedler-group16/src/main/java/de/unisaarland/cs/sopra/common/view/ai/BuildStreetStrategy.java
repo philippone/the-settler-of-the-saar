@@ -2,6 +2,7 @@ package de.unisaarland.cs.sopra.common.view.ai;
 
 import java.util.Set;
 
+import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
@@ -83,6 +84,12 @@ public class BuildStreetStrategy extends Strategy {
 		int resources = 0;
 		int n = 0;
 		Path path = stroke.getDestination();
+		// special case for owning a harbor
+//		if (mr.getSettlements(mr.getMe(), BuildingType.Village).size() == mr.getInitVillages()
+//				&& mr.getStreets(mr.getMe()).size() == mr.getInitVillages()){
+//			
+//			
+//		}
 		Set<Intersection> intersectionfromPath = mr.getIntersectionsFromPath(path);
 		for (Intersection i: intersectionfromPath) {
 			if (i.hasOwner()){

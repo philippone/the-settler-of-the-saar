@@ -106,7 +106,7 @@ public class ExpandStrategy extends Strategy {
 				if (playerFields.contains(FieldType.PASTURE)) {
 					if (!numbers.contains(field.getNumber()))
 					resourceValue = resourceValue + 0.3334;
-						resourceValue = resourceValue + 0.1667;
+						resourceValue = resourceValue + 0.1;
 				}
 				resourceValue = resourceValue + 0.3334;
 			} else if (type == FieldType.FIELDS) {

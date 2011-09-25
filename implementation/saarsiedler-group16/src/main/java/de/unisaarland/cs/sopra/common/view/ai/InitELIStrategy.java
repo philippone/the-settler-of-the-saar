@@ -72,17 +72,22 @@ public class InitELIStrategy extends Strategy {
 		double resourceValue = 0.0;
 		double numberValue = 0.0;
 		double intersectionValue = 0.0;
+		Intersection village = stroke.getDestination();
+		if (mr.getInitVillages() > 2) {
 		Iterator<Field> fieldIterator = mr.getFieldIterator();
+		//resourcePackage showing how many of the resources are there on the map
 		ResourcePackage resourcePackage = new ResourcePackage();
 		while (fieldIterator.hasNext()){
 			Field field = fieldIterator.next();
 			if (field.getNumber() != -1)
 				resourcePackage.modifyResource(field.getResource(), 1);
 			}
+		// finding the resource with greatest quantity 
 		Resource max = Resource.WOOL;
 		for (Resource r : Resource.values()){
 			max = resourcePackage.getResource(max) < resourcePackage.getResource(r) ? r : max;
-		}
+		}	
+			// choosing the best Harbor for the map
 			HarborType bestHarbor = HarborType.GENERAL_HARBOR;
 			if (max == Resource.LUMBER) {
 				bestHarbor = HarborType.LUMBER_HARBOR;
@@ -94,8 +99,8 @@ public class InitELIStrategy extends Strategy {
 				bestHarbor = HarborType.ORE_HARBOR;
 			} else if (max == Resource.WOOL)
 				bestHarbor = HarborType.WOOL_HARBOR;
-			 
-			Intersection village = stroke.getDestination();
+			 // make sure that we build between 2 fields, instead on the edge of the map
+			
 			if (mr.getHarborTypes(mr.getMe()).size() < 1) {
 			Set<Path> paths = mr.getPathsFromIntersection(village);
 			int m = 0;
@@ -153,6 +158,7 @@ public class InitELIStrategy extends Strategy {
 				intersectionValue = (harborValue*4.0 + numberValue*0.25)/4.25;
 				return intersectionValue;
 			}
+	} 
 				Set<Field> fields = mr.getFieldsFromIntersection(village);
 				Player player = mr.getMe();
 				int n = 0;
@@ -181,7 +187,7 @@ public class InitELIStrategy extends Strategy {
 										if (!playerFields.contains(FieldType.PASTURE) || 
 												mr.getHarborTypes(player).contains(HarborType.WOOL_HARBOR))
 													resourceValue = resourceValue + 0.3334;
-														resourceValue = resourceValue + 0.1667;
+														resourceValue = resourceValue + 0.1;
 									}
 									 else
 											if (f.getFieldType() == FieldType.FIELDS){
