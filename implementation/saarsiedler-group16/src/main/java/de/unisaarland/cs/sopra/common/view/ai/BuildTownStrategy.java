@@ -73,7 +73,9 @@ public class BuildTownStrategy extends Strategy {
 		Set<Field> fields = mr.getFieldsFromIntersection(town);
 		int n = 0;
 		for (Field f : fields){
+			//check wheter it is not a desert or a waterfield
 			if (f.getNumber() != -1){
+				// check if there is currently a robber on the field
 				if (!f.hasRobber()){
 					fieldValue = fieldValue + 0.3;
 					n = f.getNumber();
@@ -98,11 +100,18 @@ public class BuildTownStrategy extends Strategy {
 //		townValue = (fieldValue + numberValue )* earlyGameStageFactor;
 //		return townValue;
 //		}
+		
+		
+		// if building a town is the only thing we have resources for
+		// we should build it instead of holding on to the resources
 		if (mr.affordableSettlements(BuildingType.Town) > 0 && mr.affordableSettlements(BuildingType.Village) < 1 && mr.affordableStreets() < 1){
 		townValue = fieldValue + numberValue;
 		return townValue;
 		}
+		if (mr.getMe().getVictoryPoints() <= (mr.getMaxVictoryPoints()/2)){
 		townValue = (fieldValue + numberValue) * 0.5;
+		return townValue;
+		}
 		return townValue;
 	}
 

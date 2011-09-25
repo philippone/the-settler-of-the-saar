@@ -32,6 +32,8 @@ public class HarborTradeStrategy extends TradeOfferStrategy {
 					tradePackage.modifyResource(Resource.WOOL, 2);
 					res.modifyResource(getMinResource(res), 1);
 				}
+				if (!res.hasNegativeResources())
+					return true;
 					
 			} else
 			if (harbors.contains(HarborType.BRICK_HARBOR) && (res.getResource(Resource.BRICK) > 1)) {
@@ -44,6 +46,8 @@ public class HarborTradeStrategy extends TradeOfferStrategy {
 					tradePackage.modifyResource(Resource.BRICK, 2);
 					res.modifyResource(getMinResource(res), 1);
 				}
+				if (!res.hasNegativeResources())
+					return true;
 					
 			} 
 			 else
@@ -57,6 +61,8 @@ public class HarborTradeStrategy extends TradeOfferStrategy {
 							tradePackage.modifyResource(Resource.LUMBER, 2);
 							res.modifyResource(getMinResource(res), 1);
 						}
+						if (!res.hasNegativeResources())
+							return true;
 							
 					} 
 						else
@@ -70,6 +76,8 @@ public class HarborTradeStrategy extends TradeOfferStrategy {
 									tradePackage.modifyResource(Resource.ORE, 2);
 									res.modifyResource(getMinResource(res), 1);
 								}
+								if (!res.hasNegativeResources())
+									return true;
 									
 							} 
 							else
@@ -83,6 +91,8 @@ public class HarborTradeStrategy extends TradeOfferStrategy {
 										tradePackage.modifyResource(Resource.GRAIN, 2);
 										res.modifyResource(getMinResource(res), 1);
 									}
+									if (!res.hasNegativeResources())
+										return true;
 										
 								} else if (harbors.contains(HarborType.GENERAL_HARBOR)){
 									ResourcePackage ref = price.copy().add(mr.getMe().getResources());
@@ -97,6 +107,8 @@ public class HarborTradeStrategy extends TradeOfferStrategy {
 										ca.offerTrade(tradePackage);
 										ref.modifyResource(getMinResource(ref), 1);
 									}
+									if (!ref.hasNegativeResources())
+										return true;
 								}
 		}
 		ResourcePackage ref = price.copy().add(mr.getMe().getResources());
@@ -112,6 +124,8 @@ public class HarborTradeStrategy extends TradeOfferStrategy {
 			ca.offerTrade(tradePackage);
 			ref.modifyResource(getMinResource(ref), 1);
 		}
+			if (!ref.hasNegativeResources())
+				return true;
 			return false;
 		} 
 		
