@@ -458,6 +458,7 @@ public class GameGUI extends View implements Runnable{
 	@Override
 	public void updateVictoryPoints() {
 		//TODO: implement it!
+		reinitiateUI();
 	}
 	
 	@Override
