@@ -352,7 +352,6 @@ public class Popup extends JFrame {
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setFont(new Font("Dialog", Font.BOLD, 12));
-		setVisible(true);
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new GridBagLayout());
 		((GridBagLayout)contentPane.getLayout()).columnWidths = new int[] {0, 0};
