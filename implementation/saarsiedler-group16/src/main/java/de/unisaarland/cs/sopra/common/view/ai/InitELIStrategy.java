@@ -71,6 +71,7 @@ public class InitELIStrategy extends Strategy {
 		double harborValue = 0.0;
 		double resourceValue = 0.0;
 		double numberValue = 0.0;
+		double numberHarborValue = 0.0;
 		double intersectionValue = 0.0;
 		Intersection village = stroke.getDestination();
 		if (mr.getInitVillages() > 2) {
@@ -107,31 +108,34 @@ public class InitELIStrategy extends Strategy {
 				for (Path p : paths) {
 
 					if (p.getHarborType() == bestHarbor){
+						// choose the best harbor considering the quantity of resources on the map
 						harborValue = harborValue + 0.7;
 						Set<Field> fields = mr.getFieldsFromIntersection(village);
 						for (Field f : fields){
-							
+							// if more harbors of the same type are present
+							// choose the one with better fields around it
 							if (f.getNumber() != -1)
 								harborValue = harborValue + 0.15;
 							m = f.getNumber();
 							if ( m == 2 || m == 12){
-								numberValue = numberValue + 0.1071;
+								numberHarborValue = numberHarborValue + 0.1071;
 							} else 
 								if (m == 3 || m == 11)
-									numberValue = numberValue +  0.2143;
+									numberHarborValue = numberHarborValue +  0.2143;
 								else 
 									if(m == 4 || m == 10)
-										numberValue = numberValue + 0.2857;
+										numberHarborValue = numberHarborValue + 0.2857;
 									else 
 										if (m == 5 || m == 9)
-											numberValue = numberValue + 0.3929;
+											numberHarborValue = numberHarborValue + 0.3929;
 										else 
 											if (m == 6 || m == 8)
-												numberValue = numberValue + 0.5;
+												numberHarborValue = numberHarborValue + 0.5;
 							
 						}
 					}
 					else if (p.getHarborType() != null) {
+						// same as above for the other harbors
 							harborValue = harborValue + 0.5;
 							Set<Field> fields = mr.getFieldsFromIntersection(village);
 							for (Field f : fields){
@@ -139,29 +143,31 @@ public class InitELIStrategy extends Strategy {
 									harborValue = harborValue + 0.15;
 								m = f.getNumber();
 								if ( m == 2 || m == 12){
-									numberValue = numberValue + 0.1071;
+									numberHarborValue = numberHarborValue + 0.1071;
 								} else 
 									if (m == 3 || m == 11)
-										numberValue = numberValue +  0.2143;
+										numberHarborValue = numberHarborValue +  0.2143;
 									else 
 										if(m == 4 || m == 10)
-											numberValue = numberValue + 0.2857;
+											numberHarborValue = numberHarborValue + 0.2857;
 										else 
 											if (m == 5 || m == 9)
-												numberValue = numberValue + 0.3929;
+												numberHarborValue = numberHarborValue + 0.3929;
 											else 
 												if (m == 6 || m == 8)
-													numberValue = numberValue + 0.5;
+													numberHarborValue = numberHarborValue + 0.5;
 							}
 					}
 				}
-				intersectionValue = (harborValue*4.0 + numberValue*0.25)/4.25;
+				// type of harbor : number of the fields = 8 : 1
+				intersectionValue = (harborValue*4.0 + numberHarborValue*0.25)/4.25;
 				return intersectionValue;
 			}
 	} 
 				Set<Field> fields = mr.getFieldsFromIntersection(village);
 				Player player = mr.getMe();
 				int n = 0;
+				// make a list of all the fields, the player currently has a village on
 				Set<Intersection> buildings = mr.getSettlements(player, BuildingType.Village);
 				Set<Field> playerFields = new HashSet<Field>();
 				for (Intersection i : buildings){
@@ -169,18 +175,19 @@ public class InitELIStrategy extends Strategy {
 					playerFields.addAll(fieldsforIntersection);
 				}
 				for (Field f : fields){
+					// make sure field is not a desert or water field
 					if (f.getNumber() != -1){
 							if (f.getFieldType() == FieldType.FOREST){
 								if (!playerFields.contains(FieldType.FOREST) || 
 										mr.getHarborTypes(player).contains(HarborType.LUMBER_HARBOR))
 											resourceValue = resourceValue + 0.3334;
-												resourceValue = resourceValue + 0.1667;
+												resourceValue = resourceValue + 0.1;
 							} else
 							if (f.getFieldType() == FieldType.HILLS){
 								if (!playerFields.contains(FieldType.HILLS) || 
 										mr.getHarborTypes(player).contains(HarborType.BRICK_HARBOR))
 											resourceValue = resourceValue + 0.3334;
-												resourceValue = resourceValue + 0.1667;
+												resourceValue = resourceValue + 0.1;
 							}
 							 else
 									if (f.getFieldType() == FieldType.PASTURE){
@@ -194,14 +201,16 @@ public class InitELIStrategy extends Strategy {
 												if (!playerFields.contains(FieldType.FIELDS) || 
 														mr.getHarborTypes(player).contains(HarborType.GRAIN_HARBOR))
 															resourceValue = resourceValue + 0.3334;
-																resourceValue = resourceValue + 0.1667;
+																resourceValue = resourceValue + 0.1;
 											}  else
 												if (f.getFieldType() == FieldType.MOUNTAINS){
 													if (!playerFields.contains(FieldType.MOUNTAINS) || 
 															mr.getHarborTypes(player).contains(HarborType.ORE_HARBOR))
 																resourceValue = resourceValue + 0.3334;
-																	resourceValue = resourceValue + 0.1667;
+																	resourceValue = resourceValue + 0.1;
 												}
+							// take into account the number of the field, in the initialize phase
+							// we choose only the best numbers for the field
 							n = f.getNumber();
 							if ( n == 2 || n == 12){
 								numberValue = numberValue + 0.07143;
@@ -220,7 +229,7 @@ public class InitELIStrategy extends Strategy {
 					}
 				}
 			
-		intersectionValue = (resourceValue*4.0 + numberValue*0.25)  / 4.25;
+		intersectionValue = (resourceValue*6.0 + numberValue*0.1)  / 6.1;
 		return intersectionValue;
 	}
 
