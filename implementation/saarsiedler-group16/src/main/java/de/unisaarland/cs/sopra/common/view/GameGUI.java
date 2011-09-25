@@ -385,16 +385,16 @@ public class GameGUI extends View implements Runnable{
 	   
 	   GL11.glPopMatrix();
 
-	   //DEBUG
-	   GL11.glPushMatrix();
-	   GL11.glTranslatef(xOffset+20, 400, -950);
-	   debugFont.drawString(300, 0, "Debug:", Color.white);
-	   debugFont.drawString(300, 30, "x: " + x + ", y: " + y + ", z: " + z, Color.white);
-	   debugFont.drawString(300, 60, "mx: " + Mouse.getX() + ", my: " + Mouse.getY() + ", mw: " + Mouse.getEventDWheel(), Color.white);
-	   debugFont.drawString(300, 90, "minX: " + minX + ", minY: " + minY + ", minZ: " + maxX, Color.white);
-	   debugFont.drawString(300, 120, "oglx: " + (int)(Mouse.getX()*screenToOpenGLx(zOffsetUI)+25) + ", ogly: " + (int)((windowHeight-Mouse.getY())*screenToOpenGLy(zOffsetUI)+380) );
-	   debugFont.drawString(300, 150, "selectionmode: " + selectionMode );
-	   GL11.glPopMatrix();
+//	   //DEBUG
+//	   GL11.glPushMatrix();
+//	   GL11.glTranslatef(xOffset+20, 400, -950);
+//	   debugFont.drawString(300, 0, "Debug:", Color.white);
+//	   debugFont.drawString(300, 30, "x: " + x + ", y: " + y + ", z: " + z, Color.white);
+//	   debugFont.drawString(300, 60, "mx: " + Mouse.getX() + ", my: " + Mouse.getY() + ", mw: " + Mouse.getEventDWheel(), Color.white);
+//	   debugFont.drawString(300, 90, "minX: " + minX + ", minY: " + minY + ", minZ: " + maxX, Color.white);
+//	   debugFont.drawString(300, 120, "oglx: " + (int)(Mouse.getX()*screenToOpenGLx(zOffsetUI)+25) + ", ogly: " + (int)((windowHeight-Mouse.getY())*screenToOpenGLy(zOffsetUI)+380) );
+//	   debugFont.drawString(300, 150, "selectionmode: " + selectionMode );
+//	   GL11.glPopMatrix();
 
 	   GL11.glPushMatrix();
 	   GL11.glTranslatef(xOffset+xOffsetUI, yOffsetUI, zOffsetUI);

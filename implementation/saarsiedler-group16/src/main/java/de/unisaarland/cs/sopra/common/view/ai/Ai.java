@@ -43,8 +43,11 @@ public class Ai implements ModelObserver {
 		this.generalStrategies = new HashSet<Strategy>();
 		this.generalStrategies.add(new ExpandStrategy(mr));
 		//this.generalStrategies.add(new AttackStrategy(mr));
+		this.generalStrategies.add(new LongestRoadStrategy(mr));
 		this.generalStrategies.add( new TownSimpleStrategy(mr));
-		this.generalStrategies.add(new DeffenceStrategy(mr));
+		this.generalStrategies.add(new BuildTownStrategy(mr));
+		//this.generalStrategies.add(new DeffenceStrategy(mr));
+		//this.generalStrategies.add( new RandomStreetStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
 		this.returnResourcesStrategies = new HashSet<Strategy>();
@@ -141,12 +144,6 @@ public class Ai implements ModelObserver {
 
 	
 	public void executeLoop(List<Stroke> sortedStroke){
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		boolean execute = sortedStroke.size() > 0;
 		Player me = mr.getMe();
 		int i = 0;
@@ -160,6 +157,7 @@ public class Ai implements ModelObserver {
 				System.out.println(bestStroke);
 				
 				bestStroke.execute(ca);
+				claimLongestRoadIfPossible();
 				claimVictoryIfPossible();
 			}
 		}
@@ -167,6 +165,13 @@ public class Ai implements ModelObserver {
 	}
 
 	
+	public void claimLongestRoadIfPossible(){
+		List<Path> longestRoad=mr.getLongestClaimedRoad();
+		List<List<Path>> myLongestRoads=mr.calculateLongestRoads(mr.getMe());
+		List<Path> myLongestRoad=myLongestRoads.get(0);
+		if (longestRoad==null) {if (myLongestRoad.size()>4) ca.claimLongestRoad(myLongestRoad);}
+		else if (longestRoad.size()<myLongestRoad.size()) ca.claimLongestRoad(myLongestRoad);
+	}
 	
 	public void claimVictoryIfPossible(){
 		if (mr.getMaxVictoryPoints() <= mr.getMe().getVictoryPoints()){
@@ -262,30 +267,30 @@ public class Ai implements ModelObserver {
 				strokeSet.add(new BuildTown(inter));
 			}
 		}
-		// create catapult strokes
-		if (mr.getMaxCatapult() > mr.getCatapults(mr.getMe()).size()) {
-			for (Path path : mr.buildableCatapultPaths(mr.getMe())){
-				strokeSet.add(new BuildCatapult(path));
-			}
-		}
-		// move catapult strokes
-		for (Path source : mr.getCatapults(mr.getMe())){
-			for (Path destination : mr.catapultMovePaths(source)){
-				strokeSet.add(new MoveCatapult(source, destination));
-			}
-		}
-		// attack settlement strokes
-		for (Path source : mr.getCatapults(mr.getMe())){
-			for (Intersection destination : mr.attackableSettlements(BuildingType.Town, source)){
-				strokeSet.add(new AttackSettlement(source, destination));
-			}
-		}
-		// attack catapult paths
-		for (Path source : mr.getCatapults(mr.getMe())){
-			for (Path destination : mr.attackableCatapults(source)){
-				strokeSet.add(new AttackCatapult(source, destination));
-			}
-		}
+//		// create catapult strokes
+//		if (mr.getMaxCatapult() > mr.getCatapults(mr.getMe()).size()) {
+//			for (Path path : mr.buildableCatapultPaths(mr.getMe())){
+//				strokeSet.add(new BuildCatapult(path));
+//			}
+//		}
+//		// move catapult strokes
+//		for (Path source : mr.getCatapults(mr.getMe())){
+//			for (Path destination : mr.catapultMovePaths(source)){
+//				strokeSet.add(new MoveCatapult(source, destination));
+//			}
+//		}
+//		// attack settlement strokes
+//		for (Path source : mr.getCatapults(mr.getMe())){
+//			for (Intersection destination : mr.attackableSettlements(BuildingType.Town, source)){
+//				strokeSet.add(new AttackSettlement(source, destination));
+//			}
+//		}
+//		// attack catapult paths
+//		for (Path source : mr.getCatapults(mr.getMe())){
+//			for (Path destination : mr.attackableCatapults(source)){
+//				strokeSet.add(new AttackCatapult(source, destination));
+//			}
+//		}
 		// create steets
 		for (Path path : mr.buildableStreetPaths(mr.getMe())){
 			strokeSet.add(new BuildStreet(path));

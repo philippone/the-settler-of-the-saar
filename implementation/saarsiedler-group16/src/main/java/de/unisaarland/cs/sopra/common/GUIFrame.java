@@ -283,7 +283,13 @@ public class GUIFrame extends JFrame {
 				panel12.setLayout(null);
 
 				//---- label1 ----
-				label1.setIcon(new ImageIcon(getClass().getResource("/Textures/ClientGui/Saarlogo.png")));
+				ImageIcon icon;
+				try {
+				icon = new ImageIcon(getClass().getResource("/Textures/ClientGui/Saarlogo.png"));
+				} catch (Exception e) {
+					icon = new ImageIcon(getClass().getResource("/resources/Textures/ClientGui/Saarlogo.png"));
+				}
+				label1.setIcon(icon);
 				panel12.add(label1);
 				label1.setBounds(0, 0, 1000, 175);
 
