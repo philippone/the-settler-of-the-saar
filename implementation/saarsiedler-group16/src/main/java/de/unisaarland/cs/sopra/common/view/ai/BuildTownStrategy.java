@@ -98,9 +98,11 @@ public class BuildTownStrategy extends Strategy {
 //		townValue = (fieldValue + numberValue )* earlyGameStageFactor;
 //		return townValue;
 //		}
-//		if (mr.affordableSettlements(BuildingType.Town) >0 && mr.affordableSettlements(BuildingType.Village) < 1)
-//			return 1.0;
+		if (mr.affordableSettlements(BuildingType.Town) > 0 && mr.affordableSettlements(BuildingType.Village) < 1 && mr.affordableStreets() < 1){
 		townValue = fieldValue + numberValue;
+		return townValue;
+		}
+		townValue = (fieldValue + numberValue) * 0.5;
 		return townValue;
 	}
 

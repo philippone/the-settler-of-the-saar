@@ -44,9 +44,8 @@ public class Ai implements ModelObserver {
 		this.generalStrategies.add(new ExpandStrategy(mr));
 		//this.generalStrategies.add(new AttackStrategy(mr));
 		this.generalStrategies.add(new LongestRoadStrategy(mr));
-		//this.generalStrategies.add( new TownSimpleStrategy(mr));
+		this.generalStrategies.add( new RandomStreetStrategy(mr));
 		this.generalStrategies.add(new BuildTownStrategy(mr));
-		//this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.generalStrategies.add( new BuildStreetStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
@@ -144,12 +143,7 @@ public class Ai implements ModelObserver {
 
 	
 	public void executeLoop(List<Stroke> sortedStroke){
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		boolean execute = sortedStroke.size() > 0;
 		Player me = mr.getMe();
 		int i = 0;
