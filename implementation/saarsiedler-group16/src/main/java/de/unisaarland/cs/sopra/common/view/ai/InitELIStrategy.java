@@ -94,7 +94,7 @@ public class InitELIStrategy extends Strategy {
 				bestHarbor = HarborType.ORE_HARBOR;
 			} else if (max == Resource.WOOL)
 				bestHarbor = HarborType.WOOL_HARBOR;
-			
+			 
 			Intersection village = stroke.getDestination();
 			if (mr.getHarborTypes(mr.getMe()).size() < 1) {
 			Set<Path> paths = mr.getPathsFromIntersection(village);

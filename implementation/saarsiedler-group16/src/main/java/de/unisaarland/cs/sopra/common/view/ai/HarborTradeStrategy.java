@@ -84,7 +84,20 @@ public class HarborTradeStrategy extends TradeOfferStrategy {
 										res.modifyResource(getMinResource(res), 1);
 									}
 										
-								} 
+								} else if (harbors.contains(HarborType.GENERAL_HARBOR)){
+									ResourcePackage ref = price.copy().add(mr.getMe().getResources());
+									tradePackage.modifyResource(getMinResource(ref), 1);
+									while (numberOfPossitiveResources(ref) >= 3 && ref.hasNegativeResources()){
+										tradePackage = new ResourcePackage();
+										tradePackage.modifyResource(getMinResource(ref), 1);
+										for (int i = 0; i < 3; i++){
+											tradePackage.modifyResource(getMaxResource(ref), -1);
+											ref.modifyResource(getMaxResource(ref), -1);
+										}
+										ca.offerTrade(tradePackage);
+										ref.modifyResource(getMinResource(ref), 1);
+									}
+								}
 		}
 		ResourcePackage ref = price.copy().add(mr.getMe().getResources());
 		ResourcePackage tradePackage = new ResourcePackage();

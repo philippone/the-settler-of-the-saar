@@ -2,6 +2,7 @@ package de.unisaarland.cs.sopra.common.view.ai;
 
 import java.util.Set;
 
+import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
@@ -67,6 +68,7 @@ public class BuildTownStrategy extends Strategy {
 		double townValue = 0.0;
 		double fieldValue = 0.0;
 		double numberValue = 0.0;
+		double earlyGameStageFactor = 0.3;
 		Intersection town = stroke.getDestination();
 		Set<Field> fields = mr.getFieldsFromIntersection(town);
 		int n = 0;
@@ -92,6 +94,12 @@ public class BuildTownStrategy extends Strategy {
 				}
 			}
 		}
+//		if (mr.getMe().getVictoryPoints() <= (mr.getMaxVictoryPoints()/2)){
+//		townValue = (fieldValue + numberValue )* earlyGameStageFactor;
+//		return townValue;
+//		}
+//		if (mr.affordableSettlements(BuildingType.Town) >0 && mr.affordableSettlements(BuildingType.Village) < 1)
+//			return 1.0;
 		townValue = fieldValue + numberValue;
 		return townValue;
 	}

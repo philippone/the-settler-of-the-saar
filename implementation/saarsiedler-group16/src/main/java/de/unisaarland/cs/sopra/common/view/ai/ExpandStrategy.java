@@ -61,65 +61,115 @@ public class ExpandStrategy extends Strategy {
 	public double evaluate(BuildVillage stroke) {
 		double intersectionValue = 0.0;
 		double resourceValue = 0.0;
+		int numOfVillages = 0;
+		int resources = 0;
 		 Intersection location = stroke.getDestination();
 		 Set<Field> fields = mr.getFieldsFromIntersection(location);
-		 for (Field field : fields) {
-				
-				Player player = mr.getMe();
-				Set<Intersection> buildings = mr.getSettlements(player, BuildingType.Village);
-				Set<Field> playerFields = new HashSet<Field>();
-				for (Intersection i : buildings){
-					Set<Field> fieldsforIntersection = mr.getFieldsFromIntersection(i);
-					playerFields.addAll(fieldsforIntersection);
+		 
+		 Player player = mr.getMe();
+		 Set<Intersection> buildings = mr.getSettlements(player, BuildingType.Village);
+		 buildings.addAll(mr.getSettlements(player, BuildingType.Town));
+		 //contains all fields on which we have a building
+		 Set<Field> playerFields = new HashSet<Field>();
+		 //contains all numbers of the fields on which we have a building 
+		 Set<Integer> numbers = new HashSet<Integer>();
+			for (Intersection i : buildings){
+				Set<Field> fieldsforIntersection = mr.getFieldsFromIntersection(i);
+				playerFields.addAll(fieldsforIntersection);
+				for (Field f : fieldsforIntersection){
+					numbers.add(f.getNumber());
 				}
+			}
+		 for (Field field : fields) {
 			FieldType type = field.getFieldType();
 			if (type == FieldType.FOREST) {
+				resources += 1;
 				if (playerFields.contains(FieldType.FOREST)) {
-					resourceValue = resourceValue + 0.1167;
+					// we want to make sure, that we will get a resource
+					// every turn
+					if (!numbers.contains(field.getNumber()))
+					resourceValue = resourceValue + 0.3334;
+						resourceValue = resourceValue + 0.1667;
 				}
-				resourceValue = resourceValue + 0.2333;
+				// if we do not own the resource yet, it has understandably a higher value
+				resourceValue = resourceValue + 0.3334;
 			} else if (type == FieldType.HILLS) {
+				resources += 1;
 				if (playerFields.contains(FieldType.HILLS)) {
-					resourceValue = resourceValue + 0.1167;
+					if (!numbers.contains(field.getNumber()))
+					resourceValue = resourceValue + 0.3334;
+						resourceValue = resourceValue + 0.1667;
 				}
-				resourceValue = resourceValue + 0.2333;
+				resourceValue = resourceValue + 0.3334;
 			} else if (type == FieldType.PASTURE) {
+				resources += 1;
 				if (playerFields.contains(FieldType.PASTURE)) {
-					resourceValue = resourceValue + 0.1167;
+					if (!numbers.contains(field.getNumber()))
+					resourceValue = resourceValue + 0.3334;
+						resourceValue = resourceValue + 0.1667;
 				}
-				resourceValue = resourceValue + 0.2333;
+				resourceValue = resourceValue + 0.3334;
 			} else if (type == FieldType.FIELDS) {
+				resources += 1;
 				if (playerFields.contains(FieldType.FIELDS)) {
-					resourceValue = resourceValue + 0.1167;
+					if (!numbers.contains(field.getNumber()))
+					resourceValue = resourceValue + 0.3334;
+						resourceValue = resourceValue + 0.1667;
 				}
-				resourceValue = resourceValue + 0.2333;
+				resourceValue = resourceValue + 0.3334;
 			} else if (type == FieldType.MOUNTAINS) {
+				resources += 1;
 				if (playerFields.contains(FieldType.MOUNTAINS)) {
-					resourceValue = resourceValue + 0.0584;
+					if (!numbers.contains(field.getNumber()))
+					resourceValue = resourceValue + 0.3334;
+						resourceValue = resourceValue + 0.1667;
 				}
-				resourceValue = resourceValue + 0.1167;
+				resourceValue = resourceValue + 0.3334;
 			}
-		}
+			Set<Intersection> intersections = mr.getIntersectionsFromField(field);
+			for (Intersection i : intersections){
+				if (i.hasOwner() && i.getOwner() == mr.getMe())
+					numOfVillages += 1;
+			}
 
+		}   
+		 // we want to prevent(as far as possible) building more than 2 villages on one field 
+			if (resources >= 2 && numOfVillages == 2){
+				intersectionValue = resourceValue*0.25;
+				return intersectionValue;
+			}  else if (resources <= 1) {
+				intersectionValue = resourceValue*0.05;
+				return  intersectionValue;
+			}
+			// when we do not have the resources for a village, but for town instead, 
+			// the village has a lower value
+			if (mr.affordableSettlements(BuildingType.Town) > 0 
+					&& mr.affordableSettlements(BuildingType.Village) < 1){
+				intersectionValue = resourceValue*0.6;
+				return intersectionValue;
+			}
 		 intersectionValue = resourceValue;
-		return intersectionValue;
+		return Math.min(1,intersectionValue);
 	}
 
 	@Override
 	public double evaluate(BuildTown stroke) {
 		double townValue = 0.0;
 		double resourceValue = 0.0; 
-		double earlyGameStageFactor = 0.5;
 		Intersection i = stroke.getDestination();
 		Set<Field> neighbourFields = mr.getFieldsFromIntersection(i);
 		for (Field f: neighbourFields){
+			// if there is a robber on one of the fields, we don't want to upgrade
 			if (!f.hasRobber()) {
+				// we do not want to upgrade first the towns that are near deserts or water 
 				if (f.getNumber() != -1) 
 					resourceValue = resourceValue + 0.3333;
 			}
 		}
-		if (mr.getMe().getVictoryPoints() <= (mr.getMaxVictoryPoints()/2))
-		townValue = resourceValue * earlyGameStageFactor;
+		// if there is currently no place to build a village, it is better to build a town
+//		if (mr.affordableSettlements(BuildingType.Village) < 1 
+//				&& mr.buildableVillageIntersections(mr.getMe()).size() < 1)
+		townValue = resourceValue;
 		return townValue;
 		
 	}
