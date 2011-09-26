@@ -113,7 +113,7 @@ public class KaisExpandStrategy extends Strategy {
 			if (waterfields == 2) return 0;
 		}
 		int buildableVillages = mr.buildableVillageIntersections(mr.getMe()).size();
-		if (buildableVillages > 0 && mr.getSettlements(mr.getMe(), BuildingType.Village).size() < mr.getMaxBuilding(BuildingType.Village)) return 0;
+		if (buildableVillages > 0 && mr.getSettlements(mr.getMe(), BuildingType.Village).size() < mr.getMaxBuilding(BuildingType.Village)) return 0.5;
 		return 1;
 	}
 	
