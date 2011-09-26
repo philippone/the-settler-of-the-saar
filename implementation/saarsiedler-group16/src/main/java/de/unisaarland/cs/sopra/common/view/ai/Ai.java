@@ -30,12 +30,14 @@ public class Ai implements ModelObserver {
 	
 	private final ModelReader mr;
 	private final ControllerAdapter ca;
+	private final KaisTradeOfferStrategy trade;
 	private final Set<Strategy> generalStrategies;
 	private final Set<Strategy> moveRobberStrategies;
 	private final Set<Strategy> returnResourcesStrategies;
 	private final Set<Strategy> initStrategies;
 	
 	public Ai(ModelReader mr, ControllerAdapter ca){
+		this.trade = new KaisTradeOfferStrategy(ca, mr);
 		this.mr = mr;
 		this.ca = ca;
 		this.generalStrategies = new HashSet<Strategy>();
@@ -44,8 +46,8 @@ public class Ai implements ModelObserver {
 		//this.generalStrategies.add(new KaisTryToWinFastStrategy(mr));
 		this.generalStrategies.add(new BuildStreetStrategy(mr));
 		this.generalStrategies.add(new ExpandStrategy(mr));
-		//this.generalStrategies.add(new AttackStrategy(mr));
-		//this.generalStrategies.add(new DeffenceStrategy(mr));
+		this.generalStrategies.add(new AttackStrategy(mr));
+		this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
 		this.returnResourcesStrategies = new HashSet<Strategy>();
@@ -181,7 +183,6 @@ public class Ai implements ModelObserver {
 	
 	private Stroke getTheBestStroke(List<Stroke> sortedStrokes) {
 		List<Stroke> theBestStrokes = sortedStrokes.subList(0, 3);
-		KaisTradeOfferStrategy trade = new KaisTradeOfferStrategy(ca, mr);
 		for (Stroke s : theBestStrokes){
 			if (mr.getMe().checkResourcesSufficient(s.getPrice()))
 				return s;
