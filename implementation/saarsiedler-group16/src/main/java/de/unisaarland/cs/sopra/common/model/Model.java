@@ -263,8 +263,9 @@ public class Model implements ModelReader, ModelWriter {
 					roadList2.add(road);
 					// we'll remove this road
 					// since we have at least a new longer version
-					a = false;
+					
 					for (List<Path> r : rList) {
+						a = false;
 						if (r != null) {
 							for (List<Path> r1 : roadList)
 								a = a | (r1.containsAll(r)&&r.containsAll(r1));
@@ -284,7 +285,7 @@ public class Model implements ModelReader, ModelWriter {
 		// if we haven't found any new longer road, we stop
 		// else we must see if the new ones cannot be lengthened too
 		roadList.addAll(roadList1);
-		roadList.remove(roadList2);
+		roadList.removeAll(roadList2);
 		// we update the roadList
 		// removing short roads that have been lengthened
 		// adding longer versions of these roads
