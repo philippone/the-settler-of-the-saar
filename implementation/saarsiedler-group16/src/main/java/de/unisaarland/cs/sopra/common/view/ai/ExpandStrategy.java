@@ -167,9 +167,10 @@ public class ExpandStrategy extends Strategy {
 			}
 		}
 		// if there is currently no place to build a village, it is better to build a town
-//		if (mr.affordableSettlements(BuildingType.Village) < 1 
-//				&& mr.buildableVillageIntersections(mr.getMe()).size() < 1)
-		townValue = resourceValue;
+		if (mr.affordableSettlements(BuildingType.Village) > 0 
+				&& mr.buildableVillageIntersections(mr.getMe()).size() > 0)
+		townValue = resourceValue * 0.4;
+			townValue = resourceValue;
 		return townValue;
 		
 	}

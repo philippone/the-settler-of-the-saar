@@ -178,36 +178,41 @@ public class InitELIStrategy extends Strategy {
 					// make sure field is not a desert or water field
 					if (f.getNumber() != -1){
 							if (f.getFieldType() == FieldType.FOREST){
-								if (!playerFields.contains(FieldType.FOREST) || 
-										mr.getHarborTypes(player).contains(HarborType.LUMBER_HARBOR))
+								if (!playerFields.contains(FieldType.FOREST))  
+										resourceValue = resourceValue + 0.5;
+									else if (mr.getHarborTypes(player).contains(HarborType.LUMBER_HARBOR))
 											resourceValue = resourceValue + 0.3334;
-												resourceValue = resourceValue + 0.1;
+												resourceValue = resourceValue + 0.05;
 							} else
 							if (f.getFieldType() == FieldType.HILLS){
-								if (!playerFields.contains(FieldType.HILLS) || 
-										mr.getHarborTypes(player).contains(HarborType.BRICK_HARBOR))
-											resourceValue = resourceValue + 0.3334;
-												resourceValue = resourceValue + 0.1;
+								if (!playerFields.contains(FieldType.HILLS))  
+									resourceValue = resourceValue + 0.05;
+								else if (mr.getHarborTypes(player).contains(HarborType.BRICK_HARBOR))
+										resourceValue = resourceValue + 0.3334;
+											resourceValue = resourceValue + 0.05;
 							}
 							 else
 									if (f.getFieldType() == FieldType.PASTURE){
-										if (!playerFields.contains(FieldType.PASTURE) || 
-												mr.getHarborTypes(player).contains(HarborType.WOOL_HARBOR))
-													resourceValue = resourceValue + 0.3334;
-														resourceValue = resourceValue + 0.1;
+										if (!playerFields.contains(FieldType.PASTURE))  
+											resourceValue = resourceValue + 0.5;
+										else if (mr.getHarborTypes(player).contains(HarborType.WOOL_HARBOR))
+												resourceValue = resourceValue + 0.3334;
+													resourceValue = resourceValue + 0.05;
 									}
 									 else
 											if (f.getFieldType() == FieldType.FIELDS){
-												if (!playerFields.contains(FieldType.FIELDS) || 
-														mr.getHarborTypes(player).contains(HarborType.GRAIN_HARBOR))
-															resourceValue = resourceValue + 0.3334;
-																resourceValue = resourceValue + 0.1;
+												if (!playerFields.contains(FieldType.FIELDS))  
+													resourceValue = resourceValue + 0.5;
+												else if (mr.getHarborTypes(player).contains(HarborType.GRAIN_HARBOR))
+														resourceValue = resourceValue + 0.3334;
+															resourceValue = resourceValue + 0.05;
 											}  else
 												if (f.getFieldType() == FieldType.MOUNTAINS){
-													if (!playerFields.contains(FieldType.MOUNTAINS) || 
-															mr.getHarborTypes(player).contains(HarborType.ORE_HARBOR))
-																resourceValue = resourceValue + 0.3334;
-																	resourceValue = resourceValue + 0.1;
+													if (!playerFields.contains(FieldType.MOUNTAINS))  
+														resourceValue = resourceValue + 0.5;
+													else if (mr.getHarborTypes(player).contains(HarborType.ORE_HARBOR))
+															resourceValue = resourceValue + 0.3334;
+																resourceValue = resourceValue + 0.05;
 												}
 							// take into account the number of the field, in the initialize phase
 							// we choose only the best numbers for the field
@@ -229,7 +234,7 @@ public class InitELIStrategy extends Strategy {
 					}
 				}
 			
-		intersectionValue = (resourceValue*6.0 + numberValue*0.1)  / 6.1;
+		intersectionValue = (resourceValue*10.0 + numberValue*0.25)/10.25;
 		return intersectionValue;
 	}
 
