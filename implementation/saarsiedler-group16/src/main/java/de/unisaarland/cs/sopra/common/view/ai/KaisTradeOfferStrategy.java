@@ -46,7 +46,7 @@ public class KaisTradeOfferStrategy extends TradeOfferStrategy {
 		ResourcePackage difference = price.add(mr.getResources());
 		int i = 0;
 		while (difference.hasNegativeResources() && difference.hasPositiveResources() && execute){
-			System.out.println(i++);
+			//System.out.println(i++);
 			execute = false;
 			Resource minRes = getMinResource(difference);
 			for (Resource aboveTwo : getResourcesAboveTwo(difference)){

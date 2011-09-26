@@ -26,7 +26,7 @@ import de.unisaarland.cs.st.saarsiedler.comm.results.JoinResult;
 
 public class AutomatischeAISpieleClient implements ModelObserver {
 	
-	public static int ANZAHL_SPIELE = 50;
+	public static int ANZAHL_SPIELE = 15;
 	
 	private final ModelReader mr;
 	private final ControllerAdapter ca;
@@ -108,7 +108,7 @@ public class AutomatischeAISpieleClient implements ModelObserver {
 					mywins += 1;
 					System.out.println("Aktuelle KI gewinnt mit " + my + " Punkten");
 				}
-				else if (other > my && my >= 22) {
+				else if (other > my && other >= 22) {
 					otherwins += 1;
 					System.out.println("Aktuelle KI gewinnt mit " + other + " Punkten");
 				}

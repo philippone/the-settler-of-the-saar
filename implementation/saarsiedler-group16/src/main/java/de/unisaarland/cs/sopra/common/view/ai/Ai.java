@@ -160,7 +160,7 @@ public class Ai implements ModelObserver {
 			}
 			else execute = false;
 		}
-		System.out.printf("Executed %d times!", executed);
+		//System.out.printf("Executed %d times!", executed);
 		ca.endTurn();
 	}
 
@@ -196,6 +196,7 @@ public class Ai implements ModelObserver {
 		List<Path> longestroad = mr.calculateLongestRoads(mr.getMe()).get(0); //TODO perhaps improvable
 		int lengthOfLongestClaimedRoad = mr.getLongestClaimedRoad() == null ? 4 : mr.getLongestClaimedRoad().size();
 		if (longestroad.size() > lengthOfLongestClaimedRoad){
+			System.out.println(longestroad);
 			ca.claimLongestRoad(longestroad);
 		}
 	}
@@ -412,9 +413,9 @@ public class Ai implements ModelObserver {
 
 	@Override
 	public void eventMatchEnd(long winnerID) {
-		if (mr.getPlayerMap().get(winnerID) == mr.getMe())
-			System.out.println("You have won the macht! =)");
-		else System.out.println("You do not have won the match! =(");
+//		if (mr.getPlayerMap().get(winnerID) == mr.getMe())
+//			System.out.println("You have won the macht! =)");
+//		else System.out.println("You do not have won the match! =(");
 	} 
 
 }
