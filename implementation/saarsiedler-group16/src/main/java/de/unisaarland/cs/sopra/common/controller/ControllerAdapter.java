@@ -39,7 +39,7 @@ public class ControllerAdapter {
 		Location i = Model.getLocation(settlement);
 		try {
 			return controller.attackSettlement(l, i);
-		} catch (Exception e) { e.printStackTrace(); return null; }		
+		} catch (Exception e) { e.printStackTrace(); System.exit(-1); return null; }		
 	}
 	
 	/**
@@ -52,7 +52,7 @@ public class ControllerAdapter {
 		Location l = Model.getLocation(path);
 		try {
 			return controller.buildCatapult(l);
-		} catch (Exception e) { e.printStackTrace(); return false; }
+		} catch (Exception e) { e.printStackTrace(); System.exit(-1); return false; }
 	}
 	
 	/**
@@ -66,7 +66,7 @@ public class ControllerAdapter {
 		Location l = Model.getLocation(intersection);
 		try {
 			controller.buildSettlement(l, buildingType);
-		} catch (Exception e) { e.printStackTrace(); }
+		} catch (Exception e) { e.printStackTrace(); System.exit(-1); }
 		
 	}
 	
@@ -80,7 +80,7 @@ public class ControllerAdapter {
 		Location l = Model.getLocation(path);
 		try {
 			controller.buildStreet(l);
-		} catch (Exception e) { e.printStackTrace(); }
+		} catch (Exception e) { e.printStackTrace(); System.exit(-1); }
 	}
 	
 	/**
@@ -97,7 +97,7 @@ public class ControllerAdapter {
 		}
 		try {
 			controller.claimLongestRoad(roadList);
-		} catch (Exception e) { e.printStackTrace(); }
+		} catch (Exception e) { e.printStackTrace(); System.exit(-1); }
 	}
 	
 	/**
@@ -107,7 +107,7 @@ public class ControllerAdapter {
 	public void claimVictory() {
 		try {
 			controller.claimVictory();
-		} catch (Exception e) { e.printStackTrace(); }
+		} catch (Exception e) { e.printStackTrace(); System.exit(-1); }
 	}
 	
 	/**
@@ -117,7 +117,7 @@ public class ControllerAdapter {
 	public void endTurn(){
 		try {
 			controller.endTurn();
-		} catch (Exception e) { e.printStackTrace(); }
+		} catch (Exception e) { e.printStackTrace(); System.exit(-1); }
 	}
 	
 	/**
@@ -128,7 +128,7 @@ public class ControllerAdapter {
 		try {
 			setEndOfGame(true);
 			controller.leaveMatch();
-		} catch (Exception e) { e.printStackTrace(); }
+		} catch (Exception e) { e.printStackTrace(); System.exit(-1); }
 	}
 	
 	/**
@@ -143,7 +143,7 @@ public class ControllerAdapter {
 		Location l2 = Model.getLocation(destinationPath);
 		try {
 			return controller.moveCatapult(l, l2);
-		} catch (Exception e) { e.printStackTrace(); return false;}
+		} catch (Exception e) { e.printStackTrace(); System.exit(-1); return false;}
 	}
 	
 	/**
@@ -164,14 +164,14 @@ public class ControllerAdapter {
 				if (player.equals(victimPlayer)){
 					try {
 						return controller.moveRobber(p, p2, l);
-					} catch (Exception e) { e.printStackTrace(); }
+					} catch (Exception e) { e.printStackTrace(); System.exit(-1); }
 					break;
 				}
 			}
 		} else
 			try {
 				return controller.moveRobber(p, p2, -1);
-			} catch (Exception e) { e.printStackTrace(); }
+			} catch (Exception e) { e.printStackTrace(); System.exit(-1); }
 		throw new IllegalStateException();
 	}
 	
@@ -189,7 +189,7 @@ public class ControllerAdapter {
 		int ore =   resourcePackage.getResource(ORE);
 		try {
 			return controller.offerTrade(lumber, brick, wool, grain, ore);
-		} catch (Exception e) { e.printStackTrace(); return -1;}
+		} catch (Exception e) { e.printStackTrace(); System.exit(-1); return -1;}
 	}
 	
 	/**
@@ -201,7 +201,7 @@ public class ControllerAdapter {
 	public long respondTrade(boolean decision) {
 		try {
 			return controller.respondTrade(decision);
-		} catch (Exception e) { e.printStackTrace(); return -1;}
+		} catch (Exception e) { e.printStackTrace(); System.exit(-1); return -1;}
 	}
 	
 	/**
@@ -218,7 +218,7 @@ public class ControllerAdapter {
 		int ore =   resourcePackage.getResource(ORE);
 		try {
 			controller.returnResources(lumber, brick, wool, grain, ore);
-		} catch (Exception e) { e.printStackTrace(); }
+		} catch (Exception e) { e.printStackTrace(); System.exit(-1); }
 	}
 
 
