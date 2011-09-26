@@ -41,9 +41,10 @@ public class Ai implements ModelObserver {
 		this.ca = ca;
 		this.generalStrategies = new HashSet<Strategy>();
 		this.generalStrategies.add(new KaisExpandStrategy(mr));
-		this.generalStrategies.add(new KaisChooseVillageAndTownsHarbourStrategy(mr));
+		//this.generalStrategies.add(new KaisChooseVillageAndTownsHarbourStrategy(mr));
 		this.generalStrategies.add(new KaisTryToWinFastStrategy(mr));
-		//this.generalStrategies.add(new ExpandStrategy(mr));
+		//this.generalStrategies.add(new BuildStreetStrategy(mr));
+		this.generalStrategies.add(new ExpandStrategy(mr));
 		//this.generalStrategies.add(new AttackStrategy(mr));
 		//this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
@@ -53,6 +54,7 @@ public class Ai implements ModelObserver {
 		this.initStrategies = new HashSet<Strategy>();
 		//this.initStrategies.add(new InitializeStrategy(mr));
 		this.initStrategies.add(new KaisInitNumberStrategy(mr));
+		//this.initStrategies.add(new InitELIStrategy(mr));
 		this.initStrategies.add(new KaisInitResourceStrategy(mr));
 		mr.addModelObserver(this);
 	}
@@ -162,9 +164,9 @@ public class Ai implements ModelObserver {
 
 	
 	private Stroke getTheBestStroke(List<Stroke> sortedStrokes) {
-		List<Stroke> the5BestStrokes = sortedStrokes.subList(0, 3);
+		List<Stroke> theBestStrokes = sortedStrokes.subList(0, 1);
 		KaisTradeOfferStrategy trade = new KaisTradeOfferStrategy(ca, mr);
-		for (Stroke s : the5BestStrokes){
+		for (Stroke s : theBestStrokes){
 			if (mr.getMe().checkResourcesSufficient(s.getPrice()))
 				return s;
 			else if (trade.isProbable(s.getPrice())){
