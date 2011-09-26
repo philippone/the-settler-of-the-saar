@@ -26,7 +26,7 @@ import de.unisaarland.cs.st.saarsiedler.comm.results.JoinResult;
 
 public class AutomatischeAISpieleClient implements ModelObserver {
 	
-	private int ANZAHL_SPIELE = 50;
+	public static int ANZAHL_SPIELE = 50;
 	
 	private final ModelReader mr;
 	private final ControllerAdapter ca;
@@ -34,7 +34,6 @@ public class AutomatischeAISpieleClient implements ModelObserver {
 	private final Set<Strategy> moveRobberStrategies;
 	private final Set<Strategy> returnResourcesStrategies;
 	private final Set<Strategy> initStrategies;
-	private int lengthOfLongestClaimedRoad;
 	
 	public AutomatischeAISpieleClient(ModelReader mr, ControllerAdapter ca){
 		this.mr = mr;
@@ -60,38 +59,65 @@ public class AutomatischeAISpieleClient implements ModelObserver {
 	}
 	
 	public static void main(String[] args){
-		try {
-			//prepare aktuelle ai
-			Connection toonConnection = Connection.establish("sopra.cs.uni-saarland.de", true);
-			toonConnection.changeName("Aktuelle KI");
-			MatchInformation toonMatchInfo = null;
-			
-			for (MatchInformation mi: toonConnection.listMatches()){
-				if (mi.getTitle().equals("private Gruppe 16 Automatischer AI Test")) {
-					JoinResult jr = toonConnection.joinMatch(mi.getId(), false);
-					if (jr == JoinResult.JOINED){
-						toonMatchInfo = mi;
-						break;
+		int mypoints = 0;
+		int otherpoints = 0;
+		int mywins = 0;
+		int otherwins = 0;
+		
+		for (int i = 0; i < ANZAHL_SPIELE; i++) {
+			try {
+				//prepare aktuelle ai
+				Connection toonConnection = Connection.establish("sopra.cs.uni-saarland.de", true);
+				toonConnection.changeName("Aktuelle KI");
+				MatchInformation toonMatchInfo = null;
+				boolean joined = false;
+				
+				while (!joined) {
+					for (MatchInformation mi: toonConnection.listMatches()){
+						if (mi.getTitle().equals("private Gruppe 16 Automatischer AI Test")) {
+							JoinResult jr = toonConnection.joinMatch(mi.getId(), false);
+							if (jr == JoinResult.JOINED){
+								toonMatchInfo = mi;
+								joined = true;
+								break;
+							}
+						}
 					}
 				}
-			}
-			
-			WorldRepresentation toonWorldRepresentation = toonConnection.getWorld(toonMatchInfo.getWorldId());
-			Model toonModel = new Model(toonWorldRepresentation, toonMatchInfo, toonConnection.getClientId());
-			Controller toonController = new Controller(toonConnection, toonModel);
-			ControllerAdapter toonAdapter = new ControllerAdapter(toonController, toonModel);
-			new Ai(toonModel, toonAdapter);
-			toonConnection.changeReadyStatus(true);
-			toonController.run();
-			
-			//ergebnis auslesen
-			System.out.println();
-			System.out.println("---------------------");
-			System.out.println("Ergebnis:");
-			System.out.println("Meine ID: " + toonConnection.getClientId());
-			for (long act : toonModel.getPlayerMap().keySet())
-				System.out.println("ID: " + act + ", Punkte: " + toonModel.getPlayerMap().get(act).getVictoryPoints());
-		} catch (Exception e) { e.printStackTrace(); }
+				
+				WorldRepresentation toonWorldRepresentation = toonConnection.getWorld(toonMatchInfo.getWorldId());
+				Model toonModel = new Model(toonWorldRepresentation, toonMatchInfo, toonConnection.getClientId());
+				Controller toonController = new Controller(toonConnection, toonModel);
+				ControllerAdapter toonAdapter = new ControllerAdapter(toonController, toonModel);
+				new Ai(toonModel, toonAdapter);
+				toonConnection.changeReadyStatus(true);
+				toonController.run();
+				
+				//ergebnise zwischenspeichern
+				int other = 0;
+				int my = 0;
+				for (long act : toonModel.getPlayerMap().keySet()) {
+					if (act != toonConnection.getClientId()) 
+						other = toonModel.getPlayerMap().get(act).getVictoryPoints();
+					else
+						my = toonModel.getPlayerMap().get(act).getVictoryPoints();
+				}
+				otherpoints += other;
+				mypoints += my;
+				if (my > other && my >= 22) 
+					mywins += 1;
+				else if (other > my && my >= 22) 
+					otherwins += 1;
+						
+			} catch (Exception e) { e.printStackTrace(); }
+		}
+		
+		//ergebnis auslesen
+		System.out.println();
+		System.out.println("---------------------");
+		System.out.println("Ergebnis:");
+		System.out.println("Aktuelle KI Punkte: " + mypoints + "/" + (22*ANZAHL_SPIELE) + " und " + mywins + "/" + ANZAHL_SPIELE + " Siege");
+		System.out.println("Referenz KI Punkte: " + otherpoints + "/" + (22*ANZAHL_SPIELE) + " und " + otherwins + "/" + ANZAHL_SPIELE + " Siege" );
 	}
 	
 //		public void execute(List<Stroke> sortedStroke){
@@ -145,7 +171,8 @@ public class AutomatischeAISpieleClient implements ModelObserver {
 				bestStroke.execute(ca);
 				executed++;
 				claimLongestRoadIfPossible();
-				claimVictoryIfPossible();
+				if (claimVictoryIfPossible()) 
+					return;
 			}
 			else execute = false;
 		}
@@ -168,28 +195,20 @@ public class AutomatischeAISpieleClient implements ModelObserver {
 	}
 
 	private void claimLongestRoadIfPossible(){
-		List<Path> longestRoad = new LinkedList<Path>();
-		for (List<Path> oneRoad : mr.calculateLongestRoads(mr.getMe())){
-			if (longestRoad.size() < oneRoad.size()) longestRoad = oneRoad;
-		}
-		int length = longestRoad.size();
-		if (length >= 5 && length > lengthOfLongestClaimedRoad){
-			if (mr.getLongestClaimedRoad() == null){
-				ca.claimLongestRoad(longestRoad);
-				lengthOfLongestClaimedRoad = length;
-			}
-			else if (length > mr.getLongestClaimedRoad().size()) {
-				ca.claimLongestRoad(longestRoad);
-				lengthOfLongestClaimedRoad = length;
-			}
+		List<Path> longestroad = mr.calculateLongestRoads(mr.getMe()).get(0); //TODO perhaps improvable
+		int lengthOfLongestClaimedRoad = mr.getLongestClaimedRoad() == null ? 4 : mr.getLongestClaimedRoad().size();
+		if (longestroad.size() > lengthOfLongestClaimedRoad){
+			ca.claimLongestRoad(longestroad);
 		}
 	}
 	
-	private void claimVictoryIfPossible(){
+	private boolean claimVictoryIfPossible(){
 		if (mr.getMaxVictoryPoints() <= mr.getMe().getVictoryPoints()){
 			ca.claimVictory();
 			ca.setEndOfGame(true);
+			return true;
 		}
+		return false;
 	}
 	
 	private List<Stroke> getSortedStrokeList(Set<Strategy> strategySet){
@@ -215,9 +234,6 @@ public class AutomatischeAISpieleClient implements ModelObserver {
 					evaluationParticipants++;
 					evaluation += s.evaluate(stroke)*s.importance();
 				}
-			}
-			if (evaluationParticipants == 0){
-				System.out.println("Hua!");
 			}
 			evaluation = evaluation/evaluationParticipants;
 			if (!Double.isNaN(evaluation))
