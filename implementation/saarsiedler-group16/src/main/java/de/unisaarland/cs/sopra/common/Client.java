@@ -54,7 +54,7 @@ public class Client {
 	static ResourcePackage returnPackage;
 	private static Popup popup;
 	public static int acceptTrade;
-	private static DefaultTableModel gameTableModel;
+	private static GameTableModel gameTableModel;
 	private static PlayerTableModel playerTableModel;
 	public static boolean tradeAbort;
 	
@@ -268,8 +268,9 @@ public class Client {
 	
 	public static  void setUpListUpdater(){
 		try {
+			gameTableModel= new GameTableModel();
 			playerTableModel= new PlayerTableModel();
-			Client.connection.registerMatchListUpdater(new GameListUpdater(gameTableModel,playerTableModel));	
+			Client.connection.registerMatchListUpdater(gameTableModel);//new GameListUpdater(gameTableModel));	
 			Client.connection.registerMatchListUpdater(playerTableModel);
 		}catch(IOException e){throw new IllegalStateException("iwas mit Matchlistupdater faul!!!");}
 	
@@ -277,14 +278,14 @@ public class Client {
 	
 	
 	public static void refreshGameList(){
-		List<MatchInformation> matchList=null;
-		try {
-			matchList =Client.connection.listMatches();		
-		} catch (IOException e1) {	e1.printStackTrace();}
-		gameTableModel=new DefaultTableModel(
-				parseMatchList(matchList)
-				,new String[] {"MatchID", "Name", "Players", "WorldID", "Already started"
-					});
+//		List<MatchInformation> matchList=null;
+//		try {
+//			matchList =Client.connection.listMatches();		
+//		} catch (IOException e1) {	e1.printStackTrace();}
+//		gameTableModel=new DefaultTableModel(
+//				parseMatchList(matchList)
+//				,new String[] {"MatchID", "Name", "Players", "WorldID", "Already started"
+//					});
 		clientGUI.gameTable.setModel(gameTableModel);
 	
 		TableColumnModel cm = clientGUI.gameTable.getColumnModel();

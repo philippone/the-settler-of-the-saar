@@ -47,22 +47,22 @@ public class ButtonListener implements ActionListener {
 				Client.joinAsAI=false;
 				Client.createConnection("sopra.cs.uni-saarland.de");
 //				Client.createConnection("sopra.hammacher.name"); //Backup server
+				Client.setUpListUpdater();
 				Client.refreshGameList();
+				Client.changeName(Setting.getName());
 				gui.menuPanel.setVisible(false);
 				gui.lobbyPanel.setVisible(true);
-				Client.setUpListUpdater();
-				Client.changeName(Setting.getName());
 				
 			}
 			if (arg0.getSource() == gui.playAsAI){
 				Client.joinAsAI=true;
 				Client.createConnection("sopra.cs.uni-saarland.de");
 //				Client.createConnection("sopra.hammacher.name"); //Backup server
+				Client.setUpListUpdater();
 				Client.refreshGameList();
+				Client.changeName(Setting.getName());
 				gui.menuPanel.setVisible(false);
 				gui.lobbyPanel.setVisible(true);
-				Client.setUpListUpdater();
-				Client.changeName(Setting.getName());
 			}
 			if (arg0.getSource() == gui.exit_menu){
 				System.exit(0);
