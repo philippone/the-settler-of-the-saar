@@ -201,6 +201,7 @@ public class AutomatischeAISpieleClient implements ModelObserver {
 		List<Path> longestroad = mr.calculateLongestRoads(mr.getMe()).get(0); //TODO perhaps improvable
 		int lengthOfLongestClaimedRoad = mr.getLongestClaimedRoad() == null ? 4 : mr.getLongestClaimedRoad().size();
 		if (longestroad.size() > lengthOfLongestClaimedRoad){
+			System.out.println(longestroad);
 			ca.claimLongestRoad(longestroad);
 		}
 	}

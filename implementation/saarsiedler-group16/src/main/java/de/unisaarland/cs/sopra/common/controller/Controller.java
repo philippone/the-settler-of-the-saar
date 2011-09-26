@@ -347,6 +347,7 @@ public class Controller implements Runnable {
 			throws IllegalStateException, IOException {
 		if (DEBUG) System.out.println("> Trade (" + lumber + ", " + brick + ", " + wool + ", " + grain + ", " + ore + ")");
 		long id = connection.offerTrade(-lumber, -brick, -wool, -grain, -ore);
+		if (DEBUG) System.out.println("> with: " + id);
 		modelWriter.tradeOffer(lumber, brick, wool, grain, ore);
 		modelWriter.respondTrade(id);
 		return id;
