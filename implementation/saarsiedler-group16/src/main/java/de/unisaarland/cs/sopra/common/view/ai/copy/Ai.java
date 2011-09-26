@@ -1,4 +1,4 @@
-package de.unisaarland.cs.sopra.common.view.ai;
+package de.unisaarland.cs.sopra.common.view.ai.copy;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -41,7 +41,7 @@ public class Ai implements ModelObserver {
 		this.ca = ca;
 		this.generalStrategies = new HashSet<Strategy>();
 		this.generalStrategies.add(new KaisExpandStrategy(mr));
-		this.generalStrategies.add(new KaisChooseVillageAndTownsHarbourStrategy(mr));
+		//this.generalStrategies.add(new KaisChooseVillageAndTownsHarbourStrategy(mr));
 		this.generalStrategies.add(new KaisTryToWinFastStrategy(mr));
 		//this.generalStrategies.add(new BuildStreetStrategy(mr));
 		this.generalStrategies.add(new ExpandStrategy(mr));
@@ -66,7 +66,6 @@ public class Ai implements ModelObserver {
 			InetAddress ia = InetAddress.getByName(params[0]);
 			if (params.length == 2) port = Integer.parseInt(params[1]);
 			Connection connection = Connection.establish(ia, port, true);
-			connection.changeName("Skynet");
 			MatchInformation matchInformation = null;
 			if (args.length == 2) {
 				matchInformation = connection.getMatchInfo(Long.parseLong(args[1]));

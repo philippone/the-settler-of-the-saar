@@ -1,4 +1,4 @@
-package de.unisaarland.cs.sopra.common.view.ai;
+package de.unisaarland.cs.sopra.common.view.ai.copy;
 
 import java.util.HashMap;
 import java.util.HashSet;
