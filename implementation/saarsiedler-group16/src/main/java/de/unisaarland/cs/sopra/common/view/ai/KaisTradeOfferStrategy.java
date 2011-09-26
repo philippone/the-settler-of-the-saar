@@ -99,7 +99,8 @@ public class KaisTradeOfferStrategy extends TradeOfferStrategy {
 				}
 			}
 		}
-		if (failTrys < 4 && difference.getNegativeResourcesCount() == 1) stupidTrade(difference);
+		if (failTrys < 4 && (difference.getNegativeResourcesCount() == 1 || 
+				mr.getMe().getResources().size() > 7)) stupidTrade(difference);
 	}
 	
 	private void stupidTrade(ResourcePackage difference){

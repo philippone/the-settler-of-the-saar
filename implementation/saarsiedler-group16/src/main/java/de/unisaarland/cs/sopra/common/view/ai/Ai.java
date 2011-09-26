@@ -44,8 +44,8 @@ public class Ai implements ModelObserver {
 		//this.generalStrategies.add(new KaisTryToWinFastStrategy(mr));
 		this.generalStrategies.add(new BuildStreetStrategy(mr));
 		this.generalStrategies.add(new ExpandStrategy(mr));
-		this.generalStrategies.add(new AttackStrategy(mr));
-		this.generalStrategies.add(new DeffenceStrategy(mr));
+		//this.generalStrategies.add(new AttackStrategy(mr));
+		//this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
 		this.returnResourcesStrategies = new HashSet<Strategy>();
@@ -143,6 +143,7 @@ public class Ai implements ModelObserver {
 //	}
 
 	public void executeLoop(){
+
 		Player me = mr.getMe();
 		List<Stroke> sortedStrokes;
 		boolean execute = true;
