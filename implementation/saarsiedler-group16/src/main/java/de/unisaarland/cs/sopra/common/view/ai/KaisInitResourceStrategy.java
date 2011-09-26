@@ -112,22 +112,41 @@ public class KaisInitResourceStrategy extends Strategy {
 		*/
 		// try to get the missing ones to build a village
 		else {
-			int differentResources = 0;
-			for (Intersection otherVillages : mr.getSettlements(mr.getMe(), BuildingType.Village)){
-				reslist.addAll(getResourcesFromIntersection(otherVillages));
-			}
-			getMissingVillageResources(reslist);
-			for (Field neighbour : mr.getFieldsFromIntersection(destination)){
-				if (neighbour.getResource() != null){
-					if (!reslist.contains(neighbour.getResource())){
-						differentResources++;
+			if (getResourcesThatWeOwn().size() < 5){
+				int differentResources = 0;
+				for (Intersection otherVillages : mr.getSettlements(mr.getMe(), BuildingType.Village)){
+					reslist.addAll(getResourcesFromIntersection(otherVillages));
+				}
+				getMissingVillageResources(reslist);
+				for (Field neighbour : mr.getFieldsFromIntersection(destination)){
+					if (neighbour.getResource() != null){
+						if (!reslist.contains(neighbour.getResource())){
+							differentResources++;
+						}
 					}
 				}
+				if (reslist.size() + differentResources == 5) return 1;
+				else return 0;
 			}
-			if (reslist.size() + differentResources == 5) return 1;
-			else return 0;
+			else {
+				int numberOfGoodFields = 0;
+				for (Field neighbour : mr.getFieldsFromIntersection(destination)){
+					if (neighbour.getResource() == max) numberOfGoodFields++;
+				}
+				if (numberOfGoodFields >= 2) return 1;
+			}
 		}
 		return evaluation;
+	}
+	
+	private Set<Resource> getResourcesThatWeOwn(){
+		Set<Resource> resset = new HashSet<Resource>();
+		for (Intersection village : mr.getSettlements(mr.getMe(), BuildingType.Village)){
+			for (Field neighbours : mr.getFieldsFromIntersection(village)){
+				resset.add(neighbours.getResource());
+			}
+		}
+		return resset;
 	}
 	
 	private Set<Resource> getResourcesFromIntersection(Intersection inter){
