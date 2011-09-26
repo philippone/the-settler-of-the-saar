@@ -243,9 +243,6 @@ public class AutomatischeAISpieleClient implements ModelObserver {
 					evaluation += s.evaluate(stroke)*s.importance();
 				}
 			}
-			if (evaluationParticipants == 0){
-				System.out.println("Hua!");
-			}
 			evaluation = evaluation/evaluationParticipants;
 			if (!Double.isNaN(evaluation))
 				stroke.setEvaluation(evaluation);
