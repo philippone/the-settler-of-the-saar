@@ -156,8 +156,7 @@ public class Ai implements ModelObserver {
 				bestStroke.execute(ca);
 				executed++;
 				claimLongestRoadIfPossible();
-				if (claimVictoryIfPossible())
-					return;
+				if (claimVictoryIfPossible()) return;
 			}
 			else execute = false;
 		}
