@@ -34,7 +34,6 @@ public class Ai implements ModelObserver {
 	private final Set<Strategy> moveRobberStrategies;
 	private final Set<Strategy> returnResourcesStrategies;
 	private final Set<Strategy> initStrategies;
-	private int lengthOfLongestClaimedRoad;
 	
 	public Ai(ModelReader mr, ControllerAdapter ca){
 		this.mr = mr;
@@ -42,20 +41,20 @@ public class Ai implements ModelObserver {
 		this.generalStrategies = new HashSet<Strategy>();
 		//this.generalStrategies.add(new KaisExpandStrategy(mr));
 		//this.generalStrategies.add(new KaisChooseVillageAndTownsHarbourStrategy(mr));
-		this.generalStrategies.add(new KaisTryToWinFastStrategy(mr));
+		//this.generalStrategies.add(new KaisTryToWinFastStrategy(mr));
 		this.generalStrategies.add(new BuildStreetStrategy(mr));
 		this.generalStrategies.add(new ExpandStrategy(mr));
-		//this.generalStrategies.add(new AttackStrategy(mr));
-		//this.generalStrategies.add(new DeffenceStrategy(mr));
+		this.generalStrategies.add(new AttackStrategy(mr));
+		this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
 		this.returnResourcesStrategies = new HashSet<Strategy>();
 		this.returnResourcesStrategies.add(new ReturnResourcesStrategy(mr));
 		this.initStrategies = new HashSet<Strategy>();
 		//this.initStrategies.add(new InitializeStrategy(mr));
-		this.initStrategies.add(new KaisInitNumberStrategy(mr));
-		//this.initStrategies.add(new InitELIStrategy(mr));
-		this.initStrategies.add(new KaisInitResourceStrategy(mr));
+		//this.initStrategies.add(new KaisInitNumberStrategy(mr));
+		this.initStrategies.add(new InitELIStrategy(mr));
+		//this.initStrategies.add(new KaisInitResourceStrategy(mr));
 		mr.addModelObserver(this);
 	}
 	
@@ -166,11 +165,16 @@ public class Ai implements ModelObserver {
 
 	
 	private void delay() {
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		long time = System.currentTimeMillis();
+		while(System.currentTimeMillis()-time < 10000){
+			try {
+				if (System.in.read() != -1) {
+					break;
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -180,26 +184,18 @@ public class Ai implements ModelObserver {
 		for (Stroke s : theBestStrokes){
 			if (mr.getMe().checkResourcesSufficient(s.getPrice()))
 				return s;
+			else if (trade.isProbable(s.getPrice())){
+				if (trade.execute(s.getPrice())) return s;
+			}
 		}
-		if (trade.execute(theBestStrokes.get(0).getPrice())) return theBestStrokes.get(0);
 		return null;
 	}
 
 	private void claimLongestRoadIfPossible(){
-		List<Path> longestRoad = new LinkedList<Path>();
-		for (List<Path> oneRoad : mr.calculateLongestRoads(mr.getMe())){
-			if (longestRoad.size() < oneRoad.size()) longestRoad = oneRoad;
-		}
-		int length = longestRoad.size();
-		if (length >= 5 && length > lengthOfLongestClaimedRoad){
-			if (mr.getLongestClaimedRoad() == null){
-				ca.claimLongestRoad(longestRoad);
-				lengthOfLongestClaimedRoad = length;
-			}
-			else if (length > mr.getLongestClaimedRoad().size()) {
-				ca.claimLongestRoad(longestRoad);
-				lengthOfLongestClaimedRoad = length;
-			}
+		List<Path> longestroad = mr.calculateLongestRoads(mr.getMe()).get(0); //TODO perhaps improvable
+		int lengthOfLongestClaimedRoad = mr.getLongestClaimedRoad() == null ? 4 : mr.getLongestClaimedRoad().size();
+		if (longestroad.size() > lengthOfLongestClaimedRoad){
+			ca.claimLongestRoad(longestroad);
 		}
 	}
 	
@@ -235,6 +231,9 @@ public class Ai implements ModelObserver {
 					evaluationParticipants++;
 					evaluation += s.evaluate(stroke)*s.importance();
 				}
+			}
+			if (evaluationParticipants == 0){
+				System.out.println("Hua!");
 			}
 			evaluation = evaluation/evaluationParticipants;
 			if (!Double.isNaN(evaluation))

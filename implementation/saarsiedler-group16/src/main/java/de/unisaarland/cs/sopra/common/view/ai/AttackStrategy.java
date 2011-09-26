@@ -101,7 +101,7 @@ public class AttackStrategy extends Strategy {
 			if (mr.attackableCatapults(source).contains(p)) return 0;
 			// there's a catapult to destroy before the settlement
 		}
-		double value=0;
+		double value=1;
 		Intersection destination=stroke.getDestination();
 		if (destination.getBuildingType()==BuildingType.Town) value=value+1;
 		else if (destination.getBuildingType()==BuildingType.Village) value=value+1;
@@ -297,6 +297,7 @@ public class AttackStrategy extends Strategy {
 
 	@Override
 	public double importance() {
+		if (mr.getMe().getVictoryPoints()>mr.getMaxVictoryPoints()-6)return 0.5;
 		return 1;
 	}
 
