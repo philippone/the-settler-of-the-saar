@@ -1,18 +1,13 @@
 package de.unisaarland.cs.sopra.common.view.ai;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
-import de.unisaarland.cs.sopra.common.model.HarborType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Resource;
-import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public class KaisInitResourceStrategy extends Strategy {
 	
@@ -23,33 +18,17 @@ public class KaisInitResourceStrategy extends Strategy {
 
 	@Override
 	public boolean evaluates(Stroke s){
-		switch(s.getType()){
-		default:
-			throw new IllegalArgumentException("The stroke is no valid stroke!");
-		case ATTACK_CATAPULT:
-			return false;
-		case ATTACK_SETTLEMENT:
-			return false;
-		case BUILD_VILLAGE:
-			return true;
-		case BUILD_TOWN:
-			return false;
-		case BUILD_CATAPULT:
-			return false;
-		case BUILD_STREET:
-			return false;
-		case MOVE_CATAPULT:
-			return false;
-		case MOVE_ROBBER:
-			return false;
-		case RETURN_RESOURCES:
-			return false;
+		boolean evaluates = false;
+		if (s.getType() == StrokeType.BUILD_VILLAGE){
+			Set<Resource> ourResources = getResourcesThatWeOwn();
+			evaluates = mr.getHarborTypes(mr.getMe()).size() > 0 && ourResources.size() < 5;
 		}
+		return evaluates;
 	}
 
 	@Override
 	public double importance() {
-		return 2;
+		return 1;
 	}
 
 	@Override
@@ -65,76 +44,11 @@ public class KaisInitResourceStrategy extends Strategy {
 	@Override
 	public double evaluate(BuildVillage stroke) {
 		double evaluation = 0;
-		Intersection destination = stroke.getDestination();
-		Set<Resource> reslist = new HashSet<Resource>();
-		Iterator<Field> fieldIterator = mr.getFieldIterator();
-		//resourcePackage showing how many of the resources are there on the map
-		ResourcePackage resourcePackage = new ResourcePackage();
-		while (fieldIterator.hasNext()){
-			Field field = fieldIterator.next();
-			if (field.getNumber() != -1)
-				resourcePackage.modifyResource(field.getResource(), 1);
-			}
-		// finding the resource with greatest quantity 
-		Resource max = Resource.WOOL;
-		for (Resource r : Resource.values()){
-			max = resourcePackage.getResource(max) < resourcePackage.getResource(r) ? r : max;
-		}	
-			// choosing the best Harbor for the map
-			HarborType bestHarbor = HarborType.GENERAL_HARBOR;
-			if (max == Resource.LUMBER) {
-				bestHarbor = HarborType.LUMBER_HARBOR;
-			} else if (max == Resource.BRICK)
-				bestHarbor = HarborType.BRICK_HARBOR;
-			else if (max == Resource.GRAIN)
-				bestHarbor = HarborType.GRAIN_HARBOR;
-			else if (max == Resource.ORE) {
-				bestHarbor = HarborType.ORE_HARBOR;
-			} else if (max == Resource.WOOL)
-				bestHarbor = HarborType.WOOL_HARBOR;
-		// build a village close to a harbour
-		if (mr.getSettlements(mr.getMe(), BuildingType.Village).size() == 0){
-			if (mr.getHarborIntersections().contains(destination) && mr.getHarborType(destination) == bestHarbor){
-				int numberOfLandFields = 0;
-				for (Field neighbour : mr.getFieldsFromIntersection(destination)){
-					if (neighbour.getResource() != null) numberOfLandFields++;
-				}
-				if (numberOfLandFields == 2) return 1;
-			}
-		}
-		/*
-		// try to get 3 different resources
-		if (mr.getSettlements(mr.getMe(), BuildingType.Village).size() == 0){
-			getResourcesFromIntersection(destination);
-			if (reslist.size() < 3) evaluation = 0;
-			else evaluation = 1;
-		}
-		*/
-		// try to get the missing ones to build a village
-		else {
-			if (getResourcesThatWeOwn().size() < 5){
-				int differentResources = 0;
-				for (Intersection otherVillages : mr.getSettlements(mr.getMe(), BuildingType.Village)){
-					reslist.addAll(getResourcesFromIntersection(otherVillages));
-				}
-				getMissingVillageResources(reslist);
-				for (Field neighbour : mr.getFieldsFromIntersection(destination)){
-					if (neighbour.getResource() != null){
-						if (!reslist.contains(neighbour.getResource())){
-							differentResources++;
-						}
-					}
-				}
-				if (reslist.size() + differentResources == 5) return 1;
-				else return 0;
-			}
-			else {
-				int numberOfGoodFields = 0;
-				for (Field neighbour : mr.getFieldsFromIntersection(destination)){
-					if (neighbour.getResource() == max) numberOfGoodFields++;
-				}
-				if (numberOfGoodFields >= 2) return 1;
-			}
+		Set<Resource> ourResources = getResourcesThatWeOwn();
+		Set<Resource> interResources = getResourcesFromIntersection(stroke.getDestination());
+		Set<Resource> missingResources = getMissingVillageResources(ourResources);
+		if (interResources.containsAll(missingResources)){
+			evaluation = 1;
 		}
 		return evaluation;
 	}

@@ -42,9 +42,10 @@ public class Ai implements ModelObserver {
 		this.generalStrategies = new HashSet<Strategy>();
 		//this.generalStrategies.add(new KaisExpandStrategy(mr));
 		//this.generalStrategies.add(new KaisChooseVillageAndTownsHarbourStrategy(mr));
-		this.generalStrategies.add(new KaisTryToWinFastStrategy(mr));
-		this.generalStrategies.add(new BuildStreetStrategy(mr));
-		this.generalStrategies.add(new ExpandStrategy(mr));
+		//this.generalStrategies.add(new KaisTryToWinFastStrategy(mr));
+		//this.generalStrategies.add(new BuildStreetStrategy(mr));
+		//this.generalStrategies.add(new ExpandStrategy(mr));
+		this.generalStrategies.add(new KaisBuildStreetNegativeStrategy(mr));
 		//this.generalStrategies.add(new AttackStrategy(mr));
 		//this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
@@ -53,9 +54,10 @@ public class Ai implements ModelObserver {
 		this.returnResourcesStrategies.add(new ReturnResourcesStrategy(mr));
 		this.initStrategies = new HashSet<Strategy>();
 		//this.initStrategies.add(new InitializeStrategy(mr));
-		this.initStrategies.add(new KaisInitNumberStrategy(mr));
 		//this.initStrategies.add(new InitELIStrategy(mr));
+		this.initStrategies.add(new KaisInitNumberStrategy(mr));
 		this.initStrategies.add(new KaisInitResourceStrategy(mr));
+		this.initStrategies.add(new KaisInitHarbourStrategy(mr));
 		mr.addModelObserver(this);
 	}
 	
@@ -167,7 +169,7 @@ public class Ai implements ModelObserver {
 	
 	private void delay() {
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(200);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
