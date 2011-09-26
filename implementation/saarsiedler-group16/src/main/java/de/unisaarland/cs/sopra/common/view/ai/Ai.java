@@ -41,21 +41,21 @@ public class Ai implements ModelObserver {
 		this.ca = ca;
 		this.generalStrategies = new HashSet<Strategy>();
 		this.generalStrategies.add(new KaisExpandStrategy(mr));
-		this.generalStrategies.add(new KaisChooseVillageAndTownsHarbourStrategy(mr));
+		//this.generalStrategies.add(new KaisChooseVillageAndTownsHarbourStrategy(mr));
 		this.generalStrategies.add(new KaisTryToWinFastStrategy(mr));
-		//this.generalStrategies.add(new BuildStreetStrategy(mr));
+		this.generalStrategies.add(new BuildStreetStrategy(mr));
 		this.generalStrategies.add(new ExpandStrategy(mr));
-		//this.generalStrategies.add(new AttackStrategy(mr));
+		this.generalStrategies.add(new AttackStrategy(mr));
 		//this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
 		this.returnResourcesStrategies = new HashSet<Strategy>();
 		this.returnResourcesStrategies.add(new ReturnResourcesStrategy(mr));
 		this.initStrategies = new HashSet<Strategy>();
-		this.initStrategies.add(new InitializeStrategy(mr));
+		//this.initStrategies.add(new InitializeStrategy(mr));
 		this.initStrategies.add(new KaisInitNumberStrategy(mr));
-		this.initStrategies.add(new InitELIStrategy(mr));
-		//this.initStrategies.add(new KaisInitResourceStrategy(mr));
+		//this.initStrategies.add(new InitELIStrategy(mr));
+		this.initStrategies.add(new KaisInitResourceStrategy(mr));
 		mr.addModelObserver(this);
 	}
 	
