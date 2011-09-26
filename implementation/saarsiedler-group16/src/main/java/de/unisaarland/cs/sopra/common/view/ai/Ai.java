@@ -41,11 +41,11 @@ public class Ai implements ModelObserver {
 		this.ca = ca;
 		this.generalStrategies = new HashSet<Strategy>();
 		this.generalStrategies.add(new KaisExpandStrategy(mr));
-		//this.generalStrategies.add(new KaisChooseVillageAndTownsHarbourStrategy(mr));
+		this.generalStrategies.add(new KaisChooseVillageAndTownsHarbourStrategy(mr));
 		this.generalStrategies.add(new KaisTryToWinFastStrategy(mr));
-		this.generalStrategies.add(new BuildStreetStrategy(mr));
-		this.generalStrategies.add(new ExpandStrategy(mr));
-		this.generalStrategies.add(new AttackStrategy(mr));
+		//this.generalStrategies.add(new BuildStreetStrategy(mr));
+		//this.generalStrategies.add(new ExpandStrategy(mr));
+		//this.generalStrategies.add(new AttackStrategy(mr));
 		//this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
@@ -149,13 +149,14 @@ public class Ai implements ModelObserver {
 		boolean execute = true;
 		int executed = 0;
 		while (execute){
+			//delay();
 			sortedStrokes = getSortedStrokeList(generalStrategies);
 			Stroke bestStroke = getTheBestStroke(sortedStrokes);
 			if (bestStroke != null){
 				bestStroke.execute(ca);
 				executed++;
 				claimLongestRoadIfPossible();
-				claimVictoryIfPossible();
+				execute = claimVictoryIfPossible();
 			}
 			else execute = false;
 		}
@@ -163,6 +164,20 @@ public class Ai implements ModelObserver {
 		ca.endTurn();
 	}
 
+	
+	private void delay() {
+		long time = System.currentTimeMillis();
+		while(System.currentTimeMillis()-time < 10000){
+			try {
+				if (System.in.read() != -1) {
+					break;
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	private Stroke getTheBestStroke(List<Stroke> sortedStrokes) {
 		List<Stroke> theBestStrokes = sortedStrokes.subList(0, 3);
@@ -195,11 +210,13 @@ public class Ai implements ModelObserver {
 		}
 	}
 	
-	private void claimVictoryIfPossible(){
+	private boolean claimVictoryIfPossible(){
 		if (mr.getMaxVictoryPoints() <= mr.getMe().getVictoryPoints()){
 			ca.claimVictory();
 			ca.setEndOfGame(true);
+			return false;
 		}
+		return true;
 	}
 	
 	private List<Stroke> getSortedStrokeList(Set<Strategy> strategySet){

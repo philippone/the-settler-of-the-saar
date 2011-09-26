@@ -1,8 +1,5 @@
 package de.unisaarland.cs.sopra.common.view.ai.copy;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -21,12 +18,15 @@ import de.unisaarland.cs.sopra.common.model.Path;
 import de.unisaarland.cs.sopra.common.model.Player;
 import de.unisaarland.cs.sopra.common.model.Resource;
 import de.unisaarland.cs.sopra.common.model.ResourcePackage;
+import de.unisaarland.cs.sopra.common.view.ai.Ai;
 import de.unisaarland.cs.st.saarsiedler.comm.Connection;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 import de.unisaarland.cs.st.saarsiedler.comm.results.JoinResult;
 
-public class Ai implements ModelObserver {
+public class AutomatischeAISpieleClient implements ModelObserver {
+	
+	private int ANZAHL_SPIELE = 50;
 	
 	private final ModelReader mr;
 	private final ControllerAdapter ca;
@@ -36,7 +36,7 @@ public class Ai implements ModelObserver {
 	private final Set<Strategy> initStrategies;
 	private int lengthOfLongestClaimedRoad;
 	
-	public Ai(ModelReader mr, ControllerAdapter ca){
+	public AutomatischeAISpieleClient(ModelReader mr, ControllerAdapter ca){
 		this.mr = mr;
 		this.ca = ca;
 		this.generalStrategies = new HashSet<Strategy>();
@@ -61,46 +61,37 @@ public class Ai implements ModelObserver {
 	
 	public static void main(String[] args){
 		try {
-			String[] params = args[0].split(":");
-			int port = Connection.DEFAULT_PORT;
-			InetAddress ia = InetAddress.getByName(params[0]);
-			if (params.length == 2) port = Integer.parseInt(params[1]);
-			Connection connection = Connection.establish(ia, port, true);
-			MatchInformation matchInformation = null;
-			if (args.length == 2) {
-				matchInformation = connection.getMatchInfo(Long.parseLong(args[1]));
-				connection.joinMatch(matchInformation.getId(), false);
-			}
-			else {
-				for (MatchInformation mi: connection.listMatches()){
-					JoinResult jr = connection.joinMatch(mi.getId(), false);
+			//prepare aktuelle ai
+			Connection toonConnection = Connection.establish("sopra.cs.uni-saarland.de", true);
+			toonConnection.changeName("Aktuelle KI");
+			MatchInformation toonMatchInfo = null;
+			
+			for (MatchInformation mi: toonConnection.listMatches()){
+				if (mi.getTitle().equals("private Gruppe 16 Automatischer AI Test")) {
+					JoinResult jr = toonConnection.joinMatch(mi.getId(), false);
 					if (jr == JoinResult.JOINED){
-						matchInformation = mi;
+						toonMatchInfo = mi;
 						break;
 					}
 				}
 			}
-			long worldId = matchInformation.getWorldId();
-			WorldRepresentation worldRepresentation = connection.getWorld(worldId);
-			long myId = connection.getClientId();
-			Model model = new Model(worldRepresentation, matchInformation, myId);
-			Controller controller = new Controller(connection, model);
-			ControllerAdapter adapter = new ControllerAdapter(controller,model);
-			connection.changeReadyStatus(true);
-			System.out.println(myId);
-			Ai ai = new Ai(model, adapter);
-			controller.run();
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+			
+			WorldRepresentation toonWorldRepresentation = toonConnection.getWorld(toonMatchInfo.getWorldId());
+			Model toonModel = new Model(toonWorldRepresentation, toonMatchInfo, toonConnection.getClientId());
+			Controller toonController = new Controller(toonConnection, toonModel);
+			ControllerAdapter toonAdapter = new ControllerAdapter(toonController, toonModel);
+			new Ai(toonModel, toonAdapter);
+			toonConnection.changeReadyStatus(true);
+			toonController.run();
+			
+			//ergebnis auslesen
+			System.out.println();
+			System.out.println("---------------------");
+			System.out.println("Ergebnis:");
+			System.out.println("Meine ID: " + toonConnection.getClientId());
+			for (long act : toonModel.getPlayerMap().keySet())
+				System.out.println("ID: " + act + ", Punkte: " + toonModel.getPlayerMap().get(act).getVictoryPoints());
+		} catch (Exception e) { e.printStackTrace(); }
 	}
 	
 //		public void execute(List<Stroke> sortedStroke){
@@ -197,6 +188,7 @@ public class Ai implements ModelObserver {
 	private void claimVictoryIfPossible(){
 		if (mr.getMaxVictoryPoints() <= mr.getMe().getVictoryPoints()){
 			ca.claimVictory();
+			ca.setEndOfGame(true);
 		}
 	}
 	

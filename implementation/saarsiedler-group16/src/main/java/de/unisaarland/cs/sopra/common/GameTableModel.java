@@ -12,9 +12,10 @@ import javax.swing.table.AbstractTableModel;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchListUpdater;
 
-public class GameTableModel extends AbstractTableModel implements MatchListUpdater {
+public class GameTableModel extends AbstractTableModel implements MatchListUpdater, ListSelectionModel{
     
 	List<MatchInformation> matchList=null;
+	private int select;
 
 	public GameTableModel() {
 		updateMatchList();		
@@ -89,6 +90,123 @@ public class GameTableModel extends AbstractTableModel implements MatchListUpdat
 			}
 		}
 		fireTableDataChanged();
+	}
+
+	@Override
+	public void addListSelectionListener(ListSelectionListener x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addSelectionInterval(int index0, int index1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clearSelection() {
+		select=-1;
+	}
+
+	@Override
+	public int getAnchorSelectionIndex() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getLeadSelectionIndex() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getMaxSelectionIndex() {
+		return 1;
+	}
+
+	@Override
+	public int getMinSelectionIndex() {
+		return 0;
+	}
+
+	@Override
+	public int getSelectionMode() {
+		return 0;
+	}
+
+	@Override
+	public boolean getValueIsAdjusting() {
+		return false;
+	}
+
+	@Override
+	public void insertIndexInterval(int index, int length, boolean before) {
+		
+	}
+
+	@Override
+	public boolean isSelectedIndex(int index) {
+		if(select<0){
+			return false;
+		}else 
+			return true;
+	}
+
+	@Override
+	public boolean isSelectionEmpty() {
+		if(select>=0){
+			return false;
+		}else 
+			return true;
+	}
+
+	@Override
+	public void removeIndexInterval(int index0, int index1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeListSelectionListener(ListSelectionListener x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeSelectionInterval(int index0, int index1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setAnchorSelectionIndex(int index) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setLeadSelectionIndex(int index) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setSelectionInterval(int index0, int index1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setSelectionMode(int selectionMode) {
+		select=selectionMode;
+	}
+
+	@Override
+	public void setValueIsAdjusting(boolean valueIsAdjusting) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	
