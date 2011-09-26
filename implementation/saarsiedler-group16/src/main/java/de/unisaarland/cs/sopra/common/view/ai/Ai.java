@@ -40,11 +40,11 @@ public class Ai implements ModelObserver {
 		this.mr = mr;
 		this.ca = ca;
 		this.generalStrategies = new HashSet<Strategy>();
-		this.generalStrategies.add(new KaisExpandStrategy(mr));
-		this.generalStrategies.add(new KaisChooseVillageAndTownsHarbourStrategy(mr));
+		//this.generalStrategies.add(new KaisExpandStrategy(mr));
+		//this.generalStrategies.add(new KaisChooseVillageAndTownsHarbourStrategy(mr));
 		this.generalStrategies.add(new KaisTryToWinFastStrategy(mr));
-		//this.generalStrategies.add(new BuildStreetStrategy(mr));
-		//this.generalStrategies.add(new ExpandStrategy(mr));
+		this.generalStrategies.add(new BuildStreetStrategy(mr));
+		this.generalStrategies.add(new ExpandStrategy(mr));
 		//this.generalStrategies.add(new AttackStrategy(mr));
 		//this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
@@ -149,7 +149,7 @@ public class Ai implements ModelObserver {
 		boolean execute = true;
 		int executed = 0;
 		while (execute){
-			//delay();
+			delay();
 			sortedStrokes = getSortedStrokeList(generalStrategies);
 			Stroke bestStroke = getTheBestStroke(sortedStrokes);
 			if (bestStroke != null){
@@ -166,16 +166,11 @@ public class Ai implements ModelObserver {
 
 	
 	private void delay() {
-		long time = System.currentTimeMillis();
-		while(System.currentTimeMillis()-time < 10000){
-			try {
-				if (System.in.read() != -1) {
-					break;
-				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
@@ -185,10 +180,8 @@ public class Ai implements ModelObserver {
 		for (Stroke s : theBestStrokes){
 			if (mr.getMe().checkResourcesSufficient(s.getPrice()))
 				return s;
-			else if (trade.isProbable(s.getPrice())){
-				if (trade.execute(s.getPrice())) return s;
-			}
 		}
+		if (trade.execute(theBestStrokes.get(0).getPrice())) return theBestStrokes.get(0);
 		return null;
 	}
 
