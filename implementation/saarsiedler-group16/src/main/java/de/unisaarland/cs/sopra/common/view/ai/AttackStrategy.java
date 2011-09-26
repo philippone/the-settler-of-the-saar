@@ -47,7 +47,7 @@ public class AttackStrategy extends Strategy {
 		double value=0;
 		Path destination=stroke.getDestination();
 		if (destination.hasCatapult() && destination.getCatapultOwner()!=mr.getMe())
-			value=value+0.6;
+			value=value+0.4;
 		// searching if there's a next target
 		double targetingCatapultValue=0;
 		double targetingSettlementValue=0;
@@ -56,16 +56,16 @@ public class AttackStrategy extends Strategy {
 		 for (Path p1 : paths1) {
 			 if (p1!=stroke.getSource()){
 			 if (p1.hasCatapult() && p1.getCatapultOwner()!=mr.getMe())
-				 targetingCatapultValue=targetingCatapultValue+0.2;
+				 targetingCatapultValue=targetingCatapultValue+0.1;
 			 // for all neighbor intersections of neighbor Paths
 			 Set<Intersection> si=mr.getIntersectionsFromPath(p1);
 			 for (Intersection i: si){
 				 if (i.hasOwner() && i.getOwner()!=mr.getMe()){
-						 targetingSettlementValue=targetingSettlementValue+0.2;
+						 targetingSettlementValue=targetingSettlementValue+0.1;
 						 boolean isHarbor=false;
 	 					 Set<Path> sp=mr.getPathsFromIntersection(i);
 	 					 for (Path pp: sp) if (pp.getHarborType()!=null) isHarbor=true;
-	 					 if (isHarbor) targetingHarborValue=targetingHarborValue+0.2;
+	 					 if (isHarbor) targetingHarborValue=targetingHarborValue+0.1;
 				 }
 			 }
 			 // for all neighbor paths of neighbor paths
@@ -73,16 +73,16 @@ public class AttackStrategy extends Strategy {
 			 for (Path p2: paths2){
 				 if (p2!=destination | !paths1.contains(p2)){
 				 if (p2.hasCatapult() && p2.getCatapultOwner()!=mr.getMe())
-					 targetingCatapultValue=targetingCatapultValue+0.1;
+					 targetingCatapultValue=targetingCatapultValue+0.05;
 				 // for all neighbor intersections of neighbor Paths of neighbor paths
 				 si=mr.getIntersectionsFromPath(p2);
 				 for (Intersection i: si){
 					 if (i.hasOwner() && i.getOwner()!=mr.getMe()){
-							 targetingSettlementValue=targetingSettlementValue+0.1;
+							 targetingSettlementValue=targetingSettlementValue+0.05;
 							 boolean isHarbor=false;
 		 					 Set<Path> sp=mr.getPathsFromIntersection(i);
 		 					 for (Path pp: sp) if (pp.getHarborType()!=null) isHarbor=true;
-		 					 if (isHarbor) targetingHarborValue=targetingHarborValue+0.1;
+		 					 if (isHarbor) targetingHarborValue=targetingHarborValue+0.05;
 					 }
 				 }
 				 }
@@ -188,16 +188,16 @@ public class AttackStrategy extends Strategy {
 		 for (Path p1 : paths1) {
 			 doesIHazAlreadyACatapultNotSoFar=(p1.hasCatapult() && p1.getCatapultOwner()==mr.getMe());
 			 if (p1.hasCatapult() && p1.getCatapultOwner()!=mr.getMe())
-				 targetingCatapultValue=targetingCatapultValue+0.2;
+				 targetingCatapultValue=targetingCatapultValue+0.1;
 			 // for all neighbor intersections of neighbor Paths
 			 Set<Intersection> si=mr.getIntersectionsFromPath(p1);
 			 for (Intersection i: si){
 				 if (i.hasOwner() && i.getOwner()!=mr.getMe()){
-						 targetingSettlementValue=targetingSettlementValue+0.2;
+						 targetingSettlementValue=targetingSettlementValue+0.1;
 						 boolean isHarbor=false;
 						Set<Path> sp=mr.getPathsFromIntersection(i);
 						for (Path pp: sp) if (pp.getHarborType()!=null) isHarbor=true;
-						if (isHarbor) targetingHarborValue=targetingHarborValue+0.2;
+						if (isHarbor) targetingHarborValue=targetingHarborValue+0.1;
 				 }
 			 }
 			 // for all neighbor paths of neighbor paths
@@ -205,23 +205,23 @@ public class AttackStrategy extends Strategy {
 			 for (Path p2: paths2){
 				 if (p2!=p0 | !paths1.contains(p2)){
 				 if (p2.hasCatapult() && p2.getCatapultOwner()!=mr.getMe())
-					 targetingCatapultValue=targetingCatapultValue+0.1;
+					 targetingCatapultValue=targetingCatapultValue+0.05;
 				 // for all neighbor intersections of neighbor Paths of neighbor paths
 				 si=mr.getIntersectionsFromPath(p2);
 				 for (Intersection i: si){
 					 if (i.hasOwner() && i.getOwner()!=mr.getMe()){
-							 targetingSettlementValue=targetingSettlementValue+0.1;
+							 targetingSettlementValue=targetingSettlementValue+0.05;
 							 boolean isHarbor=false;
 							Set<Path> sp=mr.getPathsFromIntersection(i);
 							for (Path pp: sp) if (pp.getHarborType()!=null) isHarbor=true;
-							if (isHarbor) targetingHarborValue=targetingHarborValue+0.1;
+							if (isHarbor) targetingHarborValue=targetingHarborValue+0.05;
 					 }
 				 }
 				 }
 			 } 
 		 }
 		 if (p0.hasCatapult() && p0.getCatapultOwner()!=mr.getMe()) 
-			 targetingCatapultValue=targetingCatapultValue+0.3;
+			 targetingCatapultValue=targetingCatapultValue+0.15;
 		 pathValue=2*targetingCatapultValue+targetingSettlementValue+targetingHarborValue;
 		 if (doesIHazAlreadyACatapultNotSoFar) return 0;
 		 return Math.min(pathValue,1);
@@ -238,8 +238,8 @@ public class AttackStrategy extends Strategy {
 		Path source=stroke.getSource();
 		Set<Intersection> si=mr.getIntersectionsFromPath(source);
 		if (mr.attackableSettlements(mr.getMe(), BuildingType.Town).size()>0)return 0;
-		if (mr.attackableSettlements(mr.getMe(), BuildingType.Village).size()>0)return 0;
-		if (mr.attackableCatapults(mr.getMe()).size()>0)return 0;
+		else if (mr.attackableSettlements(mr.getMe(), BuildingType.Village).size()>0)return 0;
+		else if (mr.attackableCatapults(mr.getMe()).size()>0)return 0;
 		// no need to move we got a target!
 		// if we don't, let seek the next target
 		Path destination=stroke.getDestination();
@@ -253,26 +253,26 @@ public class AttackStrategy extends Strategy {
 			 si=mr.getIntersectionsFromPath(p1);
 			 for (Intersection i: si){
 				 if (i.hasOwner() && i.getOwner()!=mr.getMe()){
-						targetingSettlementValue=targetingSettlementValue+0.3;
+						targetingSettlementValue=targetingSettlementValue+0.15;
 						boolean isHarbor=false;
 						Set<Path> sp=mr.getPathsFromIntersection(i);
 						for (Path pp: sp) if (pp.getHarborType()!=null) isHarbor=true;
-						if (isHarbor) targetingHarborValue=targetingHarborValue+0.3;
+						if (isHarbor) targetingHarborValue=targetingHarborValue+0.15;
 				 }
 			 }
 			 Set<Path> paths2=mr.getPathsFromPath(p1);
 			 for (Path p2: paths2){
 				 if (p2!=destination | !paths1.contains(p2)){
 				 if (p2.hasCatapult() && p2.getCatapultOwner()!=mr.getMe())
-					 targetingCatapultValue=targetingCatapultValue+0.1;
+					 targetingCatapultValue=targetingCatapultValue+0.05;
 				 si=mr.getIntersectionsFromPath(p2);
 				 for (Intersection i: si){
 					 if (i.hasOwner() && i.getOwner()!=mr.getMe()){
-						targetingSettlementValue=targetingSettlementValue+0.1;
+						targetingSettlementValue=targetingSettlementValue+0.05;
 						boolean isHarbor=false;
 						Set<Path> sp=mr.getPathsFromIntersection(i);
 						for (Path pp: sp) if (pp.getHarborType()!=null) isHarbor=true;
-						if (isHarbor) targetingHarborValue=targetingHarborValue+0.1;		
+						if (isHarbor) targetingHarborValue=targetingHarborValue+0.05;		
 					 }
 				 }
 				 }

@@ -26,7 +26,7 @@ import de.unisaarland.cs.st.saarsiedler.comm.results.JoinResult;
 
 public class AutomatischeAISpieleClient implements ModelObserver {
 	
-	private int ANZAHL_SPIELE = 50;
+	public static int ANZAHL_SPIELE = 50;
 	
 	private final ModelReader mr;
 	private final ControllerAdapter ca;

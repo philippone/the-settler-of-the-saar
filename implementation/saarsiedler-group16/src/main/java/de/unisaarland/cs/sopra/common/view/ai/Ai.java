@@ -156,7 +156,7 @@ public class Ai implements ModelObserver {
 				bestStroke.execute(ca);
 				executed++;
 				claimLongestRoadIfPossible();
-				execute = claimVictoryIfPossible();
+				if (claimVictoryIfPossible()) return;
 			}
 			else execute = false;
 		}
@@ -207,9 +207,9 @@ public class Ai implements ModelObserver {
 		if (mr.getMaxVictoryPoints() <= mr.getMe().getVictoryPoints()){
 			ca.claimVictory();
 			ca.setEndOfGame(true);
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 	
 	private List<Stroke> getSortedStrokeList(Set<Strategy> strategySet){
