@@ -198,6 +198,7 @@ public class Ai implements ModelObserver {
 	private void claimVictoryIfPossible(){
 		if (mr.getMaxVictoryPoints() <= mr.getMe().getVictoryPoints()){
 			ca.claimVictory();
+			ca.setEndOfGame(true);
 		}
 	}
 	
@@ -259,8 +260,11 @@ public class Ai implements ModelObserver {
 		List<Stroke> strokeSet = new LinkedList<Stroke>();
 		for (Field source : mr.getRobberFields()){
 			for (Field destination : mr.canPlaceRobber()){
-				strokeSet.add(new MoveRobber(source, destination, null));
-				//TODO change null to all possible players
+				Player victim = null;
+				for (Intersection i : mr.getIntersectionsFromField(destination)){
+					if (i.hasOwner() && i.getOwner() != mr.getMe()) victim = i.getOwner();
+				}
+				strokeSet.add(new MoveRobber(source, destination, victim));
 			}
 		}
 		return strokeSet;
