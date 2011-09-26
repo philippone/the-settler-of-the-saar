@@ -34,7 +34,6 @@ public class Ai implements ModelObserver {
 	private final Set<Strategy> moveRobberStrategies;
 	private final Set<Strategy> returnResourcesStrategies;
 	private final Set<Strategy> initStrategies;
-	private int lengthOfLongestClaimedRoad;
 	
 	public Ai(ModelReader mr, ControllerAdapter ca){
 		this.mr = mr;
@@ -46,7 +45,7 @@ public class Ai implements ModelObserver {
 		this.generalStrategies.add(new BuildStreetStrategy(mr));
 		this.generalStrategies.add(new ExpandStrategy(mr));
 		this.generalStrategies.add(new AttackStrategy(mr));
-		//this.generalStrategies.add(new DeffenceStrategy(mr));
+		this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
 		this.returnResourcesStrategies = new HashSet<Strategy>();
@@ -55,7 +54,7 @@ public class Ai implements ModelObserver {
 		//this.initStrategies.add(new InitializeStrategy(mr));
 		//this.initStrategies.add(new KaisInitNumberStrategy(mr));
 		this.initStrategies.add(new InitELIStrategy(mr));
-		this.initStrategies.add(new KaisInitResourceStrategy(mr));
+		//this.initStrategies.add(new KaisInitResourceStrategy(mr));
 		mr.addModelObserver(this);
 	}
 	
@@ -193,20 +192,10 @@ public class Ai implements ModelObserver {
 	}
 
 	private void claimLongestRoadIfPossible(){
-		List<Path> longestRoad = new LinkedList<Path>();
-		for (List<Path> oneRoad : mr.calculateLongestRoads(mr.getMe())){
-			if (longestRoad.size() < oneRoad.size()) longestRoad = oneRoad;
-		}
-		int length = longestRoad.size();
-		if (length >= 5 && length > lengthOfLongestClaimedRoad){
-			if (mr.getLongestClaimedRoad() == null){
-				ca.claimLongestRoad(longestRoad);
-				lengthOfLongestClaimedRoad = length;
-			}
-			else if (length > mr.getLongestClaimedRoad().size()) {
-				ca.claimLongestRoad(longestRoad);
-				lengthOfLongestClaimedRoad = length;
-			}
+		List<Path> longestroad = mr.calculateLongestRoads(mr.getMe()).get(0); //TODO perhaps improvable
+		int lengthOfLongestClaimedRoad = mr.getLongestClaimedRoad() == null ? 4 : mr.getLongestClaimedRoad().size();
+		if (longestroad.size() > lengthOfLongestClaimedRoad){
+			ca.claimLongestRoad(longestroad);
 		}
 	}
 	
