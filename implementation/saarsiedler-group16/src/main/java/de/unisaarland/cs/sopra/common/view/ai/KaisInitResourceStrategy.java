@@ -44,7 +44,7 @@ public class KaisInitResourceStrategy extends Strategy {
 
 	@Override
 	public double importance() {
-		return 1;
+		return 2;
 	}
 
 	@Override
