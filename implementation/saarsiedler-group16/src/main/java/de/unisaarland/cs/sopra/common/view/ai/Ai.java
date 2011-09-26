@@ -149,7 +149,7 @@ public class Ai implements ModelObserver {
 		boolean execute = true;
 		int executed = 0;
 		while (execute){
-			delay();
+			//delay();
 			sortedStrokes = getSortedStrokeList(generalStrategies);
 			Stroke bestStroke = getTheBestStroke(sortedStrokes);
 			if (bestStroke != null){
