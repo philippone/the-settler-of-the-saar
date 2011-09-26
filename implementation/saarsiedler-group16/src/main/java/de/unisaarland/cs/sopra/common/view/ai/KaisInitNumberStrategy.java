@@ -87,12 +87,10 @@ public class KaisInitNumberStrategy extends Strategy {
 	@Override
 	public double evaluate(BuildStreet stroke) {
 		double evaluation = 0;
-		int numberOfNeighbours = 0;
 		Path destination = stroke.getDestination();
 		for (Field neighbour : mr.getFieldsFromPath(destination)){
 			int number = neighbour.getNumber();
 			if (number >= 2 && number <= 12){
-				numberOfNeighbours++;
 				double singleEvaluation = 0;
 				if ( number == 2 || number == 12 || number == 3 || number == 11)
 					singleEvaluation = 0;
@@ -105,7 +103,7 @@ public class KaisInitNumberStrategy extends Strategy {
 				evaluation += singleEvaluation;
 			}
 		}
-		return evaluation/numberOfNeighbours;
+		return evaluation/3;
 	}
 
 	@Override
@@ -120,7 +118,7 @@ public class KaisInitNumberStrategy extends Strategy {
 
 	@Override
 	public double evaluate(ReturnResources stroke) {
-		return 0.75;
+		return 0;
 	}
 
 }
