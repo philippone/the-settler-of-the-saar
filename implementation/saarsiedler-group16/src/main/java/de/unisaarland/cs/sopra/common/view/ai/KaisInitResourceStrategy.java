@@ -1,13 +1,18 @@
 package de.unisaarland.cs.sopra.common.view.ai;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import de.unisaarland.cs.sopra.common.model.BuildingType;
 import de.unisaarland.cs.sopra.common.model.Field;
+import de.unisaarland.cs.sopra.common.model.HarborType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Resource;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public class KaisInitResourceStrategy extends Strategy {
 	
@@ -62,12 +67,49 @@ public class KaisInitResourceStrategy extends Strategy {
 		double evaluation = 0;
 		Intersection destination = stroke.getDestination();
 		Set<Resource> reslist = new HashSet<Resource>();
+		Iterator<Field> fieldIterator = mr.getFieldIterator();
+		//resourcePackage showing how many of the resources are there on the map
+		ResourcePackage resourcePackage = new ResourcePackage();
+		while (fieldIterator.hasNext()){
+			Field field = fieldIterator.next();
+			if (field.getNumber() != -1)
+				resourcePackage.modifyResource(field.getResource(), 1);
+			}
+		// finding the resource with greatest quantity 
+		Resource max = Resource.WOOL;
+		for (Resource r : Resource.values()){
+			max = resourcePackage.getResource(max) < resourcePackage.getResource(r) ? r : max;
+		}	
+			// choosing the best Harbor for the map
+			HarborType bestHarbor = HarborType.GENERAL_HARBOR;
+			if (max == Resource.LUMBER) {
+				bestHarbor = HarborType.LUMBER_HARBOR;
+			} else if (max == Resource.BRICK)
+				bestHarbor = HarborType.BRICK_HARBOR;
+			else if (max == Resource.GRAIN)
+				bestHarbor = HarborType.GRAIN_HARBOR;
+			else if (max == Resource.ORE) {
+				bestHarbor = HarborType.ORE_HARBOR;
+			} else if (max == Resource.WOOL)
+				bestHarbor = HarborType.WOOL_HARBOR;
+		// build a village close to a harbour
+		if (mr.getSettlements(mr.getMe(), BuildingType.Village).size() == 0){
+			if (mr.getHarborIntersections().contains(destination) && mr.getHarborType(destination) == bestHarbor){
+				int numberOfLandFields = 0;
+				for (Field neighbour : mr.getFieldsFromIntersection(destination)){
+					if (neighbour.getResource() != null) numberOfLandFields++;
+				}
+				if (numberOfLandFields == 2) return 1;
+			}
+		}
+		/*
 		// try to get 3 different resources
 		if (mr.getSettlements(mr.getMe(), BuildingType.Village).size() == 0){
 			getResourcesFromIntersection(destination);
 			if (reslist.size() < 3) evaluation = 0;
 			else evaluation = 1;
 		}
+		*/
 		// try to get the missing ones to build a village
 		else {
 			int differentResources = 0;
