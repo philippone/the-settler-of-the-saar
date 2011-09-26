@@ -44,19 +44,22 @@ public class Ai implements ModelObserver {
 		//this.generalStrategies.add(new KaisExpandStrategy(mr));
 		//this.generalStrategies.add(new KaisChooseVillageAndTownsHarbourStrategy(mr));
 		//this.generalStrategies.add(new KaisTryToWinFastStrategy(mr));
-		this.generalStrategies.add(new BuildStreetStrategy(mr));
-		this.generalStrategies.add(new ExpandStrategy(mr));
-		this.generalStrategies.add(new AttackStrategy(mr));
-		this.generalStrategies.add(new DeffenceStrategy(mr));
+		//this.generalStrategies.add(new BuildStreetStrategy(mr));
+		//this.generalStrategies.add(new ExpandStrategy(mr));
+		this.generalStrategies.add(new KaisBuildStreetNegativeStrategy(mr));
+		//this.generalStrategies.add(new AttackStrategy(mr));
+		//this.generalStrategies.add(new DeffenceStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
 		this.returnResourcesStrategies = new HashSet<Strategy>();
 		this.returnResourcesStrategies.add(new ReturnResourcesStrategy(mr));
 		this.initStrategies = new HashSet<Strategy>();
+		this.initStrategies.add(new KaisBuildStreetNegativeStrategy(mr));
 		//this.initStrategies.add(new InitializeStrategy(mr));
-		//this.initStrategies.add(new KaisInitNumberStrategy(mr));
-		this.initStrategies.add(new InitELIStrategy(mr));
-		//this.initStrategies.add(new KaisInitResourceStrategy(mr));
+		//this.initStrategies.add(new InitELIStrategy(mr));
+		this.initStrategies.add(new KaisInitNumberStrategy(mr));
+		this.initStrategies.add(new KaisInitResourceStrategy(mr));
+		this.initStrategies.add(new KaisInitHarbourStrategy(mr));
 		mr.addModelObserver(this);
 	}
 	
@@ -145,39 +148,29 @@ public class Ai implements ModelObserver {
 //	}
 
 	public void executeLoop(){
-
-		Player me = mr.getMe();
 		List<Stroke> sortedStrokes;
 		boolean execute = true;
-		int executed = 0;
 		while (execute){
-			//delay();
+			delay();
 			sortedStrokes = getSortedStrokeList(generalStrategies);
 			Stroke bestStroke = getTheBestStroke(sortedStrokes);
 			if (bestStroke != null){
 				bestStroke.execute(ca);
-				executed++;
 				claimLongestRoadIfPossible();
 				if (claimVictoryIfPossible()) return;
 			}
 			else execute = false;
 		}
-		//System.out.printf("Executed %d times!", executed);
 		ca.endTurn();
 	}
 
 	
 	private void delay() {
-		long time = System.currentTimeMillis();
-		while(System.currentTimeMillis()-time < 10000){
-			try {
-				if (System.in.read() != -1) {
-					break;
-				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
