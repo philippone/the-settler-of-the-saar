@@ -53,9 +53,9 @@ public class Ai implements ModelObserver {
 		this.returnResourcesStrategies.add(new ReturnResourcesStrategy(mr));
 		this.initStrategies = new HashSet<Strategy>();
 		//this.initStrategies.add(new InitializeStrategy(mr));
-		this.initStrategies.add(new KaisInitNumberStrategy(mr));
+		//this.initStrategies.add(new KaisInitNumberStrategy(mr));
 		this.initStrategies.add(new InitELIStrategy(mr));
-		this.initStrategies.add(new KaisInitResourceStrategy(mr));
+		//this.initStrategies.add(new KaisInitResourceStrategy(mr));
 		mr.addModelObserver(this);
 	}
 	

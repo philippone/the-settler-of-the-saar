@@ -69,9 +69,9 @@ public class ExpandStrategy extends Strategy {
 		 Player player = mr.getMe();
 		 Set<Intersection> buildings = mr.getSettlements(player, BuildingType.Village);
 		 buildings.addAll(mr.getSettlements(player, BuildingType.Town));
-		 //contains all fields on which we have a building
+		 //playerFields contains all fields on which we have a building
 		 Set<Field> playerFields = new HashSet<Field>();
-		 //contains all numbers of the fields on which we have a building 
+		 //numbers contains all numbers of the fields on which we have a building 
 		 Set<Integer> numbers = new HashSet<Integer>();
 			for (Intersection i : buildings){
 				Set<Field> fieldsforIntersection = mr.getFieldsFromIntersection(i);
