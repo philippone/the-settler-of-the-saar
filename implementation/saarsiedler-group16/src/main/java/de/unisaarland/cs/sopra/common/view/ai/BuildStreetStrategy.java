@@ -44,7 +44,7 @@ public class BuildStreetStrategy extends Strategy {
 	@Override
 	public double importance() {
 		// TODO Auto-generated method stub
-		return 0;
+		return 1;
 	}
 
 	@Override

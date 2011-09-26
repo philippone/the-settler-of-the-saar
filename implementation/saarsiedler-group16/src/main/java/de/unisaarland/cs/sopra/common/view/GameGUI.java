@@ -422,7 +422,7 @@ public class GameGUI extends View implements Runnable{
 		for (Player act : modelReader.getTableOrder()) {
 			long time = System.currentTimeMillis();
 			List<List<Path>> streets = modelReader.calculateLongestRoads(act);
-			System.out.println("Time for calculating longest road: " + (System.currentTimeMillis()-time));
+//		TODO evtl zeit pruefen	System.out.println("Time for calculating longest road: " + (System.currentTimeMillis()-time));
 			this.road[i++] = streets.size() > 0 ? streets.get(0).size() : 0;
 			if (act == modelReader.getMe())
 				longestroad = streets;
@@ -1293,7 +1293,6 @@ public class GameGUI extends View implements Runnable{
 		
 		if (ergx >= -1 && ergx < modelReader.getBoardWidth()+1 && ergy >= -1 && ergy < modelReader.getBoardHeight()+1 && ergo != -1)
 			return modelReader.getPath(new Location(ergy, ergx, ergo));
-//			System.out.println(modelReader.getPath(new Location(ergy, ergx, ergo)));
 		else 
 			return null;
 	}

@@ -297,6 +297,7 @@ public class AttackStrategy extends Strategy {
 
 	@Override
 	public double importance() {
+		if (mr.getMe().getVictoryPoints()>mr.getMaxVictoryPoints()-6)return 0.5;
 		return 1;
 	}
 
