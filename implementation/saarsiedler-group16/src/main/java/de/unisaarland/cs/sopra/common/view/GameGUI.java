@@ -646,9 +646,11 @@ public class GameGUI extends View implements Runnable{
 					tradeCount += 1;
 					if (player != -1 && player != -2) {
 						name = playerNames.get(modelReader.getPlayerMap().get(player));
+						declinedTrade = 0;
 					}
 					else if(player == -2) {
 						name = "Bank";
+						declinedTrade = 0;
 					}
 					else {
 						declinedTrade += 1;
@@ -895,28 +897,30 @@ public class GameGUI extends View implements Runnable{
 			if (!(oglx > xOffsetUI && oglx < xOffsetUI+1281 && ogly > yOffsetUI && ogly < yOffsetUI+240)) {
 				switch (selectionMode) {
 					case NONE:
-						Path source = getMousePath();
-						if (source != null && modelReader.getCatapults(modelReader.getMe()).contains(source)) {
-							catapultAction.setPath(source);
-							boolean moveRes = modelReader.affordableCatapultAttack() > 0;
-							boolean attackRes = modelReader.affordableSettlementAttack() > 0;
-							if (moveRes) {
-								selectionLocation = Model.getLocationListPath(modelReader.attackableCatapults(source));
-								selectionLocation2 = Model.getLocationListPath(modelReader.catapultMovePaths(source));
+						if (!observer) {
+							Path source = getMousePath();
+							if (source != null && modelReader.getCatapults(modelReader.getMe()).contains(source)) {
+								catapultAction.setPath(source);
+								boolean moveRes = modelReader.affordableCatapultAttack() > 0;
+								boolean attackRes = modelReader.affordableSettlementAttack() > 0;
+								if (moveRes) {
+									selectionLocation = Model.getLocationListPath(modelReader.attackableCatapults(source));
+									selectionLocation2 = Model.getLocationListPath(modelReader.catapultMovePaths(source));
+								}
+								else {
+									selectionLocation = new LinkedList<Location>();
+									selectionLocation2 = new LinkedList<Location>();
+								}
+								if (attackRes) {
+									selectionLocation3 = Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Village, source));
+									selectionLocation3.addAll(Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Town, source)));
+								}
+								else {
+									selectionLocation3 = new LinkedList<Location>();
+								}
+								if (selectionLocation.size()!=0 || selectionLocation2.size()!=0 || selectionLocation3.size()!=0 )
+									selectionMode = CATAPULT_ACTION_DST;
 							}
-							else {
-								selectionLocation = new LinkedList<Location>();
-								selectionLocation2 = new LinkedList<Location>();
-							}
-							if (attackRes) {
-								selectionLocation3 = Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Village, source));
-								selectionLocation3.addAll(Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Town, source)));
-							}
-							else {
-								selectionLocation3 = new LinkedList<Location>();
-							}
-							if (selectionLocation.size()!=0 || selectionLocation2.size()!=0 || selectionLocation3.size()!=0 )
-								selectionMode = CATAPULT_ACTION_DST;
 						}
 						break;
 					case ROBBER_SELECT:
