@@ -1,8 +1,5 @@
 package de.unisaarland.cs.sopra.common.view.ai.copy;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -24,7 +21,6 @@ import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 import de.unisaarland.cs.sopra.common.view.ai.Ai;
 import de.unisaarland.cs.st.saarsiedler.comm.Connection;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
-import de.unisaarland.cs.st.saarsiedler.comm.QualifikationMaps;
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 import de.unisaarland.cs.st.saarsiedler.comm.results.JoinResult;
 
@@ -65,44 +61,36 @@ public class AutomatischeAISpieleClient implements ModelObserver {
 	
 	public static void main(String[] args){
 		try {
-			//prepare referenz ai
-			Connection refConnection = Connection.establish("sopra.cs.uni-saarland.de", true);
-			refConnection.changeName("Referenz KI");
-			MatchInformation refMatchInfo = refConnection.newMatch("private Gruppe 16 Automatischer AI Test", 2, QualifikationMaps.getMap2(), false);		
-
 			//prepare aktuelle ai
 			Connection toonConnection = Connection.establish("sopra.cs.uni-saarland.de", true);
 			toonConnection.changeName("Aktuelle KI");
-			toonConnection.joinMatch(refMatchInfo.getId(), false);
-			MatchInformation toonMatchInfo = toonConnection.getMatchInfo(refMatchInfo.getId());
+			MatchInformation toonMatchInfo = null;
+			
+			for (MatchInformation mi: toonConnection.listMatches()){
+				if (mi.getTitle().equals("private Gruppe 16 Automatischer AI Test")) {
+					JoinResult jr = toonConnection.joinMatch(mi.getId(), false);
+					if (jr == JoinResult.JOINED){
+						toonMatchInfo = mi;
+						break;
+					}
+				}
+			}
+			
 			WorldRepresentation toonWorldRepresentation = toonConnection.getWorld(toonMatchInfo.getWorldId());
 			Model toonModel = new Model(toonWorldRepresentation, toonMatchInfo, toonConnection.getClientId());
-			final Controller toonController = new Controller(toonConnection, toonModel);
+			Controller toonController = new Controller(toonConnection, toonModel);
 			ControllerAdapter toonAdapter = new ControllerAdapter(toonController, toonModel);
 			new Ai(toonModel, toonAdapter);
 			toonConnection.changeReadyStatus(true);
-			
-			//run aktuelle ai
-			new Thread(new Runnable(){
-				@Override
-				public void run() {
-					try {
-						toonController.run();
-					} catch (Exception e) { e.printStackTrace(); }
-				}
-			}).start();
-			
-			WorldRepresentation refWorldRepresentation = refConnection.getWorld(refMatchInfo.getWorldId());
-			Model refModel = new Model(refWorldRepresentation, refMatchInfo, refConnection.getClientId());
-			Controller refController = new Controller(refConnection, refModel);
-			ControllerAdapter refAdapter = new ControllerAdapter(refController, refModel);
-			new AutomatischeAISpieleClient(refModel, refAdapter);
-			refConnection.changeReadyStatus(true);
-			refController.run();
+			toonController.run();
 			
 			//ergebnis auslesen
-			System.out.println("Referenz KI Punkte: " + refModel.getMe().getVictoryPoints() );
-			System.out.println("Referenz KI Punkte: " + toonModel.getMe().getVictoryPoints() );
+			System.out.println();
+			System.out.println("---------------------");
+			System.out.println("Ergebnis:");
+			System.out.println("Meine ID: " + toonConnection.getClientId());
+			for (long act : toonModel.getPlayerMap().keySet())
+				System.out.println("ID: " + act + ", Punkte: " + toonModel.getPlayerMap().get(act).getVictoryPoints());
 		} catch (Exception e) { e.printStackTrace(); }
 	}
 	
