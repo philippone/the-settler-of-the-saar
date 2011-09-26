@@ -75,7 +75,7 @@ public class ButtonListener implements ActionListener {
 				gui.createPanel.setVisible(true);
 			}
 			if (arg0.getSource() == gui.join){
-				long focusedGameID= (Long)gui.gameTable.getModel().getValueAt(gui.gameTable.getSelectedRow(), 0);
+				long focusedGameID= (Long) gui.gameTable.getModel().getValueAt(gui.gameTable.getSelectedRow(), 0);
 				try { //set focused Matchinfo as actual Client.matchInfo
 					Client.matchInfo= Client.connection.getMatchInfo(focusedGameID);	} catch (IOException e1) {e1.printStackTrace();	}
 					
