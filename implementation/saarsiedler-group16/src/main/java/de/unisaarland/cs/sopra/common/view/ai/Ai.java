@@ -52,8 +52,8 @@ public class Ai implements ModelObserver {
 		this.returnResourcesStrategies = new HashSet<Strategy>();
 		this.returnResourcesStrategies.add(new ReturnResourcesStrategy(mr));
 		this.initStrategies = new HashSet<Strategy>();
-		//this.initStrategies.add(new InitializeStrategy(mr));
-		//this.initStrategies.add(new KaisInitNumberStrategy(mr));
+		this.initStrategies.add(new InitializeStrategy(mr));
+		this.initStrategies.add(new KaisInitNumberStrategy(mr));
 		this.initStrategies.add(new InitELIStrategy(mr));
 		//this.initStrategies.add(new KaisInitResourceStrategy(mr));
 		mr.addModelObserver(this);
@@ -165,7 +165,7 @@ public class Ai implements ModelObserver {
 
 	
 	private Stroke getTheBestStroke(List<Stroke> sortedStrokes) {
-		List<Stroke> theBestStrokes = sortedStrokes.subList(0, 1);
+		List<Stroke> theBestStrokes = sortedStrokes.subList(0, 3);
 		KaisTradeOfferStrategy trade = new KaisTradeOfferStrategy(ca, mr);
 		for (Stroke s : theBestStrokes){
 			if (mr.getMe().checkResourcesSufficient(s.getPrice()))
