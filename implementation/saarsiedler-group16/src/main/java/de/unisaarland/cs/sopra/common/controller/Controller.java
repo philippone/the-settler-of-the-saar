@@ -28,6 +28,8 @@ public class Controller implements Runnable {
 	private boolean endOfGame;
 	private Queue<Clickable> guiEvents;
 	public static boolean requestEventPull = false;
+	
+	public boolean DEBUG = false;
 
 	/**
 	 * @param connection
@@ -56,6 +58,7 @@ public class Controller implements Runnable {
 			Location settlement = new Location(i.getRow(), i.getCol(),
 					i.getDirection());
 			AttackResult r = ((GameEvent.Attack) gameEvent).attackResult();
+			if (DEBUG) System.out.println("< Catapult_Attack von(" + e.getRow() + ", " + e.getCol() + ", " + e.getDirection() + ") auf (" + i.getRow() + ", " + i.getCol() + ", " + i.getDirection() + ")");
 			modelWriter.attackSettlement(catapult, settlement, r);
 			break;
 		case MATCH_START:
@@ -69,14 +72,14 @@ public class Controller implements Runnable {
 					ed.getDirection());
 			boolean fightOutcome = ((GameEvent.BuiltCatapult) gameEvent)
 					.fightOutcome();
-			System.out.println("< Build_Catapult (" + ed.getRow() + ", " + ed.getCol() + ", " + ed.getDirection() + ")");
+			if (DEBUG) System.out.println("< Build_Catapult (" + ed.getRow() + ", " + ed.getCol() + ", " + ed.getDirection() + ")");
 			modelWriter.buildCatapult(location, fightOutcome);
 			break;
 		case BUILT_ROAD:
 			Edge edg = ((GameEvent.BuiltRoad) gameEvent).getLocation();
 			Location locatio = new Location(edg.getRow(), edg.getCol(),
 					edg.getDirection());
-			System.out.println("< Build_Road (" + edg.getRow() + ", " + edg.getCol() + ", " + edg.getDirection() + ")");
+			if (DEBUG) System.out.println("< Build_Road (" + edg.getRow() + ", " + edg.getCol() + ", " + edg.getDirection() + ")");
 			modelWriter.buildStreet(locatio);
 			break;
 		case BUILT_SETTLEMENT:
@@ -86,7 +89,7 @@ public class Controller implements Runnable {
 					in.getDirection());
 			boolean isUpgradeToTown = ((GameEvent.BuiltSettlement) gameEvent)
 					.isUpgradeToTown();
-			System.out.println("< Build_Settlement upgrade=" + isUpgradeToTown + " (" + in.getRow() + ", " + in.getCol() + ", " + in.getDirection() + ")");
+			if (DEBUG) System.out.println("< Build_Settlement upgrade=" + isUpgradeToTown + " (" + in.getRow() + ", " + in.getCol() + ", " + in.getDirection() + ")");
 			if (isUpgradeToTown) {
 				modelWriter.buildSettlement(locati, BuildingType.Town);
 			} else {
@@ -104,23 +107,23 @@ public class Controller implements Runnable {
 					e1.getDirection());
 			boolean fightOutcome1 = ((GameEvent.MovedCatapult) gameEvent)
 					.fightOutcome();
-			System.out.println("< Moved_Catapult foc=" + fightOutcome1 + " von(" + edge.getRow() + ", " + edge.getCol() + ", " + edge.getDirection() + ") nach(" + e1.getRow() + ", " + e1.getCol() + ", " + e1.getDirection() + ")");
+			if (DEBUG) System.out.println("< Moved_Catapult foc=" + fightOutcome1 + " von(" + edge.getRow() + ", " + edge.getCol() + ", " + edge.getDirection() + ") nach(" + e1.getRow() + ", " + e1.getCol() + ", " + e1.getDirection() + ")");
 			modelWriter.catapultMoved(source, destination, fightOutcome1);
 			break;
 		case MATCH_END:
-			((GameEvent.MatchEnd) gameEvent).getWinnerClientId();
-			System.out.println("< Match_End");
+			if (DEBUG) System.out.println("< Match_End");
+			modelWriter.matchEnd(((GameEvent.MatchEnd) gameEvent).getWinnerClientId());
 			endOfGame = true;
 			break;
 		case NEW_ROUND:
 			requestEventPull = false;
 			byte num = ((GameEvent.NewRound) gameEvent).getSpotSum();
-			System.out.println("< New _Round num=" + num);
+			if (DEBUG) System.out.println("< New _Round num=" + num);
 			modelWriter.newRound(num);
 			break;
 		case PLAYER_LEFT:
 			long id = ((GameEvent.PlayerLeft) gameEvent).getClientId();
-			System.out.println("< Player_Left id=" + id);
+			if (DEBUG) System.out.println("< Player_Left id=" + id);
 			modelWriter.playerLeft(id);
 			break;
 		case ROBBER_MOVED:
@@ -135,7 +138,7 @@ public class Controller implements Runnable {
 			de.unisaarland.cs.st.saarsiedler.comm.Resource r1 = ((GameEvent.RobberMoved) gameEvent)
 					.getStolenResource();
 			Resource stolenResource = Resource.convert(r1);
-			System.out.println("< Robber_Moved von(" + y + ", " + x + "), nach(" + y1 + ", " + x1 + ") res=" + stolenResource + " victim=" + victimPlayer);
+			if (DEBUG) System.out.println("< Robber_Moved von(" + y + ", " + x + "), nach(" + y1 + ", " + x1 + ") res=" + stolenResource + " victim=" + victimPlayer);
 			modelWriter.robberMoved(sourceField, destinationField,
 					victimPlayer, stolenResource);
 			break;
@@ -149,7 +152,7 @@ public class Controller implements Runnable {
 			int wool = ((GameEvent.TradeOffer) gameEvent).getWool();
 			int grain = ((GameEvent.TradeOffer) gameEvent).getGrain();
 			int ore = ((GameEvent.TradeOffer) gameEvent).getOre();
-			System.out.println("< Trade (" + lumber + ", " + brick + ", " + wool + ", " + grain + ", " + ore + ")");
+			if (DEBUG) System.out.println("< Trade (" + lumber + ", " + brick + ", " + wool + ", " + grain + ", " + ore + ")");
 			modelWriter.tradeOffer(lumber, brick, wool, grain, ore);
 			break;
 		case LONGEST_ROAD:
@@ -160,7 +163,7 @@ public class Controller implements Runnable {
 						e12.getDirection());
 				road.add(l);
 			}
-			System.out.println("< Claim longest Road" );
+			if (DEBUG) System.out.println("< Claim longest Road" );
 			modelWriter.longestRoadClaimed(road);
 			break;
 		}
@@ -185,8 +188,8 @@ public class Controller implements Runnable {
 		int x1 = settlement.getX();
 		int o1 = settlement.getOrientation();
 		Intersection i = new Intersection(y1, x1, o1);
-
 		AttackResult r = connection.attack(e, i);
+		if (DEBUG) System.out.println("> Catapult_Attack von(" + e.getRow() + ", " + e.getCol() + ", " + e.getDirection() + ") auf (" + i.getRow() + ", " + i.getCol() + ", " + i.getDirection() + ")");
 		modelWriter.attackSettlement(catapult, settlement, r);
 		return r;
 	}
@@ -201,6 +204,7 @@ public class Controller implements Runnable {
 			IllegalArgumentException, IOException {
 		boolean fOC = connection.buildCatapult(new Edge(path.getY(), path
 				.getX(), path.getOrientation()));
+		if (DEBUG) System.out.println("> Build_Catapult (" + path.getY() + ", " + path.getX() + ", " + path.getOrientation() + ") erg:" + fOC);
 		modelWriter.buildCatapult(path, fOC);
 		return fOC;
 	}
@@ -216,7 +220,7 @@ public class Controller implements Runnable {
 			throws IllegalStateException, IllegalArgumentException, IOException {
 		Intersection i = new Intersection(intersection.getY(),
 				intersection.getX(), intersection.getOrientation());
-
+		if (DEBUG) System.out.println("> Build_Settlement upgrade=" + (buildingType.equals(BuildingType.Town)) + " (" + i.getRow() + ", " + i.getCol() + ", " + i.getDirection() + ")");
 		if (buildingType.equals(BuildingType.Village)) {
 			connection.buildSettlement(i, false);
 			modelWriter.buildSettlement(intersection, buildingType);
@@ -235,6 +239,7 @@ public class Controller implements Runnable {
 	public void buildStreet(Location path) throws IllegalStateException,
 			IllegalArgumentException, IOException {
 		Edge e = new Edge(path.getY(), path.getX(), path.getOrientation());
+		if (DEBUG) System.out.println("> Build_Road (" + e.getRow() + ", " + e.getCol() + ", " + e.getDirection() + ")");
 		connection.buildRoad(e);
 		modelWriter.buildStreet(path);
 	}
@@ -252,6 +257,7 @@ public class Controller implements Runnable {
 			Edge e = new Edge(l.getY(), l.getX(), l.getOrientation());
 			roadList.add(e);
 		}
+		if (DEBUG) System.out.println("> Claim longest Road" );
 		connection.claimLongestRoad(roadList);
 		modelWriter.longestRoadClaimed(road);
 	}
@@ -261,6 +267,7 @@ public class Controller implements Runnable {
 	 * @throws IOException
 	 */
 	public void claimVictory() throws IllegalStateException, IOException {
+		if (DEBUG) System.out.println("> Claim Victory" );
 		connection.claimVictory();
 		endOfGame = true;
 	}
@@ -270,6 +277,7 @@ public class Controller implements Runnable {
 	 * @throws IOException
 	 */
 	public void endTurn() throws IllegalStateException, IOException {
+		if (DEBUG) System.out.println("> End Turn" );
 		connection.endTurn();
 		Controller.requestEventPull = true;
 	}
@@ -279,6 +287,7 @@ public class Controller implements Runnable {
 	 * @throws IOException
 	 */
 	public void leaveMatch() throws IllegalStateException, IOException {
+		if (DEBUG) System.out.println("> Leave Match" );
 		connection.leaveMatch();
 		endOfGame = true;
 	}
@@ -297,6 +306,7 @@ public class Controller implements Runnable {
 		Edge e1 = new Edge(destinationPath.getY(), destinationPath.getX(),
 				destinationPath.getOrientation());
 		boolean fOC = connection.moveCatapult(e, e1);
+		if (DEBUG) System.out.println("> Moved_Catapult foc=" + fOC + " von(" + e.getRow() + ", " + e.getCol() + ", " + e.getDirection() + ") nach(" + e1.getRow() + ", " + e1.getCol() + ", " + e1.getDirection() + ")");
 		modelWriter.catapultMoved(sourcePath, destinationPath, fOC);
 		return fOC;
 	}
@@ -316,11 +326,10 @@ public class Controller implements Runnable {
 		int x = sourceField.getX();
 		int y1 = destinationField.getY();
 		int x1 = destinationField.getX();
-		//TODO BREAKPOINT
-		System.out.println("Victimplayer: " + victimPlayer);
 		de.unisaarland.cs.st.saarsiedler.comm.Resource r1 = connection
 				.moveRobber(y, x, y1, x1, victimPlayer);
 		Resource r = Resource.convert(r1);
+		if (DEBUG) System.out.println("> Robber_Moved von(" + y + ", " + x + "), nach(" + y1 + ", " + x1 + ") res=" + r1 + " victim=" + victimPlayer);
 		modelWriter.robberMoved(sourceField, destinationField, victimPlayer, r);
 		return r;
 	}
@@ -336,6 +345,7 @@ public class Controller implements Runnable {
 	 */
 	public long offerTrade(int lumber, int brick, int wool, int grain, int ore)
 			throws IllegalStateException, IOException {
+		if (DEBUG) System.out.println("> Trade (" + lumber + ", " + brick + ", " + wool + ", " + grain + ", " + ore + ")");
 		long id = connection.offerTrade(-lumber, -brick, -wool, -grain, -ore);
 		modelWriter.tradeOffer(lumber, brick, wool, grain, ore);
 		modelWriter.respondTrade(id);
@@ -350,6 +360,7 @@ public class Controller implements Runnable {
 	 */
 	public long respondTrade(boolean decision) throws IllegalStateException,
 			IllegalArgumentException, IOException {
+		if (DEBUG) System.out.println("> Respond_Trade decision: )" + decision);
 		long id = connection.respondTrade(decision);
 		modelWriter.respondTrade(id);
 		return id;
@@ -368,6 +379,7 @@ public class Controller implements Runnable {
 	public void returnResources(int lumber, int brick, int wool, int grain,
 			int ore) throws IllegalStateException, IllegalArgumentException,
 			IOException {
+		if (DEBUG) System.out.println("> Return_Resources (" + lumber + ", " + brick + ", " + wool + ", " + grain + ", " + ore + ")");
 		connection.returnResources(lumber, brick, wool, grain, ore);
 		modelWriter.returnResources(lumber, brick, wool, grain, ore);
 	}
