@@ -1,5 +1,6 @@
 package de.unisaarland.cs.sopra.common.model;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 
 import static de.unisaarland.cs.sopra.common.model.Resource.*;
@@ -10,7 +11,7 @@ import static de.unisaarland.cs.sopra.common.model.Resource.*;
  */
 public class ResourcePackage {
 
-	private HashMap<Resource,Integer> resources = new HashMap<Resource,Integer>();
+	private EnumMap<Resource,Integer> resources = new EnumMap<Resource,Integer>(Resource.class);
 	
 	
 	/**
@@ -32,7 +33,7 @@ public class ResourcePackage {
 	 * @param resourcePackage The ResourcePackage from which the new ResourcePackage is made
 	 */
 	private ResourcePackage(ResourcePackage resourcePackage) {
-		this.resources = new HashMap<Resource,Integer>(resourcePackage.resources);
+		this.resources = new EnumMap<Resource,Integer>(resourcePackage.resources);
 	}
 
 	/**
