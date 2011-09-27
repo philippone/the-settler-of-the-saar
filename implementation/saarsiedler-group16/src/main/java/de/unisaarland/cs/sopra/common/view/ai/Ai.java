@@ -40,8 +40,8 @@ public class Ai implements ModelObserver {
 		this.trade = new KaisNewTradeOfferStrategy(ca, mr);
 		this.mr = mr;
 		this.ca = ca;
-		//elisStrategy();
-		kaisStrategies();
+		elisStrategy();
+		//kaisStrategies();
 		mr.addModelObserver(this);
 	}
 	
