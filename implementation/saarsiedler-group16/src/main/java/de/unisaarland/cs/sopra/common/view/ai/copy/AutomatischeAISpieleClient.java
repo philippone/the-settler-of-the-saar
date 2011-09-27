@@ -11,9 +11,9 @@ import de.unisaarland.cs.st.saarsiedler.comm.results.JoinResult;
 
 public class AutomatischeAISpieleClient {
 	
-	public static final int ANZAHL_SPIELE = 50;
+	public static final int ANZAHL_SPIELE = 15;
 	public static final int POINTS_ON_MAP = 10;
-	public static final String NAME = "private Gruppe 16 Automatischer AI Test";
+	public static final String NAME = "private Gruppe16 vs Gruppe10";
 	
 	public static void main(String[] args){
 		int mypoints = 0;

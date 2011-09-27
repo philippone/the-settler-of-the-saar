@@ -55,13 +55,14 @@ public class AutomatischeAISpieleServer {
 				refConnection.close();
 			} catch (Exception e) { e.printStackTrace(); }
 			
-			System.out.println();
-			System.out.println("---------------------");
-			System.out.println("Ergebnis:");
-			System.out.println("ich Punkte: " + mypoints + "/" + (AutomatischeAISpieleClient.POINTS_ON_MAP*AutomatischeAISpieleClient.ANZAHL_SPIELE) + " und " + mywins + "/" + AutomatischeAISpieleClient.ANZAHL_SPIELE + " Siege");
-			System.out.println("andere Punkte: " + otherpoints + "/" + (AutomatischeAISpieleClient.POINTS_ON_MAP*AutomatischeAISpieleClient.ANZAHL_SPIELE) + " und " + otherwins + "/" + AutomatischeAISpieleClient.ANZAHL_SPIELE + " Siege" );
 			
 		}
+		System.out.println();
+		System.out.println("---------------------");
+		System.out.println("Ergebnis:");
+		System.out.println("ich Punkte: " + mypoints + "/" + (AutomatischeAISpieleClient.POINTS_ON_MAP*AutomatischeAISpieleClient.ANZAHL_SPIELE) + " und " + mywins + "/" + AutomatischeAISpieleClient.ANZAHL_SPIELE + " Siege");
+		System.out.println("andere Punkte: " + otherpoints + "/" + (AutomatischeAISpieleClient.POINTS_ON_MAP*AutomatischeAISpieleClient.ANZAHL_SPIELE) + " und " + otherwins + "/" + AutomatischeAISpieleClient.ANZAHL_SPIELE + " Siege" );
+		
 	}
 	
 }
