@@ -14,7 +14,6 @@ public class KaisTradeOfferStrategy extends TradeOfferStrategy {
 	private final Set<Resource> habourResources;
 	private int failTrys;
 	private int successTrys;
-	private boolean execute;
 	
 	public KaisTradeOfferStrategy(ControllerAdapter ca, ModelReader mr) {
 		super(ca, mr);
@@ -38,16 +37,14 @@ public class KaisTradeOfferStrategy extends TradeOfferStrategy {
 				break;
 			}
 		}
-		this.execute = true;
 	}
 
 	@Override
 	public boolean execute(ResourcePackage price) {
 		ResourcePackage difference = price.add(mr.getResources());
 		int i = 0;
-		while (difference.hasNegativeResources() && difference.hasPositiveResources() && execute){
+		while (difference.hasNegativeResources() && difference.hasPositiveResources()){
 			//System.out.println(i++);
-			execute = false;
 			Resource minRes = getMinResource(difference);
 			for (Resource aboveTwo : getResourcesAboveTwo(difference)){
 				if (habourResources.contains(aboveTwo)){
@@ -67,9 +64,12 @@ public class KaisTradeOfferStrategy extends TradeOfferStrategy {
 			if (successTrys > 127 || failTrys > 4) break;
 			else tryTheOrdinaryOffer(difference);
 			if (successTrys > 127 || failTrys > 4) break;
+			if (!difference.hasNegativeResources()){
+				return true;
+			}
 		}
 		//System.out.printf("The difference: %s\nThe successTrys: %d\nTheFailTrys: %d\n-----------------\n", difference, successTrys, failTrys);
-		return !difference.hasNegativeResources();
+		return false;
 	}
 	
 	private Set<Resource> getResourcesAboveTwo(ResourcePackage resPack) {

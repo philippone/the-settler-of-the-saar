@@ -145,7 +145,7 @@ public class Ai implements ModelObserver {
 		List<Stroke> sortedStrokes;
 		boolean execute = true;
 		while (execute){
-			//delay();
+			//	delay();
 			sortedStrokes = getSortedStrokeList(generalStrategies);
 			Stroke bestStroke = getTheBestStroke(sortedStrokes);
 			if (bestStroke != null){
@@ -161,7 +161,7 @@ public class Ai implements ModelObserver {
 	
 	private void delay() {
 		try {
-			Thread.sleep(500);
+			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

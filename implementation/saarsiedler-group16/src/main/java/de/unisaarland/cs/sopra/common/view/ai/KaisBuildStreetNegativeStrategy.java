@@ -55,6 +55,7 @@ public class KaisBuildStreetNegativeStrategy extends Strategy {
 		if (maxStreetsOnNeighbourFields(stroke.getDestination()) >= 3) evaluation = 0;
 		else if (hasUselessNeighbours(stroke.getDestination())) evaluation = 0;
 		else if (hitsPathOfEnemy(stroke.getDestination())) evaluation = 0;
+		else if (nextInterHasUselessNeighbours(stroke.getDestination())) evaluation = 0;
 		else if (maxStreetsOnNeighbourFields(stroke.getDestination()) == 2) evaluation = 0.5;
 		int neighbourStreets = maxNeighbourPathsOfPath(stroke.getDestination());
 		if (neighbourStreets > 0) evaluation = evaluation/neighbourStreets;
@@ -64,6 +65,32 @@ public class KaisBuildStreetNegativeStrategy extends Strategy {
 		return evaluation;
 	}
 	
+	private boolean nextInterHasUselessNeighbours(Path destination) {
+		boolean hasUselessNeighbours = false;
+		Intersection nextInter = getNextInter(destination);
+		for (Field neighbour : mr.getFieldsFromIntersection(nextInter)){
+			if (neighbour.getNumber() == -1) hasUselessNeighbours = true;
+		}
+		return hasUselessNeighbours;
+	}
+	
+	private Intersection getNextInter(Path destination){
+		Intersection nextInter = null;
+		int minNumberOfPaths = 3;
+		for (Intersection aNeighbourInter : mr.getIntersectionsFromPath(destination)){
+			int numberOfPaths = 0;
+			for (Path aPath : mr.getPathsFromIntersection(aNeighbourInter)){
+				if (aPath.hasStreet() && aPath.getStreetOwner() == mr.getMe())
+					numberOfPaths++;
+			}
+			if (numberOfPaths < minNumberOfPaths) {
+				minNumberOfPaths = numberOfPaths;
+				nextInter = aNeighbourInter;
+			}
+		}
+		return nextInter;
+	}
+
 	private boolean hasVillageOnNeighbourIntersection(Path destination){
 		boolean hasNeighbourVillage = false;
 		for (Intersection inter : mr.getIntersectionsFromPath(destination)){
