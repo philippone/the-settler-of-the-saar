@@ -41,22 +41,16 @@ public class Ai implements ModelObserver {
 		this.mr = mr;
 		this.ca = ca;
 		this.generalStrategies = new HashSet<Strategy>();
-		//this.generalStrategies.add(new KaisExpandStrategy(mr));
-		//this.generalStrategies.add(new KaisChooseVillageAndTownsHarbourStrategy(mr));
-		//this.generalStrategies.add(new KaisTryToWinFastStrategy(mr));
-		//this.generalStrategies.add(new BuildStreetStrategy(mr));
-		//this.generalStrategies.add(new ExpandStrategy(mr));
 		this.generalStrategies.add(new KaisBuildStreetNegativeStrategy(mr));
-		//this.generalStrategies.add(new AttackStrategy(mr));
-		//this.generalStrategies.add(new DeffenceStrategy(mr));
+		this.generalStrategies.add(new KaisGetTheMissingResourcesStrategy(mr));
+		this.generalStrategies.add(new KaisBuildTownsAndVillagesStrategy(mr));
 		this.moveRobberStrategies = new HashSet<Strategy>();
 		this.moveRobberStrategies.add(new MoveRobberStrategy(mr));
 		this.returnResourcesStrategies = new HashSet<Strategy>();
 		this.returnResourcesStrategies.add(new ReturnResourcesStrategy(mr));
 		this.initStrategies = new HashSet<Strategy>();
 		this.initStrategies.add(new KaisBuildStreetNegativeStrategy(mr));
-		//this.initStrategies.add(new InitializeStrategy(mr));
-		//this.initStrategies.add(new InitELIStrategy(mr));
+		this.initStrategies.add(new KaisGetTheMissingResourcesStrategy(mr));
 		this.initStrategies.add(new KaisInitNumberStrategy(mr));
 		this.initStrategies.add(new KaisInitResourceStrategy(mr));
 		this.initStrategies.add(new KaisInitHarbourStrategy(mr));
@@ -167,7 +161,7 @@ public class Ai implements ModelObserver {
 	
 	private void delay() {
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -179,10 +173,8 @@ public class Ai implements ModelObserver {
 		for (Stroke s : theBestStrokes){
 			if (mr.getMe().checkResourcesSufficient(s.getPrice()))
 				return s;
-			else if (trade.isProbable(s.getPrice())){
-				if (trade.execute(s.getPrice())) return s;
-			}
 		}
+		if (trade.execute(theBestStrokes.get(0).getPrice())) return theBestStrokes.get(0);
 		return null;
 	}
 

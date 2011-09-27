@@ -52,12 +52,24 @@ public class KaisBuildStreetNegativeStrategy extends Strategy {
 	@Override
 	public double evaluate(BuildStreet stroke) {
 		double evaluation = 1;
-		if (maxStreetsOnNeighbourFields(stroke.getDestination()) >= 2) evaluation = 0;
+		if (maxStreetsOnNeighbourFields(stroke.getDestination()) >= 3) evaluation = 0;
 		else if (hasUselessNeighbours(stroke.getDestination())) evaluation = 0;
 		else if (hitsPathOfEnemy(stroke.getDestination())) evaluation = 0;
+		else if (maxStreetsOnNeighbourFields(stroke.getDestination()) == 2) evaluation = 0.5;
 		int neighbourStreets = maxNeighbourPathsOfPath(stroke.getDestination());
 		if (neighbourStreets > 0) evaluation = evaluation/neighbourStreets;
+		int buildableIntersections = mr.buildableVillageIntersections(mr.getMe()).size();
+		if (buildableIntersections > 0) evaluation = evaluation/buildableIntersections;
+		if (hasVillageOnNeighbourIntersection(stroke.getDestination())) evaluation = evaluation/2;
 		return evaluation;
+	}
+	
+	private boolean hasVillageOnNeighbourIntersection(Path destination){
+		boolean hasNeighbourVillage = false;
+		for (Intersection inter : mr.getIntersectionsFromPath(destination)){
+			if (inter.hasOwner() && inter.getOwner() == mr.getMe()) hasNeighbourVillage = true;
+		}
+		return hasNeighbourVillage;
 	}
 	
 	private boolean hitsPathOfEnemy(Path destination) {
