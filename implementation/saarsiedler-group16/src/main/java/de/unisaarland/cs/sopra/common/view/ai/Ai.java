@@ -59,7 +59,8 @@ public class Ai implements ModelObserver {
 		this.initStrategies.add(new KaisGetTheMissingResourcesStrategy(mr));
 		this.initStrategies.add(new KaisInitNumberStrategy(mr));
 		this.initStrategies.add(new KaisInitResourceStrategy(mr));
-		this.initStrategies.add(new KaisInitHarbourStrategy(mr));
+//		this.initStrategies.add(new KaisInitHarbourStrategy(mr));
+		this.initStrategies.add(new InitELIStrategy(mr));
 		
 	}
 	
