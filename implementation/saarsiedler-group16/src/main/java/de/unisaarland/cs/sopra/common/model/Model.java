@@ -237,13 +237,13 @@ public class Model implements ModelReader, ModelWriter {
 			}
 		}
 		Set<Path>sp=getPathsFromIntersection(comingFrom);
-		Path p1=null;
+		Path p1=road.get(0);
 		for (Path p2:sp){
 			if (road.contains(p2)) p1=p2;
 		}
 		road1.add(p1);
 		// we'll rank the road from this path p1
-		Intersection goingThrough=null;
+		Intersection goingThrough=getIntersectionsFromPath(road.iterator().next()).iterator().next();
 		while (road1.size()<road.size()){
 			Set<Intersection> si1=getIntersectionsFromPath(p1);
 			for (Intersection i: si1){
@@ -1577,6 +1577,12 @@ public class Model implements ModelReader, ModelWriter {
 	@Override
 	public void longestRoadClaimed(List<Location> road)
 			throws IllegalStateException {
+		List<Path> claimedroad = new LinkedList<Path>();
+		for (Location l : road) {
+			claimedroad.add(getPath(l));
+		}
+		
+		//TODO rightplayer wird nicht richtig berechnet!!!
 		if (road.size() > (longestClaimedRoad == null ? 4 : longestClaimedRoad.size()) ) {
 			List<Path> lr = new LinkedList<Path>();
 			boolean rightPlayer = false;
@@ -1621,7 +1627,7 @@ public class Model implements ModelReader, ModelWriter {
 					oldOwner.setVictoryPoints(oldOwner.getVictoryPoints()-2);
 					owner.setVictoryPoints(owner.getVictoryPoints()+2);
 				}
-				this.longestClaimedRoad = lr;
+				this.longestClaimedRoad = claimedroad;
 				
 				for (ModelObserver ob : modelObserver) {
 					ob.updateVictoryPoints();
