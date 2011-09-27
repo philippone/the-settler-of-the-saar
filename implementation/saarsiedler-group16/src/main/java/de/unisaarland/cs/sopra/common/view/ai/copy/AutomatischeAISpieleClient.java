@@ -13,7 +13,7 @@ public class AutomatischeAISpieleClient {
 
 	public static final int ANZAHL_SPIELE = 50;
 	public static final int POINTS_ON_MAP = 10;
-	public static final String NAME = "private Gruppe 16 Automatischer AI Test 9";
+	public static final String NAME = "private Gruppe 16 Automatischer AI Test 15";
 	
 	public static void main(String[] args){
 		
