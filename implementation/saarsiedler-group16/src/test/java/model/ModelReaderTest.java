@@ -63,7 +63,7 @@ public class ModelReaderTest {
 		currentPlayer.modifyResources(new ResourcePackage(10000,10000,10000,10000,10000));
 		model.buildSettlement(new Location(2,1,1), BuildingType.Village);
 		currentSet = model.getHarborTypes(currentPlayer);
-		assertTrue("es gibt keinen HarborType wegen dem Raeuber", currentSet.size() == 0);
+		assertTrue("es gibt einen HarborType wegen dem Raeuber auf dem land", currentSet.size() == 1);
 	}
 	
 	/**
