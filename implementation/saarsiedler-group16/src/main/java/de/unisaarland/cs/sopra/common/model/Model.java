@@ -220,10 +220,22 @@ public class Model implements ModelReader, ModelWriter {
 		List<Path> road1=new ArrayList<Path>();
 		List<Intersection>roadExtremities=searchRoadExtremities(road, player);
 		// returning the intersections trough what we can continue the road
-		Intersection comingFrom;
+		Intersection comingFrom=getIntersectionsFromPath(road.iterator().next()).iterator().next();;
 		if (roadExtremities.size()>0) comingFrom=roadExtremities.get(0);
 		// we'll rank the road from this extremity
-		else comingFrom=getIntersectionsFromPath(road.iterator().next()).iterator().next();
+		else {
+			boolean b=false;
+			for (Path p: road){
+				for (Intersection i: getIntersectionsFromPath(p)){
+					if (road.containsAll(getPathsFromIntersection(i))) {
+						comingFrom=i;
+						b=true;
+						break;
+					}
+				}
+				if (b) break;
+			}
+		}
 		Set<Path>sp=getPathsFromIntersection(comingFrom);
 		Path p1=road.get(0);
 		for (Path p2:sp){
