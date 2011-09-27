@@ -16,18 +16,23 @@ public class KaisNewTradeOfferStrategy extends TradeOfferStrategy {
 	}
 
 	@Override
-	public boolean execute(ResourcePackage price) {
+	public boolean execute(ResourcePackage price){ return execute(price, true); }
+	
+	public boolean isProbable(ResourcePackage price) { return execute(price, false); }
+	
+
+	private boolean execute(ResourcePackage price, boolean realTrade) {
 		boolean successfull = true;
 		ResourcePackage difference = price.add(mr.getResources());
 		while (difference.hasPositiveResources() && difference.hasNegativeResources() && successfull){
-			if (!(tryHabourTrade(difference) || tryFourTrade(difference))) successfull = false;
+			if (!(tryHabourTrade(difference, realTrade) || tryFourTrade(difference, realTrade))) successfull = false;
 		}
 		return successfull && !difference.hasNegativeResources();
 	}
 	
 	
 
-	private boolean tryHabourTrade(ResourcePackage difference) {
+	private boolean tryHabourTrade(ResourcePackage difference, boolean realTrade) {
 		Set<HarborType> myHarbours = mr.getHarborTypes(mr.getMe());
 		Set<Resource> habourResources = getResourcesFromHarbors(myHarbours);
 		boolean successfull = myHarbours.size() > 0;
@@ -40,9 +45,13 @@ public class KaisNewTradeOfferStrategy extends TradeOfferStrategy {
 					ResourcePackage offerPackage = new ResourcePackage();
 					offerPackage.modifyResource(minRes, 1);
 					offerPackage.modifyResource(aboveTwo, -1);
-					if (ca.offerTrade(offerPackage) == -1){
+					if (realTrade){
+						if (ca.offerTrade(offerPackage) == -1){
+							offerPackage.modifyResource(aboveTwo, -1);
+							ca.offerTrade(offerPackage);
+						}
+					} else {
 						offerPackage.modifyResource(aboveTwo, -1);
-						ca.offerTrade(offerPackage);
 					}
 					difference.add(offerPackage);
 				}
@@ -83,7 +92,7 @@ public class KaisNewTradeOfferStrategy extends TradeOfferStrategy {
 		return resAboveTwo;
 	}
 
-	private boolean tryFourTrade(ResourcePackage difference) {
+	private boolean tryFourTrade(ResourcePackage difference, boolean realTrade) {
 		boolean successfull = difference.getPositiveResourcesCount() >= 4;
 		if (successfull){
 			Resource minRes = getMinResource(difference);
@@ -95,20 +104,10 @@ public class KaisNewTradeOfferStrategy extends TradeOfferStrategy {
 				tradePackage.modifyResource(maxRes, -1);
 				difference.modifyResource(maxRes, -1);
 			}
-			ca.offerTrade(tradePackage);
+			if (realTrade) ca.offerTrade(tradePackage);
 			successfull = true;
 		}
 		return successfull;
-	}
-	
-	public boolean isProbable(ResourcePackage price){
-		boolean isProbable = true;
-		ResourcePackage difference = price.add(mr.getResources());
-		while (difference.hasPositiveResources() && difference.hasNegativeResources() && isProbable){
-			if (!(tryHabourTrade(difference) || tryFourTrade(difference))) isProbable = false;
-		}
-		return isProbable;
-		// TODO implement this!
 	}
 
 }

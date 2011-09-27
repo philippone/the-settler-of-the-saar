@@ -40,7 +40,8 @@ public class Ai implements ModelObserver {
 		this.trade = new KaisNewTradeOfferStrategy(ca, mr);
 		this.mr = mr;
 		this.ca = ca;
-		elisStrategy();
+		//elisStrategy();
+		kaisStrategies();
 		mr.addModelObserver(this);
 	}
 	
@@ -191,16 +192,19 @@ public class Ai implements ModelObserver {
 		for (Stroke s : theBestStrokes){
 			if (mr.getMe().checkResourcesSufficient(s.getPrice()))
 				return s;
+			if (trade.isProbable(s.getPrice())) {
+				if (trade.execute(s.getPrice())) return s;
+			}
 		}
-		if (trade.execute(theBestStrokes.get(0).getPrice())) return theBestStrokes.get(0);
 		return null;
 	}
 
 	private void claimLongestRoadIfPossible(){
 		List<Path> longestroad = mr.calculateLongestRoads(mr.getMe()).get(0); //TODO perhaps improvable
-		int lengthOfLongestClaimedRoad = mr.getLongestClaimedRoad() == null ? 4 : mr.getLongestClaimedRoad().size();
-		if (longestroad.size() > lengthOfLongestClaimedRoad){
-			System.out.println(longestroad);
+		if (longestroad.size() > (mr.getLongestClaimedRoad() == null ? 4 : mr.getLongestClaimedRoad().size()) ) {
+			System.out.println("LongestRoad:");
+			System.out.println("Before: " + mr.getLongestClaimedRoad());
+			System.out.println("Try to Claim: " + longestroad);
 			ca.claimLongestRoad(longestroad);
 		}
 	}

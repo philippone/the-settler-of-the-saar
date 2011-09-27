@@ -17,7 +17,7 @@ public class AutomatischeAISpieleServer {
 				//prepare referenz ai
 				Connection refConnection = Connection.establish("sopra.cs.uni-saarland.de", true);
 				refConnection.changeName("Referenz KI");
-				MatchInformation refMatchInfo = refConnection.newMatch("private Gruppe 16 Automatischer AI Test", 2, QualifikationMaps.getMap2(), false);					
+				MatchInformation refMatchInfo = refConnection.newMatch("private Gruppe 16 Automatischer AI Test 2", 2, QualifikationMaps.getMap2(), false);					
 				WorldRepresentation refWorldRepresentation = refConnection.getWorld(refMatchInfo.getWorldId());
 				Model refModel = new Model(refWorldRepresentation, refMatchInfo, refConnection.getClientId());
 				Controller refController = new Controller(refConnection, refModel);
