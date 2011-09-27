@@ -237,13 +237,13 @@ public class Model implements ModelReader, ModelWriter {
 			}
 		}
 		Set<Path>sp=getPathsFromIntersection(comingFrom);
-		Path p1=null;
+		Path p1=road.get(0);
 		for (Path p2:sp){
 			if (road.contains(p2)) p1=p2;
 		}
 		road1.add(p1);
 		// we'll rank the road from this path p1
-		Intersection goingThrough=null;
+		Intersection goingThrough=getIntersectionsFromPath(road.iterator().next()).iterator().next();
 		while (road1.size()<road.size()){
 			Set<Intersection> si1=getIntersectionsFromPath(p1);
 			for (Intersection i: si1){
