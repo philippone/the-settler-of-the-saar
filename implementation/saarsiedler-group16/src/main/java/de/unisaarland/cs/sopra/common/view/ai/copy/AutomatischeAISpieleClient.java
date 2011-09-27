@@ -1,26 +1,8 @@
 package de.unisaarland.cs.sopra.common.view.ai.copy;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CyclicBarrier;
-
-import org.lwjgl.opengl.DisplayMode;
-
-import de.unisaarland.cs.sopra.common.PlayerColors;
-import de.unisaarland.cs.sopra.common.Setting;
 import de.unisaarland.cs.sopra.common.controller.Controller;
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
-import de.unisaarland.cs.sopra.common.model.BuildingType;
-import de.unisaarland.cs.sopra.common.model.Location;
 import de.unisaarland.cs.sopra.common.model.Model;
-import de.unisaarland.cs.sopra.common.model.Player;
-import de.unisaarland.cs.sopra.common.model.ResourcePackage;
-import de.unisaarland.cs.sopra.common.view.GameGUI;
 import de.unisaarland.cs.sopra.common.view.ai.Ai;
 import de.unisaarland.cs.st.saarsiedler.comm.Connection;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
@@ -29,9 +11,7 @@ import de.unisaarland.cs.st.saarsiedler.comm.results.JoinResult;
 
 public class AutomatischeAISpieleClient {
 
-	
-	public static final int ANZAHL_SPIELE = 100;
-
+	public static final int ANZAHL_SPIELE = 50;
 	public static final int POINTS_ON_MAP = 10;
 	public static final String NAME = "private Gruppe 16 Automatischer AI Test 9";
 	
