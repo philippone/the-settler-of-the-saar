@@ -3,6 +3,7 @@ package de.unisaarland.cs.sopra.common.view.ai.copy;
 import de.unisaarland.cs.sopra.common.controller.Controller;
 import de.unisaarland.cs.sopra.common.controller.ControllerAdapter;
 import de.unisaarland.cs.sopra.common.model.Model;
+import de.unisaarland.cs.sopra.common.view.ai.Ai;
 import de.unisaarland.cs.st.saarsiedler.comm.Connection;
 import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
 import de.unisaarland.cs.st.saarsiedler.comm.QualifikationMaps;
@@ -21,7 +22,7 @@ public class AutomatischeAISpieleServer {
 				Model refModel = new Model(refWorldRepresentation, refMatchInfo, refConnection.getClientId());
 				Controller refController = new Controller(refConnection, refModel);
 				ControllerAdapter refAdapter = new ControllerAdapter(refController, refModel);
-				new AutomatischeAISpieleClient(refModel, refAdapter);
+				new Ai(refModel, refAdapter);
 				refConnection.changeReadyStatus(true);
 				refController.run();
 			} catch (Exception e) { e.printStackTrace(); }
