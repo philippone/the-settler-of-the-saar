@@ -11,7 +11,7 @@ import de.unisaarland.cs.st.saarsiedler.comm.results.JoinResult;
 
 public class AutomatischeAISpieleClient {
 	
-	public static int ANZAHL_SPIELE = 5;
+	public static int ANZAHL_SPIELE = 50;
 	
 	public static void main(String[] args){
 		int mypoints = 0;

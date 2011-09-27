@@ -145,7 +145,7 @@ public class ExpandStrategy extends Strategy {
 			// the village has a lower value
 			if (mr.affordableSettlements(BuildingType.Town) > 0 
 					&& mr.affordableSettlements(BuildingType.Village) < 1){
-				intersectionValue = resourceValue*0.6;
+				intersectionValue = resourceValue*0.4;
 				return intersectionValue;
 			}
 		 intersectionValue = resourceValue;
@@ -163,7 +163,7 @@ public class ExpandStrategy extends Strategy {
 			if (!f.hasRobber()) {
 				// we do not want to upgrade first the towns that are near deserts or water 
 				if (f.getNumber() != -1) 
-					resourceValue = resourceValue + 0.3333;
+					resourceValue = resourceValue + 0.3334;
 			}
 		}
 		// if there is currently no place to build a village, it is better to build a town
