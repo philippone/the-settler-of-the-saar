@@ -40,7 +40,7 @@ public class Ai implements ModelObserver {
 		this.trade = new KaisNewTradeOfferStrategy(ca, mr);
 		this.mr = mr;
 		this.ca = ca;
-		//elisStrategy();
+//		elisStrategy();
 		kaisStrategies();
 		mr.addModelObserver(this);
 	}
@@ -164,7 +164,7 @@ public class Ai implements ModelObserver {
 		List<Stroke> sortedStrokes;
 		boolean execute = true;
 		while (execute){
-			//delay();
+			delay();
 			sortedStrokes = getSortedStrokeList(generalStrategies);
 			Stroke bestStroke = getTheBestStroke(sortedStrokes);
 			if (bestStroke != null){
@@ -180,7 +180,7 @@ public class Ai implements ModelObserver {
 	
 	private void delay() {
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
