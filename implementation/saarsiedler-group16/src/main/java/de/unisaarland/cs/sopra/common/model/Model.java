@@ -1050,7 +1050,7 @@ public class Model implements ModelReader, ModelWriter {
 			if (inter.hasOwner() && inter.getOwner() == player) {
 				boolean robber = false;
 				for (Field f : getFieldsFromIntersection(inter)) {
-					if (f.hasRobber()) {
+					if (f.hasRobber() && !FieldType.isLandField(f.getFieldType())) {
 						robber = true;
 						break;
 					}
