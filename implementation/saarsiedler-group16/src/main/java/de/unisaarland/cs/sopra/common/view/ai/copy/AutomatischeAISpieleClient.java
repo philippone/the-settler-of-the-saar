@@ -132,7 +132,7 @@ public class AutomatischeAISpieleClient implements ModelObserver {
 					otherwins += 1;
 					System.out.println("Aktuelle KI gewinnt mit " + other + " Punkten");
 				}
-						
+				toonConnection.close();
 			} catch (Exception e) { e.printStackTrace(); }
 		}
 		

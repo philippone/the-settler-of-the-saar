@@ -24,6 +24,7 @@ public class AutomatischeAISpieleServer {
 				new AutomatischeAISpieleClient(refModel, refAdapter);
 				refConnection.changeReadyStatus(true);
 				refController.run();
+				refConnection.close();
 			} catch (Exception e) { e.printStackTrace(); }
 		}
 	}
