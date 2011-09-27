@@ -505,8 +505,12 @@ public class Model implements ModelReader, ModelWriter {
 			List<Path> tmp = new LinkedList<Path>();
 			for (Path act : this.longestClaimedRoad) {
 				if (board.getIntersectionsFromPath(act).contains(intersection)) {
+					Set<Path> wurst = getPathsFromIntersection(intersection);
+					wurst.retainAll(this.longestClaimedRoad);
+					if (wurst.size() != 1) {
 					tmp.add(act);
 					break;
+					}
 				}
 				tmp.add(act);
 			}
@@ -1642,7 +1646,8 @@ public class Model implements ModelReader, ModelWriter {
 		}
 		
 		if (before == this.longestClaimedRoad) {
-			return;//TODO remove this
+			return;
+			//TODO remove this
 		}
 	}
 
