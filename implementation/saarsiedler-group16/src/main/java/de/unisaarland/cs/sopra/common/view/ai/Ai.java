@@ -203,7 +203,7 @@ public class Ai implements ModelObserver {
 
 	private void claimLongestRoadIfPossible(){
 		List<Path> longestroad = mr.calculateLongestRoads(mr.getMe()).get(0); //TODO perhaps improvable
-		if (longestroad.size() > (mr.getLongestClaimedRoad() == null ? 4 : mr.getLongestClaimedRoad().size()) ) {
+		if (longestroad.size() > (mr.getLongestClaimedRoad() == null ? 4 : mr.getLongestClaimedRoad().size()) && longestroad.size() >= 5 ) {
 			System.out.println("LongestRoad:");
 			System.out.println("Before: " + mr.getLongestClaimedRoad());
 			System.out.println("Try to Claim: " + longestroad);

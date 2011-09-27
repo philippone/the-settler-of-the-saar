@@ -16,6 +16,7 @@ public class AutomatischeAISpieleClient {
 	public static final String NAME = "private Gruppe 16 Automatischer AI Test 9";
 	
 	public static void main(String[] args){
+		
 		int mypoints = 0;
 		int otherpoints = 0;
 		int mywins = 0;
