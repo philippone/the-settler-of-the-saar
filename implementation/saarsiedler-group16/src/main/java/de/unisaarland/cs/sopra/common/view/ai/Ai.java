@@ -40,8 +40,8 @@ public class Ai implements ModelObserver {
 		this.trade = new KaisNewTradeOfferStrategy(ca, mr);
 		this.mr = mr;
 		this.ca = ca;
-		//elisStrategy();
-		kaisStrategies();
+		elisStrategy();
+		//kaisStrategies();
 		mr.addModelObserver(this);
 	}
 	
@@ -60,6 +60,7 @@ public class Ai implements ModelObserver {
 		this.initStrategies.add(new KaisInitNumberStrategy(mr));
 		this.initStrategies.add(new KaisInitResourceStrategy(mr));
 		this.initStrategies.add(new KaisInitHarbourStrategy(mr));
+		
 	}
 	
 	
@@ -180,7 +181,7 @@ public class Ai implements ModelObserver {
 	
 	private void delay() {
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
