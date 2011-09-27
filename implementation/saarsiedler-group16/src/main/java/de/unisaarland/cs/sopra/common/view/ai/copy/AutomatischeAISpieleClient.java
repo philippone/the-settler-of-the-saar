@@ -11,7 +11,8 @@ import de.unisaarland.cs.st.saarsiedler.comm.results.JoinResult;
 
 public class AutomatischeAISpieleClient {
 	
-	public static int ANZAHL_SPIELE = 50;
+	public static final int ANZAHL_SPIELE = 20;
+	public static final int POINTS_ON_MAP = 10;
 	
 	public static void main(String[] args){
 		int mypoints = 0;
@@ -57,15 +58,16 @@ public class AutomatischeAISpieleClient {
 					else
 						my = toonModel.getPlayerMap().get(act).getVictoryPoints();
 				}
+
 				otherpoints += other;
 				mypoints += my;
-				if (my > other && my >= 22) {
+				if (my > other && my >= POINTS_ON_MAP) {
 					mywins += 1;
-					System.out.println("Aktuelle KI gewinnt mit " + my + " Punkten");
+					System.out.println("Ich gewinne mit " + my + " Punkten");
 				}
-				else if (other > my && other >= 22) {
+				else if (other > my && other >= POINTS_ON_MAP) {
 					otherwins += 1;
-					System.out.println("Aktuelle KI gewinnt mit " + other + " Punkten");
+					System.out.println("Der andere gewinnt mit " + other + " Punkten");
 				}
 				toonConnection.close();
 			} catch (Exception e) { e.printStackTrace(); }
@@ -75,8 +77,8 @@ public class AutomatischeAISpieleClient {
 		System.out.println();
 		System.out.println("---------------------");
 		System.out.println("Ergebnis:");
-		System.out.println("Aktuelle KI Punkte: " + mypoints + "/" + (22*ANZAHL_SPIELE) + " und " + mywins + "/" + ANZAHL_SPIELE + " Siege");
-		System.out.println("Referenz KI Punkte: " + otherpoints + "/" + (22*ANZAHL_SPIELE) + " und " + otherwins + "/" + ANZAHL_SPIELE + " Siege" );
+		System.out.println("ich Punkte: " + mypoints + "/" + (POINTS_ON_MAP*ANZAHL_SPIELE) + " und " + mywins + "/" + ANZAHL_SPIELE + " Siege");
+		System.out.println("andere Punkte: " + otherpoints + "/" + (POINTS_ON_MAP*ANZAHL_SPIELE) + " und " + otherwins + "/" + ANZAHL_SPIELE + " Siege" );
 	}
 
 }

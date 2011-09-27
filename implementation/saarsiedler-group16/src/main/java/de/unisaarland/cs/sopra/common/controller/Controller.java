@@ -29,7 +29,7 @@ public class Controller implements Runnable {
 	private Queue<Clickable> guiEvents;
 	public static boolean requestEventPull = false;
 	
-	public boolean DEBUG = false;
+	public boolean DEBUG = true;
 
 	/**
 	 * @param connection
