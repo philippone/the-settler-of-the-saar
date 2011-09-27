@@ -220,25 +220,32 @@ public class Model implements ModelReader, ModelWriter {
 		List<Path> road1=new ArrayList<Path>();
 		List<Intersection>roadExtremities=searchRoadExtremities(road, player);
 		// returning the intersections trough what we can continue the road
-		Intersection i;
-		if (roadExtremities.size()>0) i=roadExtremities.get(0);
+		Intersection comingFrom;
+		if (roadExtremities.size()>0) comingFrom=roadExtremities.get(0);
 		// we'll rank the road from this extremity
-		else i=getIntersectionsFromPath(road.iterator().next()).iterator().next();
-		Set<Path>sp=getPathsFromIntersection(i);
+		else comingFrom=getIntersectionsFromPath(road.iterator().next()).iterator().next();
+		Set<Path>sp=getPathsFromIntersection(comingFrom);
 		Path p1=road.get(0);
 		for (Path p2:sp){
 			if (road.contains(p2)) p1=p2;
 		}
 		road1.add(p1);
 		// we'll rank the road from this path p1
+		Intersection goingThrough=getIntersectionsFromPath(road.iterator().next()).iterator().next();
 		while (road1.size()<road.size()){
-			
+			Set<Intersection> si1=getIntersectionsFromPath(p1);
+			for (Intersection i: si1){
+				if (i !=comingFrom) goingThrough=i;
+			}
 			for (Path p:road){
-				if (p!=null && getPathsFromPath(p1).contains(p) && !road1.contains(p)) {
+				if (p!=null && p!=p1 && getPathsFromIntersection(goingThrough).contains(p) && !road1.contains(p)) {
 					road1.add(p);
 					p1=p;
+					break;
 				}
+				
 			}
+			comingFrom=goingThrough;
 		}
 		return road1;
 	}
@@ -1043,7 +1050,7 @@ public class Model implements ModelReader, ModelWriter {
 			if (inter.hasOwner() && inter.getOwner() == player) {
 				boolean robber = false;
 				for (Field f : getFieldsFromIntersection(inter)) {
-					if (f.hasRobber()) {
+					if (f.hasRobber() && !FieldType.isLandField(f.getFieldType())) {
 						robber = true;
 						break;
 					}

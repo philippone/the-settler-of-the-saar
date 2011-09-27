@@ -33,4 +33,11 @@ public enum FieldType {
 		throw new IllegalStateException();
 	}
 	
+	public static boolean isLandField(FieldType f) {
+		switch(f) {
+		case WATER: return false;
+		default: return true;
+		}
+	}
+	
 }
