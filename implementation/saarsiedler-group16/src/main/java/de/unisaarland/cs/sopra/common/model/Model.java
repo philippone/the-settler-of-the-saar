@@ -1642,7 +1642,8 @@ public class Model implements ModelReader, ModelWriter {
 		}
 		
 		if (before == this.longestClaimedRoad) {
-			return;//TODO remove this
+			return;
+			//TODO remove this
 		}
 	}
 
