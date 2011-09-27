@@ -218,7 +218,7 @@ public class Model implements ModelReader, ModelWriter {
 	
 	private List<Path> rankRoad(List<Path> road,Player player){
 		List<Path> road1=new ArrayList<Path>();
-		List<Intersection>roadExtremities=searchRoadExtremities(road, player);
+		List<Intersection>roadExtremities=searchRoadExtremitiesForRanking(road, player);
 		// returning the intersections trough what we can continue the road
 		Intersection comingFrom=getIntersectionsFromPath(road.iterator().next()).iterator().next();;
 		if (roadExtremities.size()>0) comingFrom=roadExtremities.get(0);
@@ -237,13 +237,13 @@ public class Model implements ModelReader, ModelWriter {
 			}
 		}
 		Set<Path>sp=getPathsFromIntersection(comingFrom);
-		Path p1=road.get(0);
+		Path p1=null;
 		for (Path p2:sp){
 			if (road.contains(p2)) p1=p2;
 		}
 		road1.add(p1);
 		// we'll rank the road from this path p1
-		Intersection goingThrough=getIntersectionsFromPath(road.iterator().next()).iterator().next();
+		Intersection goingThrough=null;
 		while (road1.size()<road.size()){
 			Set<Intersection> si1=getIntersectionsFromPath(p1);
 			for (Intersection i: si1){
@@ -344,7 +344,26 @@ public class Model implements ModelReader, ModelWriter {
 		return rList;
 		// returning all lengthened roads
 	}
-
+	
+	/**
+	 * @param p
+	 * @param road
+	 * @param roadList
+	 * @return
+	 */
+	private List<Intersection> searchRoadExtremitiesForRanking(List<Path> road,
+			Player player) {
+		List<Intersection> si = new ArrayList<Intersection>();
+		for (Path p : road) {
+			Set<Intersection> si1 = getIntersectionsFromPath(p);
+			for (Intersection i : si1) {
+				if (i != null && isExtremityOfRoad(i, road))
+					si.add(i);
+			}
+		}
+		return si;
+	}
+	
 	/**
 	 * @param p
 	 * @param road
