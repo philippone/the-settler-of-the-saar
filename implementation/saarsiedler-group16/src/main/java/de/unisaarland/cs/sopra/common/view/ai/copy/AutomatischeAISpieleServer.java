@@ -22,6 +22,7 @@ public class AutomatischeAISpieleServer {
 				//prepare referenz ai
 				Connection refConnection = Connection.establish("sopra.cs.uni-saarland.de", true);
 				refConnection.changeName("Referenz KI");
+
 				MatchInformation refMatchInfo = refConnection.newMatch(AutomatischeAISpieleClient.NAME, 2, QualifikationMaps.getMap1(), false);					
 
 				WorldRepresentation refWorldRepresentation = refConnection.getWorld(refMatchInfo.getWorldId());
