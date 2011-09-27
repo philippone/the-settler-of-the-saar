@@ -1577,6 +1577,12 @@ public class Model implements ModelReader, ModelWriter {
 	@Override
 	public void longestRoadClaimed(List<Location> road)
 			throws IllegalStateException {
+		List<Path> claimedroad = new LinkedList<Path>();
+		for (Location l : road) {
+			claimedroad.add(getPath(l));
+		}
+		
+		//TODO rightplayer wird nicht richtig berechnet!!!
 		if (road.size() > (longestClaimedRoad == null ? 4 : longestClaimedRoad.size()) ) {
 			List<Path> lr = new LinkedList<Path>();
 			boolean rightPlayer = false;
@@ -1621,7 +1627,7 @@ public class Model implements ModelReader, ModelWriter {
 					oldOwner.setVictoryPoints(oldOwner.getVictoryPoints()-2);
 					owner.setVictoryPoints(owner.getVictoryPoints()+2);
 				}
-				this.longestClaimedRoad = lr;
+				this.longestClaimedRoad = claimedroad;
 				
 				for (ModelObserver ob : modelObserver) {
 					ob.updateVictoryPoints();
