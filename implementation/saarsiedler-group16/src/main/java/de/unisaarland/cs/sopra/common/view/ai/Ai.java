@@ -30,14 +30,14 @@ public class Ai implements ModelObserver {
 	
 	private final ModelReader mr;
 	private final ControllerAdapter ca;
-	private final KaisTradeOfferStrategy trade;
+	private final KaisNewTradeOfferStrategy trade;
 	private Set<Strategy> generalStrategies;
 	private Set<Strategy> moveRobberStrategies;
 	private Set<Strategy> returnResourcesStrategies;
 	private Set<Strategy> initStrategies;
 	
 	public Ai(ModelReader mr, ControllerAdapter ca){
-		this.trade = new KaisTradeOfferStrategy(ca, mr);
+		this.trade = new KaisNewTradeOfferStrategy(ca, mr);
 		this.mr = mr;
 		this.ca = ca;
 		kaisStrategies();
@@ -149,7 +149,7 @@ public class Ai implements ModelObserver {
 		List<Stroke> sortedStrokes;
 		boolean execute = true;
 		while (execute){
-			delay();
+			//delay();
 			sortedStrokes = getSortedStrokeList(generalStrategies);
 			Stroke bestStroke = getTheBestStroke(sortedStrokes);
 			if (bestStroke != null){

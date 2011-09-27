@@ -60,7 +60,7 @@ public class KaisBuildTownsAndVillagesStrategy extends Strategy {
 	@Override
 	public double evaluate(BuildTown stroke) {
 		double evaluation = 1;
-		if (numberOfUselessFields(stroke.getDestination()) > 0) return 0;
+		//if (numberOfUselessFields(stroke.getDestination()) > 0) return 0;
 		if (numberOfDifferentFields(stroke.getDestination()) <= 2) return 0.75;
 		return evaluation;
 	}
