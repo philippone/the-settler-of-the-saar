@@ -62,12 +62,11 @@ public class KaisTradeOfferStrategy extends TradeOfferStrategy {
 					difference.add(offerPackage);
 					failTrys = 0;
 					successTrys++;
-					execute = true;
 				}
 			}
-			if (successTrys >= 128 || failTrys >= 4) break;
+			if (successTrys > 127 || failTrys > 4) break;
 			else tryTheOrdinaryOffer(difference);
-			if (successTrys >= 128 || failTrys >= 4) break;
+			if (successTrys > 127 || failTrys > 4) break;
 		}
 		//System.out.printf("The difference: %s\nThe successTrys: %d\nTheFailTrys: %d\n-----------------\n", difference, successTrys, failTrys);
 		return !difference.hasNegativeResources();
@@ -95,7 +94,6 @@ public class KaisTradeOfferStrategy extends TradeOfferStrategy {
 					difference.add(tradePackage);
 					failTrys = 0;
 					successTrys++;
-					execute = true;
 				}
 			}
 		}
@@ -111,7 +109,7 @@ public class KaisTradeOfferStrategy extends TradeOfferStrategy {
 			tradePackage.modifyResource(maxRes, -4);
 			ca.offerTrade(tradePackage);
 			successTrys++;
-			execute = true;
+			failTrys = 0;
 			difference.add(tradePackage);
 		}
 	}

@@ -30,12 +30,14 @@ public class Ai implements ModelObserver {
 	
 	private final ModelReader mr;
 	private final ControllerAdapter ca;
+	private final KaisTradeOfferStrategy trade;
 	private final Set<Strategy> generalStrategies;
 	private final Set<Strategy> moveRobberStrategies;
 	private final Set<Strategy> returnResourcesStrategies;
 	private final Set<Strategy> initStrategies;
 	
 	public Ai(ModelReader mr, ControllerAdapter ca){
+		this.trade = new KaisTradeOfferStrategy(ca, mr);
 		this.mr = mr;
 		this.ca = ca;
 		this.generalStrategies = new HashSet<Strategy>();
@@ -143,7 +145,7 @@ public class Ai implements ModelObserver {
 		List<Stroke> sortedStrokes;
 		boolean execute = true;
 		while (execute){
-			//delay();
+			delay();
 			sortedStrokes = getSortedStrokeList(generalStrategies);
 			Stroke bestStroke = getTheBestStroke(sortedStrokes);
 			if (bestStroke != null){
@@ -168,14 +170,11 @@ public class Ai implements ModelObserver {
 	
 	private Stroke getTheBestStroke(List<Stroke> sortedStrokes) {
 		List<Stroke> theBestStrokes = sortedStrokes.subList(0, 3);
-		KaisTradeOfferStrategy trade = new KaisTradeOfferStrategy(ca, mr);
 		for (Stroke s : theBestStrokes){
 			if (mr.getMe().checkResourcesSufficient(s.getPrice()))
 				return s;
-			else if (trade.isProbable(s.getPrice())){
-				if (trade.execute(s.getPrice())) return s;
-			}
 		}
+		if (trade.execute(theBestStrokes.get(0).getPrice())) return theBestStrokes.get(0);
 		return null;
 	}
 
