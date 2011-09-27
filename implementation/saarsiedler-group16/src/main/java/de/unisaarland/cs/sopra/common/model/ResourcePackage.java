@@ -1,9 +1,12 @@
 package de.unisaarland.cs.sopra.common.model;
 
-import java.util.EnumMap;
-import java.util.HashMap;
+import static de.unisaarland.cs.sopra.common.model.Resource.BRICK;
+import static de.unisaarland.cs.sopra.common.model.Resource.GRAIN;
+import static de.unisaarland.cs.sopra.common.model.Resource.LUMBER;
+import static de.unisaarland.cs.sopra.common.model.Resource.ORE;
+import static de.unisaarland.cs.sopra.common.model.Resource.WOOL;
 
-import static de.unisaarland.cs.sopra.common.model.Resource.*;
+import java.util.EnumMap;
 
 /**
  * @author Patrick Bender
