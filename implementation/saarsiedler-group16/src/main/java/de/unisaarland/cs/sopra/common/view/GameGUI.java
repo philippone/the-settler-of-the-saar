@@ -193,6 +193,10 @@ public class GameGUI extends View implements Runnable{
 		}
 	}
 	
+	public void setModel(ModelReader modelReader) {
+		this.modelReader = modelReader;
+	}
+	
 	private void deactivateUI() {
 		for (Clickable click : Clickable.getRenderList()) {
 			click.setActive(false);
@@ -211,7 +215,7 @@ public class GameGUI extends View implements Runnable{
 			buildCatapult.setActive(true);
 		if (modelReader.affordableStreets() > 0 && modelReader.buildableStreetPaths(me).size()!=0) 
 			buildStreet.setActive(true);
-		if (longestroad != null && !longestroad.isEmpty() && longestroad.get(0).size() > (modelReader.getLongestClaimedRoad() != null ? modelReader.getLongestClaimedRoad().size() : 4)  )
+		if (longestroad != null && !longestroad.isEmpty() && longestroad.get(0).size() > (modelReader.getLongestClaimedRoad() != null ? modelReader.getLongestClaimedRoad().size() : 4) && longestroad.get(0).size() >= 5 )
 			claimLongestRoad.setActive(true);
 		if (modelReader.getCurrentVictoryPoints(me) >= modelReader.getMaxVictoryPoints())
 			claimVictory.setActive(true);
@@ -427,7 +431,7 @@ public class GameGUI extends View implements Runnable{
 			if (act == modelReader.getMe())
 				longestroad = streets;
 		}
-		if (!observer && longestroad != null && !longestroad.isEmpty() && longestroad.get(0).size() > (modelReader.getLongestClaimedRoad() != null ? modelReader.getLongestClaimedRoad().size() : 4)  )
+		if (!observer && longestroad != null && !longestroad.isEmpty() && longestroad.get(0).size() > (modelReader.getLongestClaimedRoad() != null ? modelReader.getLongestClaimedRoad().size() : 4) && longestroad.get(0).size() >= 5  )
 			claimLongestRoad.setActive(true);
 	}
 
@@ -476,6 +480,18 @@ public class GameGUI extends View implements Runnable{
 			for (Player act :modelReader.getTableOrder()) {
 				this.village[i++] = modelReader.getSettlements(act, BuildingType.Village).size();
 			}
+			//longestroads updaten
+			int i3 = 0;
+			for (Player act : modelReader.getTableOrder()) {
+				long time = System.currentTimeMillis();
+				List<List<Path>> streets = modelReader.calculateLongestRoads(act);
+//			TODO evtl zeit pruefen	System.out.println("Time for calculating longest road: " + (System.currentTimeMillis()-time));
+				this.road[i3++] = streets.size() > 0 ? streets.get(0).size() : 0;
+				if (act == modelReader.getMe())
+					longestroad = streets;
+			}
+			if (longestroad != null && !longestroad.isEmpty() && longestroad.get(0).size() > (modelReader.getLongestClaimedRoad() != null ? modelReader.getLongestClaimedRoad().size() : 4) && longestroad.get(0).size() >= 5 )
+				claimLongestRoad.setActive(true);
 			break;
 		case Town:
 			int i2 = 0;

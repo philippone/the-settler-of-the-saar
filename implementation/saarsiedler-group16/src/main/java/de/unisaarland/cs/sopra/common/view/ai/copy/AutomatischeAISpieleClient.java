@@ -9,12 +9,14 @@ import de.unisaarland.cs.st.saarsiedler.comm.MatchInformation;
 import de.unisaarland.cs.st.saarsiedler.comm.WorldRepresentation;
 import de.unisaarland.cs.st.saarsiedler.comm.results.JoinResult;
 
+
 public class AutomatischeAISpieleClient {
 	public static final int ANZAHL_SPIELE = 1;
 	public static final int POINTS_ON_MAP = 22;
 	public static final String NAME = "private Gruppe16 vs Gruppe10";
-	
+
 	public static void main(String[] args){
+		
 		int mypoints = 0;
 		int otherpoints = 0;
 		int mywins = 0;

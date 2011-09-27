@@ -505,8 +505,12 @@ public class Model implements ModelReader, ModelWriter {
 			List<Path> tmp = new LinkedList<Path>();
 			for (Path act : this.longestClaimedRoad) {
 				if (board.getIntersectionsFromPath(act).contains(intersection)) {
+					Set<Path> wurst = getPathsFromIntersection(intersection);
+					wurst.retainAll(this.longestClaimedRoad);
+					if (wurst.size() != 1) {
 					tmp.add(act);
 					break;
+					}
 				}
 				tmp.add(act);
 			}
@@ -1577,13 +1581,15 @@ public class Model implements ModelReader, ModelWriter {
 	@Override
 	public void longestRoadClaimed(List<Location> road)
 			throws IllegalStateException {
+		List<Path> before = this.longestClaimedRoad; 
+		
 		List<Path> claimedroad = new LinkedList<Path>();
 		for (Location l : road) {
 			claimedroad.add(getPath(l));
 		}
 		
 		//TODO rightplayer wird nicht richtig berechnet!!!
-		if (road.size() > (longestClaimedRoad == null ? 4 : longestClaimedRoad.size()) ) {
+		if (road.size() > (longestClaimedRoad == null ? 4 : longestClaimedRoad.size()) && road.size() >= 5 ) {
 			List<Path> lr = new LinkedList<Path>();
 			boolean rightPlayer = false;
 			int i = 1;
@@ -1637,6 +1643,11 @@ public class Model implements ModelReader, ModelWriter {
 
 		} else {
 			throw new IllegalArgumentException("Roadsize <5 or not longer then longestClaimedRoad");
+		}
+		
+		if (before == this.longestClaimedRoad) {
+			return;
+			//TODO remove this
 		}
 	}
 
