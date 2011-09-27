@@ -233,7 +233,7 @@ public class Model implements ModelReader, ModelWriter {
 						break;
 					}
 				}
-				if (b=true) break;
+				if (b) break;
 			}
 		}
 		Set<Path>sp=getPathsFromIntersection(comingFrom);
