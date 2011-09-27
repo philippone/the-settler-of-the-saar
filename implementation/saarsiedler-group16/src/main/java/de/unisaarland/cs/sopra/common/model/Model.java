@@ -1315,6 +1315,7 @@ public class Model implements ModelReader, ModelWriter {
 					inter_settlement.removeBuilding();
 					inter_settlement.createBuilding(BuildingType.Village, owner);
 					inter_settlement.getOwner().setVictoryPoints(inter_settlement.getOwner().getVictoryPoints()+1);
+					updateLongestRoad(inter_settlement);
 				} else {
 					//Village and attacker > maxVillage
 					inter_settlement.getOwner().setVictoryPoints(inter_settlement.getOwner().getVictoryPoints()-1);
@@ -1333,6 +1334,7 @@ public class Model implements ModelReader, ModelWriter {
 						inter_settlement.removeBuilding();
 						inter_settlement.createBuilding(BuildingType.Village, owner);
 						inter_settlement.getOwner().setVictoryPoints(inter_settlement.getOwner().getVictoryPoints()+1);
+						updateLongestRoad(inter_settlement);
 					}
 					else {
 						//Town and defender > maxVillages && attacker > maxVillages 
@@ -1556,7 +1558,7 @@ public class Model implements ModelReader, ModelWriter {
 	@Override
 	public void longestRoadClaimed(List<Location> road)
 			throws IllegalStateException {
-		if (road.size() >= 5 && ( (longestClaimedRoad != null && road.size() > longestClaimedRoad.size()) || (longestClaimedRoad == null) ) ) {
+		if (road.size() > (longestClaimedRoad == null ? 4 : longestClaimedRoad.size()) ) {
 			List<Path> lr = new LinkedList<Path>();
 			boolean rightPlayer = false;
 			int i = 1;
