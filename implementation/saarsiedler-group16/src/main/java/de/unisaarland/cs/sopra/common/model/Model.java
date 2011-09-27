@@ -507,7 +507,7 @@ public class Model implements ModelReader, ModelWriter {
 				if (board.getIntersectionsFromPath(act).contains(intersection)) {
 					Set<Path> wurst = getPathsFromIntersection(intersection);
 					wurst.retainAll(this.longestClaimedRoad);
-					if (wurst.size() != 1) {
+					if (wurst.size() != 1 && wurst.size() != 0 ) {
 					tmp.add(act);
 					break;
 					}
