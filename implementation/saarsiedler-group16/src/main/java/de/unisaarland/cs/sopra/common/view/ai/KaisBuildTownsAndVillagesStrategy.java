@@ -44,7 +44,16 @@ public class KaisBuildTownsAndVillagesStrategy extends Strategy {
 	@Override
 	public double evaluate(BuildVillage stroke) {
 		if (numberOfDifferentFields(stroke.getDestination()) <= 2) return 0.75;
+		if (numberOfUselessFields(stroke.getDestination()) > 0) return 0;
 		else return 1;
+	}
+	
+	private int numberOfUselessFields(Intersection destination){
+		int uselessFields = 0;
+		for (Field neighbour : mr.getFieldsFromIntersection(destination)){
+			if (neighbour.getNumber() == -1) uselessFields++;
+		}
+		return uselessFields;
 	}
 
 	@Override

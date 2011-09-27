@@ -64,7 +64,7 @@ public class Ai implements ModelObserver {
 			InetAddress ia = InetAddress.getByName(params[0]);
 			if (params.length == 2) port = Integer.parseInt(params[1]);
 			Connection connection = Connection.establish(ia, port, true);
-			connection.changeName("Skynet");
+			connection.changeName("K(A)I");
 			MatchInformation matchInformation = null;
 			if (args.length == 2) {
 				matchInformation = connection.getMatchInfo(Long.parseLong(args[1]));
@@ -145,7 +145,7 @@ public class Ai implements ModelObserver {
 		List<Stroke> sortedStrokes;
 		boolean execute = true;
 		while (execute){
-			delay();
+			//delay();
 			sortedStrokes = getSortedStrokeList(generalStrategies);
 			Stroke bestStroke = getTheBestStroke(sortedStrokes);
 			if (bestStroke != null){
