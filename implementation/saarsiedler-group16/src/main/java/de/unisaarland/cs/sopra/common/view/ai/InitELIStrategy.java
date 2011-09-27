@@ -73,6 +73,15 @@ public class InitELIStrategy extends Strategy {
 		double numberValue = 0.0;
 		double numberHarborValue = 0.0;
 		double intersectionValue = 0.0;
+		// make a list of all the fields, the player currently has a village on
+		Set<Intersection> buildings = mr.getSettlements(mr.getMe(), BuildingType.Village);
+		Set<FieldType> playerFields = new HashSet<FieldType>();
+		for (Intersection i : buildings){
+			Set<Field> fieldsforIntersection = mr.getFieldsFromIntersection(i);
+			for (Field f : fieldsforIntersection){
+				playerFields.add(f.getFieldType());
+			}
+		}
 		Intersection village = stroke.getDestination();
 		if (mr.getInitVillages() > 2) {
 		Iterator<Field> fieldIterator = mr.getFieldIterator();
@@ -167,13 +176,7 @@ public class InitELIStrategy extends Strategy {
 				Set<Field> fields = mr.getFieldsFromIntersection(village);
 				Player player = mr.getMe();
 				int n = 0;
-				// make a list of all the fields, the player currently has a village on
-				Set<Intersection> buildings = mr.getSettlements(player, BuildingType.Village);
-				Set<Field> playerFields = new HashSet<Field>();
-				for (Intersection i : buildings){
-					Set<Field> fieldsforIntersection = mr.getFieldsFromIntersection(i);
-					playerFields.addAll(fieldsforIntersection);
-				}
+
 				for (Field f : fields){
 					// make sure field is not a desert or water field
 					if (f.getNumber() != -1){
@@ -186,7 +189,7 @@ public class InitELIStrategy extends Strategy {
 							} else
 							if (f.getFieldType() == FieldType.HILLS){
 								if (!playerFields.contains(FieldType.HILLS))  
-									resourceValue = resourceValue + 0.05;
+									resourceValue = resourceValue + 0.5;
 								else if (mr.getHarborTypes(player).contains(HarborType.BRICK_HARBOR))
 										resourceValue = resourceValue + 0.3334;
 											resourceValue = resourceValue + 0.05;
