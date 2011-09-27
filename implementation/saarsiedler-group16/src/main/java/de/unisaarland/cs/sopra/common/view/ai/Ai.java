@@ -31,15 +31,20 @@ public class Ai implements ModelObserver {
 	private final ModelReader mr;
 	private final ControllerAdapter ca;
 	private final KaisTradeOfferStrategy trade;
-	private final Set<Strategy> generalStrategies;
-	private final Set<Strategy> moveRobberStrategies;
-	private final Set<Strategy> returnResourcesStrategies;
-	private final Set<Strategy> initStrategies;
+	private Set<Strategy> generalStrategies;
+	private Set<Strategy> moveRobberStrategies;
+	private Set<Strategy> returnResourcesStrategies;
+	private Set<Strategy> initStrategies;
 	
 	public Ai(ModelReader mr, ControllerAdapter ca){
 		this.trade = new KaisTradeOfferStrategy(ca, mr);
 		this.mr = mr;
 		this.ca = ca;
+		kaisStrategies();
+		mr.addModelObserver(this);
+	}
+	
+	private void kaisStrategies(){
 		this.generalStrategies = new HashSet<Strategy>();
 		this.generalStrategies.add(new KaisBuildStreetNegativeStrategy(mr));
 		this.generalStrategies.add(new KaisGetTheMissingResourcesStrategy(mr));
@@ -54,7 +59,6 @@ public class Ai implements ModelObserver {
 		this.initStrategies.add(new KaisInitNumberStrategy(mr));
 		this.initStrategies.add(new KaisInitResourceStrategy(mr));
 		this.initStrategies.add(new KaisInitHarbourStrategy(mr));
-		mr.addModelObserver(this);
 	}
 	
 	public static void main(String[] args){
