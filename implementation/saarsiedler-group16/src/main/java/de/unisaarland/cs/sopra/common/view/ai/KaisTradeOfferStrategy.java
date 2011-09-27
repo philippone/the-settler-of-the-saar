@@ -83,7 +83,7 @@ public class KaisTradeOfferStrategy extends TradeOfferStrategy {
 	private void tryTheOrdinaryOffer(ResourcePackage difference){
 		ResourcePackage tradePackage = new ResourcePackage();
 		tradePackage.modifyResource(getMinResource(difference), 1);
-		for (int i = 1; i < 3; i++){
+		for (int i = 1; i < 4; i++){
 			Resource maxRes = getMaxResource(difference);
 			if (difference.getResource(maxRes) >= i){
 				tradePackage.modifyResource(maxRes, -1);
@@ -97,7 +97,7 @@ public class KaisTradeOfferStrategy extends TradeOfferStrategy {
 				}
 			}
 		}
-		if (failTrys < 4 && (difference.getNegativeResourcesCount() == 1 || 
+		if (failTrys < 4 && (difference.getNegativeResourcesCount() >= 1 || 
 				mr.getMe().getResources().size() > 7)) stupidTrade(difference);
 	}
 	
