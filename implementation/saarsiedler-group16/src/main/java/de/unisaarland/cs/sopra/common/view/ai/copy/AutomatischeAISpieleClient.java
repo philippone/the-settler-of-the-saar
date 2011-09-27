@@ -30,7 +30,7 @@ public class AutomatischeAISpieleClient {
 				
 				while (!joined) {
 					for (MatchInformation mi: toonConnection.listMatches()){
-						if (mi.getTitle().equals("private Gruppe 16 Automatischer AI Test")) {
+						if (mi.getTitle().equals("private Gruppe 16 Automatischer AI Test 7")) {
 							JoinResult jr = toonConnection.joinMatch(mi.getId(), false);
 							if (jr == JoinResult.JOINED){
 								toonMatchInfo = mi;
