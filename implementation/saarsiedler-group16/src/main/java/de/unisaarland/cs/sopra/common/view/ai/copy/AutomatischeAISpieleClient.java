@@ -15,6 +15,7 @@ public class AutomatischeAISpieleClient {
 	public static final int ANZAHL_SPIELE = 50;
 
 	public static final int POINTS_ON_MAP = 10;
+	public static final String NAME = "private Gruppe 16 Automatischer AI Test";
 	
 	public static void main(String[] args){
 		int mypoints = 0;
@@ -32,7 +33,9 @@ public class AutomatischeAISpieleClient {
 				
 				while (!joined) {
 					for (MatchInformation mi: toonConnection.listMatches()){
-						if (mi.getTitle().equals("private Gruppe 16 Automatischer AI Test 1")) {
+
+						if (mi.getTitle().equals(NAME)) {
+
 							JoinResult jr = toonConnection.joinMatch(mi.getId(), false);
 							if (jr == JoinResult.JOINED){
 								toonMatchInfo = mi;
