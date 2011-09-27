@@ -1,9 +1,13 @@
 package de.unisaarland.cs.sopra.common.view.ai;
 
+import java.util.Iterator;
+
 import de.unisaarland.cs.sopra.common.model.Field;
+import de.unisaarland.cs.sopra.common.model.HarborType;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
 import de.unisaarland.cs.sopra.common.model.Resource;
+import de.unisaarland.cs.sopra.common.model.ResourcePackage;
 
 public class KaisInitHarbourStrategy extends Strategy {
 
@@ -29,13 +33,11 @@ public class KaisInitHarbourStrategy extends Strategy {
 
 	@Override
 	public double evaluate(AttackCatapult stroke) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public double evaluate(AttackSettlement stroke) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -44,13 +46,54 @@ public class KaisInitHarbourStrategy extends Strategy {
 		double evaluation = 0;
 		if (checkForTwoResourceLandFields(stroke.getDestination()) && isHarbourIntersection(stroke.getDestination())){
 			if (numberOfDifferentResources(stroke.getDestination()) == 2){
-				evaluation = 1;
+				if (mr.getHarborType(stroke.getDestination()) == HarborType.GENERAL_HARBOR ||
+						mr.getHarborType(stroke.getDestination()) == getBestHarborType()){
+					evaluation = 1.5;
+				}
+				else {
+					evaluation = 1.0;
+				}
 			}
 			else {
 				evaluation = 0.5;
 			}
 		}
 		return evaluation;
+	}
+	
+	private HarborType getBestHarborType(){
+		return resource2HarbourType(getMaxResource());
+	}
+	
+	private Resource getMaxResource(){
+		Iterator<Field> fiter = mr.getFieldIterator();
+		ResourcePackage resPack = new ResourcePackage();
+		while (fiter.hasNext()){
+			Field next = fiter.next();
+			if (next.getNumber() != -1) resPack.modifyResource(next.getResource(), 1);
+		}
+		Resource maxResource = Resource.WOOL;
+		for (Resource r : Resource.values()){
+			maxResource = resPack.getResource(maxResource) < resPack.getResource(r) ? r : maxResource;
+		}
+		return maxResource;
+	}
+	
+	private HarborType resource2HarbourType(Resource r){
+		switch(r){
+		default:
+			return null;
+		case BRICK:
+			return HarborType.BRICK_HARBOR;
+		case GRAIN:
+			return HarborType.GRAIN_HARBOR;
+		case LUMBER:
+			return HarborType.LUMBER_HARBOR;
+		case ORE:
+			return HarborType.ORE_HARBOR;
+		case  WOOL:
+			return HarborType.WOOL_HARBOR;
+		}
 	}
 	
 	private int numberOfDifferentResources(Intersection intersection) {
@@ -86,37 +129,31 @@ public class KaisInitHarbourStrategy extends Strategy {
 
 	@Override
 	public double evaluate(BuildTown stroke) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public double evaluate(BuildCatapult stroke) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public double evaluate(BuildStreet stroke) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public double evaluate(MoveCatapult stroke) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public double evaluate(MoveRobber stroke) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public double evaluate(ReturnResources stroke) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 	
