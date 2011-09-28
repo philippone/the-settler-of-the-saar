@@ -1030,25 +1030,27 @@ public class GameGUI extends View implements Runnable{
 						
 						Path destPath = getMousePath();
 						// deactivate selection mode
-						if (destPath == catapultAction.getPath()) {
-							selectionMode = NONE;
-						}
-						// move to path 
-						else if (modelReader.getCatapults(modelReader.getMe()).contains(destPath)){
-							catapultAction.setPath(destPath);
-							selectionLocation = Model.getLocationListPath(modelReader.attackableCatapults(destPath));
-							selectionLocation2 = Model.getLocationListPath(modelReader.catapultMovePaths(destPath));
-							selectionLocation3 = Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Village, destPath));
-							selectionLocation3.addAll(Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Town, destPath)));
-							if (selectionLocation.size()==0 && selectionLocation2.size()==0 && selectionLocation3.size()==0)
+						if (destPath != null) {
+							if (destPath == catapultAction.getPath()) {
 								selectionMode = NONE;
-						}
-						// Attack catapult
-						else if(selectionLocation.contains(Model.getLocation(destPath)) || selectionLocation2.contains(Model.getLocation(destPath))){
-							catapultAction.setPath2(destPath);
-							selectionMode = NONE;
-							deactivateUI();
-							controllerAdapter.addGuiEvent(catapultAction);
+							}
+							// move to path 
+							else if (modelReader.getCatapults(modelReader.getMe()).contains(destPath)){
+								catapultAction.setPath(destPath);
+								selectionLocation = Model.getLocationListPath(modelReader.attackableCatapults(destPath));
+								selectionLocation2 = Model.getLocationListPath(modelReader.catapultMovePaths(destPath));
+								selectionLocation3 = Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Village, destPath));
+								selectionLocation3.addAll(Model.getLocationListIntersection(modelReader.attackableSettlements(BuildingType.Town, destPath)));
+								if (selectionLocation.size()==0 && selectionLocation2.size()==0 && selectionLocation3.size()==0)
+									selectionMode = NONE;
+							}
+							// Attack catapult
+							else if(selectionLocation.contains(Model.getLocation(destPath)) || selectionLocation2.contains(Model.getLocation(destPath))){
+								catapultAction.setPath2(destPath);
+								selectionMode = NONE;
+								deactivateUI();
+								controllerAdapter.addGuiEvent(catapultAction);
+							}
 						}
 						break;	
 					case STREET:
