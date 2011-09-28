@@ -23,7 +23,7 @@ public class AutomatischeAISpieleServer {
 				Connection refConnection = Connection.establish("sopra.cs.uni-saarland.de", true);
 				refConnection.changeName("Referenz KI");
 
-				MatchInformation refMatchInfo = refConnection.newMatch(AutomatischeAISpieleClient.NAME, 2, QualifikationMaps.getMap1(), false);					
+				MatchInformation refMatchInfo = refConnection.newMatch(AutomatischeAISpieleClient.NAME, 2, QualifikationMaps.getMap2(), false);					
 
 				WorldRepresentation refWorldRepresentation = refConnection.getWorld(refMatchInfo.getWorldId());
 				Model refModel = new Model(refWorldRepresentation, refMatchInfo, refConnection.getClientId());
@@ -57,13 +57,14 @@ public class AutomatischeAISpieleServer {
 				refConnection.close();
 			} catch (Exception e) { e.printStackTrace(); }
 			
-			System.out.println();
-			System.out.println("---------------------");
-			System.out.println("Ergebnis:");
-			System.out.println("ich Punkte: " + mypoints + "/" + (AutomatischeAISpieleClient.POINTS_ON_MAP*AutomatischeAISpieleClient.ANZAHL_SPIELE) + " und " + mywins + "/" + AutomatischeAISpieleClient.ANZAHL_SPIELE + " Siege");
-			System.out.println("andere Punkte: " + otherpoints + "/" + (AutomatischeAISpieleClient.POINTS_ON_MAP*AutomatischeAISpieleClient.ANZAHL_SPIELE) + " und " + otherwins + "/" + AutomatischeAISpieleClient.ANZAHL_SPIELE + " Siege" );
 			
 		}
+		System.out.println();
+		System.out.println("---------------------");
+		System.out.println("Ergebnis:");
+		System.out.println("ich Punkte: " + mypoints + "/" + (AutomatischeAISpieleClient.POINTS_ON_MAP*AutomatischeAISpieleClient.ANZAHL_SPIELE) + " und " + mywins + "/" + AutomatischeAISpieleClient.ANZAHL_SPIELE + " Siege");
+		System.out.println("andere Punkte: " + otherpoints + "/" + (AutomatischeAISpieleClient.POINTS_ON_MAP*AutomatischeAISpieleClient.ANZAHL_SPIELE) + " und " + otherwins + "/" + AutomatischeAISpieleClient.ANZAHL_SPIELE + " Siege" );
+		
 	}
 	
 }
