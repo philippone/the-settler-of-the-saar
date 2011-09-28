@@ -357,7 +357,8 @@ public class Model implements ModelReader, ModelWriter {
 		for (Path p : road) {
 			Set<Intersection> si1 = getIntersectionsFromPath(p);
 			for (Intersection i : si1) {
-				if (i != null && isExtremityOfRoad(i, road))
+				if (i != null && (isExtremityOfRoad(i, road)
+						|| ((i.hasOwner()) && (i.getOwner() != player))))
 					si.add(i);
 			}
 		}
