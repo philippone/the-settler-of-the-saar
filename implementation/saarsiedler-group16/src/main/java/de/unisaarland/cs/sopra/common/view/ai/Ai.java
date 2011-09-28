@@ -40,8 +40,8 @@ public class Ai implements ModelObserver {
 		this.trade = new KaisNewTradeOfferStrategy(ca, mr);
 		this.mr = mr;
 		this.ca = ca;
-		//elisStrategy();
-		kaisStrategies();
+		elisStrategy();
+		//kaisStrategies();
 		mr.addModelObserver(this);
 	}
 	
@@ -59,8 +59,10 @@ public class Ai implements ModelObserver {
 		this.initStrategies.add(new KaisGetTheMissingResourcesStrategy(mr));
 		this.initStrategies.add(new KaisInitNumberStrategy(mr));
 		this.initStrategies.add(new KaisInitResourceStrategy(mr));
+
 //		this.initStrategies.add(new KaisInitHarbourStrategy(mr));
 		this.initStrategies.add(new InitELIStrategy(mr));
+
 		
 	}
 	
@@ -171,11 +173,12 @@ public class Ai implements ModelObserver {
 			Stroke bestStroke = getTheBestStroke(sortedStrokes);
 			if (bestStroke != null){
 				bestStroke.execute(ca);
-				claimLongestRoadIfPossible();
 				if (claimVictoryIfPossible()) return;
 			}
 			else execute = false;
 		}
+		saveTimeTrade();
+		claimLongestRoadIfPossible();
 		ca.endTurn();
 	}
 
@@ -427,5 +430,23 @@ public class Ai implements ModelObserver {
 //			System.out.println("You have won the macht! =)");
 //		else System.out.println("You do not have won the match! =(");
 	} 
+	
+	public void saveTimeTrade(){
+	ResourcePackage	resourcePackage = mr.getMe().getResources();
+		if (resourcePackage.hasPositiveResources()){
+			if (resourcePackage.getResource(Resource.LUMBER) > 0)
+				ca.offerTrade(new ResourcePackage(-1, 0 , 0, 0, 500));
+			else if (resourcePackage.getResource(Resource.BRICK) > 0)
+				ca.offerTrade(new ResourcePackage(0, -1 , 0, 0, 500));
+			else if (resourcePackage.getResource(Resource.WOOL) > 0)
+				ca.offerTrade(new ResourcePackage(0, 0, -1, 0, 500));
+			else if (resourcePackage.getResource(Resource.GRAIN) > 0)
+				ca.offerTrade(new ResourcePackage(0, 0 , 0, -1, 500));
+			else  if (resourcePackage.getResource(Resource.ORE) > 0)
+				ca.offerTrade(new ResourcePackage(0, 500 , 0, 0, -1));
+			
+		}
+		return;
+	}
 
 }

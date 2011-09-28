@@ -357,7 +357,8 @@ public class Model implements ModelReader, ModelWriter {
 		for (Path p : road) {
 			Set<Intersection> si1 = getIntersectionsFromPath(p);
 			for (Intersection i : si1) {
-				if (i != null && isExtremityOfRoad(i, road))
+				if (i != null && (isExtremityOfRoad(i, road)
+						|| ((i.hasOwner()) && (i.getOwner() != player))))
 					si.add(i);
 			}
 		}
@@ -507,7 +508,7 @@ public class Model implements ModelReader, ModelWriter {
 				if (board.getIntersectionsFromPath(act).contains(intersection)) {
 					Set<Path> wurst = getPathsFromIntersection(intersection);
 					wurst.retainAll(this.longestClaimedRoad);
-					if (wurst.size() != 1) {
+					if (wurst.size() != 1 && wurst.size() != 0 ) {
 					tmp.add(act);
 					break;
 					}
