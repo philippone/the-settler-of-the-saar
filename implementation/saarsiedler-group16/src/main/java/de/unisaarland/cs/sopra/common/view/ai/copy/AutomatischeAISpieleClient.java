@@ -12,7 +12,7 @@ import de.unisaarland.cs.st.saarsiedler.comm.results.JoinResult;
 
 
 public class AutomatischeAISpieleClient {
-	public static final int ANZAHL_SPIELE = 1;
+	public static final int ANZAHL_SPIELE = 50;
 	public static final int POINTS_ON_MAP = 22;
 	public static final String NAME = "private Gruppe 16 Automatischer AI Test 7";
 

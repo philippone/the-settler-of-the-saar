@@ -70,13 +70,14 @@ public class ExpandStrategy extends Strategy {
 		 Set<Intersection> buildings = mr.getSettlements(player, BuildingType.Village);
 		 buildings.addAll(mr.getSettlements(player, BuildingType.Town));
 		 //playerFields contains all fields on which we have a building
-		 Set<Field> playerFields = new HashSet<Field>();
+		 Set<FieldType> playerFields = new HashSet<FieldType>();
 		 //numbers contains all numbers of the fields on which we have a building 
 		 Set<Integer> numbers = new HashSet<Integer>();
 			for (Intersection i : buildings){
 				Set<Field> fieldsforIntersection = mr.getFieldsFromIntersection(i);
-				playerFields.addAll(fieldsforIntersection);
+					
 				for (Field f : fieldsforIntersection){
+					playerFields.add(f.getFieldType());
 					numbers.add(f.getNumber());
 				}
 			}
@@ -85,43 +86,59 @@ public class ExpandStrategy extends Strategy {
 			if (type == FieldType.FOREST) {
 				resources += 1;
 				if (playerFields.contains(FieldType.FOREST)) {
-					// we want to make sure, that we will get a resource
-					// every turn
-					if (!numbers.contains(field.getNumber()))
+					if (!numbers.contains(field.getNumber())) {
+						if (mr.getHarborTypes(mr.getMe()).contains(HarborType.LUMBER_HARBOR))
 					resourceValue = resourceValue + 0.3334;
-						resourceValue = resourceValue + 0.1667;
+						resourceValue = 0.2;
+					} 
 				}
 				// if we do not own the resource yet, it has understandably a higher value
 				resourceValue = resourceValue + 0.3334;
 			} else if (type == FieldType.HILLS) {
 				resources += 1;
 				if (playerFields.contains(FieldType.HILLS)) {
-					if (!numbers.contains(field.getNumber()))
+					if (!numbers.contains(field.getNumber())) {
+						if (mr.getHarborTypes(mr.getMe()).contains(HarborType.BRICK_HARBOR))
 					resourceValue = resourceValue + 0.3334;
+						resourceValue = 0.2;
+					} 
+						
 						resourceValue = resourceValue + 0.1667;
 				}
 				resourceValue = resourceValue + 0.3334;
 			} else if (type == FieldType.PASTURE) {
 				resources += 1;
 				if (playerFields.contains(FieldType.PASTURE)) {
-					if (!numbers.contains(field.getNumber()))
+					if (!numbers.contains(field.getNumber())) {
+						if (mr.getHarborTypes(mr.getMe()).contains(HarborType.WOOL_HARBOR))
 					resourceValue = resourceValue + 0.3334;
-						resourceValue = resourceValue + 0.1;
+						resourceValue = resourceValue + 0.2;
+					} 
+						
+						resourceValue = resourceValue + 0.1667;
 				}
 				resourceValue = resourceValue + 0.3334;
 			} else if (type == FieldType.FIELDS) {
 				resources += 1;
 				if (playerFields.contains(FieldType.FIELDS)) {
-					if (!numbers.contains(field.getNumber()))
+					if (!numbers.contains(field.getNumber())) {
+						if (mr.getHarborTypes(mr.getMe()).contains(HarborType.GRAIN_HARBOR))
 					resourceValue = resourceValue + 0.3334;
+						resourceValue = resourceValue + 0.2;
+					} 
+						
 						resourceValue = resourceValue + 0.1667;
 				}
 				resourceValue = resourceValue + 0.3334;
 			} else if (type == FieldType.MOUNTAINS) {
 				resources += 1;
 				if (playerFields.contains(FieldType.MOUNTAINS)) {
-					if (!numbers.contains(field.getNumber()))
+					if (!numbers.contains(field.getNumber())) {
+						if (mr.getHarborTypes(mr.getMe()).contains(HarborType.ORE_HARBOR))
 					resourceValue = resourceValue + 0.3334;
+						resourceValue = resourceValue + 0.2;
+					} 
+						
 						resourceValue = resourceValue + 0.1667;
 				}
 				resourceValue = resourceValue + 0.3334;

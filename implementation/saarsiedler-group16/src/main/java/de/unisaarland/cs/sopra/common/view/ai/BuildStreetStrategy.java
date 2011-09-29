@@ -2,7 +2,7 @@ package de.unisaarland.cs.sopra.common.view.ai;
 
 import java.util.Set;
 
-import de.unisaarland.cs.sopra.common.model.BuildingType;
+
 import de.unisaarland.cs.sopra.common.model.Field;
 import de.unisaarland.cs.sopra.common.model.Intersection;
 import de.unisaarland.cs.sopra.common.model.ModelReader;
@@ -96,7 +96,7 @@ public class BuildStreetStrategy extends Strategy {
 			if (i.hasOwner()){
 				hasVillages = true;
 				if (i.getOwner() == mr.getMe())
-					streetValue = streetValue + 0.1;
+					streetValue = streetValue + 0.2;
 						return 0.0;
 			}
 		}
@@ -110,8 +110,10 @@ public class BuildStreetStrategy extends Strategy {
 						if (intersection.hasOwner()){
 							if (intersection.getOwner() != mr.getMe())
 								n += 1;
+							streetValue = streetValue + 0.1;
 								
 						}
+						streetValue = streetValue + 0.2;
 					
 					}
 					// if the both of the neighbour intersections are occupied by an opponents building
@@ -149,7 +151,7 @@ public class BuildStreetStrategy extends Strategy {
 				else if (myVillages > 1 && myVillages < 4)
 					streetValue = streetValue + 0.3;
 				else if (myVillages >4)
-					return 0.0;
+					return streetValue*0.1;
 			}
 		}
 		// we always prefer building a village (if possible)
@@ -159,7 +161,7 @@ public class BuildStreetStrategy extends Strategy {
 		// if the neighbourFields offer only one resource
 		// this is a bad place to build a road to
 		if (resources < 2)
-			streetValue = streetValue*0.05;
+			return 0.0;
 		return streetValue;
 	}
 
