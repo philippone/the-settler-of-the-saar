@@ -161,6 +161,7 @@ public class GameGUI extends View implements Runnable{
 	
 	@SuppressWarnings("unused")
 	private Timeouts timeouts;
+
 	
 	public GameGUI(ModelReader modelReader, ControllerAdapter controllerAdapter, Map<Player, String> names, String gameTitle, boolean observer, CyclicBarrier barrier, Timeouts timeouts) {
 		super(modelReader, controllerAdapter);
@@ -342,6 +343,7 @@ public class GameGUI extends View implements Runnable{
 	   GL11.glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
 	   GL11.glLoadIdentity();
 	   GL11.glTranslatef(-812.8125f*aspectRatio,820,-2000);
+	   GL11.glRotatef(RenderBoard.rotate , 1.0f, 0.0f, 0.0f);
 	   GL11.glRotatef(180, 1, 0, 0);
 	   GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 	   //Render Board
@@ -357,6 +359,7 @@ public class GameGUI extends View implements Runnable{
 	   //Render Selections
 	   renderMarks();
 	   //Render UI
+	   GL11.glRotatef(-RenderBoard.rotate , 1.0f, 0.0f, 0.0f);
 	   GL11.glPushMatrix();
 	   GL11.glTranslatef(xOffset, 0, zOffsetUI-5);
 	   setColor(BLACK);
@@ -848,7 +851,7 @@ public class GameGUI extends View implements Runnable{
         
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
-		GLU.gluPerspective(+45.0f, aspectRatio, 0.1f, getOrgZ()+2500);
+		GLU.gluPerspective(+45.0f, aspectRatio, 0.1f, getOrgZ()*2+2500); //TODO
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		
         Keyboard.enableRepeatEvents(true);
@@ -1138,6 +1141,12 @@ public class GameGUI extends View implements Runnable{
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_B)) {
 			resetCamera();
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_O)) {
+			RenderBoard.tiltDown();
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
+			RenderBoard.tiltUp();
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
 			selectionMode = NONE;

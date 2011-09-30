@@ -44,6 +44,8 @@ public class RenderBoard {
 	private static float ZOOM_FACTOR = 0.00909090909090909091f;
 	private static ModelReader mr;
 	
+	public static float rotate = 0.0f;
+	
 	public static void initiateRenderBoard(ModelReader mr) {
 		RenderBoard.mr = mr;
 		int boardwidth = mr.getBoardWidth();
@@ -545,6 +547,7 @@ public class RenderBoard {
 		x = orgX;
 		y = orgY;
 		z = orgZ;
+		rotate = 0.0f;
 	}
 	
 	public static void camLeft() {
@@ -593,5 +596,15 @@ public class RenderBoard {
 		float oglheight = (float)(2000+zoom)*0.82841f;
 		return oglheight/windowHeight;
 	}
+	
+	public static void tiltUp() {
+		if (rotate-1.0f>-45.0f)
+			rotate -= 1.0f;
+	}
 
+	public static void tiltDown() {
+		if (rotate+1.0f<0.0f)
+			rotate += 1.0f;
+	}
+	
 }
