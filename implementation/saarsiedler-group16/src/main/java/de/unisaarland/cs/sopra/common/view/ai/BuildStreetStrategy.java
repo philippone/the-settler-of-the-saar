@@ -162,7 +162,7 @@ public class BuildStreetStrategy extends Strategy {
 		// this is a bad place to build a road to
 		if (resources < 2)
 			return 0.0;
-		return streetValue;
+		return streetValue*0.4;
 	}
 
 	@Override
